@@ -1,0 +1,11 @@
+# Debian user-defined completion                             -*- shell-script -*-
+
+_ppa_lists(){
+    local cur
+    _init_completion || return
+
+    COMPREPLY=( $( find /etc/apt/sources.list.d/ -name "*$cur*.list" \
+-exec basename {} \; 2> /dev/null ) )
+    return 0
+} &&
+complete -F _ppa_lists apt-update-repo

@@ -1,0 +1,15 @@
+alias l="ls -bCF"         # escape non printable || columns || decorated
+alias la="ls -CAFb"       # Almost all - no . and ..
+alias ld="ls -dlaFb */"   # no-dereference symlinks, directory entry instead of contents
+alias ll="ls -laFb"
+
+alias lsd="ls -Abl | grep --color=never ^d"   # list only directories
+
+alias ..="cd .."
+alias ...="cd ../.."
+alias ....="cd ../../.."
+
+alias g="git"
+alias h="history"
+alias j="jobs"
+
