@@ -1,0 +1,360 @@
+" source $VIM/_vimrc " Source the system-wide version
+
+" let $PYTHONHOME='C:\Users\Ravi\AppData\Local\Programs\Python\Python35'
+" let $PYTHONPATH=$PYTHONHOME
+" let $PYTHON_INSTALL=$PYTHONHOME
+" " let $MY_PYTHONHOME=$PYTHONHOME
+" "
+" let DDYNAMIC_PYTHON3_DLL=\"python35.dll\"
+" let DDYNAMIC_PYTHON3_DLL="python35.dll"
+" let DYNAMIC_PYTHON3_DLL=\"python35.dll\"
+" let DYNAMIC_PYTHON3_DLL="python35.dll"
+
+
+
+" Set custom commands
+" :command! Python2 !C:\python2\python %
+" :command! Python3 !C:\python3\python %
+ 
+" set $VIMFILES based on the user's vim settings directory
+if has('win32') || has ('win64')
+    let $VIMFILES = $HOME."/vimfiles"
+    " Load default windows config
+    source $VIMFILES/mswin.vim
+else
+    let $VIMFILES = $HOME."/.vim"
+endif
+
+" Manage plugins load elsewhere to remove clutter
+" This needs to be done before they're configured below.
+source $VIMFILES/load-plugins.vim
+
+set guifont=Consolas:h10:cANSI
+
+""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+" General
+""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+set wildignore+=*/tmp/*,*.so,*.swp,*.zip
+set nocompatible                " get out of horrible vi-compatible mode
+set undolevels=1000             " Undo pretty much any stuff-up
+set history=1000                  " How many lines of history to remember
+set confirm                     " Ask for confirmation in some situations (:q)
+set ignorecase smartcase        " case insensitive search, except when mixing cases
+" set modeline                    " we allow modelines in textfiles to set vim settings
+set hidden                      " allows to change buffer without saving
+set mouse=a                     " enable mouse in all modes
+set noerrorbells                " don't make noise
+set visualbell                  " blink instead
+" set exrc                        " Scan working dir for .vimrc
+" set secure                      " Make the above work safely
+
+""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+" UI/Colors
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+syntax on                       " syntax highlighting on (set before colorscheme)
+set background=dark
+colorscheme solarized
+
+if has('gui_running')
+  set t_Co=256                    " Enable 256 color mode
+else " text - only version
+endif
+
+set wildmenu                    " Show suggestions on TAB for some commands
+set ruler                       " Always show current positions along the bottom
+set cmdheight=1                 " the command bar is 1 high
+set number                     " turn on line numbers
+"set nonumber                    " turn off line numbers (problematic with cut&paste)
+set lazyredraw                  " do not redraw while running macros (much faster)
+set backspace=indent,eol,start  " make backspace work normal
+set whichwrap+=<,>,h,l          " make cursor keys and h,l wrap over line endings
+set report=0                    " always report how many lines where changed
+"set fillchars=vert:\ ,stl:\ ,stlnc:\    " make the splitters between windows be blank
+set laststatus=2                " always show the status line
+set statusline=[%n]\ [%f]\ %w%y%r%m[%{&fileformat}][%{&fileencoding}]\ %=\ %l/%L,%-5c\ %P\
+set scrolloff=8                " Start scrolling this number of lines from top/bottom
+
+""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+" Text Formatting/Tab settings
+""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+set formatoptions=tcrqn         " autowrap and comments (see :h 'fo-table)
+set autoindent                  " keep indent on next line and make BS work with indenting
+set wrap                        " wrap lines that exceed screen
+set smarttab                    " Make Tab work fine with spaces
+set showmatch                   " show matching brackets
+set matchtime=5                 " tenths of a second to blink matching brackets
+set hlsearch                    " highlight search phrase matches (reset with :noh)
+set incsearch                   " do highlight as you type you search phrase
+set list                        " show tabs, trailing spaces, ...
+"set listchars=tab:\|\ ,trail:.,extends:>,precedes:<
+set listchars=tab:\|\ ,extends:>,precedes:< " Don't show trailing spaces - indent pretty-makers can't do blank lines
+
+""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+" File settings
+""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+set encoding=utf-8              " Let Vim use utf-8 internally
+set fileencoding=utf-8          " Default for new files
+set termencoding=utf-8          " Terminal encoding
+set fileformats=unix,dos,mac    " support all three, in this order
+set fileformat=dos              " default file format
+
+" Global indent settings
+set tabstop=4 softtabstop=4 shiftwidth=4 expandtab
+" Indenting per file type
+" tabstop: number of spaces inserted for each tab
+" softtabstop: make spaces feel like real tabs (e.g. for backspace)
+" shiftwidth: number of spaces for indentation (e.g. > and < )
+" expandtab: use spaces instaed of Tab. <c-v><TAB> gives real Tab
+
+filetype plugin on              " load filetype plugins
+
+" Does not give good results with PHP (Cursor jumps to 1st col on typing '<?php')
+filetype indent on              " load indent settings
+
+if has ('autocmd') " remain compatible with earlier versions
+" When editing a file, always jump to the last cursor position.
+    autocmd BufReadPost * if line("'\"") && line("'\"") <= line("$") | exe "normal `\"" | endif
+
+    " Set some file types by extension
+    autocmd BufNewFile,BufRead *.xt,*.xd            setf xml
+    autocmd BufNewFile,BufRead *.tpl,*.page         setf html
+
+    autocmd FileType ruby setlocal tabstop=2 softtabstop=2 shiftwidth=2 expandtab
+    autocmd FileType php setlocal tabstop=4 softtabstop=4 shiftwidth=4 expandtab
+    autocmd FileType javascript setlocal tabstop=2 softtabstop=2 shiftwidth=2 expandtab
+
+    " PHP settings
+    autocmd FileType php setlocal cindent|set cinkeys-=0#
+    " Load Yii helpfiles for PHP files and open help on <S-k>
+    autocmd FileType php setlocal keywordprg=:ViewDocHelp
+    " Fix comment auto-formatting
+    autocmd FileType php setlocal comments=s1:/*,mb:*,ex:*/,://,:#
+    autocmd FileType php setlocal formatoptions+=cro
+    " Fix javascript word boundaries (erratically activated for PHP files)
+    autocmd FileType php setlocal iskeyword-=$
+    " Let the surround plugin use `-` for <?php ?>
+    autocmd FileType php let b:surround_45 = "<?php \r ?>"
+    " Let the surround plugin use `=` for <?php ?>
+    autocmd FileType php let b:surround_61 = "<?= \r ?>"
+
+    autocmd BufReadPost * call Kees_settabs()
+endif " has autocmd
+
+" Function for autodetecting tab settings
+function Kees_settabs()
+    if len(filter(getbufline(winbufnr(0), 1, "$"), 'v:val =~ "^\\t"')) > len(filter(getbufline(winbufnr(0), 1, "$"), 'v:val =~ "^ "'))
+        set noet
+    else
+        set et
+    endif
+endfunction
+
+" No folding for markdown files
+let g:vim_markdown_folding_disabled=1
+
+
+""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+" Plugins settings
+""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+" gundo
+nnoremap <F5> :GundoToggle<CR>
+let g:gundo_prefer_python3 = 1
+ 
+" easymotion
+let g:EasyMotion_startofline = 0 " keep cursor column when JK motion
+let g:EasyMotion_smartcase = 1 " like Vim's smartcase
+map <Leader>l <Plug>(easymotion-lineforward)
+map <Leader>j <Plug>(easymotion-j)
+map <Leader>k <Plug>(easymotion-k)
+map <Leader>h <Plug>(easymotion-linebackward)
+
+" map  <leader><leader>/ <Plug>(easymotion-sn)
+" omap <leader><leader>/ <Plug>(easymotion-tn)
+map  / <Plug>(easymotion-sn)
+omap / <Plug>(easymotion-tn)
+" These `n` & `N` mappings are options. You do not have to map `n` & `N` to EasyMotion.
+" Without these mappings, `n` & `N` works fine. (These mappings just provide
+" different highlight method and have some other features )
+map n <Plug>(easymotion-next)
+map N <Plug>(easymotion-prev)
+" Require tpope/vim-repeat to enable dot repeat support
+" Jump to anywhere with only `s{char}{target}`
+" `s<CR>` repeat last find motion.
+nmap s <Plug>(easymotion-s)
+" Bidirectional & within line 't' motion
+omap t <Plug>(easymotion-bd-tl)
+" Use uppercase target labels and type as a lower case
+let g:EasyMotion_use_upper = 1
+ " type `l` and match `l`&`L`
+let g:EasyMotion_smartcase = 1
+
+" YouCompleteMe and UltiSnips compatibility, with the helper of supertab
+" from: https://www.reddit.com/r/vim/comments/2sx567/snipmate_and_youcompleteme_doesnt_work_well/
+" c.f. http://chauncey.io/ultisnips-youcompleteme-now-if-i-can-just-get-you-two-to-cooperate/
+let g:ycm_key_list_select_completion   = ['<C-j>', '<C-n>', '<Down>']
+let g:ycm_key_list_previous_completion = ['<C-k>', '<C-p>', '<Up>']
+" Plugin 'ervandew/supertab'
+let g:SuperTabDefaultCompletionType    = '<C-n>'
+let g:SuperTabCrMapping                = 0
+"Plugin 'SirVer/ultisnips'
+let g:UltiSnipsExpandTrigger="<tab>"
+let g:UltiSnipsJumpForwardTrigger="<tab>"
+let g:UltiSnipsJumpBackwardTrigger="<s-tab>"
+
+" NERDTree
+" Don't close NERDTree after a file is opened
+let g:NERDTreeQuitOnOpen=0
+" show hidden files in NERDTree
+let NERDTreeShowHidden=1
+" Keep cache across sessions for faster load
+" Purge by pressing <F5> inside CtrlP
+let g:ctrlp_clear_cache_on_exit = 0
+" Specify where to keep cache
+let g:ctrlp_cache_dir = $VIMFILES.'/ctrlp-cache'
+" Toggle NERDTree
+nmap <silent> <leader>n :NERDTreeToggle<cr>
+" expand to the path of the file in the current buffer
+nmap <silent> <leader>y :NERDTreeFind<cr>
+
+" ag (Silver Searcher) - faster than ack
+" Always start searching from your project root instead of the cwd
+let g:ag_working_path_mode="r"
+" If needing to specify path to ag:
+" let g:agprg="<custom-ag-path-goes-here> --vimgrep"
+"
+" grep on speed which respects .gitignore patterns:
+if executable('ag')
+    " Note we extract the column as well as the file and line number
+    set grepprg=ag\ --nogroup\ --nocolor\ --column
+    set grepformat=%f:%l:%c%m
+endif
+
+" CtrlP
+let g:ctrlp_dotfiles=1
+" Set root:
+" 'r' is the (r)epository root
+" 'a' Use current file's directory if :pwd is not an ancestor
+let g:ctrlp_working_path_mode = 'ra' 
+" 
+" CtrlP ignore patterns
+" CtrlP uses wildignore with the addition of g:ctrlp_custom_ignore
+" IFF g:ctrlp_user_command is NOT set. (:help ctrlp-options)
+" (ctrlp_show_hidden is also affected by g:ctrlp_user_command)
+let g:ctrlp_custom_ignore = {
+	\ 'dir':  '\v[\/]\.(git|hg|svn)$',
+	\ 'file': '\v\.(exe|so|dll)$',
+	\ 'link': 'SOME_BAD_SYMBOLIC_LINKS',
+	\ }
+
+" TODO
+" search the nearest ancestor that contains .git, .hg, .svn
+" let g:ctrlp_working_path_mode = 2
+
+
+" vim-indent-guides
+let g:indent_guides_enable_on_vim_startup = 1 " Default to on
+"let g:indent_guides_guide_size = 1 " Width of shaded area. 1 looks great with shiftwidth=4
+let g:indent_guides_start_level=2
+" prettty indent test
+"let ind = indent(prevnonblank(v:lnum - 1))
+
+" netrw
+let g:netrw_liststyle=3 " more file info, eg size, date
+
+" rainbow_parentheses.vim
+au VimEnter * RainbowParenthesesToggle
+au Syntax * RainbowParenthesesLoadRound
+au Syntax * RainbowParenthesesLoadSquare
+au Syntax * RainbowParenthesesLoadBraces
+au Syntax * RainbowParenthesesLoadChevrons
+
+
+""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+"" Keyboard mappings
+""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+set pastetoggle=<F2> " Use to prevent indent strangeness when pasting
+
+" Avoid having to press/release shift key
+nnoremap ; :
+
+" Go the next row up/down even if lines wrap
+nnoremap j gj
+nnoremap k gk
+
+" Easy window navigation
+map <C-h> <C-w>h
+map <C-j> <C-w>j
+map <C-k> <C-w>k
+map <C-l> <C-w>l
+
+" Change blank line upon creation so that its leading spaces won't be removed
+inoremap <Return> <Return><Space><BS>
+nnoremap o o<Space><BS>
+nnoremap O O<Space><BS>
+
+" Pressing 'jk' in insert mode is the same as pressing escape
+inoremap jk <ESC>
+
+" If you forget to do sudo BEFORE editing a file
+cmap w!! w !sudo tee % >/dev/null
+
+" Map Ctrl-c Ctrl-c to open tagbar
+map <silent> <C-c><C-c> :TagbarOpen fj<Cr>
+" Map Ctrl-c Ctrl-c to close tagbar
+map <silent> <C-c><C-x> :TagbarClose<Cr>
+
+"
+" <leader> mappings
+"
+let mapleader="\<Space>" " Easier to type than '/', and on all keyboard layouts
+
+" Clear previous search highlights
+nmap <silent> <leader>/ :nohlsearch<CR>
+
+" Quickly edit/reload the vimrc file
+"nmap <silent> <leader>ev :e $MYVIMRC<CR>
+"nmap <silent> <leader>sv :so $MYVIMRC<CR>
+nnoremap <leader>ev :e $MYVIMRC<CR>
+nnoremap <leader>sv :so $MYVIMRC<CR>
+
+" Go to line number with 123<enter>
+" PROBLEM: makes <CR> by itself go to end of file
+" nnoremap <CR> G
+" Backspace to go to the beginning of a file
+nnoremap <BS> gg
+
+" CtrlP plugin
+nnoremap <Leader>o :CtrlPMixed<CR>
+nmap <silent> <leader>r :CtrlPBuffer<cr>
+
+" <leader>w to save file (a lot faster than :w<Enter>):
+nnoremap <Leader>w :w<CR>
+nnoremap <Leader>q :q<CR>
+
+" Copy & paste to system clipboard with <leader> d, p, y
+vnoremap <Leader>y "+y
+vnoremap <Leader>d "+d
+vnoremap <Leader>p "+p
+vnoremap <Leader>P "+P
+vnoremap <Leader>p "+p
+vnoremap <Leader>P "+P
+
+"Automatically jump to end of text you pasted:
+"I can paste multiple lines multiple times with simple ppppp.
+"vnoremap <silent> y y`]
+"vnoremap <silent> p p`]
+"nnoremap <silent> p p`]
+
+
+
+""
+"" Only comments below here
+""
+
+"There's a few auto-completion-ish plug-ins around for vim, but probably the most straightforward one is just the built-in "keyword completion". It does not know any particular language, but if you use, eg, set complete=.,b,k, it will scan the current file (.), other loaded files (b), and any files set as dictionaries (use set dictionary=/some/file) for matches. Add that stuff to your .vimrc. To use completion, type a couple letters and hit ctrl-p in INSERT mode, you'll get a pop-up of cantidates. It's unobtrusive and easy to use. For more info on complete try :help E535.
+
+
+" call pathogen#infect() " changed to Vundle.vim instead
+
+" This is a comment
+" setlocal syntax=on

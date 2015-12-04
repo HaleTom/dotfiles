@@ -1,0 +1,17 @@
+# Don't put a comment after a command!
+
+*~
+*.swp
+
+.vim/.netrwhist
+.vim/ctrlp-cache/
+ 
+# 
+# Include neobundle to bootstrap
+# 
+# entries but not the dir itself
+.vim/bundle/*
+# include directory only
+!.vim/bundle/
+
+!.vim/bundle/neobundle.vim/
