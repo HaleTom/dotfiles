@@ -1,0 +1,13 @@
+[user]
+	name = Tom Hale
+	email = tom@hale.ee
+[core]
+	editor = vim
+[alias]
+	co = checkout
+	st = status
+	sm = submodule
+	cm = commit -am
+	# Create complex function then run it
+	# http://blogs.atlassian.com/2014/10/advanced-git-aliases/
+	bclean = "!f() { git branch --merged ${1-master} | grep -v " ${1-master}$" | xargs -r git branch -d; }; f"
