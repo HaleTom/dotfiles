@@ -1,3 +1,5 @@
 [submodule ".vim/bundle/neobundle.vim"]
 	path = .vim/bundle/neobundle.vim
 	url = https://github.com/Shougo/neobundle.vim
+	# Ignore any extra files that this submodule produces
+	ignore = dirty
