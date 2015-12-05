@@ -9,9 +9,11 @@
 # 
 # Include neobundle to bootstrap
 # 
-# entries but not the dir itself
+# This needs to be done for all parents of a subdirectory to be included
+# Ignore entries but not the dir itself
 .vim/bundle/*
-# include directory only
+# Exclude directory only
 !.vim/bundle/
 
+# Exclude the subdirectory of the submodule
 !.vim/bundle/neobundle.vim/
