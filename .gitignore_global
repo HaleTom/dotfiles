@@ -1,0 +1,5 @@
+# Don't put a comment after a command!
+
+*~
+# vim swap files:
+*.sw?

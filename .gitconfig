@@ -3,6 +3,7 @@
 	email = tom@hale.ee
 [core]
 	editor = vim
+	excludesfile = /home/ravi/.gitignore_global
 [alias]
 	co = checkout
 	st = status
@@ -11,3 +12,6 @@
 	# Create complex function then run it
 	# http://blogs.atlassian.com/2014/10/advanced-git-aliases/
 	bclean = "!f() { git branch --merged ${1-master} | grep -v " ${1-master}$" | xargs -r git branch -d; }; f"
+	logd = log --oneline --graph --decorate
+[push]
+	default = simple
