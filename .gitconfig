@@ -1,17 +1,51 @@
 [user]
 	name = Tom Hale
 	email = tom@hale.ee
+
 [core]
 	editor = vim
 	excludesfile = /home/ravi/.gitignore_global
+	# convert newlines to system's standard on checkout, and to LF when checking in
+	autocrlf = true
+
 [alias]
 	co = checkout
-	st = status
-	sm = submodule
 	cm = commit -am
+	ls = ls-files
+	st = status -s
+	sm = submodule
+	
+	# Show files ignored by git
+	ign = ls-files -o -i --exclude-standard
+	
 	# Create complex function then run it
 	# http://blogs.atlassian.com/2014/10/advanced-git-aliases/
 	bclean = "!f() { git branch --merged ${1-master} | grep -v " ${1-master}$" | xargs -r git branch -d; }; f"
 	logd = log --oneline --graph --decorate
+	
+	globalconfig = "config -e --global"
+	
 [push]
 	default = simple
+[branch]
+	# tell git-branch and git-checkout to setup new branches so that git-pull(1)
+	# will appropriately merge from that remote branch.  Recommended.  Without this,
+	# you will have to add --track to your branch command or manually merge remote
+	# tracking branches with "fetch" and then "merge".
+	autosetupmerge = true
+	
+[color]
+	ui = auto
+	[color "branch"]
+	current = yellow reverse
+	local = yellow
+	remote = green
+[color "diff"]
+	meta = yellow bold
+	frag = magenta bold
+	old = red bold
+	new = green bold
+[color "status"]
+	added = yellow
+	changed = green
+	untracked = cyan
