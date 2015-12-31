@@ -12,15 +12,23 @@
 [alias]
 	a = add
 	aa = add -A
+	br = branch
 	co = checkout
-	cam = commit -am
+	cob = checkout -b
+	ca = commit -a -vv
+	cv = commit -vv
+	cvp = commit -vv --patch
+	caa = commit -a --amend --no-edit
+	cam = commit -am  # note only changed files included
 	cm = commit -m
+	ct = commit
 	dc = diff --cached
 	df = diff
 	dt = difftool
 	ls = ls-files
 	pl = pull
 	ps = push
+	ri = rebase -i HEAD~5
 	sm = submodule
 	ss = stash
 	st = status -s
@@ -31,9 +39,10 @@
 	# Create complex function then run it
 	# http://blogs.atlassian.com/2014/10/advanced-git-aliases/
 	bclean = "!f() { git branch --merged ${1-master} | grep -v " ${1-master}$" | xargs -r git branch -d; }; f"
-	logd = log --oneline --graph --decorate
+	logd = log --oneline --graph --decorate --remotes
+	logda = log --oneline --graph --decorate --remotes --all
 	
-	globalconfig = "config -e --global"
+	editglobalconfig = "config -e --global"
 	
 [push]
 	default = simple
