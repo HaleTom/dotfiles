@@ -1,0 +1,9 @@
+.alias|$HOME/.alias
+.bash_completion|$HOME/.bash_completion
+.bash_funcs|$HOME/.bash_funcs
+.bashrc|$HOME/.bashrc
+.gitconfig|$HOME/.gitconfig
+.gitignore_global|$HOME/.gitignore_global
+.gitmodules|$HOME/.gitmodules
+.inputrc|$HOME/.inputrc
+.vim|$HOME/.vim

@@ -6,14 +6,24 @@
 	editor = vim
 	excludesfile = /home/ravi/.gitignore_global
 	# convert newlines to system's standard on checkout, and to LF when checking in
-	autocrlf = true
+	# Eeek - causes addition of CR in linux
+	# autocrlf = true
 
 [alias]
+	a = add
+	aa = add -A
 	co = checkout
-	cm = commit -am
+	cam = commit -am
+	cm = commit -m
+	dc = diff --cached
+	df = diff
+	dt = difftool
 	ls = ls-files
-	st = status -s
+	pl = pull
+	ps = push
 	sm = submodule
+	ss = stash
+	st = status -s
 	
 	# Show files ignored by git
 	ign = ls-files -o -i --exclude-standard
