@@ -11,6 +11,15 @@
 # Gemfile.lock should be included unless I'm writing a Gem.
 # *.lock
 
+# Debugging files #
+# #################
+.byebug_history
+
+# Lock files #
+##############
+# Gemfile.lock should be included unless I'm writing a Gem.
+# *.lock
+
 # Compiled source #
 ###################
 *.com
