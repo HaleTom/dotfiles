@@ -44,32 +44,26 @@ __set_bash_prompt()
         # wrap the colour codes between \[ and \], so that
         # bash counts the correct number of characters for wrapping: 
         local NC='\[\e[0m\]'
-        local C11='\[\e[1;32m\]'
-        local C13='\[\e[1;34m\]'
+        local BGre='\[\e[1;32m\]'
+        local BBlu='\[\e[1;34m\]'
         local Blue='\[\e[0;34m\]'
         local Red='\[\e[0;31m\]'
         export GIT_PS1_SHOWCOLORHINTS=1
 
         # Sets prompt like: ravi@boxy:~/prj/sample_app
-        PS1="${debian_chroot:+($debian_chroot)}$C11\u@\h$NC:$C13\w$NC"
-
-        PS1+="$(__git_ps1 '(%s)')" # Append git status
-
-        # Highlight non-standard exit codes
-        if [ $exit != 0 ]; then
-            PS1+="$Red[$exit]\$$NC "
-        else
-            PS1+="$Blue\$$NC "
-        fi
+        PS1="${debian_chroot:+($debian_chroot)}$BGre\u@\h$NC:$BBlu\w$NC"
     else
         unset GIT_PS1_SHOWCOLORHINTS
         PS1="${debian_chroot:+($debian_chroot)}\u@\h:\w"
-        PS1+="$(__git_ps1 "(%s)")"
-        if [ $exit != 0 ]; then # non-standard exit
-            PS1+="[$exit]\$$NC "
-        else
-            PS1+="\$ "
-        fi
+    fi
+
+    PS1+="$(__git_ps1 '(%s)')" # Append git status
+
+    # Highlight non-standard exit codes
+    if [ $exit != 0 ]; then
+        PS1+="$Red[$exit]\$$NC "
+    else
+        PS1+="$Blue\$$NC "
     fi
 }
 
