@@ -31,6 +31,12 @@ export PATH="/usr/local/heroku/bin:$PATH"
 export GIT_PS1_SHOWDIRTYSTATE=1
 export GIT_PS1_SHOWSTASHSTATE=1
 export GIT_PS1_SHOWUNTRACKEDFILES=1
+export GIT_PS1_SHOWUPSTREAM="verbose"
+export GIT_PS1_DESCRIBE_STYLE="describe" # detached HEAD style:
+#  contains      relative to newer annotated tag (v1.6.3.2~35)
+#  branch        relative to newer tag or branch (master~4)
+#  describe      relative to older annotated tag (v1.6.3.1-13-gdd42c2f)
+#  default       exactly matching tag
 
 function __colour_enabled() {
     local -i colors=$(tput colors 2>/dev/null)
