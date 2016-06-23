@@ -8,14 +8,17 @@
 # for ssh logins, install and configure the libpam-umask package.
 #umask 022
 
-if [ -x `which setxkbmap` ]; then
-    setxkbmap -option 'caps:ctrl_modifier'
-fi
+## Mapped this via MS Windows VM Host instead
+# if [ -x `which setxkbmap` ]; then
+#     setxkbmap -option 'caps:ctrl_modifier'
+# fi
+
+# These work even if Caps Lock is mapped to Control in Windows VM Host
 if [ -x `xcape` ]; then
     # wait -t milliseconds before actioning the non-tap version
     xcape -t 300 -e 'Caps_Lock=Escape'
-    # orig: xcape -t 300 -e 'Caps_Lock=Escape;Control_L=Escape;Control_R=Caps_Lock'
-    # xcape -e 'Caps_Lock=Escape'
+    # Win VM Host does this
+    # xcape -t 300 -e 'Alt_R=Caps_Lock'
 fi
 
 # if running bash
