@@ -6,4 +6,9 @@
 .gitignore_global|$HOME/.gitignore_global
 .gitmodules|$HOME/.gitmodules
 .inputrc|$HOME/.inputrc
+.profile|$HOME/.profile
+.ruby-version|$HOME/.ruby-version
 .vim|$HOME/.vim
+.xmodmap|$HOME/.xmodmap
+.xsession|$HOME/.xsession
+
