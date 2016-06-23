@@ -32,30 +32,50 @@ export GIT_PS1_SHOWDIRTYSTATE=1
 export GIT_PS1_SHOWSTASHSTATE=1
 export GIT_PS1_SHOWUNTRACKEDFILES=1
 
-function colour_enabled() {
+function __colour_enabled() {
     local -i colors=$(tput colors 2>/dev/null)
     [[ $? -eq 0 ]] && [[ $colors -gt 2 ]]
 }
 
-set_bash_prompt()
+__set_bash_prompt()
 {
-    if [ colour_enabled ]; then
+    local exit="$?"
+    if [ __colour_enabled ]; then
         # wrap the colour codes between \[ and \], so that
         # bash counts the correct number of characters for wrapping: 
         local NC='\[\e[0m\]'
         local C11='\[\e[1;32m\]'
         local C13='\[\e[1;34m\]'
-        local BLUE='\[\e[0;34m\]'
+        local Blue='\[\e[0;34m\]'
+        local Red='\[\e[0;31m\]'
         export GIT_PS1_SHOWCOLORHINTS=1
-        PS1="${debian_chroot:+($debian_chroot)}$C11\u@\h$NC:$C13\w$NC$(__git_ps1 '(%s)')$BLUE\$$NC "
+
+        # Sets prompt like: ravi@boxy:~/prj/sample_app
+        PS1="${debian_chroot:+($debian_chroot)}$C11\u@\h$NC:$C13\w$NC"
+
+        PS1+="$(__git_ps1 '(%s)')" # Append git status
+
+        # Highlight non-standard exit codes
+        if [ $exit != 0 ]; then
+            PS1+="$Red[$exit]\$$NC "
+        else
+            PS1+="$Blue\$$NC "
+        fi
     else
-        PS1="${debian_chroot:+($debian_chroot)}\u@\h:\w$(__git_ps1 "(%s)")\$ "
+        unset GIT_PS1_SHOWCOLORHINTS
+        PS1="${debian_chroot:+($debian_chroot)}\u@\h:\w"
+        PS1+="$(__git_ps1 "(%s)")"
+        if [ $exit != 0 ]; then # non-standard exit
+            PS1+="[$exit]\$$NC "
+        else
+            PS1+="\$ "
+        fi
     fi
 }
 
 # This tells bash to reinterpret PS1 after every command, which we
 # need because __git_ps1 will return different text and colors
-PROMPT_COMMAND=set_bash_prompt
+PROMPT_COMMAND=__set_bash_prompt
 
 ############################
 # Comments only below here #
