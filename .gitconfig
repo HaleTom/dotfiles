@@ -28,7 +28,6 @@
 	ls = ls-files
 	pl = pull
 	ps = push
-	rb = rebase
 	ri = rebase -i HEAD~5
 	sm = submodule
 	ss = stash
