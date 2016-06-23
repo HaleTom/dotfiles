@@ -1,4 +1,5 @@
 PATH="$PATH:$HOME/bin"
+PS1='${debian_chroot:+($debian_chroot)}\[\033[01;32m\]\u@\h\[\033[01;34m\] \w\[\033[00m\] $(__git_ps1 "(%s)") \$ '
 
 # Source .dotfiles listed at end of loop (one per line)
 while read dotfile ; do
