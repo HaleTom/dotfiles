@@ -38,16 +38,18 @@ export GIT_PS1_DESCRIBE_STYLE="describe" # detached HEAD style:
 #  describe      relative to older annotated tag (v1.6.3.1-13-gdd42c2f)
 #  default       exactly matching tag
 
+# Check if we support colours
 function __colour_enabled() {
     local -i colors=$(tput colors 2>/dev/null)
     [[ $? -eq 0 ]] && [[ $colors -gt 2 ]]
 }
+unset __colourise_prompt && __colour_enabled && __colourise_prompt=0
 
 __set_bash_prompt()
 {
     local exit="$?"
-    if [ __colour_enabled ]; then
-        # wrap the colour codes between \[ and \], so that
+    if [ $__colourise_prompt ]; then
+        # Wrap the colour codes between \[ and \], so that
         # bash counts the correct number of characters for wrapping: 
         local NC='\[\e[0m\]'
         local BGre='\[\e[1;32m\]'
