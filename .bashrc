@@ -39,7 +39,7 @@ export GIT_PS1_DESCRIBE_STYLE="describe" # detached HEAD style:
 #  default       exactly matching tag
 
 # Check if we support colours
-function __colour_enabled() {
+__colour_enabled() {
     local -i colors=$(tput colors 2>/dev/null)
     [[ $? -eq 0 ]] && [[ $colors -gt 2 ]]
 }

@@ -5,33 +5,38 @@
 [core]
 	editor = vim
 	excludesfile = /home/ravi/.gitignore_global
-	# convert newlines to system's standard on checkout, and to LF when checking in
+
+	# convert newlines to system's standard on checkout,
+	# and to LF when checking in
 	# Eeek - causes addition of CR in linux
 	# autocrlf = true
 
 [alias]
-	a = add
-	aa = add -A
-	br = branch
-	co = checkout
-	cob = checkout -b
-	ca = commit -a -vv
-	cv = commit -vv
-	cvp = commit -vv --patch
-	caa = commit -a --amend --no-edit
-	cam = commit -am  # note only changed files included
-	cm = commit -m
-	ct = commit
-	dc = diff --cached
-	df = diff
-	dt = difftool
-	ls = ls-files
-	pl = pull
-	ps = push
-	ri = rebase -i HEAD~5
-	sm = submodule
-	ss = stash
-	st = status -s
+	a     = add
+	aa    = add -A
+	br    = branch
+	co    = checkout
+	cob   = checkout -b
+	ca    = commit -a -vv
+	cv    = commit -vv
+	cvp   = "!f() { git commit -vv --patch; git st; }; f"
+	caa   = commit -a --amend --no-edit
+	cam   = commit -am  # note only changed files included
+	cm    = commit -m
+	ct    = commit
+	dc    = diff --cached
+	df    = diff
+	dt    = difftool
+	logd  = log --oneline --graph --decorate --remotes
+	logda = log --oneline --graph --decorate --remotes --all
+	ls    = ls-files
+	psuo  = push --set-upstream origin
+	pl    = pull
+	ps    = push
+	ri    = rebase -i HEAD~5
+	sm    = submodule
+	ss    = stash
+	st    = status -s
 	
 	# Show files ignored by git
 	ign = ls-files -o -i --exclude-standard
@@ -39,8 +44,10 @@
 	# Create complex function then run it
 	# http://blogs.atlassian.com/2014/10/advanced-git-aliases/
 	bclean = "!f() { git branch --merged ${1-master} | grep -v " ${1-master}$" | xargs -r git branch -d; }; f"
-	logd = log --oneline --graph --decorate --remotes
-	logda = log --oneline --graph --decorate --remotes --all
+
+	# Simple diff ignoring line number changes
+	sortdiff = !sh -c 'git diff "$@" | grep "^[+-]" | sort --key=1.2 | uniq -u -s1'
+	#
 	
 	editglobalconfig = "config -e --global"
 	
