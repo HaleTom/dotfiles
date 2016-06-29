@@ -14,16 +14,24 @@
 [alias]
 	a     = add
 	aa    = add -A
+	# Add all untracked files
+	au = "!f() { git ls-files -z -o --exclude-standard | xargs -0 git add; }; f"
 	br    = branch
 	co    = checkout
 	cob   = checkout -b
 	ca    = commit -a -vv
-	cv    = commit -vv
-	cvp   = "!f() { git commit -vv --patch; git st; }; f"
+	# Pick chunks to include of changed files, include all untracked files.
 	caa   = commit -a --amend --no-edit
 	cam   = commit -am  # note only changed files included
 	cm    = commit -m
 	ct    = commit
+	cv    = commit -vv
+	cvp   = "!f() { git commit -vv --patch; git st; }; f"
+	cvpa   = "!f() { git commit -vv --patch && \
+		git ls-files -z -o --exclude-standard | xargs -0 git add && \
+		echo '# Add new files silently' > /dev/null && \
+		git commit -a --amend --no-edit && \
+		git status -s; }; f"
 	dc    = diff --cached
 	df    = diff
 	dt    = difftool
