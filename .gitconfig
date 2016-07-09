@@ -22,6 +22,7 @@
 	ca    = commit -a -vv
 	# Pick chunks to include of changed files, include all untracked files.
 	caa   = commit -a --amend --no-edit
+	caaa   = "!f() { git add -A && git commit --amend --no-edit; }; f"
 	cam   = commit -am  # note only changed files included
 	cm    = commit -m
 	ct    = commit
