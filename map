@@ -11,4 +11,5 @@
 .vim|$HOME/.vim
 .xmodmap|$HOME/.xmodmap
 .xsession|$HOME/.xsession
+.tmux|$HOME/.tmux
 
