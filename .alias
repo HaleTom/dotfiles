@@ -16,4 +16,5 @@ alias j="jobs"
 alias r="rake"
 
 alias cuc=cucumber
+alias tmux='TERM=xterm-256color tmux'
 
