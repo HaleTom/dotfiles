@@ -12,4 +12,5 @@
 .xmodmap|$HOME/.xmodmap
 .xsession|$HOME/.xsession
 .tmux.conf|$HOME/.tmux.conf
+.guard.rb|$HOME/.guard.rb
 
