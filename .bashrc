@@ -1,22 +1,45 @@
 PATH="$PATH:$HOME/bin"
+### Added by the Heroku Toolbelt
+export PATH="/usr/local/heroku/bin:$PATH"
+
+export EDITOR=vim
+
+
+# Scripting overkill - how often will the tmuxinator.bash script really change?
+# Check for existence of "tmuxinator.bash" file/symlink, create if necessary
+# use [[ to prevent expansion of variables
+tmuxbash="$HOME/.tmuxinator/tmuxinator.bash"
+# If not a regular file or symlink to one
+if [[ ! -f $tmuxbash ]]; then
+    # If doesn't exist or is a symlink to nowhere
+    if [[ ! -e $tmuxbash ]] || [[ -L $tmuxbash ]] && [[ ! -e $tmuxbash ]]; then
+        echo "Creating $tmuxbash symlink"
+        rm -f "$tmuxbash" && \
+        ln -s "$(readlink -f $(dirname $(gem which tmuxinator))/../completion/tmuxinator.bash)" "$tmuxbash"
+    else
+      echo "Not creating symlink at at existing:"
+      ls -lF "$tmuxbash"
+    fi
+fi
 
 # Source .dotfiles listed at end of loop (one per line)
 while read dotfile ; do
     if [ -f "$dotfile" ]; then
-        # echo "$dotfile"
-        .  "$dotfile"
+        source "$dotfile"
+    else
+        echo "$BASH_SOURCE: Cannot source $dotfile"
     fi
 done <<DOTFILES
     $HOME/.alias
     $HOME/.bash_funcs
+    $tmuxbash
 DOTFILES
+unset tmuxbash
 
 # chruby
 source /usr/local/share/chruby/chruby.sh
 source /usr/local/share/chruby/auto.sh
 
-### Added by the Heroku Toolbelt
-export PATH="/usr/local/heroku/bin:$PATH"
 
 ##################
 # Set the prompt #
