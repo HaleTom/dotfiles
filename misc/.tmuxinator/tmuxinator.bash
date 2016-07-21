@@ -1,0 +1,1 @@
+/home/ravi/.gem/ruby/2.3.1/gems/tmuxinator-0.8.1/completion/tmuxinator.bash
