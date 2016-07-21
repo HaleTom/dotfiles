@@ -14,6 +14,7 @@
 [alias]
 	a     = add
 	aa    = add -A
+	acm   = "!f() { git add -A && git commit -m \"$@\"; }; f"
 	# Add all untracked files
 	au = "!f() { git ls-files -z -o --exclude-standard | xargs -0 git add; }; f"
 	br    = branch
@@ -35,6 +36,7 @@
 		git status -s; }; f"
 	dc    = diff --cached
 	df    = diff
+	dfh    = diff HEAD
 	dt    = difftool
 	logd  = log --oneline --graph --decorate --remotes
 	logda = log --oneline --graph --decorate --remotes --all
