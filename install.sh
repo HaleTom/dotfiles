@@ -11,6 +11,9 @@ echo Updating submodules...
 git pull && 
 git submodule update --init --recursive
 
+echo Submodule status:
+git submodule status --recursive
+
 # Install dotfiles
 stow misc vim bash ruby git
 
