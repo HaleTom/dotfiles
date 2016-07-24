@@ -2,7 +2,7 @@ alias l="ls -bCF"         # escape non printable || columns || decorated
 alias la="ls -CAFb"       # Almost all - no . and ..
 alias ld="ls -dlaFb */"   # no-dereference symlinks, directory entry instead of contents
 alias ll="ls -laFb"
-alias ls.="ls -dbCF .[^.]?*"
+alias ls.="ls -dbCF .[^.]?*" # Hidden files except . and .. (currend directory only)
 alias lsd="ls -Abl | grep --color=never ^d"   # list only directories
 
 alias ..="cd .."
@@ -17,4 +17,5 @@ alias r="rake"
 
 alias cuc=cucumber
 alias tmux='TERM=xterm-256color tmux'
+alias tmuxinator='TERM=xterm-256color tmuxinator'
 

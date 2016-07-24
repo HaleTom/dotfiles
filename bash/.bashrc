@@ -33,6 +33,7 @@ done <<DOTFILES
     $HOME/.alias
     $HOME/.bash_funcs
     $tmuxbash
+    $HOME/.vim/bundle/gruvbox/gruvbox_256palette.sh
 DOTFILES
 unset tmuxbash
 
