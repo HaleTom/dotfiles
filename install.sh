@@ -19,5 +19,4 @@ stow -v misc vim bash ruby git
 
 echo
 echo "Install YCM vim plugin (just load vim) then:"
-echo "cd ~/.vim/bundle/YouCompleteMe"
-echo "./install.py --clang-completer"
+echo "cd ~/.vim/bundle/YouCompleteMe && ./install.py --clang-completer"
