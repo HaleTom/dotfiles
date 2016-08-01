@@ -14,25 +14,33 @@
 [alias]
 	a     = add
 	aa    = add -A
-	acm   = "!f() { git add -A && git commit -m \"$@\"; }; f"
+	aacm   = "!f() { git add -A && git commit -m \"$@\"; }; f"
 	ap   = add --patch
 	# Add all untracked files
 	au = "!f() { git ls-files -z -o --exclude-standard | xargs -0 git add; }; f"
 	br    = branch
+	c    = commit
 	co    = checkout
 	cob   = checkout -b
-	ca    = commit -a -vv
+	# Create a branch tracking the same branch on origin.
+	# '-' makes argument list start at $1
+	cobt   = !sh -c 'git checkout -b "$1" && git branch --track origin/"$1"' -
 	# Pick chunks to include of changed files, include all untracked files.
-	caa   = commit -a --amend --no-edit
-	caaa   = "!f() { git add -A && git commit --amend --no-edit; }; f"
+	ca    = commit -a -v
+	caam   = "!f() { git add -A && git commit --message \"$@\"; }; f"
+	caan   = "!f() { git add -A && git commit --amend --no-edit; }; f"
 	cam   = commit -am  # note only changed files included
+	can    = commit -a --amend
+	canc    = commit -a --amend -C HEAD
+	canm    = commit -a --amend -m
 	cm    = commit -m
-	ct    = commit
-	cv    = commit -vv
-	cvp   = "!f() { git commit -vv --patch; git st; }; f"
-	cvpa   = "!f() { git commit -vv --patch && \
+	cn    = commit --amend
+	cnc    = commit --amend -C HEAD
+	cnm    = commit --amend -m
+	cvp   = "!f() { git commit -v --patch \"$@\"; git st; }; f"
+	cvpa   = "!f() { git commit -v --patch && \
 		git ls-files -z -o --exclude-standard | xargs -0 git add && \
-		echo '# Add new files silently' > /dev/null && \
+		echo '# Add only new files silently' > /dev/null && \
 		git commit -a --amend --no-edit && \
 		git status -s; }; f"
 	dc    = diff --cached
@@ -40,10 +48,11 @@
 	dfh    = diff HEAD
 	dfs   = diff --stat
 	dt    = difftool -y -t vimdiff --noprompt
-	logd  = log --oneline --graph --decorate --remotes
-	logda = log --oneline --graph --decorate --remotes --all
+	logd  = log --oneline --graph --decorate --remotes --max-count=20
+	logda = log --oneline --graph --decorate --remotes --all --max-count=20
 	ls    = ls-files
 	psuo  = push --set-upstream origin
+	psuob  = push --set-upstream origin `git rev-parse --abbrev-ref HEAD`
 	pl    = pull
 	ps    = push
 	ri    = rebase -i HEAD~5
@@ -53,19 +62,25 @@
 	
 	# Show files ignored by git
 	ign = ls-files -o -i --exclude-standard
+
+	# Show files changed between the given commit and it's previous commit
+	files = !sh -c 'git diff --name-status "$1"^ "$1"' -
 	
 	# Create complex function then run it
 	# http://blogs.atlassian.com/2014/10/advanced-git-aliases/
+
+	# Remove local branches that have already been merged
+	# Target is master unless otherwise specified
 	bclean = "!f() { git branch --merged ${1-master} | grep -v " ${1-master}$" | xargs -r git branch -d; }; f"
 
 	# Simple diff ignoring line number changes
 	sortdiff = !sh -c 'git diff "$@" | grep "^[+-]" | sort --key=1.2 | uniq -u -s1'
-	#
 	
 	editglobalconfig = "config -e --global"
 	
 [push]
 	default = simple
+
 [branch]
 	# tell git-branch and git-checkout to setup new branches so that git-pull(1)
 	# will appropriately merge from that remote branch.  Recommended.  Without this,
@@ -88,6 +103,8 @@
 	added = yellow
 	changed = green
 	untracked = cyan
+[commit]
+	verbose = true # include diff output
 [diff]
 	tool = vimdiff
 [merge]
