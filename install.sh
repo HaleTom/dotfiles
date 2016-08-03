@@ -15,7 +15,7 @@ echo Submodule status:
 git submodule status --recursive
 
 # Install dotfiles
-stow -v misc vim bash ruby git
+stow -v misc vim bash ruby git tmux
 
 echo
 echo "Install YCM vim plugin (just load vim) then:"

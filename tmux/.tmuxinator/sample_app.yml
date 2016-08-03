@@ -32,6 +32,6 @@ windows:
       layout: main-vertical
       panes:
         - vim
-        - guard
+        - bundle exec guard
   - server: bundle exec rails s
   - logs: tail -f log/development.log
