@@ -1,7 +1,4 @@
-PATH="$PATH:$HOME/bin"
-### Added by the Heroku Toolbelt
-export PATH="/usr/local/heroku/bin:$PATH"
-
+export PATH="$PATH:/usr/local/heroku/bin:$HOME/bin"
 export EDITOR=vim
 
 
@@ -24,7 +21,7 @@ fi
 
 # Source .dotfiles listed at end of loop (one per line)
 while read dotfile ; do
-    if [ -f "$dotfile" ]; then
+    if [[ -f "$dotfile" ]]; then
         source "$dotfile"
     else
         echo "$BASH_SOURCE: Cannot source $dotfile"
@@ -72,18 +69,30 @@ unset __colourise_prompt && __colour_enabled && __colourise_prompt=0
 __set_bash_prompt()
 {
     local exit="$?"
-    if [ $__colourise_prompt ]; then
+
+    PS1="${debian_chroot:+($debian_chroot)}"
+
+    if [[ $__colourise_prompt ]]; then
         # Wrap the colour codes between \[ and \], so that
         # bash counts the correct number of characters for wrapping: 
-        local NC='\[\e[0m\]'
+        local NC='\[\e[0m\]' # No colour
+        local Gre='\[\e[0;32m\]'
         local BGre='\[\e[1;32m\]'
+        local Blu='\[\e[0;34m\]'
         local BBlu='\[\e[1;34m\]'
-        local Blue='\[\e[0;34m\]'
         local Red='\[\e[0;31m\]'
+        local BRed='\[\e[1;31m\]'
         export GIT_PS1_SHOWCOLORHINTS=1
 
+        # Change colour of user if root
+        if [[ ${EUID} == 0 ]]; then
+            PS1+="$BRed\h "
+        else
+            PS1+="$Gre\u@\h$NC:"
+        fi
+
         # Sets prompt like: ravi@boxy:~/prj/sample_app
-        PS1="${debian_chroot:+($debian_chroot)}$BGre\u@\h$NC:$BBlu\w$NC"
+        PS1+="$Blu\w$NC"
     else
         unset GIT_PS1_SHOWCOLORHINTS
         PS1="${debian_chroot:+($debian_chroot)}\u@\h:\w"
@@ -91,12 +100,19 @@ __set_bash_prompt()
 
     PS1+="$(__git_ps1 '(%s)')" # Append git status
 
-    # Highlight non-standard exit codes
-    if [ $exit != 0 ]; then
-        PS1+="$Red[$exit]\$$NC "
-    else
-        PS1+="$Blue\$$NC "
+    # Highlight non-standard exit codes. Colour continues through to $ or #
+    if [[ $exit != 0 ]]; then
+        PS1+="$Red[$exit]"
     fi
+
+    # Change colour of prompt if root
+    if [[ ${EUID} == 0 ]]; then
+        PS1+="$BRed"'\$'"$NC "
+    else
+        PS1+="$Blu"'\$'"$NC "
+    fi
+
+    # echo '$PS1='"$PS1"
 }
 
 # This tells bash to reinterpret PS1 after every command, which we
