@@ -14,45 +14,47 @@
 [alias]
 	a     = add
 	aa    = add -A
-	aacm   = "!f() { git add -A && git commit -m \"$@\"; }; f"
-	ap   = add --patch
+	aacm  = "!f() { git add -A && git commit -m \"$@\"; }; f"
+	ap    = add --patch
 	# Add all untracked files
-	au = "!f() { git ls-files -z -o --exclude-standard | xargs -0 git add; }; f"
+	au    = "!f() { git ls-files -z -o --exclude-standard | xargs -0 git add; }; f"
 	br    = branch
-	c    = commit
+	c     = commit
 	co    = checkout
 	cob   = checkout -b
 	# Create a branch tracking the same branch on origin.
 	# '-' makes argument list start at $1
-	cobt   = !sh -c 'git checkout -b "$1" && git branch --track origin/"$1"' -
+	cobt  = !sh -c 'git checkout -b "$1" && git branch --track origin/"$1"' -
 	# Pick chunks to include of changed files, include all untracked files.
 	ca    = commit -a -v
-	caam   = "!f() { git add -A && git commit --message \"$@\"; }; f"
-	caan   = "!f() { git add -A && git commit --amend --no-edit; }; f"
+	caam  = "!f() { git add -A && git commit --message \"$@\"; }; f"
+	caan  = "!f() { git add -A && git commit --amend --no-edit; }; f"
 	cam   = commit -am  # note only changed files included
-	can    = commit -a --amend
-	canc    = commit -a --amend -C HEAD
-	canm    = commit -a --amend -m
+	can   = commit -a --amend
+	canc  = commit -a --amend -C HEAD
+	canm  = commit -a --amend -m
 	cm    = commit -m
 	cn    = commit --amend
-	cnc    = commit --amend -C HEAD
-	cnm    = commit --amend -m
+	cnc   = commit --amend -C HEAD
+	cnm   = commit --amend -m
 	cvp   = "!f() { git commit -v --patch \"$@\"; git st; }; f"
-	cvpa   = "!f() { git commit -v --patch && \
+	# Select hunks from tracked files, then commit with all untracked files before commit
+	cvpn  = "!f() { git commit -v --patch && \
 		git ls-files -z -o --exclude-standard | xargs -0 git add && \
 		echo '# Add only new files silently' > /dev/null && \
 		git commit -a --amend --no-edit && \
 		git status -s; }; f"
+	cp    = commit --patch
 	dc    = diff --cached
 	df    = diff
-	dfh    = diff HEAD
+	dfh   = diff HEAD
 	dfs   = diff --stat
 	dt    = difftool -y -t vimdiff --noprompt
 	logd  = log --oneline --graph --decorate --remotes --max-count=20
 	logda = log --oneline --graph --decorate --remotes --all --max-count=20
 	ls    = ls-files
 	psuo  = push --set-upstream origin
-	psuob  = push --set-upstream origin `git rev-parse --abbrev-ref HEAD`
+	psuob = push --set-upstream origin `git rev-parse --abbrev-ref HEAD`
 	pl    = pull
 	ps    = push
 	ri    = rebase -i HEAD~5
