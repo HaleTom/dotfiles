@@ -11,19 +11,9 @@
 # Gemfile.lock should be included unless I'm writing a Gem.
 # *.lock
 
-# Lock files #
-##############
-# Gemfile.lock should be included unless I'm writing a Gem.
-# *.lock
-
 # Debugging files #
 ###################
 .byebug_history
-
-# Lock files #
-##############
-# Gemfile.lock should be included unless I'm writing a Gem.
-# *.lock
 
 # Compiled source #
 ###################
@@ -65,3 +55,7 @@
 .Trashes
 ehthumbs.db
 Thumbs.db
+
+# exuberant ctags file #
+########################
+/tags
