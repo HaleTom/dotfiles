@@ -1,5 +1,11 @@
 export PATH="$PATH:/usr/local/heroku/bin:$HOME/bin"
 export EDITOR=vim
+export RUBYLIB="$HOME"/lib:"$RUBYLIB"
+
+# Exclude commands starting with a <space> from history
+# ‘ignoreboth’ is shorthand for ‘ignorespace’ and ‘ignoredups’.
+export HISTCONTROL=ignorespace
+# shopt -s histverify # Show output of !! - press enter twice
 
 
 # Scripting overkill - how often will the tmuxinator.bash script really change?
