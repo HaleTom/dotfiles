@@ -44,6 +44,18 @@ unset tmuxbash
 source /usr/local/share/chruby/chruby.sh
 source /usr/local/share/chruby/auto.sh
 
+function cdgit() {
+    local HERE=$(pwd);
+    local ROOT=$(git rev-parse --show-toplevel) \
+      && ROOT=${ROOT:-$(git rev-parse --git-dir)/..} \
+      && cd "$ROOT" && git rev-parse || cd "$HERE"
+}
+
+
+##################
+# Set the prompt #
+##################
+
 # To get the git info coloured, must patch /usr/lib/git-core/git-sh-prompt:
 # https://github.com/karlapsite/git/commit/b34d9e8b690ec0b304eb794011938ab49be30204#diff-a43cc261eac6fbcc3578c94c2aa24713R449
 
@@ -51,10 +63,6 @@ source /usr/local/share/chruby/auto.sh
 
 # Generate *+%$ decorations very cleanly:
 # https://github.com/mathiasbynens/dotfiles
-
-##################
-# Set the prompt #
-##################
 
 # Select git info displayed, see /usr/lib/git-core/git-sh-prompt for more
 export GIT_PS1_SHOWDIRTYSTATE=1           # '*'=unstaged, '+'=staged
