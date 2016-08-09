@@ -62,10 +62,11 @@
 	ps    = push
 	ri    = rebase -i HEAD~5
 	rmc   = rm --cached
+	sh    = "!f() { ROOT=$(pwd)/ && cd ${ROOT%%/.git/*} && git rev-parse && exec \"$@\"; }; f"
 	sm    = submodule
 	ss    = stash
 	st    = status --short # --branch
-	
+
 	# Show files ignored by git
 	ign = ls-files -o -i --exclude-standard
 
