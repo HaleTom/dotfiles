@@ -62,7 +62,9 @@
 	ps    = push
 	ri    = rebase -i HEAD~5
 	rmc   = rm --cached
-	sh    = "!f() { ROOT=$(pwd)/ && cd ${ROOT%%/.git/*} && git rev-parse && exec \"$@\"; }; f"
+	# sh    = "!f() { cd_git_root && exec \"$@\"; }; f"
+	sh    = "!f() { root=$(pwd)/ && cd ${root%%/.git/*} && git rev-parse && exec \"$@\"; }; f"
+	sh    = "!f() { exec \"$@\"; }; f"
 	sm    = submodule
 	ss    = stash
 	st    = status --short # --branch

@@ -1,4 +1,7 @@
-export PATH="$PATH:/usr/local/heroku/bin:$HOME/bin"
+#!/bin/bash
+# above line is for shellcheck
+
+export PATH="$PATH:/usr/local/heroku/bin:$HOME/bin:$HOME/.cabal/bin"
 export EDITOR=vim
 export RUBYLIB="$HOME"/lib:"$RUBYLIB"
 
@@ -18,7 +21,7 @@ if [[ ! -f $tmuxbash ]]; then
     if [[ ! -e $tmuxbash ]] || [[ -L $tmuxbash ]] && [[ ! -e $tmuxbash ]]; then
         echo "Creating $tmuxbash symlink"
         rm -f "$tmuxbash" && \
-        ln -s "$(readlink -f $(dirname $(gem which tmuxinator))/../completion/tmuxinator.bash)" "$tmuxbash"
+        ln -s "$(readlink -f "$(dirname "$(gem which tmuxinator)")"/../completion/tmuxinator.bash)" "$tmuxbash"
     else
       echo "Not creating symlink at at existing:"
       ls -lF "$tmuxbash"
@@ -26,11 +29,12 @@ if [[ ! -f $tmuxbash ]]; then
 fi
 
 # Source .dotfiles listed at end of loop (one per line)
-while read dotfile ; do
+while read -r dotfile ; do
     if [[ -f "$dotfile" ]]; then
+        # shellcheck source=/dev/null
         source "$dotfile"
     else
-        echo "$BASH_SOURCE: Cannot source $dotfile"
+        echo "${BASH_SOURCE[0]}: Cannot source $dotfile"
     fi
 done <<DOTFILES
     $HOME/.alias
@@ -44,25 +48,71 @@ unset tmuxbash
 source /usr/local/share/chruby/chruby.sh
 source /usr/local/share/chruby/auto.sh
 
-function cdgit() {
-    local HERE=$(pwd);
-    local ROOT=$(git rev-parse --show-toplevel) \
-      && ROOT=${ROOT:-$(git rev-parse --git-dir)/..} \
-      && cd "$ROOT" && git rev-parse || cd "$HERE"
+# The absolute directory name of a file(s) or directory(s)
+function absdirname {
+    for _ in $(eval echo "{1..$#}"); do
+      (cd "${dir:="$(dirname "$1")"}" && pwd || exit 1 )
+      [[ ${ok:="$?"} -ne 0 ]] && return "$ok"
+      shift
+    done
+    return "$ok"
 }
 
+# Print the name of the git repository's working tree's root directory
+# Search for 'Tom Hale' in http://stackoverflow.com/questions/957928/is-there-a-way-to-get-the-git-root-directory-in-one-command
+# Or, shorter: 
+# (root=$(git rev-parse --git-dir)/ && cd ${root%%/.git/*} && git rev-parse && pwd)
+# but this doesn't cover external $GIT_DIRs which are named other than .git
+function git_root {
+  local root first_commit
+  # git displays its own error if not in a repository
+  root=$(git rev-parse --show-toplevel) || return
+  if [[ -n $root ]]; then
+    echo "$root"
+    return
+  elif [[ $(git rev-parse --is-inside-git-dir) = true ]]; then
+    # We're inside the .git directory
+    # Store the commit id of the first commit to compare later
+    # It's possible that $GIT_DIR points somewhere not inside the repo
+    first_commit=$(git rev-list --parents HEAD | tail -1) ||
+      echo "$0: Can't get initial commit" 2>&1 && false && return
+    root=$(git rev-parse --git-dir)/.. &&
+      # subshell so we don't change the user's working directory
+    ( cd "$root" &&
+      if [[ $(git rev-list --parents HEAD | tail -1) = "$first_commit" ]]; then
+        pwd
+      else
+        echo "${FUNCNAME[0]}: git directory is not inside its repository" 2>&1
+        false
+      fi
+    )
+  else
+    echo "${FUNCNAME[0]}: Can't determine repository root" 2>&1
+    false
+  fi
+}
 
-##################
-# Set the prompt #
-##################
+# Change working directory to git repository root
+function cd_git_root {
+  local root
+  root=$(git_root) || return # git_root will print any errors
+  cd "$root" || return
+}
 
-# To get the git info coloured, must patch /usr/lib/git-core/git-sh-prompt:
-# https://github.com/karlapsite/git/commit/b34d9e8b690ec0b304eb794011938ab49be30204#diff-a43cc261eac6fbcc3578c94c2aa24713R449
+export -f git_root cd_git_root
 
-# Or see https://github.com/magicmonty/bash-git-prompt (not used here)
 
 # Generate *+%$ decorations very cleanly:
 # https://github.com/mathiasbynens/dotfiles
+# Or see https://github.com/magicmonty/bash-git-prompt (not used here)
+
+# Set the prompt #
+##################
+
+# set variable identifying the chroot you work in (used in the prompt below)
+if [ -z "${debian_chroot:-}" ] && [ -r /etc/debian_chroot ]; then
+    debian_chroot=$(cat /etc/debian_chroot)
+fi
 
 # Select git info displayed, see /usr/lib/git-core/git-sh-prompt for more
 export GIT_PS1_SHOWDIRTYSTATE=1           # '*'=unstaged, '+'=staged
@@ -78,7 +128,8 @@ export GIT_PS1_DESCRIBE_STYLE="describe"  # detached HEAD style:
 
 # Check if we support colours
 __colour_enabled() {
-    local -i colors=$(tput colors 2>/dev/null)
+    local -i colors
+    colors=$(tput colors 2>/dev/null)
     [[ $? -eq 0 ]] && [[ $colors -gt 2 ]]
 }
 
@@ -90,8 +141,12 @@ __set_bash_prompt() {
     local PreGitPS1="${debian_chroot:+($debian_chroot)}"
     local PostGitPS1=""
 
+    # Disable unused variables check for unused colours
+    # shellcheck disable=SC2034
+    # https://github.com/koalaman/shellcheck/issues/145
     if  __colour_enabled; then
-        export GIT_PS1_SHOWCOLORHINTS=1
+        export GIT_PS1_SHOWCOLORHINTS=1;
+
         # Wrap the colour codes between \[ and \], so that
         # bash counts the correct number of characters for line wrapping:
         local Red='\[\e[0;31m\]'; local BRed='\[\e[1;31m\]'
