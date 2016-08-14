@@ -5,11 +5,10 @@ export PATH="$PATH:/usr/local/heroku/bin:$HOME/bin:$HOME/.cabal/bin"
 export EDITOR=vim
 export RUBYLIB="$HOME"/lib:"$RUBYLIB"
 
-# Exclude commands starting with a <space> from history
-# ‘ignoreboth’ is shorthand for ‘ignorespace’ and ‘ignoredups’.
-export HISTCONTROL=ignorespace
-# shopt -s histverify # Show output of !! - press enter twice
+# Exclude duplicates and commands starting with a <space> from history
+export HISTCONTROL=ignorespace:ignoredups
 
+# shopt -s histverify # Show output of !! - press enter twice
 
 # Scripting overkill - how often will the tmuxinator.bash script really change?
 # Check for existence of "tmuxinator.bash" file/symlink, create if necessary
@@ -41,6 +40,7 @@ done <<DOTFILES
     $HOME/.bash_funcs
     $tmuxbash
     $HOME/.vim/bundle/gruvbox/gruvbox_256palette.sh
+    $HOME/.fzf.bash
 DOTFILES
 unset tmuxbash
 
@@ -205,3 +205,5 @@ PROMPT_COMMAND=__set_bash_prompt
 # # rbenv setup
 # eval "$(rbenv init -)"
 # export PATH="$HOME/.rbenv/bin:$HOME/.rbenv/plugins/ruby-build/bin:$PATH"
+
+[ -f ~/.fzf.bash ] && source ~/.fzf.bash
