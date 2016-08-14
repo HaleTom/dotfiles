@@ -1,10 +1,77 @@
---recurse=yes
---tag-relative=yes
+--langdef=X
+--regex-X=/$x/x/x/e/ This is a comment. ctags currently doesn't support comments
+--regex-X=/$x/x/x/e/ http://stackoverflow.com/questions/10973224/how-to-add-comments-to-an-exuberant-ctags-config-file
+--regex-X=/$x/x/x/e/ 
+--regex-X=/$x/x/x/e/ You can add whatever text you want here.
 
-# Exlusions
+--regex-X=/$x/x/x/e/ Don't recurese automatically to prevent decending into git submodules
+--regex-X=/$x/x/x/e/ --recurse=yes
+--tag-relative=yes
+--languages=-html
+--extra=+q+f
+--fields=+i+a+S+n
+
+
+--regex-X=/$x/x/x/e/ Exclude vim plugins
+--exclude=~/.vim/bundle/*
+
 --exclude=.git
 --exclude=db/*
 --exclude=log/*
 --exclude=public/assets/*
 --exclude=vendor/*
+
 --exclude=node_modules/*
+--exclude=*.min.js
+--exclude=jquery.*.js
+--exclude=jquery-*.js
+
+
+--regex-X=/$x/x/x/e/ Fix for module A::B being incorrectly tagged as 'A'
+--regex-ruby=/(^|;)[ \t]*(class|module)[ \t]+([A-Z][[:alnum:]_]+(::[A-Z][[:alnum:]_]+)+)/\3/c,class,constant/
+
+--regex-ruby=/(^|[:;])[ \t]*([A-Z][[:alnum:]_]+) *=/\2/c,class,constant/
+--regex-ruby=/(^|;)[ \t]*(has_many|belongs_to|has_one|has_and_belongs_to_many)\(? *:([[:alnum:]_]+)/\3/f,function,association/
+--regex-ruby=/(^|;)[ \t]*(named_)?scope\(? *:([[:alnum:]_]+)/\3/f,function,named_scope/
+--regex-ruby=/(^|;)[ \t]*expose\(? *:([[:alnum:]_]+)/\2/f,function,exposure/
+--regex-ruby=/(^|;)[ \t]*event\(? *:([[:alnum:]_]+)/\2/f,function,aasm_event/
+--regex-ruby=/(^|;)[ \t]*event\(? *:([[:alnum:]_]+)/\2!/f,function,aasm_event/
+--regex-ruby=/(^|;)[ \t]*event\(? *:([[:alnum:]_]+)/\2?/f,function,aasm_event/
+
+--langdef=js
+--langmap=js:.js
+--regex-js=/[ \t.]([A-Z][A-Z0-9._$]+)[ \t]*=[ \t]*[0-9"'\[\{]/\1/n,constant/
+--regex-js=/([A-Za-z0-9._$]+)[ \t]*=[ \t]*\{/\1/o,object/
+--regex-js=/['"]*([A-Za-z0-9_$]+)['"]*[ \t]*:[ \t]*\{/\1/o,object/
+--regex-js=/([A-Za-z0-9._$]+)\[["']([A-Za-z0-9_$]+)["']\][ \t]*=[ \t]*\{/\1\.\2/o,object/
+--regex-js=/([A-Za-z0-9._$]+)\.prototype[ \t.=]/\1/c,class/
+--regex-js=/([A-Za-z0-9._$]+)[ \t]*=[ \t]*\(function\(\)/\1/c,class/
+--regex-js=/['"]*([A-Za-z0-9_$]+)['"]*:[ \t]*\(function\(\)/\1/c,class/
+--regex-js=/var[ \t]*([A-Za-z$][A-Za-z0-9_$()]+)[ \t]*=[ \t]*function[ \t]*\(/\1/f,function/
+--regex-js=/function[ \t]+([A-Za-z$][A-Za-z0-9_$]+)[ \t]*\(([^)])\)/\1/f,function/
+--regex-js=/['"]*([A-Za-z$][A-Za-z0-9_$]+)['"]*:[ \t]*function[ \t]*\(/\1/m,method/
+--regex-js=/([A-Za-z$][A-Za-z0-9_$]+)[ \t]*=[ \t]*function[ \t]*\(/\1/m,method/
+--regex-js=/([A-Za-z0-9_$]+)\[["']([A-Za-z0-9_$]+)["']\][ \t]*=[ \t]*function[ \t]*\(/\2/m,method/
+--regex-js=/([A-Za-z0-9._$]+)[ \t]*=[ \t]*\[/\1/a,array/
+--regex-js=/['"]*([A-Za-z$][A-Za-z0-9_$]+)['"]*:[ \t]*\[/\1/a,array/
+--regex-js=/([A-Za-z0-9._$]+)\[["']([A-Za-z0-9_$]+)["']\][ \t]*=[ \t]*\[/\1\.\2/a,array/
+
+--langdef=coffee
+--langmap=coffee:.coffee
+--regex-coffee=/(^|=[ \t])*class ([A-Za-z.]+)( extends [A-Za-z.]+)?$/\2/c,class/
+--regex-coffee=/^[ \t]*(module\.)?(exports\.)?@?([A-Za-z.]+):.*[-=]>.*$/\3/f,function/
+--regex-coffee=/^[ \t]*(module\.)?(exports\.)?([A-Za-z.]+)[ \t]+=.*[-=]>.*$/\3/f,function/
+--regex-coffee=/^[ \t]*([A-Za-z.]+)[ \t]+=[^->\n]*$/\1/v,variable/
+
+--langdef=puppet
+--langmap=puppet:.pp
+--regex-puppet=/^class[ \t]*([:a-zA-Z0-9_\-]+)[ \t]*/\1/c,class/
+--regex-puppet=/^site[ \t]*([a-zA-Z0-9_\-]+)[ \t]*/\1/s,site/
+--regex-puppet=/^node[ \t]*([a-zA-Z0-9_\-]+)[ \t]*/\1/n,node/
+--regex-puppet=/^define[ \t]*([:a-zA-Z0-9_\-]+)[ \t]*/\1/d,definition/
+
+--langdef=markdown
+--langmap=markdown:.md
+--regex-markdown=/^#[ \t]+(.*)/\1/h,Heading_L1/
+--regex-markdown=/^##[ \t]+(.*)/\1/i,Heading_L2/
+--regex-markdown=/^###[ \t]+(.*)/\1/k,Heading_L3/
