@@ -1,0 +1,34 @@
+#!/bin/bash
+
+die() {
+    echo "$*: $?"
+    exit 1
+}
+
+# src_dir=$(dirname "$(readlink -f "$0")")
+cd -P -- "$(dirname "$0")" || exit 1  # cd includes it's own fail message
+
+echo Updating submodules...
+git pull && git submodule update --init --recursive
+
+echo Submodule status:
+git submodule status --recursive
+
+# Bootstrap stow by putting it config file in place
+
+# Remove ~/.stow-global-ignore if it is a symlink
+[[ -L $HOME/.stow-global-ignore ]] && rm "$HOME/.stow-global-ignore"
+# Setup stow and then install the packages
+ln -s ".dotfiles/misc/.stow-global-ignore" "$HOME" || { echo "$0: Conflict with existing .stow-global-ignore. Exiting." >&2 ; exit 1; }
+
+# Install packages
+stow -v misc vim bash ruby git tmux
+
+# Instruct to install if not installed:
+if [[ ! -d "$HOME/.fzf" ]]; then
+  git clone --depth 1 https://github.com/junegunn/fzf.git ~/.fzf && yes | ~/.fzf/install --no-update-rc
+fi
+
+echo
+echo "Install YCM vim plugin (just load vim) then:"
+echo "cd ~/.vim/bundle/YouCompleteMe && ./install.py --clang-completer"
