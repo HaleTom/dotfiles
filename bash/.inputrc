@@ -1,25 +1,49 @@
-# We start off in emacs mode by default
-"\C-x\C-r": re-read-init-file
+# .inputrc starts in emacs mode by default
 
-set editing-mode vi
-set keymap vi-command
+# Get default keymappings
 
+# emacs, emacs-meta, emacs-ctlx, vi, and vi-insert are the unique modes
+
+# INPUTRC=~/dev/null bash -c 'bind -pm emacs' | grep -vE '^#|: (do-lowercase-version|self-insert)$' | sort | sed -r 's/(.*)/\1  # emacs default/'
+
+# INPUTRC=~/dev/null bash -c 'bind -pm vi' | grep -vE '^#|: self-insert$' > vi-command
+# INPUTRC=~/dev/null bash -c 'bind -pm vi-insert' | grep -vE '^#|: self-insert$' > vi-insert
+# INPUTRC=~/dev/null bash -c 'bind -pm emacs' | grep -vE '^#|: self-insert$' > emacs
+
+# Only 4 lines are added by vi-insert:   comm -13  <(sort emacs) <(sort vi-insert)
+# "\C-d": vi-eof-maybe
+# "\C-n": menu-complete
+# "\C-p": menu-complete-backward
+# "\e": vi-movement-mode
+
+# What to add to vi-insert to have the best of both worlds:
+# comm -23  <(sort emacs) <(sort vi-insert) > insert-mode-emacs-additions
+
+# The following symbolic character names are recognized:
+# RUBOUT, DEL, ESC, LFD, NEWLINE, RET, RETURN, SPC, SPACE, and TAB.
+
+
+# Variables
+# See ttps://www.gnu.org/software/bash/manual/html_node/Readline-Init-File-Syntax.html#Readline-Init-File-Syntax
+set editing-mode emacs  # This has the best starting set of commands
 set bell-style visible
-
 set show-mode-in-prompt on
+set completion-ignore-case on
+set history-preserve-point on # preserve cursor coloumn position in history
+set keyseq-timeout 400
 
-$if mode=vi
-    set keymap vi-command
-    "gg": beginning-of-history
-    "G": end-of-history
-    " i": vi-insertion-mode
-		"\C-x\C-r": re-read-init-file
-    set keymap vi-insert
-    "jk": vi-movement-mode
-    "kj": vi-movement-mode
-    "\C-w": backward-kill-word
-    "\C-p": history-search-backward
-$endif
+# The length in characters of the common prefix of a list of possible
+# completions that is displayed without modification. When set to a value
+# greater than zero, common prefixes longer than this value are replaced with an
+# ellipsis when displaying possible completions.
+set completion-prefix-display-length 8
+
+# Treat hyphens (‘-’) and underscores (‘_’) as equivalent in matching
+set completion-map-case on
+
+# Displays completions using colors indicating file type.
+# Definitions taken from the value of the LS_COLORS environment 
+set colored-stats on
 
 # Make Tab autocomplete regardless of filename case
 set completion-ignore-case on
@@ -54,6 +78,49 @@ set output-meta on
 # than converted to prefix-meta sequences
 set convert-meta off
 
+# To allow the use of 8bit-characters like the german umlauts, uncomment
+# the line below. However this makes the meta key not work as a meta key,
+# which is annoying to those which don't need to type in 8-bit characters.
+
+# set convert-meta off
+
+# try to enable the application keypad when it is called.  Some systems
+# need this to enable the arrow keys.
+# set enable-keypad on
+
+# see /usr/share/doc/bash/inputrc.arrows for other codes of arrow keys
+
+
+# No quotes needed if it's a single keystroke:
+# Control-u: universal-argument
+# Meta-Rubout: backward-kill-word
+
+# allow the use of the Home/End keys
+"\e[1~": beginning-of-line
+"\e[4~": end-of-line
+
+# allow the use of the Delete/Insert keys
+"\e[3~": delete-char
+"\e[2~": quoted-insert
+
+# mappings for "page up" and "page down" to step to the beginning/end
+# of the history
+# "\e[5~": beginning-of-history
+# "\e[6~": end-of-history
+
+# alternate mappings for "page up" and "page down" to search the history
+# "\e[5~": history-search-backward
+# "\e[6~": history-search-forward
+
+# mappings for Ctrl-left-arrow and Ctrl-right-arrow for word moving
+"\e[1;5C": forward-word
+"\e[1;5D": backward-word
+"\e[5C": forward-word
+"\e[5D": backward-word
+"\e\e[C": forward-word
+"\e\e[D": backward-word
+
+
 # Flip through autocompletion matches with Shift-Tab.
 "\e[Z": menu-complete
 
@@ -65,61 +132,240 @@ set convert-meta off
 # options when hitting TAB
 # menu-complete-display-prefix off
 
-###########################################################
-# Keymaps for when we're in command mode (e.g., after hitting ESC)
-set keymap vi-command
+######################################################################
+# EMACS mode
+######################################################################
+set keymap emacs
+"\C-x\C-r": re-read-init-file  # This the default binding for emacs mode
 
+# Executing vi-movement-mode doesn't change the prompt prefix. See:
+# http://unix.stackexchange.com/questions/303637/readline-how-do-i-change-from-emacs-to-vi-command-with-a-binding
+# http://unix.stackexchange.com/questions/303631/how-can-i-setup-a-hybrid-readline-with-emacs-insert-mode-and-vi-command-mode/303632#303632
+"\ee": vi-editing-mode
+"jk": "\eejk" # swap to vi-insert mode, then run "jk" in that context
+"kj": "\eejk"
+"\e": "kj" # needs to be below "kj" mapping
+# There are only 4 bindings unique to vi-insert mode, which can be easily added to emacs mode:
+# "\C-d": vi-eof-maybe
+# "\C-n": menu-complete
+# "\C-p": menu-complete-backward
+# However note that the following are the default emacs bindings:
+# "\C-d": delete-char
+# "\C-n": next-history
+# "\C-p": previous-history
+set keymap emacs
+"\C-d": delete-char # eof-maybe: ^D does nothing if there is text on the line
+"\C-n": menu-complete
+"\C-p": menu-complete-backward
+"\C-y": previous-history # historY
+"\e\C-y": previous-history
+"\e": "kj" # see http://unix.stackexchange.com/questions/303631/how-can-i-setup-a-hybrid-readline-with-emacs-insert-mode-and-vi-command-mode
+
+
+# Edit options before rerunning previous command, eg: ls a b c -> ls *-al a b c
+# where * is cursor position in command mode
+"\e-": "\C-ykj^W"
+
+# upper case word before cursor
+"\eu": "\e-1\eU"
+# upper case word (default after cursor). alt-(number) for N words
+"\eU": upcase-word # default is "\eu"
+
+# Ctl-][ for bigwords (whitespace separated)
+"\e]": vi-forward-bigword
+"\e[": vi-backward-bigword
+# Meta-,. for words
+"\e.": vi-forward-word
+"\e,": vi-backward-word
+# Meta->< for shell tokens eg "quoted strings"
+"\e>": shell-forward-word
+"\e<": shell-backward-word
+
+# glob patterns without executing, eg: 'rm *x'
+"\eg": glob-expand-word
+"\eG": insert-completions
+
+"\e\C-i": dynamic-complete-history # default - reminder
+
+######################################################################
+# vi COMMAND mode
+######################################################################
+set keymap vi-command
+"\C-x\C-r": re-read-init-file
+"z": emacs-editing-mode
+"\ee": emacs-editing-mode
+
+"G": end-of-history    # go to the last command entered
+"gg": vi-fetch-history # go to the beginning of time
+
+# Easily bounce between tokens eg quoted strings
+">": shell-forward-word
+"<": shell-backward-word
+
+######################################################################
+# vi INSERT mode
+######################################################################
+set keymap vi-insert
+"\ee": emacs-editing-mode
+"jk": vi-movement-mode
+"kj": vi-movement-mode
 "\C-x\C-r": re-read-init-file
 
-$if bash
-	# Edit options before rerunning previous command, eg: ls a b c -> ls *-al a b c
-	# where * is cursor position in command mode
-	"\e-": "\C-p\e^W"
-$endif
+# Use emacs mode to add any other insert-mode bindings.
 
+######################################################################
+# Don't add user configuration below here
+######################################################################
+# Easier to add 'z' binding to vi-command to enter
+# Here are the default bindings from emacs mode not in vi-insert
+"\C-a": beginning-of-line
+"\C-b": backward-char
+"\C-]": character-search
+"\C-d": delete-char
+"\C-e": end-of-line
+"\C-f": forward-char
+"\C-g": abort
+"\C-k": kill-line
+"\C-l": clear-screen
+"\C-n": next-history
+"\C-o": operate-and-get-next
+"\C-p": previous-history
+"\C-q": quoted-insert
+"\C-@": set-mark
+"\C-_": undo
+"\C-x\C-?": backward-kill-line
+"\C-x\C-e": edit-and-execute-command
+"\C-x\C-g": abort
+"\C-x\C-r": re-read-init-file
+"\C-x\C-u": undo
+"\C-x\C-v": display-shell-version
+"\C-x\C-x": exchange-point-and-mark
+"\C-xe": call-last-kbd-macro
+"\C-x)": end-kbd-macro
+"\C-xg": glob-list-expansions
+"\C-x*": glob-expand-word
+"\C-x!": possible-command-completions
+"\C-x/": possible-filename-completions
+"\C-x@": possible-hostname-completions
+"\C-x~": possible-username-completions
+"\C-x$": possible-variable-completions
+"\C-x(": start-kbd-macro
+"\e0": digit-argument
+"\e1": digit-argument
+"\e2": digit-argument
+"\e3": digit-argument
+"\e4": digit-argument
+"\e5": digit-argument
+"\e6": digit-argument
+"\e7": digit-argument
+"\e8": digit-argument
+"\e9": digit-argument
+"\eb": backward-word
+"\e<": beginning-of-history
+"\e\C-?": backward-kill-word
+"\ec": capitalize-word
+"\e\C-]": character-search-backward
+"\e\C-e": shell-expand-line
+"\e\C-g": abort
+"\e\C-h": backward-kill-word
+"\e\C-i": dynamic-complete-history
+"\e!": complete-command
+"\e/": complete-filename
+"\e@": complete-hostname
+"\e{": complete-into-braces
+"\e~": complete-username
+"\e$": complete-variable
+"\e\C-r": revert-line
+"\e\C-y": yank-nth-arg
+"\e\\": delete-horizontal-space
+"\e-": digit-argument
+"\ed": kill-word
+"\e\e": complete
+"\e>": end-of-history
+"\ef": forward-word
+"\eg": glob-complete-word
+"\e^": history-expand-line
+"\e#": insert-comment
+"\e*": insert-completions
+"\e_": insert-last-argument
+"\e.": insert-last-argument
+"\el": downcase-word
+"\en": non-incremental-forward-search-history
+"\ep": non-incremental-reverse-search-history
+"\e=": possible-completions
+"\e?": possible-completions
+"\er": revert-line
+"\e ": set-mark
+"\e&": tilde-expand
+"\et": transpose-words
+"\eu": upcase-word
+"\e_": yank-last-arg
+"\e.": yank-last-arg
+"\ey": yank-pop
+######################################################################
+# Don't add user configuration below here
+######################################################################
+
+######################################################################
+# COMMENTS only below here
+######################################################################
+
+# "\C-A": beginning-of-line
+# "\C-B": backward-char
+# "\C-D": delete-char
+# "\C-E": end-of-line
+# "\C-F": forward-char
+# "\C-K": kill-line
+# "\C-L": clear-screen
+# "\C-N": next-history
+# "\C-P": previous-history
+# "\C-O": operate-and-get-next
+#
+# # Enable Readline not waiting for additional input when a key is pressed.
+# # Needed for the mappings below.
+# set keyseq-timeout 0
+#
+# # `yank-last-arg` does not work exactly as in emacs mode
+# "\e.": yank-last-arg
+# "\e\177": backward-kill-word
+# "\e0": digit-argument
+# "\e1": digit-argument
+# "\e2": digit-argument
+# "\e3": digit-argument
+# "\e4": digit-argument
+# "\e5": digit-argument
+# "\e6": digit-argument
+# "\e7": digit-argument
+# "\e8": digit-argument
+# "\e9": digit-argument
+# "\eb": backward-word
+# "\ec": capitalize-word
+# "\ed": kill-word
+# "\ef": forward-word
+# "\el": downcase-word
+# "\en": non-incremental-forward-search-history
+# "\ep": non-incremental-reverse-search-history
+# "\et": transpose-words
+# "\eu": upcase-word
+# "\ey": yank-pop
+#
+# # some other useful mappings
+#
+# "\e/": complete-filename
+# "\ek": kill-whole-line
+# "\eo": "\C-v\C-j"
+# # quickly switch to "normal" mode
+# "\C-[": vi-movement-mode
+# # perserve the currently editing line so that we can 
+# # do something else before restoring it.
+# "\eg": insert-comment
+# "\er": "\C-R#\C-A\C-D\C-E"
 
 # Insert the arguments from the last command after the present one with verification
 # "p": "i !!*\r"
 # TODO get current line, then paste it below
 # "\C-p": 'i _cmd="!!" _opts="!!*" shopt -s histverify\r>/dev/null echo "$_cmd"\r PASTE ; shopt -u histverify\r'
 
-# The \r represents the enter key, but you can also use \C-m or \015 for the same result.
 # "p": "idate\015"
-
+# The \r represents the enter key, but you can also use \C-m or \015 for the same result.
 # ------------------------------------------------------------------------
-# From: http://vim.wikia.com/wiki/Use_vi_shortcuts_in_terminal
-# ------------------------------------------------------------------------
-# When hitting option-up/option-down, cycle through the previous commands
-# which start with the prefix you've entered, rather than just cycling through
-# the last entered commands.
-# In OS X's Terminal.app preferences, I have 'Use option as meta key' off, and
-# have mapped "option cursor up" to "\033\033[A" and "option cursor down" to 
-# "\033\033[B".
-# Feel free to bind to whatever you want. Delete the first '\e' in the keymap
-# to set plain up/down to do a history search by default.
-"\e\e[A": history-search-backward
-"\e\e[B": history-search-forward
-
-###########################################################
-# Keymaps for when we're in insert (i.e., typing stuff in) mode
-set keymap vi-insert
-"\C-x\C-r": re-read-init-file
-
-# Option-up/option-down should also apply to insert mode
-"\e\e[A": history-search-backward
-"\e\e[B": history-search-forward
-
-# Needed because binding 'p' in command mode above wipes its insert mode
-# function, too. This fixes that, and will insert 'p' when you type 'p'.
-# "p": self-insert
-
-# ------------------------------------------------------------------------
-
-$if bash
-	# Edit options before rerunning previous command, eg: ls a b c -> ls *-al a b c
-	# where * is cursor position in command mode
-	"\e-": "\C-p\e^W"
-$endif
-
-# glob patterns without executing, eg: 'rm *x'
-"\ee": glob-expand-word
