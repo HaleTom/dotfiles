@@ -49,13 +49,33 @@ source /usr/local/share/chruby/chruby.sh
 source /usr/local/share/chruby/auto.sh
 
 # The absolute directory name of a file(s) or directory(s)
-function absdirname {
-    for _ in $(eval echo "{1..$#}"); do
-      (cd "${dir:="$(dirname "$1")"}" && pwd || exit 1 )
-      [[ ${ok:="$?"} -ne 0 ]] && return "$ok"
-      shift
-    done
-    return "$ok"
+function abs_dirname {
+  for _ in $(eval echo "{1..$#}"); do
+    (cd "${dir:="$(dirname "$1")"}" && pwd || exit 1 )
+    [[ $? -ne 0 ]] && return 1
+    shift
+  done
+}
+
+# Wrapper for systems that don't support `readlink -f`
+function abs_path {
+  for _ in $(eval echo "{1..$#}"); do
+    # Doesn't work when called with '..'
+    # echo $(cd $(dirname "$1") && pwd -P)/$(basename "$1")
+    # path=$(cd $(dirname "$1" || return 1) && pwd -P) &&
+    #   path="$path"/$(basename "$1")
+    # [[ $? -ne 0 ]] && return 1
+    # echo "$path"
+    readlink -f "$1" || return 1
+    shift
+  done
+}
+
+function git_dir {
+  # $_ is currently overwitten by chruby_auto
+  local dir
+  dir=$(git rev-parse --git-dir) || return 1
+  abs_path "$dir"
 }
 
 # Print the name of the git repository's working tree's root directory
@@ -205,5 +225,3 @@ PROMPT_COMMAND=__set_bash_prompt
 # # rbenv setup
 # eval "$(rbenv init -)"
 # export PATH="$HOME/.rbenv/bin:$HOME/.rbenv/plugins/ruby-build/bin:$PATH"
-
-[ -f ~/.fzf.bash ] && source ~/.fzf.bash
