@@ -1,14 +1,9 @@
 # .inputrc starts in emacs mode by default
 
 # Get default keymappings
-
-# emacs, emacs-meta, emacs-ctlx, vi, and vi-insert are the unique modes
-
+# INPUTRC=~/dev/null bash -c 'bind -pm vi' | grep -vE '^#|: self-insert$' |sort > vi-command
+# INPUTRC=~/dev/null bash -c 'bind -pm vi-insert' | grep -vE '^#|: self-insert$' |sort > vi-insert
 # INPUTRC=~/dev/null bash -c 'bind -pm emacs' | grep -vE '^#|: (do-lowercase-version|self-insert)$' | sort | sed -r 's/(.*)/\1  # emacs default/'
-
-# INPUTRC=~/dev/null bash -c 'bind -pm vi' | grep -vE '^#|: self-insert$' > vi-command
-# INPUTRC=~/dev/null bash -c 'bind -pm vi-insert' | grep -vE '^#|: self-insert$' > vi-insert
-# INPUTRC=~/dev/null bash -c 'bind -pm emacs' | grep -vE '^#|: self-insert$' > emacs
 
 # Only 4 lines are added by vi-insert:   comm -13  <(sort emacs) <(sort vi-insert)
 # "\C-d": vi-eof-maybe
@@ -153,6 +148,7 @@ set keymap emacs
 # "\C-d": delete-char
 # "\C-n": next-history
 # "\C-p": previous-history
+# I resolve these thus:
 set keymap emacs
 "\C-d": delete-char # eof-maybe: ^D does nothing if there is text on the line
 "\C-n": menu-complete
@@ -160,7 +156,6 @@ set keymap emacs
 "\C-y": previous-history # historY
 "\e\C-y": previous-history
 "\e": "kj" # see http://unix.stackexchange.com/questions/303631/how-can-i-setup-a-hybrid-readline-with-emacs-insert-mode-and-vi-command-mode
-
 
 # Edit options before rerunning previous command, eg: ls a b c -> ls *-al a b c
 # where * is cursor position in command mode
@@ -201,6 +196,23 @@ set keymap vi-command
 # Easily bounce between tokens eg quoted strings
 ">": shell-forward-word
 "<": shell-backward-word
+
+# Map commands to the namespace "\e\C-x{command}": shell-forward-word
+"\e\C-x{sfw}": shell-forward-word
+"\e\C-x{sbw}": shell-backward-word
+"\e\C-x{uarg}": universal-argument
+
+# Go to the n-th shell-token argument
+"\e1": "^\e\C-x{uarg}1\e\C-x{sfw}W"
+"\e2": "^\e\C-x{uarg}2\e\C-x{sfw}W"
+"\e3": "^\e\C-x{uarg}3\e\C-x{sfw}W"
+"\e4": "^\e\C-x{uarg}4\e\C-x{sfw}W"
+"\e5": "^\e\C-x{uarg}5\e\C-x{sfw}W"
+"\e6": "^\e\C-x{uarg}6\e\C-x{sfw}W"
+"\e7": "^\e\C-x{uarg}7\e\C-x{sfw}W"
+"\e8": "^\e\C-x{uarg}8\e\C-x{sfw}W"
+"\e9": "^\e\C-x{uarg}9\e\C-x{sfw}W"
+
 
 ######################################################################
 # vi INSERT mode
