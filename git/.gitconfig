@@ -12,62 +12,65 @@
 	# autocrlf = true
 
 [alias]
-	a     = add
-	aa    = add -A
-	aacm  = "!f() { git add -A && git commit -m \"$@\"; }; f"
-	ai    = add --intent-to-add
-	ap    = add --patch
+	a      = add
+	aa     = add -A
+	aacm   = "!f() { git add -A && git commit -m \"$@\"; }; f"
+	ai     = add --intent-to-add
+	ap     = add --patch
 	# Add all untracked files
-	au    = "!f() { git ls-files -z -o --exclude-standard | xargs -0 git add; }; f"
-	br    = branch
-	c     = commit
-	co    = checkout
-	cob   = checkout -b
+	au     = "!f() { git ls-files -z -o --exclude-standard | xargs -0 git add; }; f"
+	br     = branch
+	c      = commit
+	co     = checkout
+	cob    = checkout -b
 	# Create a branch tracking the same branch on origin.
 	# '-' makes argument list start at $1
-	cobt  = !sh -c 'git checkout -b "$1" && git branch --track origin/"$1"' -
+	cobt   = !sh -c 'git checkout -b "$1" && git branch --track origin/"$1"' -
 	# Pick chunks to include of changed files, include all untracked files.
-	ca    = commit -a -v
-	caa   = "!f() { git add -A && git commit \"$@\"; }; f"
-	caam  = "!f() { git add -A && git commit --message \"$@\"; }; f"
-	caan  = "!f() { git add -A && git commit --amend --no-edit; }; f"
-	cam   = commit -am  # note only changed files included
-	can   = commit -a --amend
-	canc  = commit -a --amend -C HEAD
-	canm  = commit -a --amend -m
-	cm    = commit -m
-	cn    = commit --amend
-	cnc   = commit --amend -C HEAD
-	cnm   = commit --amend -m
-	cp    = commit --patch
-	cvp   = "!f() { git commit -v --patch \"$@\"; git st; }; f"
+	ca     = commit -a -v
+	caa    = "!f() { git add -A && git commit \"$@\"; }; f"
+	caam   = "!f() { git add -A && git commit --message \"$@\"; }; f"
+	caan   = "!f() { git add -A && git commit --amend --no-edit; }; f"
+	cam    = commit -am  # note only changed files included
+	can    = commit -a --amend
+	canc   = commit -a --amend -C HEAD
+	canm   = commit -a --amend -m
+	cm     = commit -m
+	cn     = commit --amend
+	cnc    = commit --amend -C HEAD
+	cnm    = commit --amend -m
+	cp     = commit --patch
+	cvp    = "!f() { git commit -v --patch \"$@\"; git st; }; f"
 	# Select hunks from tracked files, then commit with all untracked files before commit
-	cvpn  = "!f() { git commit -v --patch && \
+	cvpn   = "!f() { git commit -v --patch && \
 		git ls-files -z -o --exclude-standard | xargs -0 git add && \
 		echo '# Add only new files silently' > /dev/null && \
 		git commit -a --amend --no-edit && \
 		git status -s; }; f"
-	dc    = diff --cached
-	df    = diff --ws-error-highlight=old,new # old,new,context,all
-	dh    = diff HEAD
-	dhh   = diff HEAD~1
-	ds    = diff --stat
-	dt    = difftool -y -t vimdiff --noprompt
-	logd  = log --oneline --graph --decorate --remotes --max-count=20
-	logda = log --oneline --graph --decorate --remotes --all --max-count=20
-	ls    = ls-files
-	psuo  = push --set-upstream origin
-	psuob = push --set-upstream origin `git rev-parse --abbrev-ref HEAD`
-	pl    = pull
-	ps    = push
-	ri    = rebase -i HEAD~5
-	rmc   = rm --cached
+	dc     = diff --cached
+	df     = diff --ws-error-highlight=old,new # old,new,context,all
+	dh     = diff HEAD
+	dhh    = diff HEAD~1
+	ds     = diff --stat
+	dt     = difftool -y -t vimdiff --noprompt
+	logd   = log --oneline --graph --decorate --remotes --max-count=20
+	logda  = log --oneline --graph --decorate --remotes --all --max-count=20
+	logdaa = log --oneline --graph --decorate --remotes --all
+	ls     = ls-files
+	mum    = merge upstream/master
+	psuo   = push --set-upstream origin
+	psuob  = push --set-upstream origin `git rev-parse --abbrev-ref HEAD`
+	pl     = pull
+	ps     = push
+	pum    = pull upstream master
+	ri     = rebase -i HEAD~5
+	rmc    = rm --cached
 	# sh    = "!f() { cd_git_root && exec \"$@\"; }; f"
-	sh    = "!f() { root=$(pwd)/ && cd ${root%%/.git/*} && git rev-parse && exec \"$@\"; }; f"
-	sh    = "!f() { exec \"$@\"; }; f"
-	sm    = submodule
-	ss    = stash
-	st    = status --short # --branch
+	sh     = "!f() { root=$(pwd)/ && cd ${root%%/.git/*} && git rev-parse && exec \"$@\"; }; f"
+	sh     = "!f() { exec \"$@\"; }; f"
+	sm     = submodule
+	ss     = stash
+	st     = status --short # --branch
 
 	# Show files ignored by git
 	ign = ls-files -o -i --exclude-standard
