@@ -71,6 +71,8 @@
 	sm     = submodule
 	ss     = stash
 	st     = status --short # --branch
+	un     = reset HEAD
+	un-h    = reset --hard HEAD
 
 	# Show files ignored by git
 	ign = ls-files -o -i --exclude-standard
