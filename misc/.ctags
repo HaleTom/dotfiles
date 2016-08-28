@@ -13,12 +13,14 @@
 
 
 --regex-X=/$x/x/x/e/ Exclude vim plugins
---exclude=~/.vim/bundle/*
+--exclude=vim/bundle/*
+--exclude=dotfiles/vim/.vim/bundle/*
 
 --exclude=.git
 --exclude=db/*
 --exclude=log/*
 --exclude=public/assets/*
+--exclude=coverage/assets/*
 --exclude=vendor/*
 
 --exclude=node_modules/*
