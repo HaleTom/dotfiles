@@ -1,6 +1,7 @@
-[user]
-	name = Tom Hale
-	email = tom@hale.ee
+[include]
+	# Put personal details (eg name, email) in another file
+	# This file is excluded by .gitignore
+  path = ~/.gitconfig.local
 
 [core]
 	editor = vim
@@ -64,6 +65,10 @@
 	ps     = push
 	pum    = pull upstream master
 	ri     = rebase -i HEAD~5
+	re     = reset
+	res    = reset --soft
+	reh    = reset HEAD
+	rehh   = reset --hard HEAD
 	rmc    = rm --cached
 	# sh    = "!f() { cd_git_root && exec \"$@\"; }; f"
 	sh     = "!f() { root=$(pwd)/ && cd ${root%%/.git/*} && git rev-parse && exec \"$@\"; }; f"
@@ -71,8 +76,6 @@
 	sm     = submodule
 	ss     = stash
 	st     = status --short # --branch
-	un     = reset HEAD
-	un-h    = reset --hard HEAD
 
 	# Show files ignored by git
 	ign = ls-files -o -i --exclude-standard

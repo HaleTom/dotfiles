@@ -1,0 +1,2 @@
+# Ignore personal configuration for git when sharing to GitHub:
+/git/.gitconfig.local
