@@ -5,8 +5,10 @@ export PATH="$PATH:/usr/local/heroku/bin:$HOME/bin:$HOME/.cabal/bin"
 export EDITOR=vim
 export RUBYLIB="$HOME"/lib:"$RUBYLIB"
 export GNULIB_SRCDIR="$HOME"/repo/gnulib
-export LESS=-Xr # X=don't clear screen at exit, r=interpret colour codes
-
+export LESS=-FRX
+# F = exit if all can be displayed on first creen
+# R = interpret ANSI colour codes
+# X = Don't send termcap initialization and deinitialization strings (eg clear)
 
 # Exclude duplicates and commands starting with a <space> from history
 export HISTCONTROL=ignorespace:ignoredups
