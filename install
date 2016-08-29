@@ -1,5 +1,7 @@
 #!/bin/bash
 
+set -eu # Die if command returns non-0 or unset variable is used
+
 die() {
     echo "$*: $?"
     exit 1
@@ -19,16 +21,26 @@ git submodule status --recursive
 # Remove ~/.stow-global-ignore if it is a symlink
 [[ -L $HOME/.stow-global-ignore ]] && rm "$HOME/.stow-global-ignore"
 # Setup stow and then install the packages
-ln -s ".dotfiles/misc/.stow-global-ignore" "$HOME" || { echo "$0: Conflict with existing .stow-global-ignore. Exiting." >&2 ; exit 1; }
+ln -s ".dotfiles/misc/.stow-global-ignore" "$HOME" ||
+  { echo "$0: Conflict with existing .stow-global-ignore. Exiting." >&2 ; exit 1; }
 
 # Install packages
-stow -v misc vim bash ruby git tmux
+stow -v misc vim bash ruby git tmux X11
 
 # Instruct to install if not installed:
 if [[ ! -d "$HOME/.fzf" ]]; then
   git clone --depth 1 https://github.com/junegunn/fzf.git ~/.fzf && yes | ~/.fzf/install --no-update-rc
 fi
 
+# Parallel install/update of all vim bundles
+# Install vimproc first to be able to do all the others in parallel
+vim/.vim/bundle/neobundle.vim/bin/neoinstall vimproc
+vim/.vim/bundle/neobundle.vim/bin/neoinstall # everything
+
 echo
-echo "Install YCM vim plugin (just load vim) then:"
-echo "cd ~/.vim/bundle/YouCompleteMe && ./install.py --clang-completer"
+echo "YouCompleteMe vim plugin fetch and build:"
+echo
+echo '(cd ~/.vim/bundle/YouCompleteMe &&'
+echo 'git submodule update --init --recursive &&'
+echo './install.py --clang-completer)'
+echo
