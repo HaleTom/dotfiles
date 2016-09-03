@@ -1,7 +1,9 @@
+#!/bin/bash
 # Functions to be sourced by .bashrc
 #
 # Ensure that ones to be accessed outside of .bashrc are added
 # to the 'export' line at the very end.
+
 
 # The absolute directory name of a file(s) or directory(s)
 function abs_dirname {
@@ -11,6 +13,8 @@ function abs_dirname {
     shift
   done
 }
+export -f abs_dirname
+
 
 # Wrapper for systems that don't support `readlink -f`
 function abs_path {
@@ -25,13 +29,35 @@ function abs_path {
     shift
   done
 }
+export -f abs_path
 
+
+# The name of the git directory (usually '.git') of the current repository
 function git_dir {
   # $_ is currently overwitten by chruby_auto
   local dir
   dir=$(git rev-parse --git-dir) || return 1
   abs_path "$dir"
 }
+export -f git_dir
+
+
+# Escape arguments for use in eval. From
+# http://stackoverflow.com/questions/12162010/posix-sh-equivalent-for-bash-s-printf-q
+function quote_args {
+    case $# in 0) return 0; esac
+    while :
+    do
+        printf "'"
+        printf %s "$1" | sed "s/'/'\\\\''/g"
+        shift
+        case $# in 0) break; esac
+        printf "' "
+    done
+    printf "'\n"
+}
+export -f quote_args
+
 
 # Print the name of the git repository's working tree's root directory
 # Search for 'Tom Hale' in http://stackoverflow.com/questions/957928/is-there-a-way-to-get-the-git-root-directory-in-one-command
@@ -66,6 +92,8 @@ function git_root {
     false
   fi
 }
+export -f git_root
+
 
 # Change working directory to git repository root
 function cd_git_root {
@@ -73,16 +101,25 @@ function cd_git_root {
   root=$(git_root) || return # git_root will print any errors
   cd "$root" || return
 }
+export -f cd_git_root
 
-export -f git_root cd_git_root
+
+# apt: Update only given sources 
+function apt-update-repo() {
+    for source in "$@"; do
+        sudo apt-get update -o Dir::Etc::sourcelist="sources.list.d/${source}" \
+        -o Dir::Etc::sourceparts="-" -o APT::Get::List-Cleanup="0"    
+    done
+}
+export -f apt-update-repo
 
 
+##################
+# Set the prompt #
+##################
 # Generate *+%$ decorations very cleanly:
 # https://github.com/mathiasbynens/dotfiles
 # Or see https://github.com/magicmonty/bash-git-prompt (not used here)
-
-# Set the prompt #
-##################
 
 # set variable identifying the chroot you work in (used in the prompt below)
 if [ -z "${debian_chroot:-}" ] && [ -r /etc/debian_chroot ]; then
@@ -168,12 +205,3 @@ __set_bash_prompt() {
     # defaut user prompt:
     # PS1='${debian_chroot:+($debian_chroot)}\[\033[01;32m\]\u@\h\[\033[01;34m\] \w\[\033[00m\] $(__git_ps1 "(%s)") \$ '
 }
-
-# apt: Update only given sources 
-apt-update-repo() {
-    for source in "$@"; do
-        sudo apt-get update -o Dir::Etc::sourcelist="sources.list.d/${source}" \
-        -o Dir::Etc::sourceparts="-" -o APT::Get::List-Cleanup="0"    
-    done
-}
-
