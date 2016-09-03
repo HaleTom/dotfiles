@@ -59,12 +59,16 @@
 	logdaa = log --oneline --graph --decorate --remotes --all
 	ls     = ls-files
 	mum    = merge upstream/master
+	psfwl  = push --force-with-lease
 	psuo   = push --set-upstream origin
 	psuob  = push --set-upstream origin `git rev-parse --abbrev-ref HEAD`
 	pl     = pull
 	ps     = push
 	pum    = pull upstream master
-	ri     = rebase -i HEAD~5
+  rb     = rebase
+  rba    = rebase --abort
+  rbc    = rebase --continue
+	rbi    = rebase -i HEAD~20
 	re     = reset
 	res    = reset --soft
 	reh    = reset HEAD
