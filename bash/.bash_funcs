@@ -42,6 +42,7 @@ function git_dir {
 export -f git_dir
 
 
+# TL;DR: Just use printf "%q " "$@"
 # Escape arguments for use in eval. From
 # http://stackoverflow.com/questions/12162010/posix-sh-equivalent-for-bash-s-printf-q
 function quote_args {

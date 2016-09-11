@@ -1,14 +1,19 @@
 #!/bin/bash
 # above line is for shellcheck's happiness
 
-export PATH="$PATH:/usr/local/heroku/bin:$HOME/bin:$HOME/.cabal/bin"
+export PATH="$HOME/bin:$PATH:/usr/local/heroku/bin:$HOME/.cabal/bin"
 export EDITOR=vim
 export RUBYLIB="$HOME"/lib:"$RUBYLIB"
 export GNULIB_SRCDIR="$HOME"/repo/gnulib
-export LESS=-FRX
+export LESS=-FRXsu
 # F = exit if all can be displayed on first creen
 # R = interpret ANSI colour codes
 # X = Don't send termcap initialization and deinitialization strings (eg clear)
+# s = squash multiple blank lines into one
+# u = send backspaces and carriage returns directly to the terminal
+
+# Have command-not-found ask to install
+export COMMAND_NOT_FOUND_INSTALL_PROMPT=1
 
 # Exclude duplicates and commands starting with a <space> from history
 export HISTCONTROL=ignorespace:ignoredups
