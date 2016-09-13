@@ -25,7 +25,7 @@ ln -s ".dotfiles/misc/.stow-global-ignore" "$HOME" ||
   { echo "$0: Conflict with existing .stow-global-ignore. Exiting." >&2 ; exit 1; }
 
 # Install packages
-stow -v misc vim bash ruby git tmux X11
+stow -v misc vim bash ruby git tmux X11 gconf
 
 # Instruct to install if not installed:
 if [[ ! -d "$HOME/.fzf" ]]; then
