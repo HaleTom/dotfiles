@@ -45,6 +45,8 @@ export -f git_dir
 # TL;DR: Just use printf "%q " "$@"
 # Escape arguments for use in eval. From
 # http://stackoverflow.com/questions/12162010/posix-sh-equivalent-for-bash-s-printf-q
+
+# Usage examples at: http://search.cpan.org/~rosch/String-ShellQuote-1.03/shell-quote
 function quote_args {
     case $# in 0) return 0; esac
     while :
@@ -58,6 +60,44 @@ function quote_args {
     printf "'\n"
 }
 export -f quote_args
+
+function double_quote {
+    case $# in 0) return 0; esac
+    while :
+    do
+        printf '"'
+        printf %s "$1" | sed 's/\([$`\!"]\)/\\\1/g'
+        shift
+        case $# in 0) break; esac
+        printf '" '
+    done
+    printf "\"\n"
+}
+export -f double_quote
+
+# http://unix.stackexchange.com/a/14444/143394
+# Usage: confirm "Really" && rm /
+function confirm_sure {
+  local reply
+  read -rn 1 -p "$* [y/N]? " reply
+  printf "\n"
+  case "$reply" in
+    Y|y* ) true;;
+    * )    false;;
+  esac
+}
+export -f confirm_sure
+
+function confirm_proceed {
+  local reply
+  read -rn 1 -p "$* [Y/n]? " reply
+  printf "\n"
+  case "$reply" in
+    N|n* ) false;;
+    * )    true;;
+  esac
+}
+export -f confirm_proceed
 
 
 # Print the name of the git repository's working tree's root directory
