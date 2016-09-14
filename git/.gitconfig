@@ -12,14 +12,22 @@
 	# Eeek - causes addition of CR in linux
 	# autocrlf = true
 
+# Syntax learnings:
+# Double quotes around shell commands are not required
+# If you want to \ continue a line, it must be inside a "-quoted string
+# Continue lines with final \ character
+# It's not possible to comment after a continuation \
+# Quote ALL " and \ characters as \" and \\
+# A literal '#' to be passed to the shell needs to be inside "-quotes
 [alias]
 	a      = add
 	aa     = add -A
 	aacm   = "!f() { git add -A && git commit -m \"$@\"; }; f"
 	ai     = add --intent-to-add
 	ap     = add --patch
-	# Add all untracked files
-	au     = "!f() { git ls-files -z -o --exclude-standard | xargs -0 git add; }; f"
+  au     = "!f() { git ls-files -z -o --exclude-standard | xargs -0 git add; }; f" # Add all untracked files
+  aw     = !git diff -U0 -w --no-color -- \"$@\" | git apply --cached --ignore-whitespace --unidiff-zero "#"
+  bash   = !bash -c '\"$@\"' - # Run command in working tree's root
 	br     = branch
 	c      = commit
 	co     = checkout
@@ -36,6 +44,10 @@
 	can    = commit -a --amend
 	canc   = commit -a --amend -C HEAD
 	canm   = commit -a --amend -m
+  cl     = clone
+  clear  = "!bash -c ' git clean -n | sed \"s/^Would remove //\"; \
+    read -rn1 -p \"Delete all the above? [y/N] \" r; echo; \
+    [[ x$r =~ ^x[yY] ]] && git clean -f || echo Untouched.'"
 	cm     = commit -m
 	cn     = commit --amend
 	cnc    = commit --amend -C HEAD
@@ -48,8 +60,11 @@
 		echo '# Add only new files silently' > /dev/null && \
 		git commit -a --amend --no-edit && \
 		git status -s; }; f"
-	dc     = diff --cached
-	df     = diff --ws-error-highlight=old,new # old,new,context,all
+  db     = "!GIT_TRACE=1 git " # Use to debug an alias, Eg: git db <aliasname>
+  dc     = diff --cached --ws-error-highlight=all
+  dcw    = diff --cached --color-words --ws-error-highlight=all
+  df     = diff --ws-error-highlight=all # old,new,context,all
+  dfw    = diff --color-words --ws-error-highlight=all # old,new,context,all
 	dh     = diff HEAD
 	dhh    = diff HEAD~1
 	ds     = diff --stat
@@ -67,6 +82,7 @@
 	pum    = pull upstream master
 	rb     = rebase
 	rba    = rebase --abort
+  rbb    = !sh -c \"git rebase -i `git merge-base $1 HEAD` #\" # Rebase to branch-name # http://stackoverflow.com/a/31036518/5353461
 	rbc    = rebase --continue
 	rbi    = rebase -i HEAD~20
 	re     = reset
@@ -75,12 +91,20 @@
 	rehh   = reset --hard HEAD
 	rl     = reflog
 	rmc    = rm --cached
-	# sh    = "!f() { cd_git_root && exec \"$@\"; }; f"
-	sh     = "!f() { root=$(pwd)/ && cd ${root%%/.git/*} && git rev-parse && exec \"$@\"; }; f"
-	sh     = "!f() { exec \"$@\"; }; f"
+  s      = status --short #--branch
 	sm     = submodule
-	ss     = stash
-	st     = status --short # --branch
+  sa     = stash apply
+  sl     = stash list
+  ss     = stash save
+  st     = !git s # motor memory trainer wheels
+  sp     = stash pop
+
+  # Run a command in the root of the working tree
+  sh = !bash -c '\"$@\"' - # default to bash
+  bsh = !\"$@\" - # Bourne shell
+
+  # list aliases
+  la = !git config --list | grep ^alias\\. | cut -c 7- | grep -Ei --color \"$1\" "#"
 
 	# Show files ignored by git
 	ign = ls-files -o -i --exclude-standard
