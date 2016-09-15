@@ -5,6 +5,7 @@
 
 [core]
   editor = vim
+  pager = less -FRX --tabs=4
   excludesfile = /home/ravi/.gitignore_global
 
   # convert newlines to system's standard on checkout,
@@ -12,21 +13,23 @@
   # Eeek - causes addition of CR in linux
   # autocrlf = true
 
-# Syntax learnings:
+# Alias syntax learnings:
 # Double quotes around shell commands are not required
 # If you want to \ continue a line, it must be inside a "-quoted string
-# Continue lines with final \ character
-# It's not possible to comment after a continuation \
+# Continue/wrap long lines with final \ character
+# It's not possible to have a comment after a continuation \
 # Quote ALL " and \ characters as \" and \\
-# A literal '#' to be passed to the shell needs to be inside "-quotes
+# A literal '#' or ';' must be inside "-quotes
+; this is also a comment
 [alias]
   a      = add
   aa     = add -A
   aacm   = "!f() { git add -A && git commit -m \"$@\"; }; f"
   ai     = add --intent-to-add
   ap     = add --patch
-  au     = "!f() { git ls-files -z -o --exclude-standard | xargs -0 git add; }; f" # Add all untracked files
-  aw     = !git diff -U0 -w --no-color -- \"$@\" | git apply --cached --ignore-whitespace --unidiff-zero "#"
+  au     = "!git ls-files -z -o --exclude-standard | xargs -0 git add; #" # Add only untracked files
+  aw     = !git diff -U0 -w --no-color -- \"$@\" | git apply --cached --ignore-whitespace --unidiff-zero "#" # Add only non-whitespace changes
+  aow    = !git add -- \"$@\" && git diff --cached -w | git apply --cached -R "#" # Add only whitespace changes
   bash   = !bash -c '\"$@\"' - # Run command in working tree's root
   br     = branch
   c      = commit
@@ -39,10 +42,12 @@
   ca     = commit -a -v
   caa    = "!f() { git add -A && git commit \"$@\"; }; f"
   caam   = "!f() { git add -A && git commit --message \"$@\"; }; f"
-  caan   = "!f() { git add -A && git commit --amend --no-edit; }; f"
+  caan   = "!f() { git add -A && git commit --amend "\"$@\"; }; f"
+  caanm   = "!f() { git add -A && git commit --amend -m "\"$@\"; }; f"
+  caann  = "!f() { git add -A && git commit --amend --no-edit; }; f"
   cam    = commit -am  # note only changed files included
   can    = commit -a --amend
-  canc   = commit -a --amend -C HEAD
+  cann   = commit -a --amend --no-edit
   canm   = commit -a --amend -m
   cl     = clone
   clear  = "!bash -c ' git clean -n | sed \"s/^Would remove //\"; \
@@ -60,7 +65,8 @@
     echo '# Add only new files silently' > /dev/null && \
     git commit -a --amend --no-edit && \
     git status -s; }; f"
-  db     = "!GIT_TRACE=1 git " # Use to debug an alias, Eg: git db <aliasname>
+  db     = !GIT_TRACE=1 git # Use to debug an alias, Eg: git db <aliasname>
+  debug  = "!set -x; GIT_TRACE=2 GIT_CURL_VERBOSE=2 GIT_TRACE_PERFORMANCE=2 GIT_TRACE_PACK_ACCESS=2 GIT_TRACE_PACKET=2 GIT_TRACE_PACKFILE=2 GIT_TRACE_SETUP=2 GIT_TRACE_SHALLOW=2 git \"$@\" #"
   dc     = diff --cached --ws-error-highlight=all
   dcw    = diff --cached --color-words --ws-error-highlight=all
   df     = diff --ws-error-highlight=all # old,new,context,all
@@ -69,6 +75,7 @@
   dhh    = diff HEAD~1
   ds     = diff --stat
   dt     = difftool -y -t vimdiff --noprompt
+  icdiff = difftool --no-prompt --extcmd icdiff # \"$@\"
   logd   = log --oneline --graph --decorate --remotes --max-count=20
   logda  = log --oneline --graph --decorate --remotes --all --max-count=20
   logdaa = log --oneline --graph --decorate --remotes --all
@@ -137,26 +144,40 @@
 [color]
   ui = auto
   [color "branch"]
-  current = yellow reverse
-  local = yellow
-  remote = green
-[color "diff"]
-  meta = yellow bold
-  frag = magenta bold
-  old = red bold
-  new = green bold
-  whitespace = red reverse
-[color "status"]
-  added = yellow
-  changed = green
-  untracked = cyan
+    current = yellow reverse
+    local = yellow
+    remote = green
+  [color "diff"]
+    meta = yellow bold
+    frag = magenta bold
+    old = red bold
+    new = green bold
+    whitespace = red reverse
+  [color "diff-highlight"]
+    oldNormal = red bold
+    oldHighlight = red bold 52
+    newNormal = green bold
+    newHighlight = green bold 22
+  [color "status"]
+    added = yellow
+    changed = green
+    untracked = cyan
 [commit]
   verbose = true # include diff output
 [diff]
   tool = vimdiff
-[merge]
-  tool = vimdiff
 [difftool]
   prompt = false
-[github]
-  user = HaleTom
+[merge]
+  tool = vimdiff
+[pager]
+  # Bypass pager: git --no-pager ...
+  # Consider https://github.com/so-fancy/diff-so-fancy - removes +/- leaders
+  log = diff-hi | less
+  show = diff-hi | less
+  diff = diff-hi | less -FRX --tabs=4
+  difftool = true # Use pager defined in [core]
+  
+  # Allow hunk movement with n/p keys
+  # but ugly when less than one screen's worth of output - blank lines are all '~'
+  # diff = diff-hi | less -FRX --tabs=4 --pattern '^(\\@\\@.*,.*,.*\\@\\@|diff --git .* .*)$' # Allow hunk movement with n/p keys
