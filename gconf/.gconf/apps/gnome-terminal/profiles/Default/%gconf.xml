@@ -1,21 +1,29 @@
 <?xml version="1.0"?>
 <gconf>
-	<entry name="palette" mtime="1473580619" type="string">
-		<stringvalue>#000000000000:#E6658D4F8D4F:#0000CDCB0000:#CDCBCDCB0000:#1E1A908FFFFF:#CDCB0000CDCB:#0000CDCBCDCB:#E5E2E5E2E5E2:#4CCC4CCC4CCC:#FFFF00000000:#0000FFFF0000:#FFFFFFFF0000:#46458281B4AE:#FFFF0000FFFF:#0000FFFFFFFF:#FFFFFFFFFFFF</stringvalue>
-	</entry>
-	<entry name="font" mtime="1473580710" type="string">
+	<entry name="use_theme_colors" mtime="1474030642" type="bool" value="false"/>
+	<entry name="font" mtime="1474030627" type="string">
 		<stringvalue>DejaVu Sans Mono for Powerline 11</stringvalue>
 	</entry>
-	<entry name="use_system_font" mtime="1473579811" type="bool" value="false"/>
-	<entry name="background_color" mtime="1473579778" type="string">
-		<stringvalue>#000000000000</stringvalue>
-	</entry>
-	<entry name="foreground_color" mtime="1473579794" type="string">
-		<stringvalue>#D3D3D7D7CFCF</stringvalue>
-	</entry>
-	<entry name="use_theme_colors" mtime="1473579770" type="bool" value="false"/>
-	<entry name="silent_bell" mtime="1473579759" type="bool" value="false"/>
-	<entry name="background_type" mtime="1473579709" type="string">
+	<entry name="use_system_font" mtime="1474030533" type="bool" value="false"/>
+	<entry name="background_type" mtime="1474030487" type="string">
 		<stringvalue>solid</stringvalue>
 	</entry>
+	<entry name="visible_name" mtime="1474030255" type="string">
+		<stringvalue>Default</stringvalue>
+	</entry>
+	<entry name="foreground_color" mtime="1474030656" type="string">
+		<stringvalue>#AAAAAAAAAAAA</stringvalue>
+	</entry>
+	<entry name="background_color" mtime="1474030656" type="string">
+		<stringvalue>#000000000000</stringvalue>
+	</entry>
+	<entry name="silent_bell" mtime="1474030255" type="bool" value="true"/>
+	<entry name="default_show_menubar" mtime="1474030255" type="bool" value="false"/>
+	<entry name="bold_color" mtime="1474030255" type="string">
+		<stringvalue>#000000000000</stringvalue>
+	</entry>
+	<entry name="palette" mtime="1474030523" type="string">
+		<stringvalue>#2E2E34343636:#CCCC00000000:#4E4E9A9A0606:#C4C4A0A00000:#34346565A4A4:#757550507B7B:#060698209A9A:#D3D3D7D7CFCF:#88888A8A8585:#EFEF29292929:#8A8AE2E23434:#FCFCE9E94F4F:#72729F9FCFCF:#ADAD7F7FA8A8:#3434E2E2E2E2:#EEEEEEEEECEC</stringvalue>
+	</entry>
+	<entry name="background_darkness" mtime="1474030255" type="float" value="0.94999998807907104"/>
 </gconf>
