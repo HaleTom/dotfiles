@@ -1,3 +1,7 @@
+#!/bin/bash #for-shellcheck
+# This file gets sourced from .bashrc
+
+# ls aliases
 alias l="ls -bCF"         # escape non printable || columns || decorated
 alias la="ls -CAFb"       # Almost all - no . and ..
 alias ld="ls -dlaFb */"   # no-dereference symlinks, directory entry instead of contents
@@ -8,6 +12,11 @@ alias lsd="ls -Abl | grep --color=never ^d"   # list only directories
 alias ..="cd .."
 alias ...="cd ../.."
 alias ....="cd ../../.."
+alias .....="cd ../../../.."
+
+# Allow git alias completion
+source /usr/share/bash-completion/completions/git
+export -f __git_complete # from /usr/share/bash-completion/completions/git
 
 # One letter aliases
 alias g="git" &&  __git_complete g _git

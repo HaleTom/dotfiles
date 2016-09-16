@@ -48,7 +48,7 @@ while read -r dotfile ; do
 done <<DOTFILES
     $HOME/.bash_funcs
     /usr/share/bash-completion/completions/git
-    $HOME/.alias
+    $HOME/.bash_aliases
     $tmuxbash
     $HOME/.vim/bundle/gruvbox/gruvbox_256palette.sh
     $HOME/.fzf.bash

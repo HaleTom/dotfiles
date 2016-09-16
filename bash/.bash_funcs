@@ -3,6 +3,21 @@
 # Functions to be sourced by .bashrc
 # Ensure that ones to be accessed outside of .bashrc have an 'export -f <func-name>'
 
+# Make a directory and move the working directory
+function mkcd {
+	if [ "$#" -ne 1 ]; then
+		echo "mkcd: Make and change into a directory" >&2
+		echo "Usage: mkcd DIRECTORY" >&2
+		return 69
+	fi
+
+  [[ -d "$1" ]] && exit=2 && echo "mkcd: Warning: $1 already exists." >&2
+	mkdir -p "$1" || return 1
+	cd "$1" || return 1
+  return ${exit:-0}
+}
+export -f mkcd
+
 
 #------ function make-completion-wrapper
 
