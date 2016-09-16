@@ -25,7 +25,7 @@
   a      = add
   aa     = add -A
   aacm   = "!f() { git add -A && git commit -m \"$@\"; }; f"
-  ai     = add --intent-to-add
+  an     = add --intent-to-add # add -N
   ap     = add --patch
   au     = "!git ls-files -z -o --exclude-standard | xargs -0 git add; #" # Add only untracked files
   aw     = !git diff -U0 -w --no-color -- \"$@\" | git apply --cached --ignore-whitespace --unidiff-zero "#" # Add only non-whitespace changes
@@ -117,8 +117,8 @@
   ign = ls-files -o -i --exclude-standard
 
   # Show files changed between the given commit and it's previous commit
-  files = !sh -c 'git diff --name-status "$1"^ "$1"' -
-  
+  files = "![ x$# != x1 ]&&echo "commit-ish required" >&2 || git diff --name-status \"$1\"^ \"$1\" #"
+
   # Create complex function then run it
   # http://blogs.atlassian.com/2014/10/advanced-git-aliases/
 
