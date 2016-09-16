@@ -1,9 +1,40 @@
 #!/bin/bash
-# Functions to be sourced by .bashrc
-#
-# Ensure that ones to be accessed outside of .bashrc are added
-# to the 'export' line at the very end.
 
+# Functions to be sourced by .bashrc
+# Ensure that ones to be accessed outside of .bashrc have an 'export -f <func-name>'
+
+
+#------ function make-completion-wrapper
+
+# Updating? Start here: http://superuser.com/a/437508/365890 for one included into bash-it.
+
+# The below is based on an earlier version at: https://ubuntuforums.org/showthread.php?t=733397
+# See also: (my answer) http://unix.stackexchange.com/questions/4219/how-do-i-get-bash-completion-for-command-aliases/4220#4220
+
+# Wraps a completion function, eg for use with an alias.
+# Usage:
+# make-completion-wrapper <actual completion function> <name of new func.>
+#                         <command name> <list supplied arguments>
+# eg.
+#   alias agi='apt-get install'
+#   make-completion-wrapper _apt_get _apt_get_install apt-get install
+#     # defines a function called _apt_get_install (that's $2) that will
+#     # complete the 'agi' alias. 
+#   complete -F _apt_get_install agi
+function make-completion-wrapper {
+  local function_name="$2"
+  local arg_count=$(( $#-3 ))
+  local comp_function_name="$1"
+  shift 2
+  local funktion="function $function_name {
+      (( COMP_CWORD += $arg_count ))
+      COMP_WORDS=( \"\$@\" \${COMP_WORDS[@]:1} )
+      \"$comp_function_name\"
+    }"
+  eval "$funktion"
+  # echo "$funktion"
+}
+export -f make-completion-wrapper
 
 # The absolute directory name of a file(s) or directory(s)
 function abs_dirname {
