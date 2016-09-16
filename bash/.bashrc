@@ -46,8 +46,9 @@ while read -r dotfile ; do
         echo "${BASH_SOURCE[0]}: Cannot source $dotfile"
     fi
 done <<DOTFILES
-    $HOME/.alias
     $HOME/.bash_funcs
+    /usr/share/bash-completion/completions/git
+    $HOME/.alias
     $tmuxbash
     $HOME/.vim/bundle/gruvbox/gruvbox_256palette.sh
     $HOME/.fzf.bash
@@ -67,3 +68,4 @@ PROMPT_COMMAND=__set_bash_prompt # see ~/.bash_funcs
 # # rbenv setup
 # eval "$(rbenv init -)"
 # export PATH="$HOME/.rbenv/bin:$HOME/.rbenv/plugins/ruby-build/bin:$PATH"
+

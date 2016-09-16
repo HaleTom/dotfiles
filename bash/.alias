@@ -10,10 +10,11 @@ alias ...="cd ../.."
 alias ....="cd ../../.."
 
 # One letter aliases
-alias g="git"
+alias g="git" &&  __git_complete g _git
 alias h="history"
 alias j="jobs"
 alias r="rake"
+alias s="git s"
 
 alias cuc=cucumber
 alias tmux='TERM=xterm-256color tmux'
