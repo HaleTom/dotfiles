@@ -6,7 +6,7 @@
 [core]
   editor = vim
   pager = less -FRX --tabs=4
-  excludesfile = /home/ravi/.gitignore_global
+  excludesfile = ~/.config/git/ignore
 
   # convert newlines to system's standard on checkout,
   # and to LF when checking in
@@ -166,6 +166,10 @@
   verbose = true # include diff output
 [diff]
   tool = vimdiff
+[diff "catchall"]
+  textconv=strings -a
+[diff "bin"]
+  textconv=hexdump -vC
 [difftool]
   prompt = false
 [merge]
