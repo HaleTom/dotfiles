@@ -1,5 +1,46 @@
+# Documentation:
+# https://git-scm.com/docs/gitattributes
+
+# Repository specific files go in .gitattributes at whatever level of the tree
+
+# Comments must be on lines by themselves
+#
+# Explicitly set the default, which is making diff "Unspecified"
+* !diff
+
 # Set the default behavior, in case people don't have core.autocrlf set.
 * text=auto
-*.bin diff=bin
 
-*.* diff=catchall
+# Get custom diff hunk headers
+*.rb ruby
+*.pl perl
+*.html html
+*.html.erb html
+*.css css
+*.c cpp
+*.h cpp
+*.py python
+*.tex tex
+
+# textconv filetypes
+# Note: If there is no converted `diff` output then `git diff` won't mention the filename
+*.bin     diff=hexdump
+*.doc     diff=strings
+*.docx    diff=strings
+*.pdf     diff=pdf
+*.zip     diff=zip
+*.tar     diff=tar -tvv
+*.tgz     diff=tar -tvvz
+*.tar.gz  diff=tar -tvvz
+*.jpg     diff=exif
+*.jpeg    diff=exif
+*.ps      diff=ps
+
+# Mark a text file as a binary, eg #.ps
+# *.ps -diff # this is done in .gitconfig instead
+#
+# Sometimes you would need to override an setting of an attribute for a path to
+# Unspecified state. This can be done by listing the name of the attribute
+# prefixed with an exclamation point !. Eg: favico.jpg !exif
+#
+#

@@ -68,12 +68,14 @@
   db     = !GIT_TRACE=1 git # Use to debug an alias, Eg: git db <aliasname>
   debug  = "!set -x; GIT_TRACE=2 GIT_CURL_VERBOSE=2 GIT_TRACE_PERFORMANCE=2 GIT_TRACE_PACK_ACCESS=2 GIT_TRACE_PACKET=2 GIT_TRACE_PACKFILE=2 GIT_TRACE_SETUP=2 GIT_TRACE_SHALLOW=2 git \"$@\" #"
   dc     = diff --cached --ws-error-highlight=all
-  dcw    = diff --cached --color-words --ws-error-highlight=all
+  dcw    = diff --cached --ws-error-highlight=all --color-words
   df     = diff --ws-error-highlight=all # old,new,context,all
-  dfw    = diff --color-words --ws-error-highlight=all # old,new,context,all
-  dh     = diff HEAD
-  dhh    = diff HEAD~1
-  ds     = diff --stat
+  dfw    = diff --ws-error-highlight=all --color-words # old,new,context,all
+  dh     = diff --ws-error-highlight=all HEAD
+  dhh    = diff --ws-error-highlight=all HEAD~1
+  dch    = diff --cached --ws-error-highlight=all HEAD
+  dchh   = diff --cached --ws-error-highlight=all HEAD~1
+  ds     = diff --stat # lines added and removed
   dt     = difftool -y -t vimdiff --noprompt
   icdiff = difftool --no-prompt --extcmd icdiff # \"$@\"
   logd   = log --oneline --graph --decorate --remotes --max-count=20
@@ -101,10 +103,17 @@
   s      = status --short #--branch
   sm     = submodule
   sa     = stash apply
+  sc     = stash clear # all
+  sd     = stash drop # latest or specified
   sl     = stash list
+  sp     = stash pop
   ss     = stash save
   st     = !git s # motor memory trainer wheels
   sp     = stash pop
+  t      = tag
+  tl     = tag -n1 --list
+  tm     = tag -m
+  td     = tag -d
 
   # Run a command in the root of the working tree
   sh = !bash -c '\"$@\"' - # default to bash
@@ -128,9 +137,10 @@
 
   # Simple diff ignoring line number changes
   sortdiff = !sh -c 'git diff "$@" | grep "^[+-]" | sort --key=1.2 | uniq -u -s1'
-  
-  editglobalconfig = "config -e --global"
-  
+
+  edit-global-config = "config -e --global"
+  backup-config = !"c=~/.config/git/config;g=~/.gitconfig; [ -e \"$g\" -a x$1 != x-f ] &&  echo \"$g exists. Not modified\" || cp -vp \"$c\" \"$g\" #"
+
 [push]
   default = simple
 
@@ -163,13 +173,29 @@
     changed = green
     untracked = cyan
 [commit]
-  verbose = true # include diff output
+  verbose = true # include diff output for easy review
+
+# Remove cachetextconv: git update-ref -d refs/notes/textconv/<driver>
 [diff]
   tool = vimdiff
-[diff "catchall"]
-  textconv=strings -a
-[diff "bin"]
-  textconv=hexdump -vC
+  # https://git-scm.com/docs/gitattributes
+  [diff "strings"]
+    # `strings -a` may cause null output - git won't print a header in that case
+    textconv=strings -a
+  [diff "hexdump"]
+    textconv=hexdump -vC
+  [diff "pdf"]
+    textconv="pdfinfo \"$1\"; pdftotext \"$1\" - #"
+  [diff "zip"]
+    textconv=unzip -v
+    cachetextconv = true
+  [diff "exif"]
+    textconv = exiftool # Many file formats. https://en.wikipedia.org/wiki/ExifTool
+    cachetextconv = true
+  [diff "ps"]
+    textconv = ps2ascii
+    binary=true # Mark as a binary even though they are meaningless text
+
 [difftool]
   prompt = false
 [merge]
