@@ -14,6 +14,7 @@ alias ...="cd ../.."
 alias ....="cd ../../.."
 alias .....="cd ../../../.."
 
+
 # Allow git alias completion
 source /usr/share/bash-completion/completions/git
 export -f __git_complete # from /usr/share/bash-completion/completions/git
@@ -25,7 +26,10 @@ alias j="jobs"
 alias r="rake"
 alias s="git s"
 
+# Two letters
+alias gh="git logda" # Git History
+
+alias agc="ag --color"
 alias cuc=cucumber
 alias tmux='TERM=xterm-256color tmux'
 alias tmuxinator='TERM=xterm-256color tmuxinator'
-
