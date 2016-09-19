@@ -30,7 +30,6 @@
   au     = "!git ls-files -z -o --exclude-standard | xargs -0 git add; #" # Add only untracked files
   aw     = !git diff -U0 -w --no-color -- \"$@\" | git apply --cached --ignore-whitespace --unidiff-zero "#" # Add only non-whitespace changes
   aow    = !git add -- \"$@\" && git diff --cached -w | git apply --cached -R "#" # Add only whitespace changes
-  bash   = !bash -c '\"$@\"' - # Run command in working tree's root
   br     = branch
   c      = commit
   co     = checkout
@@ -70,6 +69,8 @@
   dc     = diff --cached --ws-error-highlight=all
   dcw    = diff --cached --ws-error-highlight=all --color-words
   df     = diff --ws-error-highlight=all # old,new,context,all
+  dfc    = "!bash -c 'case \"$1\" in -*) ;; *) c=\"${1:-HEAD}\";shift; esac; git diff --ws-error-highlight=all \"$@\" \"$c\" \"`git child \"$c\"`\"' -" # Diff with first child
+  dfp    = "!bash -c 'case \"$1\" in -*) ;; *) c=\"$1\";shift; esac; git diff --ws-error-highlight=all \"$@\" \"${c:=HEAD}~\" \"$c\"' -" # Diff with first parent
   dfw    = diff --ws-error-highlight=all --color-words # old,new,context,all
   dh     = diff --ws-error-highlight=all HEAD
   dhh    = diff --ws-error-highlight=all HEAD~1
@@ -93,11 +94,13 @@
   rba    = rebase --abort
   rbb    = !sh -c \"git rebase -i `git merge-base $1 HEAD` #\" # Rebase to branch-name # http://stackoverflow.com/a/31036518/5353461
   rbc    = rebase --continue
-  rbi    = rebase -i HEAD~20
+  rbi    = rebase --interactive --autostash --autosquash HEAD~20
+  rbo    = rebase --onto
   re     = reset
+  reh    = reset --hard
   res    = reset --soft
-  reh    = reset HEAD
-  rehh   = reset --hard HEAD
+  resc   = !"git reset --soft `c=\\`git child\\`; [ \"$c\" ] && echo $c || git children`" # Move HEAD to the child
+  resp   = reset --soft HEAD~ # Move HEAD to the first parent
   rl     = reflog
   rmc    = rm --cached
   s      = status --short #--branch
@@ -109,18 +112,37 @@
   sp     = stash pop
   ss     = stash save
   st     = !git s # motor memory trainer wheels
-  sp     = stash pop
   t      = tag
   tl     = tag -n1 --list
   tm     = tag -m
   td     = tag -d
 
-  # Run a command in the root of the working tree
-  sh = !bash -c '\"$@\"' - # default to bash
-  bsh = !\"$@\" - # Bourne shell
+  #
+  # Children
+  #
+  # Get all children of current or specified commit-ish
+  children = "!bash -c 'c=${1:-HEAD}; set -- $(git rev-list --all --not \"$c\"^@ --children | grep $(git rev-parse \"$c\") ); shift; echo $*' -"
+  # For all children, print: hash, author, date and subject
+  child-log = "!for c in `git children $1`; do git log -n1 --format=\"%Cred%h %Creset%Cgreen%cN %Cblue%ci %Creset%s\" $c; done #"
+  # Get the child commit of the current commit, moving toward the current branch tip
+  # Use $1 instead of 'HEAD' if given. Use $2 instead of curent branch if given
+  # Returns empty if nothing found in the direction of $2
+  child = "!bash -c 'git log --format=%H --reverse --ancestry-path ${1:-HEAD}..${2:-\"$(git rev-parse --abbrev-ref HEAD)\"} | head -1' -"
 
-  # list aliases
-  la = !git config --list | grep ^alias\\. | cut -c 7- | grep -Ei --color \"$1\" "#"
+  # Generate fixup/squash for HEAD or specified commit
+  # TODO use -e only if no additional -m given
+  fixup  = !"c=\"$1\"; shift; git commit -m \"fixup! $(git log -1 --format='%s' \"$c\")\" \"$@\" -e #"
+  squash = !"c=\"$1\"; shift; git commit -m \"squash! $(git log -1 --format='%s' \"$c\")\" \"$@\" #"
+
+  # Run a command in the root of the working tree
+  sh   = !bash -c '\"$@\"' - # default to bash
+  bsh = !\"$@\" - # Bourne shell, save some typing in default case :)
+
+  # Aliases
+  la = !git config --list | grep ^alias\\. | cut -c 7- | grep -Ei --color \"$1\" "#" # List aliases
+  # Quote / unquote a sh command, converting it to / from a git alias string
+  quote-string = "!read -r l; printf \\\"!; printf %s \"$l\" | sed 's/\\([\\\"]\\)/\\\\\\1/g'; printf \" #\\\"\\n\" #"
+  quote-string-undo = "!read -r l; printf %s \"$l\" | sed 's/\\\\\\([\\\"]\\)/\\1/g'; printf \"\\n\" #"
 
   # Show files ignored by git
   ign = ls-files -o -i --exclude-standard
@@ -138,8 +160,10 @@
   # Simple diff ignoring line number changes
   sortdiff = !sh -c 'git diff "$@" | grep "^[+-]" | sort --key=1.2 | uniq -u -s1'
 
-  edit-global-config = "config -e --global"
-  backup-config = !"c=~/.config/git/config;g=~/.gitconfig; [ -e \"$g\" -a x$1 != x-f ] &&  echo \"$g exists. Not modified\" || cp -vp \"$c\" \"$g\" #"
+  # Manage this config file
+  edit-global-config = "!bash -c '[ -f ~/.gitconfig -a -f ~/.config/git/config ] && ! confirm_sure \"Two config files exist. Proceed?\" && exit || git config -e --global'"
+  backup-config = "!c=~/.config/git/config;g=~/.gitconfig; [ -e \"$g\" -a x$1 != x-f ] && echo \"$g exists. Not modified\" || cp -vp \"$c\" \"$g\" #"
+  rmbackup-config = "!rm -v ~/.gitconfig"
 
 [push]
   default = simple
@@ -174,6 +198,8 @@
     untracked = cyan
 [commit]
   verbose = true # include diff output for easy review
+[rebase]
+  stat = true
 
 # Remove cachetextconv: git update-ref -d refs/notes/textconv/<driver>
 [diff]
@@ -200,14 +226,15 @@
   prompt = false
 [merge]
   tool = vimdiff
+[interactive]
+  diffFilter=diff-hi | less -FRX --tabs=4
 [pager]
   # Bypass pager: git --no-pager ...
   # Consider https://github.com/so-fancy/diff-so-fancy - removes +/- leaders
   log = diff-hi | less
   show = diff-hi | less
   diff = diff-hi | less -FRX --tabs=4
-  difftool = true # Use pager defined in [core]
-  
   # Allow hunk movement with n/p keys
   # but ugly when less than one screen's worth of output - blank lines are all '~'
   # diff = diff-hi | less -FRX --tabs=4 --pattern '^(\\@\\@.*,.*,.*\\@\\@|diff --git .* .*)$' # Allow hunk movement with n/p keys
+  difftool = true # Use pager defined in [core]
