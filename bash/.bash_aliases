@@ -14,13 +14,8 @@ alias ...="cd ../.."
 alias ....="cd ../../.."
 alias .....="cd ../../../.."
 
-
-# Allow git alias completion
-source /usr/share/bash-completion/completions/git
-export -f __git_complete # from /usr/share/bash-completion/completions/git
-
 # One letter aliases
-alias g="git" &&  __git_complete g _git
+alias g="git"
 alias h="history"
 alias j="jobs"
 alias r="rake"

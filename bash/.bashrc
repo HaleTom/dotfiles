@@ -47,7 +47,6 @@ while read -r dotfile ; do
     fi
 done <<DOTFILES
     $HOME/.bash_funcs
-    /usr/share/bash-completion/completions/git
     $HOME/.bash_aliases
     $tmuxbash
     $HOME/.vim/bundle/gruvbox/gruvbox_256palette.sh
@@ -56,6 +55,11 @@ done <<DOTFILES
     /usr/local/share/chruby/auto.sh
 DOTFILES
 unset tmuxbash
+
+# alias g=git (done in .bash_aliases)
+# This needs to be here - doesn't work inside .bash_aliases for some reason
+# See http://stackoverflow.com/a/39507158/5353461
+_xfunc git __git_complete g _git
 
 # This tells bash to reinterpret PS1 after every command, which we
 # need because __git_ps1 will return different text and colors
