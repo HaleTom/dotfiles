@@ -31,6 +31,8 @@
   aw     = !git diff -U0 -w --no-color -- \"$@\" | git apply --cached --ignore-whitespace --unidiff-zero "#" # Add only non-whitespace changes
   aow    = !git add -- \"$@\" && git diff --cached -w | git apply --cached -R "#" # Add only whitespace changes
   br     = branch
+  brd    = branch -d
+  brdd   = branch -D
   c      = commit
   co     = checkout
   cob    = checkout -b
@@ -65,7 +67,7 @@
     git commit -a --amend --no-edit && \
     git status -s; }; f"
   db     = !GIT_TRACE=1 git # Use to debug an alias, Eg: git db <aliasname>
-  debug  = "!set -x; GIT_TRACE=2 GIT_CURL_VERBOSE=2 GIT_TRACE_PERFORMANCE=2 GIT_TRACE_PACK_ACCESS=2 GIT_TRACE_PACKET=2 GIT_TRACE_PACKFILE=2 GIT_TRACE_SETUP=2 GIT_TRACE_SHALLOW=2 git \"$@\" #"
+  debug  = "!set -x; GIT_TRACE=2 GIT_CURL_VERBOSE=2 GIT_TRACE_PERFORMANCE=2 GIT_TRACE_PACK_ACCESS=2 GIT_TRACE_PACKET=2 GIT_TRACE_PACKFILE=2 GIT_TRACE_SETUP=2 GIT_TRACE_SHALLOW=2 git"
   dc     = diff --cached --ws-error-highlight=all
   dcw    = diff --cached --ws-error-highlight=all --color-words
   df     = diff --ws-error-highlight=all # old,new,context,all
@@ -78,6 +80,8 @@
   dchh   = diff --cached --ws-error-highlight=all HEAD~1
   ds     = diff --stat # lines added and removed
   dt     = difftool -y -t vimdiff --noprompt
+  # head   = "!c=\"$(git rev-parse --verify \"$1\"^{commit})\" && h=\"$(git rev-parse --git-dir)\"/HEAD && echo $c>$h || echo \"HEAD untouched due error\" >&2 #" # Move head to specified commit-ish
+  head   = "!p=\"$(git log -n1 --oneline --decorate)\" && git update-ref --no-deref -m \"Move HEAD from $p\" HEAD \"$1\" #" # Move HEAD to specified commit-ish
   icdiff = difftool --no-prompt --extcmd icdiff # \"$@\"
   logd   = log --oneline --graph --decorate --remotes --max-count=20
   logda  = log --oneline --graph --decorate --remotes --all --max-count=20
@@ -116,6 +120,9 @@
   tl     = tag -n1 --list
   tm     = tag -m
   td     = tag -d
+
+  # Print "HEAD -> master, tag: head, origin/master" for HEAD (or commit-ish if given)
+  decorations = "!git log -n1 --oneline --decorate $1 | sed 's/.*(\\(.*\\)).*/\\1/' #"
 
   #
   # Children
