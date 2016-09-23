@@ -51,6 +51,7 @@
   cann   = commit -a --amend --no-edit
   canm   = commit -a --amend -m
   cl     = clone
+  cls    = clone --depth 1 --shallow-submodules
   clear  = "!bash -c ' git clean -n | sed \"s/^Would remove //\"; \
     read -rn1 -p \"Delete all the above? [y/N] \" r; echo; \
     [[ x$r =~ ^x[yY] ]] && git clean -f || echo Untouched.'"
@@ -66,8 +67,8 @@
     echo '# Add only new files silently' > /dev/null && \
     git commit -a --amend --no-edit && \
     git status -s; }; f"
-  db     = !GIT_TRACE=1 git # Use to debug an alias, Eg: git db <aliasname>
-  debug  = "!set -x; GIT_TRACE=2 GIT_CURL_VERBOSE=2 GIT_TRACE_PERFORMANCE=2 GIT_TRACE_PACK_ACCESS=2 GIT_TRACE_PACKET=2 GIT_TRACE_PACKFILE=2 GIT_TRACE_SETUP=2 GIT_TRACE_SHALLOW=2 git"
+  db     = "!export GIT_TRACE=1; git" # Use to debug an alias, Eg: git db <aliasname>
+  debug  = "!set -x; export GIT_TRACE=2 GIT_CURL_VERBOSE=2 GIT_TRACE_PERFORMANCE=2 GIT_TRACE_PACK_ACCESS=2 GIT_TRACE_PACKET=2 GIT_TRACE_PACKFILE=2 GIT_TRACE_SETUP=2 GIT_TRACE_SHALLOW=2; git"
   dc     = diff --cached --ws-error-highlight=all
   dcw    = diff --cached --ws-error-highlight=all --color-words
   df     = diff --ws-error-highlight=all # old,new,context,all
@@ -80,8 +81,7 @@
   dchh   = diff --cached --ws-error-highlight=all HEAD~1
   ds     = diff --stat # lines added and removed
   dt     = difftool -y -t vimdiff --noprompt
-  # head   = "!c=\"$(git rev-parse --verify \"$1\"^{commit})\" && h=\"$(git rev-parse --git-dir)\"/HEAD && echo $c>$h || echo \"HEAD untouched due error\" >&2 #" # Move head to specified commit-ish
-  head   = "!p=\"$(git log -n1 --oneline --decorate)\" && git update-ref --no-deref -m \"Move HEAD from $p\" HEAD \"$1\" #" # Move HEAD to specified commit-ish
+  head   = "!c=\"`git rpc \"$1\"`\" && p=\"$(git log -n1 --oneline --decorate)\" && git update-ref --no-deref -m \"Move from $p\" HEAD \"$c\" #" # Move HEAD to specified commit-ish
   icdiff = difftool --no-prompt --extcmd icdiff # \"$@\"
   logd   = log --oneline --graph --decorate --remotes --max-count=20
   logda  = log --oneline --graph --decorate --remotes --all --max-count=20
@@ -90,7 +90,7 @@
   mum    = merge upstream/master
   psfwl  = push --force-with-lease
   psuo   = push --set-upstream origin
-  psuob  = push --set-upstream origin `git rev-parse --abbrev-ref HEAD`
+  psuob  = "!b=\"$(git rev-parse --abbrev-ref HEAD)\" && git push --set-upstream origin \"$b\" #"
   pl     = pull
   ps     = push
   pum    = pull upstream master
@@ -106,6 +106,9 @@
   resc   = !"git reset --soft `c=\\`git child\\`; [ \"$c\" ] && echo $c || git children`" # Move HEAD to the child
   resp   = reset --soft HEAD~ # Move HEAD to the first parent
   rl     = reflog
+  rp     = rev-parse
+  rpc    = !"git rev-parse --verify \"$1\"^{commit} #"
+  rpt    = !"git rev-parse --verify \"$1\"^{tag} #"
   rmc    = rm --cached
   s      = status --short #--branch
   sm     = submodule
@@ -121,20 +124,67 @@
   tm     = tag -m
   td     = tag -d
 
-  # Print "HEAD -> master, tag: head, origin/master" for HEAD (or commit-ish if given)
-  decorations = "!git log -n1 --oneline --decorate $1 | sed 's/.*(\\(.*\\)).*/\\1/' #"
+  # Work through comments, then do *MORE* ruby :) 
+
+  # Print the --decorations of `git log` without the ( ) eg "HEAD -> master, tag: head, origin/master"
+  # TODO: for HEAD (or commit-ish if given)
+  # With -n1, only last argument is used (strangely). Verify one argument is a commit-ish.
+  decorations = "![ \"$#\" = 1 ] && git log -n1 --format=%D \"`git rev-parse --verify \"$1\"^{commit}`\" || echo \"Commit-ish not given\" >&2 #"
+
+  # Print line like: d5439f7 (origin/install-maint, install-maint) INSTALL: Make `make` targets consistent across examples
+  print-commit      = "!for c in \"$@\"; do git log -n1 --oneline --decorate \"$c\"; done #"
+  print-commit      = "!for c in \"$@\"; do git log -n1 --format=\"%C(auto) %h %d %C(auto)%s %Cgreen%cd %Cblue%an\" --date=relative \"$c\"; done #"
+  print-commit      = "!for c in \"$@\"; do shell-quote git log -n1 --format=\"%C(auto) %h %d %C(auto)%s %Cgreen%cd %Cblue%an\" --date=relative \"$c\"; done #"
+  print-commit      = "!for c in \"$@\"; do shell-quote git log -n1 \"`git print-commit-format`\" --date=relative \"$c\"; done #"
+
+  # Works
+  print-commit      = "!for c in \"$@\"; do git log -n1 \"`git print-commit-format`\" --date=relative \"$c\"; done #"
+  print-commit-format = "!echo --format=\"%C(auto) %h %d %C(auto)%s %Cgreen%cd %Cblue%an\""
+
+  print-commit        = "!for c in \"$@\"; do f=`git print-commit-format` && eval git log -n1 $f \"$c\"; done #"
+  print-commit-format = "!shell-quote -- --format=\"%C(auto)%h%d %C(auto)%s %Cgreen%cd %Cblue%an\" --date=relative"
+  print-commit-long   = "!for c in \"$@\"; do f=`git print-commit-format` && eval git log -n1 $f --date=iso \"$c\"; done #"
+
+  # TODO read shell-quote on arguments
+
+  # print-commit      = "!for c in \"$@\"; do echo git log -n1 `git print-commit-format` \"$c\"; done #"
+  # print-commit-format = "!shell-quote -- '--format=\"%C(auto) %h %d %C(auto)%s %Cgreen%cd %Cblue%an\"' --date=relative"
+  # Print lines like: d5439f7 Tom Hale 2016-09-22 18:41:14 +0700 INSTALL: Make `make` targets consistent across examples (origin/install-maint, install-maint)
+  # print-commit-long = "!for c in \"$@\"; do git log -n1 --format=\"%Cred%h %Creset%Cgreen%cN %Cblue%ci %Creset%s%d\" \"$c\"; done #"
 
   #
   # Children
   #
-  # Get all children of current or specified commit-ish
-  children = "!bash -c 'c=${1:-HEAD}; set -- $(git rev-list --all --not \"$c\"^@ --children | grep $(git rev-parse \"$c\") ); shift; echo $*' -"
-  # For all children, print: hash, author, date and subject
-  child-log = "!for c in `git children $1`; do git log -n1 --format=\"%Cred%h %Creset%Cgreen%cN %Cblue%ci %Creset%s\" $c; done #"
-  # Get the child commit of the current commit, moving toward the current branch tip
-  # Use $1 instead of 'HEAD' if given. Use $2 instead of curent branch if given
-  # Returns empty if nothing found in the direction of $2
-  child = "!bash -c 'git log --format=%H --reverse --ancestry-path ${1:-HEAD}..${2:-\"$(git rev-parse --abbrev-ref HEAD)\"} | head -1' -"
+  # All children hashes of current (or specified) commit-ish sorted newest first
+  children = "!git print-commit `git children-hash \"$1\"` #"
+  # For all children, print: hash, author, date, subject and decorations
+  children-long = "!git print-commit-long `git children-hash \"$1\"` #"
+  children-hash = "!bash -c 'c=${1:-HEAD}; set -- $(git rev-list --all --not \"$c\"^@ --children | grep $(git rev-parse \"$c\") ); shift; echo $* | sed -r \"s/\\s+/\\n/g\" | tac' -"
+
+  # TODO Above thoroughly teseted. Rename ancestry to prodgeny (sp)/descendants. Are the hashes the same? in ancestry and ancestry hash? Use log's child-b4-parent to get same output ordering?
+
+  # Ancestry: Commits in $2's ancestry path back to $1, newest first. Includes $2, excludes $1. Newest first
+  # Use 'HEAD' if $1 not given. Use last checked out branch if $2 not given
+  # Newest first is required for --graph to do it's pretty thing
+  ancestry = "!bash -c 'git log --graph --oneline --decorate --ancestry-path ${1:-HEAD}..${2:-\"$(git rev-parse @{-1})\"}' -"
+  ancestry-long = "!git print-commit-long `git ancestry-hash \"$1\" \"$2\"` #"
+  ancestry-hash = "!bash -c 'git log --format=%H --ancestry-path ${1:-HEAD}..${2:-\"$(git rev-parse @{-1})\"}' -"
+
+  # Rename child-ancestors? child-begets /ot?
+
+  # Direct-decendant commits of $1 which are also ancestors of $2, sorted newest first
+  # Use 'HEAD' if $1 not given. Use last checked out branch if $2 not given
+  children-branch = "!git print-commit `git children-branch \"$1\" \"$2\"` #" # Subshell unquoted to split output into arguments 
+  children-branch-hash = "!bash -c 'c=$(git children \"$1\") && git ancestry \"$1\" | grep -xF \"$c\"' #"
+
+  # TODO split into a function which announces if there is more than one child and whether the oldest is a branch-child
+  # The newest child commit with descendant $2, else the newest child overall
+  #FIXMEEEEE IFS:
+  child-hash = "!c=\"`git ancestry-hash \"$1\" \"$2\" | tail -1`\" && if [ \"$c\" ]; then echo $c; ${IFS:#else} git children-hash \"$1\" | tail -1; echo no branch; fi #"
+  child = "!git print-commit `git child-hash \"$1\" \"$2\"` #"
+
+  # TODO: warn if more than one parent
+  parent = rev-parse HEAD~
 
   # Generate fixup/squash for HEAD or specified commit
   # TODO use -e only if no additional -m given
