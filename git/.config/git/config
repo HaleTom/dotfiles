@@ -79,6 +79,8 @@
   dchh   = diff --cached --ws-error-highlight=old,new HEAD~1
   ds     = diff --stat # lines added and removed
   dt     = difftool -y -t vimdiff --noprompt
+  ec     = !"git edit-config"
+  egc    = !"git edit-global-config"
   head   = "!c=\"`git rpc \"$1\"`\" && p=\"$(git log -n1 --oneline --decorate)\" && git update-ref --no-deref -m \"Move from $p\" HEAD \"$c\" #" # Move HEAD to specified commit-ish
   icdiff = difftool --no-prompt --extcmd icdiff # \"$@\"
   logd   = log --oneline --graph --decorate --remotes --max-count=20
@@ -90,6 +92,8 @@
   psuo   = push --set-upstream origin
   psuob  = "!b=\"$(git rev-parse --abbrev-ref HEAD)\" && git push --set-upstream origin \"$b\" #"
   pl     = pull
+  plrb   = pull --rebase=true --autostash
+  plrbi  = pull --rebase=interactive --autostash
   ps     = push
   pum    = pull upstream master
   rb     = rebase
@@ -116,6 +120,8 @@
   sl     = stash list
   sp     = stash pop
   ss     = stash save
+  ssa    = stash save --all
+  ssu    = stash save --include-untracked
   st     = !git s # motor memory trainer wheels
   t      = tag
   tl     = "!git tag -n1 --list | sort -V"
