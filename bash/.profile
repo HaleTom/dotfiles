@@ -21,28 +21,16 @@ if [ -x `xcape` ]; then
     # xcape -t 300 -e 'Alt_R=Caps_Lock'
 fi
 
-# If running bash, source bashrc
+# if running bash
 if [ -n "$BASH_VERSION" ]; then
-    unset warn # Used if there are mutliple rc files
-    # include bashrc files if they exist
-    while read file; do
-    if [ -f "$file" ]; then
-            if [ "$warn" ]; then
-                echo "Warning: Also sourcing $file" >&2
-            fi
-            # shellcheck disable=1090
-            . "$file"
-            warn=true
+    # include .bashrc if it exists
+    if [ -f "$HOME/.bashrc" ]; then
+	. "$HOME/.bashrc"
     fi
-    done
-fi << BashRCFiles
-    $HOME/.config/bash/config
-    $HOME/.bashrc
-BashRCFiles
-
-# set PATH so it includes user's private bin if it exists
-if [ -d "$HOME/bin" ] ; then
-    PATH="$HOME/bin:$PATH"
 fi
 
-date
+# Manage path in .bashrc instead
+# # set PATH so it includes user's private bin if it exists
+# if [ -d "$HOME/bin" ] ; then
+#     PATH="$HOME/bin:$PATH"
+# fi

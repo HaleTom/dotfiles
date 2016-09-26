@@ -36,10 +36,6 @@ done << XDGFILES
    $HOME/.Xauthority
    $HOME/.ICEauthority
    $HOME/.gitconfig
-   # $HOME/.bashrc
-   $HOME/.bash_profile
-   $HOME/.bash_login
-   # $HOME/.bash_logout
 XDGFILES
 
 # Tell programs to look for files in $XDG_*

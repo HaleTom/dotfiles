@@ -33,7 +33,7 @@ if [[ ! -f $tmuxbash ]]; then
     if [[ ! -e $tmuxbash ]] || [[ -L $tmuxbash ]] && [[ ! -e $tmuxbash ]]; then
         echo "Creating $tmuxbash symlink"
         rm -f "$tmuxbash" && \
-        ln -s "$(readlink -f "$(dirname "$(gem which tmuxinator)")"/../completion/tmuxinator.bash)" "$tmuxbash"
+        ln -sv "$(readlink -f "$(dirname "$(gem which tmuxinator)")"/../completion/tmuxinator.bash)" "$tmuxbash"
     else
       echo "Not creating symlink at at existing:"
       ls -lF "$tmuxbash"
@@ -79,4 +79,3 @@ PROMPT_COMMAND=__set_bash_prompt # see ~/.bash_funcs
 # # rbenv setup
 # eval "$(rbenv init -)"
 # export PATH="$HOME/.rbenv/bin:$HOME/.rbenv/plugins/ruby-build/bin:$PATH"
-
