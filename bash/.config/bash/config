@@ -1,11 +1,14 @@
 #!/bin/bash
 # above line is for shellcheck's happiness
 
+source "$HOME/.config/bash/xdg" # Needed for $XDG* variables below
+
 export PATH="$HOME/bin:$PATH:/usr/local/heroku/bin:$HOME/.cabal/bin"
 export EDITOR=vim
 export RUBYLIB="$HOME"/lib:"$RUBYLIB"
 export GNULIB_SRCDIR="$HOME"/repo/gnulib
 export LESS=-FRXsu
+
 # F = exit if all can be displayed on first creen
 # R = interpret ANSI colour codes
 # X = Don't send termcap initialization and deinitialization strings (eg clear)
@@ -43,14 +46,18 @@ while read -r dotfile ; do
         # shellcheck source=/dev/null
         source "$dotfile"
     else
-        echo "${BASH_SOURCE[0]}: Cannot source $dotfile"
+       case "$dotfile" in
+          \#*) continue;; # Skip commented lines
+          *  ) echo "${BASH_SOURCE[0]}: Cannot source $dotfile"
+       esac
     fi
 done <<DOTFILES
-    $HOME/.bash_funcs
-    $HOME/.bash_aliases
+    $XDG_CONFIG_HOME/bash/functions
+    $XDG_CONFIG_HOME/bash/aliases
+    $XDG_CONFIG_HOME/bash/completion
+    $XDG_DATA_HOME/fzf/fzf.bash
     $tmuxbash
     $HOME/.vim/bundle/gruvbox/gruvbox_256palette.sh
-    $HOME/.fzf.bash
     /usr/local/share/chruby/chruby.sh
     /usr/local/share/chruby/auto.sh
 DOTFILES

@@ -1,0 +1,59 @@
+#!/bin/bash
+# ^ keep shell-check happy
+
+# XDG - set defaults as they may not be set
+# See https://standards.freedesktop.org/basedir-spec/basedir-spec-latest.html
+# and https://wiki.archlinux.org/index.php/XDG_Base_Directory_support
+export XDG_CONFIG_HOME="$HOME/.config"
+export XDG_DATA_HOME="$HOME/.local/share"
+export XDG_CACHE_HOME="$HOME/.cache"
+if [ ! -w ${XDG_RUNTIME_DIR:="/run/user/$UID"} ]; then
+    echo "\$XDG_RUNTIME_DIR ($XDG_RUNTIME_DIR) not writable. Unsetting." >&2
+    unset XDG_RUNTIME_DIR
+else
+    export XDG_RUNTIME_DIR
+fi
+
+# Export the XDG user directories
+if [ -f "$XDG_CONFIG_HOME/user-dirs.dirs" ]; then
+    . "$XDG_CONFIG_HOME/user-dirs.dirs"
+    export XDG_DESKTOP_DIR XDG_DOWNLOAD_DIR XDG_TEMPLATES_DIR XDG_PUBLICSHARE_DIR XDG_DOCUMENTS_DIR XDG_MUSIC_DIR XDG_PICTURES_DIR XDG_VIDEOS_DIR
+fi
+
+# Check that only one version of XDG files exist
+while read -r file; do
+    case "$file" in
+        \#*) continue # Allow for commened out files
+    esac
+    if [ -e "$file" ]; then
+        echo "Warning: XDG shadowed file: $file" >&2
+    fi
+done << XDGFILES
+   $HOME/.inputrc
+   $HOME/.less
+   $HOME/.gnupg
+   $HOME/.lesshst
+   $HOME/.Xauthority
+   $HOME/.ICEauthority
+   $HOME/.gitconfig
+   # $HOME/.bashrc
+   $HOME/.bash_profile
+   $HOME/.bash_login
+   # $HOME/.bash_logout
+XDGFILES
+
+# Tell programs to look for files in $XDG_*
+# When adding a file here, ensure it's default location is added
+# to the XDGFILES "here" string above
+# Config
+export LESSKEY="$XDG_CONFIG_HOME/less/keys"
+export GNUPGHOME="$XDG_CONFIG_HOME/gnupg"
+# Data
+# Cache
+export LESSHISTFILE="$XDG_CACHE_HOME/less/history"
+export XAUTHORITY="$XDG_CACHE_HOME/Xauthority"
+# export ICEAUTHORITY="$XDG_CACHE_HOME/ICEauthority"
+mkdir -p "$XDG_RUNTIME_DIR/X11"
+export ICEAUTHORITY="$XDG_RUNTIME_DIR/X11/ICEauthority"
+export XAUTHORITY="$XDG_RUNTIME_DIR/X11/Xauthority"
+export INPUTRC="$XDG_CONFIG_HOME/readline/inputrc"

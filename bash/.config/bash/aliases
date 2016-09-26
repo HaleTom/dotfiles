@@ -24,7 +24,7 @@ alias s="git s"
 # Two letters
 alias gh="git logda" # Git History
 
-alias agc="ag --color"
+alias ag="ag --color"
 alias cuc=cucumber
 alias tmux='TERM=xterm-256color tmux'
 alias tmuxinator='TERM=xterm-256color tmuxinator'

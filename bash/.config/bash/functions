@@ -162,7 +162,7 @@ function git_root {
     # We're inside the .git directory
     # Store the commit id of the first commit to compare later
     # It's possible that $GIT_DIR points somewhere not inside the repo
-    first_commit=$(git rev-list --parents HEAD | tail -1) ||
+    first_commit=$(git rev-list --parents HEAD | tail -1) || # --reverse with head -1?
       echo "$0: Can't get initial commit" 2>&1 && false && return
     root=$(git rev-parse --git-dir)/.. &&
       # subshell so we don't change the user's working directory
