@@ -114,6 +114,7 @@
   rmc    = rm --cached
   s      = status --short #--branch
   sm     = submodule
+  sms    = submodule status
   sa     = stash apply
   sc     = stash clear # all
   sd     = stash drop # latest or specified
@@ -122,7 +123,7 @@
   ss     = stash save
   ssa    = stash save --all
   ssu    = stash save --include-untracked
-  st     = !git s # motor memory trainer wheels
+  si     = status --short --ignored
   t      = tag
   tl     = "!git tag -n1 --list | sort -V"
   tm     = tag -m
