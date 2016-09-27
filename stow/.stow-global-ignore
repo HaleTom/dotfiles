@@ -21,9 +21,13 @@ _darcs
 \.git
 \.gitignore
 
+.stow-local-ignore
+.stowrc
+
 .+~          # emacs backup files
  \#.*\#       # emacs autosave files
 
+^/README
 ^/README.*
 ^/LICENSE.*
 ^/COPYING

@@ -16,34 +16,24 @@ git pull && git submodule update --init --recursive --depth 1
 echo Submodule status:
 git submodule status --recursive
 
-# Bootstrap stow by putting it config file in place
-
-# Remove ~/.stow-global-ignore if it is a symlink
-[[ -L $HOME/.stow-global-ignore ]] && rm "$HOME/.stow-global-ignore"
-# Setup stow and then install the packages
-ln -s ".dotfiles/misc/.stow-global-ignore" "$HOME" ||
-  { echo "$0: Conflict with existing .stow-global-ignore. Exiting." >&2 ; exit 1; }
-
-# Install packages
+# Setup stow
+stow -v stow
+# Install stow packages
 stow -v misc vim bash ruby tmux X11 gconf xdg git
 
-# Install fzf if not installed:
+# Install fzf if not installed
 if [[ ! -d "$XDG_DATA_HOME/fzf" ]]; then
   git clone --depth 1 https://github.com/junegunn/fzf.git "$XDG_DATA_HOME/fzf" && yes | "$XDG_DATA_HOME/fzf/install" --no-update-rc
   mv -i ~/.fzf.{bash,zsh} "$XDG_DATA_HOME/fzf/"
 fi
 
-mkdir -p $XDG_DATA_HOME/vim
-mkdir -p $XDG_CACHE_HOME/vim
-
-
+# Install neobundle to bootstrap vim plugin installation
 neobundle_dir="$XDG_DATA_HOME/vim/bundle/neobundle.vim"
 git clone --depth 1 --shallow-submodules https://github.com/Shougo/neobundle.vim "$neobundle_dir"
-
-# Parallel install/update of all vim bundles
 # Install vimproc first to be able to do all the others in parallel
 "$neobundle_dir"/bin/neoinstall vimproc
-"$neobundle_dir"/bin/neoinstall # everything
+# Parallel install/update of all vim bundles
+"$neobundle_dir"/bin/neoinstall # all user-specified plugins
 
 echo
 echo "YouCompleteMe vim plugin fetch and build:"
