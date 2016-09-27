@@ -11,7 +11,7 @@ die() {
 cd -P -- "$(dirname "$0")" || exit 1  # cd includes it's own fail message
 
 echo Updating submodules...
-git pull && git submodule update --init --recursive
+git pull && git submodule update --init --recursive --depth 1
 
 echo Submodule status:
 git submodule status --recursive

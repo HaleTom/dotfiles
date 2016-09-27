@@ -1,0 +1,3 @@
+[submodule "vimfiles"]
+	path = vim
+	url = git@bitbucket.org:HaleTom/vimfiles.git
