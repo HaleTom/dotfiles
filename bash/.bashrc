@@ -57,7 +57,7 @@ done <<DOTFILES
     $XDG_CONFIG_HOME/bash/completion
     $XDG_DATA_HOME/fzf/fzf.bash
     $tmuxbash
-    $HOME/.vim/bundle/gruvbox/gruvbox_256palette.sh
+    # $HOME/.vim/bundle/gruvbox/gruvbox_256palette.sh
     /usr/local/share/chruby/chruby.sh
     /usr/local/share/chruby/auto.sh
 DOTFILES
