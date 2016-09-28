@@ -7,33 +7,49 @@ die() {
     exit 1
 }
 
+function neobundle_update {
+  local VIMRC=$XDG_CONFIG_HOME/vim/vimrc
+  vim -N -u "$VIMRC" -c "try | NeoBundleUpdate! $* | finally | qall! | endtry" \
+   -U NONE -i NONE -e -s -V1 # -V1 prints X error messages
+}
+
 # src_dir=$(dirname "$(readlink -f "$0")")
 cd -P -- "$(dirname "$0")" || exit 1  # cd includes it's own fail message
 
-echo Updating submodules...
-git pull && git submodule update --init --recursive --depth 1
+echo Updating submodules... (wait - no output)
+git pull && git submodule update --init --recursive --recommend-shallow --depth 1
 
 echo Submodule status:
 git submodule status --recursive
 
-# Setup stow
-stow -v stow
+# Stow packages
+stow -v stow # Setup stow itself
 # Install stow packages
 stow -v misc vim bash ruby tmux X11 gconf xdg git
+echo "Stow of packages complete"
 
 # Install fzf if not installed
 if [[ ! -d "$XDG_DATA_HOME/fzf" ]]; then
-  git clone --depth 1 https://github.com/junegunn/fzf.git "$XDG_DATA_HOME/fzf" && yes | "$XDG_DATA_HOME/fzf/install" --no-update-rc
+  git clone --depth 1 https://github.com/junegunn/fzf.git "$XDG_DATA_HOME/fzf"
+    && yes | "$XDG_DATA_HOME/fzf/install" --no-update-rc
   mv -i ~/.fzf.{bash,zsh} "$XDG_DATA_HOME/fzf/"
+else
+  echo "fzf already installed in $XDG_DATA_HOME/fzf"
 fi
 
 # Install neobundle to bootstrap vim plugin installation
 neobundle_dir="$XDG_DATA_HOME/vim/bundle/neobundle.vim"
-git clone --depth 1 --shallow-submodules https://github.com/Shougo/neobundle.vim "$neobundle_dir"
-# Install vimproc first to be able to do all the others in parallel
-"$neobundle_dir"/bin/neoinstall vimproc
-# Parallel install/update of all vim bundles
-"$neobundle_dir"/bin/neoinstall # all user-specified plugins
+if [[ ! -d "$XDG_DATA_HOME/fzf" ]]; then
+  git clone --depth 1 --shallow-submodules https://github.com/Shougo/neobundle.vim.git "$neobundle_dir"
+else
+  echo "NeoBundle already installed in $neobundle_dir"
+fi
+
+# vim plugins
+echo "Installing vimproc for parallel vim plugin updates..."
+neobundle_update vimproc
+echo "Install/update all plugins..."
+neobundle_update
 
 echo
 echo "YouCompleteMe vim plugin fetch and build:"
