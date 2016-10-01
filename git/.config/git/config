@@ -18,7 +18,7 @@
 # If you want to \ continue a line, it must be inside a "-quoted string
 # Continue/wrap long lines with final \ character
 # It's not possible to have a comment after a continuation \
-# Quote ALL " and \ characters as \" and \\
+# Quote ALL newline, " and \ characters as \n, \" and \\
 # A literal '#' or ';' must be inside "-quotes
 ; this is also a comment
 [alias]
