@@ -295,15 +295,20 @@
   prompt = false
 [merge]
   tool = vimdiff
+
 [interactive]
-  diffFilter=diff-hi | less -FRX --tabs=4
+  diffFilter = "diff-hi | less -FRX --tabs=4"
+
 [pager]
   # Bypass pager: git --no-pager ...
+  # " = true" means use pager defined in [core]
+  # add      = true # disabled currently due to bug
+  diff     = true
+  difftool = true
+  log      = true
+  show     = true
   # Consider https://github.com/so-fancy/diff-so-fancy - removes +/- leaders
-  log = diff-hi | less
-  show = diff-hi | less
-  diff = diff-hi | less -FRX --tabs=4
-  # Allow hunk movement with n/p keys
   # but ugly when less than one screen's worth of output - blank lines are all '~'
+
+  # Allow hunk movement with n/p keys
   # diff = diff-hi | less -FRX --tabs=4 --pattern '^(\\@\\@.*,.*,.*\\@\\@|diff --git .* .*)$' # Allow hunk movement with n/p keys
-  difftool = true # Use pager defined in [core]
