@@ -57,7 +57,7 @@
     [[ x$r =~ ^x[yY] ]] && git clean -f || echo Untouched.'"
   cm     = commit -m
   cn     = commit --amend
-  cnc    = commit --amend -C HEAD
+  cnn    = commit --amend --no-edit
   cnm    = commit --amend -m
   cp     = commit --patch
   cvp    = "!f() { git commit -v --patch \"$@\"; git st; }; f"
