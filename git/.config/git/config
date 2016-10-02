@@ -197,9 +197,9 @@
   parent = rev-parse HEAD~
 
   # Generate fixup/squash for HEAD or specified commit
+  fixup  = !"c=\"$1\"; shift; git commit -m \"fixup! $(git log -1 --format='%s' \"$c\")\" \"$@\" #"
   # TODO use -e only if no additional -m given
-  fixup  = !"c=\"$1\"; shift; git commit -m \"fixup! $(git log -1 --format='%s' \"$c\")\" \"$@\" -e #"
-  squash = !"c=\"$1\"; shift; git commit -m \"squash! $(git log -1 --format='%s' \"$c\")\" \"$@\" #"
+  squash = !"c=\"$1\"; shift; git commit -m \"squash! $(git log -1 --format='%s' \"$c\")\" \"$@\" -e #" # -e to add message to squash in
 
   # Run a command in the root of the working tree
   sh   = !bash -c '\"$@\"' - # default to bash
