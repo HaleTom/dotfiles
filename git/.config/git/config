@@ -104,9 +104,10 @@
   rbo    = rebase --onto
   re     = reset
   reh    = reset --hard
+  rep    = reset --patch
   res    = reset --soft
   resc   = !"git reset --soft `c=\\`git child\\`; [ \"$c\" ] && echo $c || git children`" # Move HEAD to the child
-  resp   = reset --soft HEAD~ # Move HEAD to the first parent
+  resa   = reset --soft HEAD~ # Move HEAD to the first Ancestor
   rl     = reflog
   rp     = rev-parse
   rpc    = !"git rev-parse --verify \"$1\"^{commit} #"
@@ -252,6 +253,7 @@
     remote = green
   [color "diff"]
     meta = yellow bold
+    commit = green
     frag = magenta bold
     old = red bold
     new = green bold
