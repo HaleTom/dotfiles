@@ -39,26 +39,36 @@ done << XDGFILES
    $HOME/.gitconfig
    $HOME/.vim
    $HOME/.viminfo
+   $HOME/.npm
+   $HOME/.npmrc
 XDGFILES
 
 # Tell programs to look for files in $XDG_*
 # When adding a file here, ensure it's default location is added
 # to the XDGFILES "here" string above
 # Config
+
+
+# Single-line config
 export INPUTRC="$XDG_CONFIG_HOME/readline/inputrc"
-export LESSKEY="$XDG_CONFIG_HOME/less/keys"
 export GNUPGHOME="$XDG_CONFIG_HOME/gnupg"
 
-# Data
+# Begin multi-line config
 
-# Cache
+export LESSKEY="$XDG_CONFIG_HOME/less/keys"
 export LESSHISTFILE="$XDG_CACHE_HOME/less/history"
-export XAUTHORITY="$XDG_CACHE_HOME/Xauthority"
 
-# Runtime
+# npm
+# see npm config ls -l | grep /
+export NPM_CONFIG_USERCONFIG=$XDG_CONFIG_HOME/npm/config
+export NPM_CONFIG_CACHE=$XDG_CACHE_HOME/npm
+export NPM_CONFIG_TMP=$XDG_RUNTIME_DIR/npm
+
+# X11
+export XAUTHORITY="$XDG_CACHE_HOME/Xauthority"
 mkdir -p "$XDG_RUNTIME_DIR/X11"
 export ICEAUTHORITY="$XDG_RUNTIME_DIR/X11/ICEauthority"
 export XAUTHORITY="$XDG_RUNTIME_DIR/X11/Xauthority"
 
-# Set vimrc and viminfo location before vim startup
+# vim: Set vimrc and viminfo location before vim startup
 export VIMINIT='let $MYVIMRC="'"$XDG_CONFIG_HOME"'/vim/vimrc"|source $MYVIMRC'

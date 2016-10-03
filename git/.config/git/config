@@ -230,7 +230,7 @@
   # Edit this module's config file
   edit-config = !"$EDITOR \"`git rev-parse --git-dir`\"/config #"
   # Manage this config file
-  edit-global-config = "!bash -c '[ -f ~/.gitconfig -a -f ~/.config/git/config ] && ! confirm_sure \"Two config files exist. Proceed?\" && exit || git config -e --global'"
+  edit-global-config = "!bash -c '[ -f ~/.gitconfig -a -f ~/.config/git/config ] && ! confirm_no \"Two config files exist. Proceed?\" && exit || git config -e --global'"
   backup-config = "!c=~/.config/git/config;g=~/.gitconfig; [ -e \"$g\" -a x$1 != x-f ] && echo \"$g exists. Not modified\" || cp -vp \"$c\" \"$g\" #"
   rmbackup-config = "!rm -v ~/.gitconfig"
 
