@@ -130,26 +130,31 @@
   tm     = tag -m
   td     = tag -d
 
+
+  # Print line like:
+  # 8d048fa (HEAD -> master) local-update: add cabal and npm 30 hours ago Tom Hale
+  print-commit = "!for c in \"$@\"; do eval git log -n1 `git print-commit-format` \"$c\"; done #"
+
+  # Print line like:
+  # 8d048fa (HEAD -> master) local-update: add cabal and npm 2016-10-03 12:29:38 +0700 Tom Hale
+  print-commit-long = "!for c in \"$@\"; do eval git log -n1 `git print-commit-format` --date=iso \"$c\"; done #"
+
+  print-commit-format = "!echo '--format=\"%C(auto)%h%d %s %Cgreen%cd %Cblue%an\" --date=relative' #"
+
+  # ---------------- Good above here -------------------- #
+
+  # TODO ask all diff colours see note++ 11
+  #
+  # TODO use select with fixup
+  # IFS=$'\n' && select name in $(g logda --color=always); do echo $name; break; done
+
+
   # Work through comments, then do *MORE* ruby :) 
 
   # Print the --decorations of `git log` without the ( ) eg "HEAD -> master, tag: head, origin/master"
   # TODO: for HEAD (or commit-ish if given)
   # With -n1, only last argument is used (strangely). Verify one argument is a commit-ish.
-  decorations = "![ \"$#\" = 1 ] && git log -n1 --format=%D \"`git rev-parse --verify \"$1\"^{commit}`\" || echo \"Commit-ish not given\" >&2 #"
-
-  # Print line like: d5439f7 (origin/install-maint, install-maint) INSTALL: Make `make` targets consistent across examples
-  print-commit      = "!for c in \"$@\"; do git log -n1 --oneline --decorate \"$c\"; done #"
-  print-commit      = "!for c in \"$@\"; do git log -n1 --format=\"%C(auto) %h %d %C(auto)%s %Cgreen%cd %Cblue%an\" --date=relative \"$c\"; done #"
-  print-commit      = "!for c in \"$@\"; do shell-quote git log -n1 --format=\"%C(auto) %h %d %C(auto)%s %Cgreen%cd %Cblue%an\" --date=relative \"$c\"; done #"
-  print-commit      = "!for c in \"$@\"; do shell-quote git log -n1 \"`git print-commit-format`\" --date=relative \"$c\"; done #"
-
-  # Works
-  print-commit      = "!for c in \"$@\"; do git log -n1 \"`git print-commit-format`\" --date=relative \"$c\"; done #"
-  print-commit-format = "!echo --format=\"%C(auto) %h %d %C(auto)%s %Cgreen%cd %Cblue%an\""
-
-  print-commit        = "!for c in \"$@\"; do f=`git print-commit-format` && eval git log -n1 $f \"$c\"; done #"
-  print-commit-format = "!shell-quote -- --format=\"%C(auto)%h%d %C(auto)%s %Cgreen%cd %Cblue%an\" --date=relative"
-  print-commit-long   = "!for c in \"$@\"; do f=`git print-commit-format` && eval git log -n1 $f --date=iso \"$c\"; done #"
+  decorations = "![ \"$#\" = 1 ] && git log -n1 --format=\"%C(auto)%D\" \"`git rev-parse --verify \"$1\"^{commit}`\" || echo \"Commit-ish not given\" >&2 #"
 
   # TODO read shell-quote on arguments
 
@@ -209,8 +214,8 @@
   # Aliases
   la = !git config --list | grep ^alias\\. | cut -c 7- | grep -Ei --color \"$1\" "#" # List aliases
   # Quote / unquote a sh command, converting it to / from a git alias string
-  quote-string = "!read -r l; printf \\\"!; printf %s \"$l\" | sed 's/\\([\\\"]\\)/\\\\\\1/g'; printf \" #\\\"\\n\" #"
-  quote-string-undo = "!read -r l; printf %s \"$l\" | sed 's/\\\\\\([\\\"]\\)/\\1/g'; printf \"\\n\" #"
+  quote-string = !"read -r l; printf !\\\"; printf %s \"$l\" | sed 's/\\([\\\"]\\)/\\\\\\1/g'; printf \" #\\\"\\n\" #"
+  quote-string-undo = !"read -r l; printf %s \"$l\" | sed 's/\\\\\\([\\\"]\\)/\\1/g'; printf \"\\n\" #"
 
   # Show files ignored by git
   ign = ls-files -o -i --exclude-standard
@@ -244,7 +249,7 @@
   # you will have to add --track to your branch command or manually merge remote
   # tracking branches with "fetch" and then "merge".
   autosetupmerge = true
-  
+
 [color]
   ui = auto
   [color "branch"]
@@ -253,7 +258,7 @@
     remote = green
   [color "diff"]
     meta = yellow bold
-    commit = green
+    commit = yellow
     frag = magenta bold
     old = red bold
     new = green bold
