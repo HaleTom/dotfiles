@@ -30,7 +30,11 @@
   au     = "!git ls-files -z -o --exclude-standard | xargs -0 git add; #" # Add only untracked files
   aw     = !git diff -U0 -w --no-color -- \"$@\" | git apply --cached --ignore-whitespace --unidiff-zero "#" # Add only non-whitespace changes
   aow    = !git add -- \"$@\" && git diff --cached -w | git apply --cached -R "#" # Add only whitespace changes
-  br     = branch
+  bi     = bisect
+  bis    = bisect start
+  bib    = bisect bad
+  big    = branch good
+  bir    = bisect reset
   brd    = branch -d
   brdd   = branch -D
   c      = commit
