@@ -277,10 +277,12 @@
 [rebase]
   stat = true
 
-# Remove cachetextconv: git update-ref -d refs/notes/textconv/<driver>
 [diff]
   tool = vimdiff
+  algorithm = patience # Take longer for a smaller diff
+
   # https://git-scm.com/docs/gitattributes
+  # Remove cachetextconv via : git update-ref -d refs/notes/textconv/<driver>
   [diff "strings"]
     # `strings -a` may cause null output - git won't print a header in that case
     textconv=strings -a
@@ -300,6 +302,7 @@
 
 [difftool]
   prompt = false
+
 [merge]
   tool = vimdiff
 
