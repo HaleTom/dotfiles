@@ -7,13 +7,23 @@ export PATH="$HOME/bin:$PATH:/usr/local/heroku/bin:$HOME/.cabal/bin"
 export EDITOR=vim
 export RUBYLIB="$HOME"/lib:"$RUBYLIB"
 export GNULIB_SRCDIR="$HOME"/repo/gnulib
-export LESS=-FRXsu
 
+# Have less display colours
+# from: https://wiki.archlinux.org/index.php/Color_output_in_console#man
+export LESS_TERMCAP_mb=$'\e[1;31m'     # begin bold
+export LESS_TERMCAP_md=$'\e[1;33m'     # begin blink
+export LESS_TERMCAP_so=$'\e[01;44;37m' # begin reverse video
+export LESS_TERMCAP_us=$'\e[01;37m'    # begin underline
+export LESS_TERMCAP_me=$'\e[0m'        # reset bold/blink
+export LESS_TERMCAP_se=$'\e[0m'        # reset reverse video
+export LESS_TERMCAP_ue=$'\e[0m'        # reset underline
+export LESS=-FRXs
 # F = exit if all can be displayed on first creen
 # R = interpret ANSI colour codes
 # X = Don't send termcap initialization and deinitialization strings (eg clear)
 # s = squash multiple blank lines into one
 # u = send backspaces and carriage returns directly to the terminal
+#     breaks colored man
 
 # Have command-not-found ask to install
 export COMMAND_NOT_FOUND_INSTALL_PROMPT=1

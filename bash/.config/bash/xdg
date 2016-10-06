@@ -69,5 +69,5 @@ mkdir -p "$XDG_RUNTIME_DIR/X11"
 export ICEAUTHORITY="$XDG_RUNTIME_DIR/X11/ICEauthority"
 export XAUTHORITY="$XDG_RUNTIME_DIR/X11/Xauthority"
 
-# vim: Set vimrc and viminfo location before vim startup
+# vim - Set vimrc and viminfo location before vim startup
 export VIMINIT='let $MYVIMRC="'"$XDG_CONFIG_HOME"'/vim/vimrc"|source $MYVIMRC'
