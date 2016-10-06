@@ -258,18 +258,22 @@
   autosetupmerge = true
 
 [color]
+# Colours: black, red, green, yellow, blue, magenta, cyan, white, reset
+# Modifiers: bold dim italic ul blink reverse strike
   ui = auto
   [color "branch"]
     current = yellow reverse
     local = yellow
     remote = green
   [color "diff"]
+    # context =   # same as "plain"
     meta = yellow bold
-    commit = yellow
     frag = magenta bold
     old = red bold
     new = green bold
+    commit = yellow
     whitespace = red reverse
+    func = white bold
   [color "diff-highlight"]
     oldNormal = red bold
     oldHighlight = red bold 52
