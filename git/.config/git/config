@@ -177,26 +177,28 @@
   children-long = "!git print-commit-long `git children-hash \"$1\"` #"
   children-hash = "!bash -c 'c=${1:-HEAD}; set -- $(git rev-list --all --not \"$c\"^@ --children | grep $(git rev-parse \"$c\") ); shift; echo $* | sed -r \"s/\\s+/\\n/g\" | tac' -"
 
-  # TODO Above thoroughly teseted. Rename ancestry to prodgeny (sp)/descendants. Are the hashes the same? in ancestry and ancestry hash? Use log's child-b4-parent to get same output ordering?
+  # TODO Above thoroughly teseted. Are the hashes the same in scions and scious-hash? Use log's child-b4-parent to get same output ordering?
 
-  # Ancestry: Commits in $2's ancestry path back to $1, newest first. Includes $2, excludes $1. Newest first
+  # Scions: (yes, it's a word)
+  # Commits in $2's ancestry path back to $1, newest first.
+  # Includes $2, excludes $1
   # Use 'HEAD' if $1 not given. Use last checked out branch if $2 not given
   # Newest first is required for --graph to do it's pretty thing
-  ancestry = "!bash -c 'git log --graph --oneline --decorate --ancestry-path ${1:-HEAD}..${2:-\"$(git rev-parse @{-1})\"}' -"
-  ancestry-long = "!git print-commit-long `git ancestry-hash \"$1\" \"$2\"` #"
-  ancestry-hash = "!bash -c 'git log --format=%H --ancestry-path ${1:-HEAD}..${2:-\"$(git rev-parse @{-1})\"}' -"
+  scions = "!bash -c 'git log --graph --oneline --decorate --ancestry-path ${1:-HEAD}..${2:-\"$(git rev-parse @{-1})\"}' -"
+  scions-long = "!git print-commit-long `git scions-hash \"$1\" \"$2\"` #"
+  scions-hash = "!bash -c 'git log --format=%H --ancestry-path ${1:-HEAD}..${2:-\"$(git rev-parse @{-1})\"}' -"
 
   # Rename child-ancestors? child-begets /ot?
 
   # Direct-decendant commits of $1 which are also ancestors of $2, sorted newest first
   # Use 'HEAD' if $1 not given. Use last checked out branch if $2 not given
   children-branch = "!git print-commit `git children-branch \"$1\" \"$2\"` #" # Subshell unquoted to split output into arguments 
-  children-branch-hash = "!bash -c 'c=$(git children \"$1\") && git ancestry \"$1\" | grep -xF \"$c\"' #"
+  children-branch-hash = "!bash -c 'c=$(git children \"$1\") && git scions \"$1\" | grep -xF \"$c\"' #"
 
   # TODO split into a function which announces if there is more than one child and whether the oldest is a branch-child
   # The newest child commit with descendant $2, else the newest child overall
   #FIXMEEEEE IFS:
-  child-hash = "!c=\"`git ancestry-hash \"$1\" \"$2\" | tail -1`\" && if [ \"$c\" ]; then echo $c; ${IFS:#else} git children-hash \"$1\" | tail -1; echo no branch; fi #"
+  child-hash = "!c=\"`git scions-hash \"$1\" \"$2\" | tail -1`\" && if [ \"$c\" ]; then echo $c; ${IFS:#else} git children-hash \"$1\" | tail -1; echo no branch; fi #"
   child = "!git print-commit `git child-hash \"$1\" \"$2\"` #"
 
 
