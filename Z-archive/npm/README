@@ -1,0 +1,3 @@
+Variables inside config would not be expanded leading to literal '$XDG' directories
+
+Also, stow would link the whole .cache directory, meaning that cached files would actually be put under .dotfiles 
