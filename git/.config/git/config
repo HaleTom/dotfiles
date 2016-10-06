@@ -27,7 +27,8 @@
   aacm   = "!f() { git add -A && git commit -m \"$@\"; }; f"
   an     = add --intent-to-add # add -N
   ap     = add --patch
-  au     = "!git ls-files -z -o --exclude-standard | xargs -0 git add; #" # Add only untracked files
+  au     = add --update
+  aut    = "!git ls-files -z -o --exclude-standard | xargs -0 git add; #" # Add only untracked files
   aw     = !git diff -U0 -w --no-color -- \"$@\" | git apply --cached --ignore-whitespace --unidiff-zero "#" # Add only non-whitespace changes
   aow    = !git add -- \"$@\" && git diff --cached -w | git apply --cached -R "#" # Add only whitespace changes
   bi     = bisect
@@ -114,8 +115,8 @@
   resa   = reset --soft HEAD~ # Move HEAD to the first Ancestor
   rl     = reflog
   rp     = rev-parse
-  rpc    = !"git rev-parse --verify \"$1\"^{commit} #"
-  rpt    = !"git rev-parse --verify \"$1\"^{tag} #"
+  rpc    = !"git rev-parse --verify \"`git rev-parse \\\"$1\\\"`\"^{commit} #" # allow :/<regex> format
+  rpt    = !"git rev-parse --verify \"`git rev-parse \\\"$1\\\"`\"^{tag} #" # allow :/<regex> format
   rmc    = rm --cached
   s      = status --short #--branch
   sm     = submodule
