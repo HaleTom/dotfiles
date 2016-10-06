@@ -40,6 +40,7 @@ done << XDGFILES
    $HOME/.viminfo
    $HOME/.npm
    $HOME/.npmrc
+   $HOME/.mostrc
 XDGFILES
 
 # Tell programs to look for files in $XDG_*
@@ -51,6 +52,7 @@ XDGFILES
 # Single-line config
 export INPUTRC="$XDG_CONFIG_HOME/readline/inputrc"
 export GNUPGHOME="$XDG_CONFIG_HOME/gnupg"
+export MOST_INITFILE="$XDG_CONFIG_HOME/most/config"
 
 # Begin multi-line config
 
