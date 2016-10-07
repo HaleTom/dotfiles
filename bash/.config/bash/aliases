@@ -2,6 +2,8 @@
 # This file gets sourced from .bashrc
 
 # ls aliases
+# https://www.gnu.org/software/coreutils/manual/html_node/Block-size.html
+alias ls="BLOCK_SIZE=\'1 ls --color=auto" #enable thousands grouping and colour
 alias l="ls -bCF"         # escape non printable || columns || decorated
 alias la="ls -CAFb"       # Almost all - no . and ..
 alias ld="ls -dlaFb */"   # no-dereference symlinks, directory entry instead of contents
@@ -9,6 +11,7 @@ alias ll="ls -laFb"
 alias ls.="ls -dbCF .[^.]?*" # Hidden files except . and .. (currend directory only)
 alias lsd="ls -Abl | grep --color=never ^d"   # list only directories
 
+alias -- -="cd -" # go to previous dir
 alias ..="cd .."
 alias ...="cd ../.."
 alias ....="cd ../../.."
@@ -25,6 +28,11 @@ alias s="git s"
 alias gh="git logda" # Git History
 
 alias ag="ag --color"
+alias cal='cal -3' # show 3 months by default
 alias cuc=cucumber
+alias grep='GREP_COLOR="1;33;40" LANG=C grep --color=auto'
 alias tmux='TERM=xterm-256color tmux'
 alias tmuxinator='TERM=xterm-256color tmuxinator'
+
+alias head='head -n $((${LINES:-12}-2))' # as many as possible without scrolling
+alias tail='tail -n $((${LINES:-12}-2)) -s.1' # Likewise, also more responsive -f
