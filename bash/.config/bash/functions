@@ -3,6 +3,21 @@
 # Functions to be sourced by .bashrc
 # Ensure that ones to be accessed outside of .bashrc have an 'export -f <func-name>'
 
+
+######### Start non-exported functions ##########
+
+# Single line functions
+
+# less - highlight occurences of first argument
+lessh() { e="$1"; shift; less -i -p "*$e" "$@"; }
+
+# grep - highlight occurences of expression
+greph() { e="$1"; shift; grep --col=always -Eih "$e|$" "$@"; }
+
+######### End non-exported functions ##########
+
+
+
 # Make a directory and move the working directory
 function mkcd {
 	if [ "$#" -ne 1 ]; then
@@ -51,12 +66,12 @@ function make-completion-wrapper {
 }
 export -f make-completion-wrapper
 
-# The absolute directory name of a file(s) or directory(s)
+# Print the absolute path of the containing directory
 function abs_dirname {
-  for _ in $(eval echo "{1..$#}"); do
-    (cd "${dir:="$(dirname "$1")"}" && pwd || exit 1 )
+  if [[ $# = 0 ]]; then set .; fi # current directory if no arguments
+  for path in "$@"; do 
+    (cd "${dir:="$(dirname "$path")"}" && pwd || exit 1 )
     [[ $? -ne 0 ]] && return 1
-    shift
   done
 }
 export -f abs_dirname
