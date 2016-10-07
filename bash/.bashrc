@@ -17,11 +17,12 @@ export LESS_TERMCAP_us=$'\e[01;37m'    # begin underline
 export LESS_TERMCAP_me=$'\e[0m'        # reset bold/blink
 export LESS_TERMCAP_se=$'\e[0m'        # reset reverse video
 export LESS_TERMCAP_ue=$'\e[0m'        # reset underline
-export LESS=-FRXs
+export LESS=-FRXis
 # F = exit if all can be displayed on first creen
 # R = interpret ANSI colour codes
 # X = Don't send termcap initialization and deinitialization strings (eg clear)
 # s = squash multiple blank lines into one
+# i = smartcase searching
 # u = send backspaces and carriage returns directly to the terminal
 #     breaks colored man
 
@@ -30,6 +31,9 @@ export COMMAND_NOT_FOUND_INSTALL_PROMPT=1
 
 # Exclude duplicates and commands starting with a <space> from history
 export HISTCONTROL=ignorespace:ignoredups
+
+# Enable gcc colours, available since gcc 4.9.0
+export GCC_COLORS=1
 
 # shopt -s histverify # Show output of !! - press enter twice
 
