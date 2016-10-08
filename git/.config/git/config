@@ -98,7 +98,7 @@
   logdaa = !"eval git log `git fmt-commit-1line` --graph --all --remotes #"
   ls     = ls-files
   mum    = merge upstream/master
-  psfwl  = push --force-with-lease
+  psf    = push --force-with-lease
   psuo   = push --set-upstream origin
   psuob  = "!b=\"$(git rev-parse --abbrev-ref HEAD)\" && git push --set-upstream origin \"$b\" #"
   pl     = pull
@@ -140,15 +140,14 @@
   tm     = tag -m
   td     = tag -d
 
-
-  # Print line like:
+  # Print line(s) like:
   # 8d048fa (HEAD -> master) local-update: add cabal and npm 30 hours ago Tom Hale
-  print-commit-1 = "!for c in \"$@\"; do eval git log -n1 `git fmt-commit-1line` \"$c\"; done #"
-  # Print line like:
-  # 8d048fa (HEAD -> master) local-update: add cabal and npm 2016-10-03 12:29:38 +0700 Tom Hale
-  print-commit-1-long = "!for c in \"$@\"; do eval git log -n1 `git fmt-commit-1line` --date=iso \"$c\"; done #"
-  fmt-commit-1line = "!echo '--format=\"%C(auto)%h%d %s %C(yellow) (%C(nobold green)%cd%C(bold blue) %an%C(nobold yellow))\" --date=relative --use-mailmap' #"
   fmt-commit-1line = "!echo '--format=\"%C(auto)%h%d %s %C(yellow) (%C(nobold green)%cd%C(bold blue) %aN%C(nobold yellow))\" --date=relative' #"
+  print-commit-1 = "!for c in \"$@\"; do c=\"$(git rpc \"$c\")\" && eval \"git log -n1 $(git fmt-commit-1line) $c\"; done #"
+  # Print line(s) like:
+  # 8d048fa (HEAD -> master) local-update: add cabal and npm 2016-10-03 12:29:38 +0700 Tom Hale
+  print-commit-1-long = "!for c in \"$@\"; do c=\"$(git rpc \"$c\")\" && eval \"git log -n1 $(git fmt-commit-1line) --date=iso $c\"; done #"
+
 
   # ---------------- Good above here -------------------- #
 
@@ -232,7 +231,7 @@
   ign = ls-files -o -i --exclude-standard
 
   # Show files changed between the given commit and it's previous commit
-  files = "![ x$# != x1 ]&&echo "commit-ish required" >&2 || git diff --name-status \"$1\"^ \"$1\" #"
+  files = "![ x$# != x1 ]&&echo "commit-ish required" >&2 || c=\"$(git rpc \"$1\")\" && git diff --name-status \"$c\"^ \"$c\" #"
 
   # Create complex function then run it
   # http://blogs.atlassian.com/2014/10/advanced-git-aliases/
