@@ -94,8 +94,8 @@
   icdiff = difftool --no-prompt --extcmd icdiff # \"$@\"
   logd   = log --oneline --graph --decorate --remotes --max-count=20
   logd   = !"eval git log `git fmt-commit-1line` --graph --remotes --max-count=20 #"
-  logda  = !"eval git log `git fmt-commit-1line` --graph --all --remotes --max-count=20 #"
-  logdaa = !"eval git log `git fmt-commit-1line` --graph --all --remotes #"
+  logda  = !"lines=$(($(tput lines)*3/5)); eval git log $(git fmt-commit-1line) --graph --all --remotes --color=always \"$@\" | head -n$lines #"
+  logdaa = !"eval git log `git fmt-commit-1line` --graph --all --remotes --color=always \"$@\" #"
   ls     = ls-files
   mum    = merge upstream/master
   psf    = push --force-with-lease
