@@ -153,21 +153,14 @@
   # With -n1, only last argument is used (strangely). Verify one argument is a commit-ish.
   decorations = !"c=\"$(git rpc \"${1:-@}\")\" && git log -n1 --format=\"%C(auto)%D\" \"$c\" #"
 
-  # ---------------- Good above here -------------------- #
-  # TODO ask all diff colours see note++ 11
-  #
-  # TODO use select with fixup
-  # IFS=$'\n' && select name in $(g logda --color=always); do echo $name; break; done
 
   #
-  # Children
+  # Children / Descendants (scions)
   #
   # All children hashes of current (or specified) commit-ish sorted newest first
   children-hash = !"c=\"$(git rpc \"${1:-@}\")\" && set -- $(git rev-list --all --not \"$c\"^@ --children | grep \"$c\"); shift; for c in $*; do echo $c; done | tac #"
   children = "!git print-commit-1 `git children-hash \"$1\"` #"
   children-long = "!git print-commit-1-long `git children-hash \"$1\"` #"
-
-  # TODO Above thoroughly teseted. Are the hashes the same in scions and scious-hash? Use log's child-b4-parent to get same output ordering?
 
   # Scions: (yes, it's a word)
   # Descendant paths from $2 path back to $1
@@ -178,10 +171,16 @@
   # scions-long = "!git print-commit-1-long $(git scions-hash \"$1\" \"$2\") #"
   scions-long = !"sh -c \"git log $(git fmt-commit-1line) --date=iso --graph --ancestry-path ${1:-HEAD}..${2:-\\\"$(git rev-parse @{-1})\\\"}\" -"
   scions-hash = "!bash -c 'git log --format=%H --ancestry-path ${1:-HEAD}..${2:-\"$(git rev-parse @{-1})\"}' -"
-  scions-hash-pretty = "!git print-commit-1 $(git scions-hash \"$1\" \"$2\") #"
-  scions-hash-pretty-long = "!git print-commit-1-long $(git scions-hash \"$1\" \"$2\") #"
+  scions-list = "!git print-commit-1 $(git scions-hash \"$1\" \"$2\") #"
+  scions-list-long = "!git print-commit-1-long $(git scions-hash \"$1\" \"$2\") #"
 
-  # Rename child-ancestors? child-begets /ot?
+  # ---------------- Good above here -------------------- #
+
+  # TODO ask all diff colours see note++ 11
+  #
+  # TODO use select with fixup
+  # IFS=$'\n' && select name in $(g logda --color=always); do echo $name; break; done
+
 
   # Direct-decendant commits of $1 which are also ancestors of $2, sorted newest first
   # Use 'HEAD' if $1 not given. Use last checked out branch if $2 not given
