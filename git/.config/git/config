@@ -123,7 +123,7 @@
   rpc    = !"git rev-parse --verify \"`git rev-parse \\\"$1\\\"`\"^{commit} #" # allow :/<regex> format
   rpt    = !"git rev-parse --verify \"`git rev-parse \\\"$1\\\"`\"^{tag} #" # allow :/<regex> format
   rmc    = rm --cached
-  s      = status --short #--branch
+  s      = !"git print-commit-1 HEAD; git status --short"
   sm     = submodule
   sms    = submodule status
   sa     = stash apply
@@ -148,48 +148,38 @@
   # 8d048fa (HEAD -> master) local-update: add cabal and npm 2016-10-03 12:29:38 +0700 Tom Hale
   print-commit-1-long = "!for c in \"$@\"; do c=\"$(git rpc \"$c\")\" && eval \"git log -n1 $(git fmt-commit-1line) --date=iso $c\"; done #"
 
+  # Print the --decorations of `git log` without the ( ) eg "HEAD -> master, tag: head, origin/master"
+  # TODO: for HEAD (or commit-ish if given)
+  # With -n1, only last argument is used (strangely). Verify one argument is a commit-ish.
+  decorations = !"c=\"$(git rpc \"${1:-@}\")\" && git log -n1 --format=\"%C(auto)%D\" \"$c\" #"
 
   # ---------------- Good above here -------------------- #
-
   # TODO ask all diff colours see note++ 11
   #
   # TODO use select with fixup
   # IFS=$'\n' && select name in $(g logda --color=always); do echo $name; break; done
 
-
-  # Work through comments, then do *MORE* ruby :) 
-
-  # Print the --decorations of `git log` without the ( ) eg "HEAD -> master, tag: head, origin/master"
-  # TODO: for HEAD (or commit-ish if given)
-  # With -n1, only last argument is used (strangely). Verify one argument is a commit-ish.
-  decorations = "![ \"$#\" = 1 ] && git log -n1 --format=\"%C(auto)%D\" \"`git rev-parse --verify \"$1\"^{commit}`\" || echo \"Commit-ish not given\" >&2 #"
-
-  # TODO read shell-quote on arguments
-
-  # print-commit-1      = "!for c in \"$@\"; do echo git log -n1 `git fmt-commit-1line` \"$c\"; done #"
-  # fmt-commit-1line = "!shell-quote -- '--format=\"%C(auto) %h %d %C(auto)%s %Cgreen%cd %Cblue%an\"' --date=relative"
-  # Print lines like: d5439f7 Tom Hale 2016-09-22 18:41:14 +0700 INSTALL: Make `make` targets consistent across examples (origin/install-maint, install-maint)
-  # print-commit-1-long = "!for c in \"$@\"; do git log -n1 --format=\"%Cred%h %Creset%Cgreen%cN %Cblue%ci %Creset%s%d\" \"$c\"; done #"
-
   #
   # Children
   #
   # All children hashes of current (or specified) commit-ish sorted newest first
+  children-hash = !"c=\"$(git rpc \"${1:-@}\")\" && set -- $(git rev-list --all --not \"$c\"^@ --children | grep \"$c\"); shift; for c in $*; do echo $c; done | tac #"
   children = "!git print-commit-1 `git children-hash \"$1\"` #"
-  # For all children, print: hash, author, date, subject and decorations
   children-long = "!git print-commit-1-long `git children-hash \"$1\"` #"
-  children-hash = "!bash -c 'c=${1:-HEAD}; set -- $(git rev-list --all --not \"$c\"^@ --children | grep $(git rev-parse \"$c\") ); shift; echo $* | sed -r \"s/\\s+/\\n/g\" | tac' -"
 
   # TODO Above thoroughly teseted. Are the hashes the same in scions and scious-hash? Use log's child-b4-parent to get same output ordering?
 
   # Scions: (yes, it's a word)
-  # Commits in $2's ancestry path back to $1, newest first.
+  # Descendant paths from $2 path back to $1
+  # Newest first is required for --graph to do it's pretty thing
   # Includes $2, excludes $1
   # Use 'HEAD' if $1 not given. Use last checked out branch if $2 not given
-  # Newest first is required for --graph to do it's pretty thing
-  scions = "!bash -c 'git log --graph --oneline --decorate --ancestry-path ${1:-HEAD}..${2:-\"$(git rev-parse @{-1})\"}' -"
-  scions-long = "!git print-commit-1-long `git scions-hash \"$1\" \"$2\"` #"
+  scions = !"sh -c \"git log $(git fmt-commit-1line) --graph --ancestry-path ${1:-HEAD}..${2:-\\\"$(git rev-parse @{-1})\\\"}\" -"
+  # scions-long = "!git print-commit-1-long $(git scions-hash \"$1\" \"$2\") #"
+  scions-long = !"sh -c \"git log $(git fmt-commit-1line) --date=iso --graph --ancestry-path ${1:-HEAD}..${2:-\\\"$(git rev-parse @{-1})\\\"}\" -"
   scions-hash = "!bash -c 'git log --format=%H --ancestry-path ${1:-HEAD}..${2:-\"$(git rev-parse @{-1})\"}' -"
+  scions-hash-pretty = "!git print-commit-1 $(git scions-hash \"$1\" \"$2\") #"
+  scions-hash-pretty-long = "!git print-commit-1-long $(git scions-hash \"$1\" \"$2\") #"
 
   # Rename child-ancestors? child-begets /ot?
 
