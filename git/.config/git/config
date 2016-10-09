@@ -142,7 +142,7 @@
 
   # Print line(s) like:
   # 8d048fa (HEAD -> master) local-update: add cabal and npm 30 hours ago Tom Hale
-  fmt-commit-1line = "!echo '--format=\"%C(auto)%h%d %s %C(yellow) (%C(nobold green)%cd%C(bold blue) %aN%C(nobold yellow))\" --date=relative' #"
+  fmt-commit-1line = "!echo '--format=\"%C(auto)%h %s %d%C(auto,yellow)[%C(auto,nobold green)%cd%C(auto)%C(auto,bold blue) %aN%C(auto,nobold yellow)]\" --date=relative' #"
   print-commit-1 = "!for c in \"$@\"; do c=\"$(git rpc \"$c\")\" && eval \"git log -n1 $(git fmt-commit-1line) $c\"; done #"
   # Print line(s) like:
   # 8d048fa (HEAD -> master) local-update: add cabal and npm 2016-10-03 12:29:38 +0700 Tom Hale
