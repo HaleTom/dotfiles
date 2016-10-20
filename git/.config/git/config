@@ -194,8 +194,16 @@
   # Newest first is required for --graph to do it's pretty thing
   # Includes $2, excludes $1
   # Use 'HEAD' if $1 not given. Use last checked out branch if $2 not given
-  scions = !"sh -c \"git log $(git fmt-commit-1line) --graph --ancestry-path ${1:-HEAD}..${2:-\\\"$(git rev-parse @{-1})\\\"}\" -"
+  # scions = !"sh -c \"git log $(git fmt-commit-1line) --graph --ancestry-path ${1:-HEAD}..${2:-\\\"$(git rev-parse @{-1})\\\"}\" -"
   # scions-long = "!git print-commit-1-long $(git scions-hash \"$1\" \"$2\") #"
+
+  # works at command prompt:
+  # set master tip
+  # eval git log $(git fmt-commit-1line) --graph --ancestry-path "$(git rpc "${1:-@}")".."$(git rev-parse "${2:-"@{-1}"}")"
+  # try setting from to variables then using.
+  # scions = !"eval git log $(git fmt-commit-1line) --graph --ancestry-path \"$(git rpc \"${1:-@}\")\"..\"$(git rev-parse \"${2:-\"@{-1}\"}\")\" #"
+  #
+  scions = !"sh -c \"git log $(git fmt-commit-1line) --graph --ancestry-path ${1:-HEAD}.. ${2:-\\\"$(git rev-parse @{-1})\\\"}\" -"
   scions-long = !"sh -c \"git log $(git fmt-commit-1line) --date=iso --graph --ancestry-path ${1:-HEAD}..${2:-\\\"$(git rev-parse @{-1})\\\"}\" -"
   scions-hash = "!bash -c 'git log --format=%H --ancestry-path ${1:-HEAD}..${2:-\"$(git rev-parse @{-1})\"}' -"
   scions-list = "!git print-commit-1 $(git scions-hash \"$1\" \"$2\") #"
