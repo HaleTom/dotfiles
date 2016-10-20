@@ -40,10 +40,16 @@
   bib    = bisect bad
   big    = branch good
   bir    = bisect reset
+  br     = branch
   brd    = branch -d
   brdd   = branch -D
+  brf    = branch -f
+  brm    = branch --move # rename
+  brt    = branch --track
+  brsut  = branch --set-upstream-to
   c      = commit
   co     = checkout
+  co-    = !"git checkout @{-1}; git print-commit-1 @ #"
   cob    = checkout -b
   # Create a branch tracking the same branch on origin.
   # '-' makes argument list start at $1
@@ -59,6 +65,9 @@
   can    = commit -a --amend
   cann   = commit -a --amend --no-edit
   canm   = commit -a --amend -m
+  ch     = cherry-pick
+  cha    = cherry-pick --abort
+  chc    = cherry-pick --continue
   cl     = clone
   cls    = clone --depth 1 --shallow-submodules
   clear  = "!bash -c ' git clean -n | sed \"s/^Would remove //\"; \
@@ -88,10 +97,12 @@
   dchh   = diff --cached --ws-error-highlight=old,new HEAD~1
   ds     = diff --stat # lines added and removed
   dt     = difftool -y -t vimdiff --noprompt
-  ec     = !"git edit-config"
+  ec     = !"git status -sz  | sed -rnz 's/^(U.|.U) (.*)/\\2/p' | xargs -0 $EDITOR #"
+  elc    = !"git edit-config"
   egc    = !"git edit-global-config"
   head   = "!c=\"`git rpc \"$1\"`\" && p=\"$(git log -n1 --oneline --decorate)\" && git update-ref --no-deref -m \"Move from $p\" HEAD \"$c\" #" # Move HEAD to specified commit-ish
   icdiff = difftool --no-prompt --extcmd icdiff # \"$@\"
+  lf     = log --pretty=full
   logd   = log --oneline --graph --decorate --remotes --max-count=20
   logd   = !"eval git log `git fmt-commit-1line` --graph --remotes --max-count=20 #"
   logda  = !"lines=$(($(tput lines)*3/5)); eval git log $(git fmt-commit-1line) --graph --all --remotes --color=always \"$@\" | head -n$lines #"
@@ -112,6 +123,8 @@
   rbc    = rebase --continue
   rbi    = rebase --interactive --autostash --autosquash HEAD~20
   rbo    = rebase --onto
+  ro     = remote
+  rov    = remote --verbose
   re     = reset
   reh    = reset --hard
   rep    = reset --patch
@@ -131,13 +144,16 @@
   sm     = submodule
   sms    = submodule status
   sa     = stash apply
+  sai    = stash apply --index
+  sb     = stash branch
   sc     = stash clear # all
   sd     = stash drop # latest or specified
   sl     = stash list
+  spi    = stash pop --index
   sp     = stash pop
-  ss     = stash save
-  ssa    = stash save --all
-  ssu    = stash save --include-untracked
+  ss     = stash save --keep-index
+  ssa    = stash save --all --keep-index # includes ignored
+  ssu    = stash save --include-untracked --keep-index
   si     = status --short --ignored
   t      = tag
   tl     = "!git tag -n1 --list | sort -V"
