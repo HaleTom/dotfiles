@@ -14,6 +14,10 @@ lessh() { e="$1"; shift; less -i -p "*$e" "$@"; }
 # grep - highlight occurences of expression
 greph() { e="$1"; shift; grep --col=always -Eih "$e|$" "$@"; }
 
+# Print the hex and decimal value of the first character given
+ord() { printf '%x\n' "'$1"; }
+ord10() { printf '%d\n' "'$1"; }
+
 ######### End non-exported functions ##########
 
 
