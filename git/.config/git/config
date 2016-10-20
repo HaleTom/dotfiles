@@ -89,8 +89,8 @@
   debug  = "!set -x; export GIT_TRACE=2 GIT_CURL_VERBOSE=2 GIT_TRACE_PERFORMANCE=2 GIT_TRACE_PACK_ACCESS=2 GIT_TRACE_PACKET=2 GIT_TRACE_PACKFILE=2 GIT_TRACE_SETUP=2 GIT_TRACE_SHALLOW=2; git"
   dc     = diff --cached --ws-error-highlight=old,new # old,new,context,all
   df     = diff --ws-error-highlight=old,new
-  dfc    = "!bash -c 'case \"$1\" in -*) ;; *) c=\"${1:-HEAD}\";shift; esac; git diff --ws-error-highlight=old,new \"$@\" \"$c\" \"`git child \"$c\"`\"' -" # Diff with first child
-  dfp    = "!bash -c 'case \"$1\" in -*) ;; *) c=\"$1\";shift; esac; git diff --ws-error-highlight=old,new \"$@\" \"${c:=HEAD}~\" \"$c\"' -" # Diff with first parent
+  dfc    = "!bash -c 'case \"$1\" in -*) ;; *) c=\"$(git rpc \"${1:-HEAD}\")\";shift; esac; git diff --ws-error-highlight=old,new \"$@\" \"$c\" \"`git child \"$c\"`\"' -" # Diff with first child
+  dfp    = "!bash -c 'case \"$1\" in -*) ;; *) c=\"$(git rpc \"$1\")\";shift; esac; git diff --ws-error-highlight=old,new \"$@\" \"${c:=HEAD}~\" \"$c\"' -" # Diff with first parent
   dh     = diff --ws-error-highlight=old,new HEAD
   dhh    = diff --ws-error-highlight=old,new HEAD~1
   dch    = diff --cached --ws-error-highlight=old,new HEAD
@@ -121,7 +121,7 @@
   rba    = rebase --abort
   rbb    = !sh -c \"git rebase -i `git merge-base $1 HEAD` #\" # Rebase to branch-name # http://stackoverflow.com/a/31036518/5353461
   rbc    = rebase --continue
-  rbi    = rebase --interactive --autostash --autosquash HEAD~20
+  rbi    = !" git rebase --interactive --autostash --autosquash \"$(git rpc \"${1:-HEAD~20}\")\" #"
   rbo    = rebase --onto
   ro     = remote
   rov    = remote --verbose
@@ -246,8 +246,9 @@
   # Show files ignored by git
   ign = ls-files -o -i --exclude-standard
 
-  # Show files changed between the given commit and it's previous commit
-  files = "![ x$# != x1 ]&&echo "commit-ish required" >&2 || c=\"$(git rpc \"$1\")\" && git diff --name-status \"$c\"^ \"$c\" #"
+  # The files changed between commit $2 and $1
+  # Use HEAD if $1 not given and (first parent of $1) if $2 not given
+  files = !"new=\"$(git rpc \"${1:-@}\")\" && old=\"$(git rpc \"${2:-\"$new~\"}\")\" && git diff --name-status \"$old\" \"$new\" #"
 
   # Create complex function then run it
   # http://blogs.atlassian.com/2014/10/advanced-git-aliases/
