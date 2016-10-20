@@ -311,9 +311,12 @@
     added = yellow
     changed = green
     untracked = cyan
+
 [commit]
   verbose = true # include diff output for easy review
+
 [rebase]
+  autosquash = true
   stat = true
 
 [diff]
