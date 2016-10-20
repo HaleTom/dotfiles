@@ -122,6 +122,10 @@
   rp     = rev-parse
   rpc    = !"git rev-parse --verify \"`git rev-parse \\\"$1\\\"`\"^{commit} #" # allow :/<regex> format
   rpt    = !"git rev-parse --verify \"`git rev-parse \\\"$1\\\"`\"^{tag} #" # allow :/<regex> format
+  rr     = rerere
+  rrd    = rerere diff
+  rrr    = rerere remaining
+  rrs    = rerere status
   rmc    = rm --cached
   s      = !"git print-commit-1 HEAD; git status --short"
   sm     = submodule
@@ -338,3 +342,7 @@
 
 [push]
   default = simple
+
+[rerere] # .git/rr-cache
+  enabled = true
+  autoupdate = true # auto-stage resolved conflicts
