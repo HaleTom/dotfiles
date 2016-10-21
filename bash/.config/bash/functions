@@ -24,15 +24,15 @@ ord10() { printf '%d\n' "'$1"; }
 
 # Make a directory and move the working directory
 function mkcd {
-	if [ "$#" -ne 1 ]; then
-		echo "mkcd: Make and change into a directory" >&2
-		echo "Usage: mkcd DIRECTORY" >&2
-		return 69
-	fi
+  if [ "$#" -ne 1 ]; then
+    echo "mkcd: Make and change into a directory" >&2
+    echo "Usage: mkcd DIRECTORY" >&2
+    return 69
+  fi
 
   [[ -d "$1" ]] && exit=2 && echo "mkcd: Warning: $1 already exists." >&2
-	mkdir -p "$1" || return 1
-	cd "$1" || return 1
+  mkdir -p "$1" || return 1
+  cd "$1" || return 1
   return ${exit:-0}
 }
 export -f mkcd
@@ -61,12 +61,12 @@ function make-completion-wrapper {
   local comp_function_name="$1"
   shift 2
   local funktion="function $function_name {
-      (( COMP_CWORD += $arg_count ))
-      COMP_WORDS=( \"\$@\" \${COMP_WORDS[@]:1} )
-      \"$comp_function_name\"
-    }"
-  eval "$funktion"
-  # echo "$funktion"
+  (( COMP_CWORD += $arg_count ))
+  COMP_WORDS=( \"\$@\" \${COMP_WORDS[@]:1} )
+  \"$comp_function_name\"
+}"
+eval "$funktion"
+# echo "$funktion"
 }
 export -f make-completion-wrapper
 
@@ -113,30 +113,28 @@ export -f git_dir
 
 # Usage examples at: http://search.cpan.org/~rosch/String-ShellQuote-1.03/shell-quote
 function quote_args {
-    case $# in 0) return 0; esac
-    while :
-    do
-        printf "'"
-        printf %s "$1" | sed "s/'/'\\\\''/g"
-        shift
-        case $# in 0) break; esac
-        printf "' "
-    done
-    printf "'\n"
+  case $# in 0) return 0; esac
+  while :; do
+    printf "'"
+    printf %s "$1" | sed "s/'/'\\\\''/g"
+    shift
+    case $# in 0) break; esac
+    printf "' "
+  done
+  printf "'\n"
 }
 export -f quote_args
 
 function double_quote {
-    case $# in 0) return 0; esac
-    while :
-    do
-        printf '"'
-        printf %s "$1" | sed 's/\([$`\!"]\)/\\\1/g'
-        shift
-        case $# in 0) break; esac
-        printf '" '
-    done
-    printf "\"\n"
+  case $# in 0) return 0; esac
+  while :; do
+    printf '"'
+    printf %s "$1" | sed 's/\([$`\!"]\)/\\\1/g'
+    shift
+    case $# in 0) break; esac
+    printf '" '
+  done
+  printf "\"\n"
 }
 export -f double_quote
 
@@ -212,10 +210,10 @@ export -f cd_git_root
 
 # apt: Update only given sources 
 function apt-update-repo() {
-    for source in "$@"; do
-        sudo apt-get update -o Dir::Etc::sourcelist="sources.list.d/${source}" \
-        -o Dir::Etc::sourceparts="-" -o APT::Get::List-Cleanup="0"    
-    done
+  for source in "$@"; do
+    sudo apt-get update -o Dir::Etc::sourcelist="sources.list.d/${source}" \
+    -o Dir::Etc::sourceparts="-" -o APT::Get::List-Cleanup="0"    
+  done
 }
 export -f apt-update-repo
 
@@ -229,7 +227,7 @@ export -f apt-update-repo
 
 # set variable identifying the chroot you work in (used in the prompt below)
 if [ -z "${debian_chroot:-}" ] && [ -r /etc/debian_chroot ]; then
-    debian_chroot=$(cat /etc/debian_chroot)
+  debian_chroot=$(cat /etc/debian_chroot)
 fi
 
 # Select git info displayed, see /usr/lib/git-core/git-sh-prompt for more
@@ -246,68 +244,67 @@ export GIT_PS1_DESCRIBE_STYLE="describe"  # detached HEAD style:
 
 # Check if we support colours
 __colour_enabled() {
-    local -i colors
-    colors=$(tput colors 2>/dev/null)
-    [[ $? -eq 0 ]] && [[ $colors -gt 2 ]]
+  local -i colors
+  colors=$(tput colors 2>/dev/null)
+  [[ $? -eq 0 ]] && [[ $colors -gt 2 ]]
 }
 
 # Sets prompt like: ravi@boxy:~/prj/sample_app
 __set_bash_prompt() {
-    local exit="$?" # Save the exit status of the last command
+  local exit="$?" # Save the exit status of the last command
 
-    # PS1 is made from $PreGitPS1 + <git-status> + $PostGitPS1
-    local PreGitPS1="${debian_chroot:+($debian_chroot)}"
-    local PostGitPS1=""
+  # PS1 is made from $PreGitPS1 + <git-status> + $PostGitPS1
+  local PreGitPS1="${debian_chroot:+($debian_chroot)}"
+  local PostGitPS1=""
 
-    # Disable unused variables check for unused colours
-    # shellcheck disable=SC2034
-    # https://github.com/koalaman/shellcheck/issues/145
-    if  __colour_enabled; then
-        export GIT_PS1_SHOWCOLORHINTS=1;
+  # Disable unused variables check for unused colours
+  # shellcheck disable=SC2034
+  # https://github.com/koalaman/shellcheck/issues/145
+  if  __colour_enabled; then
+    export GIT_PS1_SHOWCOLORHINTS=1;
 
-        # Wrap the colour codes between \[ and \], so that
-        # bash counts the correct number of characters for line wrapping:
-        local Red='\[\e[0;31m\]'; local BRed='\[\e[1;31m\]'
-        local Gre='\[\e[0;32m\]'; local BGre='\[\e[1;32m\]'
-        local Yel='\[\e[0;33m\]'; local BYel='\[\e[1;33m\]'
-        local Blu='\[\e[0;34m\]'; local BBlu='\[\e[1;34m\]'
-        local Mag='\[\e[0;35m\]'; local BMag='\[\e[1;35m\]'
-        local Cya='\[\e[0;36m\]'; local BCya='\[\e[1;36m\]'
-        local Whi='\[\e[0;37m\]'; local BWhi='\[\e[1;37m\]'
-        local None='\[\e[0m\]' # Return to default colour
-    else # No colour
-        unset GIT_PS1_SHOWCOLORHINTS
-        local Red BRed Gre BGre Yel BYel Blu BBlu Mag BMag Cya BCya Whi BWhi None
-    fi
+    # Wrap the colour codes between \[ and \], so that
+    # bash counts the correct number of characters for line wrapping:
+    local Red='\[\e[0;31m\]'; local BRed='\[\e[1;31m\]'
+    local Gre='\[\e[0;32m\]'; local BGre='\[\e[1;32m\]'
+    local Yel='\[\e[0;33m\]'; local BYel='\[\e[1;33m\]'
+    local Blu='\[\e[0;34m\]'; local BBlu='\[\e[1;34m\]'
+    local Mag='\[\e[0;35m\]'; local BMag='\[\e[1;35m\]'
+    local Cya='\[\e[0;36m\]'; local BCya='\[\e[1;36m\]'
+    local Whi='\[\e[0;37m\]'; local BWhi='\[\e[1;37m\]'
+    local None='\[\e[0m\]' # Return to default colour
+  else # No colour
+    unset GIT_PS1_SHOWCOLORHINTS
+    local Red BRed Gre BGre Yel BYel Blu BBlu Mag BMag Cya BCya Whi BWhi None
+  fi
 
-    # No username and bright colour if root
-    if [[ ${EUID} = 0 ]]; then
-        PreGitPS1+="$BRed\h "
-    else
-        PreGitPS1+="$Red\u@\h$None:"
-    fi
+  # No username and bright colour if root
+  if [[ ${EUID} = 0 ]]; then
+    PreGitPS1+="$BRed\h "
+  else
+    PreGitPS1+="$Red\u@\h$None:"
+  fi
 
-    PreGitPS1+="$Blu\w$None"
+  PreGitPS1+="$Blu\w$None"
 
-    
-    # Now build the part after git's status
+  # Now build the part after git's status
 
-    # Highlight non-standard exit codes
-    if [[ $exit != 0 ]]; then
-        PostGitPS1="$Red[$exit]"
-    fi
+  # Highlight non-standard exit codes
+  if [[ $exit != 0 ]]; then
+    PostGitPS1="$Red[$exit]"
+  fi
 
-    # Change colour of prompt if root
-    if [[ ${EUID} == 0 ]]; then
-        PostGitPS1+="$BRed"'\$ '"$None"
-    else
-        PostGitPS1+="$Mag"'\$ '"$None"
-    fi
+  # Change colour of prompt if root
+  if [[ ${EUID} == 0 ]]; then
+    PostGitPS1+="$BRed"'\$ '"$None"
+  else
+    PostGitPS1+="$Mag"'\$ '"$None"
+  fi
 
-    # Set PS1 from $PreGitPS1 + <git-status> + $PostGitPS1
-    __git_ps1 "$PreGitPS1" "$PostGitPS1" '(%s)'
-    # echo '$PS1='"$PS1"
+  # Set PS1 from $PreGitPS1 + <git-status> + $PostGitPS1
+  __git_ps1 "$PreGitPS1" "$PostGitPS1" '(%s)'
+  # echo '$PS1='"$PS1"
 
-    # defaut user prompt:
-    # PS1='${debian_chroot:+($debian_chroot)}\[\033[01;32m\]\u@\h\[\033[01;34m\] \w\[\033[00m\] $(__git_ps1 "(%s)") \$ '
+  # defaut user prompt:
+  # PS1='${debian_chroot:+($debian_chroot)}\[\033[01;32m\]\u@\h\[\033[01;34m\] \w\[\033[00m\] $(__git_ps1 "(%s)") \$ '
 }
