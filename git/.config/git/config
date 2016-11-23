@@ -51,6 +51,7 @@
   co     = checkout
   co-    = !"git checkout @{-1}; git print-commit-1 @ #"
   cob    = checkout -b
+  cof    = checkout --force
   # Create a branch tracking the same branch on origin.
   # '-' makes argument list start at $1
   cobt   = !sh -c 'git checkout -b "$1" && git branch --track origin/"$1"' -
@@ -68,6 +69,7 @@
   ch     = cherry-pick
   cha    = cherry-pick --abort
   chc    = cherry-pick --continue
+  cinit  = commit --allow-empty -m 'Initialise repository'
   cl     = clone
   cls    = clone --depth 1 --shallow-submodules
   clear  = "!bash -c ' git clean -n | sed \"s/^Would remove //\"; \
@@ -108,6 +110,8 @@
   logda  = !"lines=$(($(tput lines)*3/5)); eval git log $(git fmt-commit-1line) --graph --all --remotes --color=always \"$@\" | head -n$lines #"
   logdaa = !"eval git log `git fmt-commit-1line` --graph --all --remotes --color=always \"$@\" #"
   ls     = ls-files
+  mnf    = merge --no-ff
+  mom    = merge origin/master
   mum    = merge upstream/master
   psf    = push --force-with-lease
   psuo   = push --set-upstream origin
@@ -121,6 +125,7 @@
   rba    = rebase --abort
   rbb    = !sh -c \"git rebase -i `git merge-base $1 HEAD` #\" # Rebase to branch-name # http://stackoverflow.com/a/31036518/5353461
   rbc    = rebase --continue
+## Fixme as shown by g la:
   rbi    = !" git rebase --interactive --autostash --autosquash \"$(git rpc \"${1:-HEAD~20}\")\" #"
   rbo    = rebase --onto
   ro     = remote
@@ -141,6 +146,7 @@
   rrs    = rerere status
   rmc    = rm --cached
   s      = !"git print-commit-1 HEAD; git status --short"
+  si      = !"git print-commit-1 HEAD; git status --short --ignored"
   sm     = submodule
   sms    = submodule status
   sa     = stash apply
