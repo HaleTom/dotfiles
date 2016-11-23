@@ -321,10 +321,6 @@
 [commit]
   verbose = true # include diff output for easy review
 
-[rebase]
-  autosquash = true
-  stat = true
-
 [diff]
   tool = vimdiff
   algorithm = patience # Take longer for a smaller diff
@@ -355,7 +351,9 @@
   mailmap = true
 
 [merge]
+  conflictStyle = diff3 # include original lines
   tool = vimdiff
+  stat = true # show what changed
 
 [interactive]
   diffFilter = "diff-hi | less -FRX --tabs=4"
@@ -376,6 +374,11 @@
 
 [push]
   default = simple
+
+[rebase]
+  autosquash = true
+  missingCommitsCheck = warn # Protect against accidentally removed lines
+  stat = true # show what changed
 
 [rerere] # .git/rr-cache
   enabled = true
