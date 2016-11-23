@@ -91,6 +91,7 @@
   debug  = "!set -x; export GIT_TRACE=2 GIT_CURL_VERBOSE=2 GIT_TRACE_PERFORMANCE=2 GIT_TRACE_PACK_ACCESS=2 GIT_TRACE_PACKET=2 GIT_TRACE_PACKFILE=2 GIT_TRACE_SETUP=2 GIT_TRACE_SHALLOW=2; git"
   dc     = diff --cached --ws-error-highlight=old,new # old,new,context,all
   df     = diff --ws-error-highlight=old,new
+## Fixme bash not needed, quoting problem when shown in g la
   dfc    = "!bash -c 'case \"$1\" in -*) ;; *) c=\"$(git rpc \"${1:-HEAD}\")\";shift; esac; git diff --ws-error-highlight=old,new \"$@\" \"$c\" \"`git child \"$c\"`\"' -" # Diff with first child
   dfp    = "!bash -c 'case \"$1\" in -*) ;; *) c=\"$(git rpc \"$1\")\";shift; esac; git diff --ws-error-highlight=old,new \"$@\" \"${c:=HEAD}~\" \"$c\"' -" # Diff with first parent
   dh     = diff --ws-error-highlight=old,new HEAD
