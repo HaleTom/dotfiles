@@ -40,6 +40,7 @@ export GCC_COLORS=1
 # Scripting overkill - how often will the tmuxinator.bash script really change?
 # Check for existence of "tmuxinator.bash" file/symlink, create if necessary
 # use [[ to prevent expansion of variables
+# tmuxbash="$HOME/.tmuxinator/tmuxinator.bash"
 tmuxbash="$XDG_CONFIG_HOME/tmuxinator/tmuxinator.bash"
 # If not a regular file or symlink to one
 if [[ ! -f $tmuxbash ]]; then
