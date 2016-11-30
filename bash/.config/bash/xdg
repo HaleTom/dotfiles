@@ -1,15 +1,19 @@
 #!/bin/bash
+# shellcheck disable=1090
+# ^ don't try to check variable-named sourced files
 # ^ keep shell-check happy
 
 # XDG - set defaults as they may not be set (eg Ubuntu 14.04 LTS)
 # See https://standards.freedesktop.org/basedir-spec/basedir-spec-latest.html
 # and https://wiki.archlinux.org/index.php/XDG_Base_Directory_support
-export XDG_CONFIG_HOME="$HOME/.config"
-export XDG_DATA_HOME="$HOME/.local/share"
-export XDG_CACHE_HOME="$HOME/.cache"
-if [ ! -w ${XDG_RUNTIME_DIR:="/run/user/$UID"} ]; then
-    echo "\$XDG_RUNTIME_DIR ($XDG_RUNTIME_DIR) not writable. Setting to /tmp." >&2
-    XDG_RUNTIME_DIR=/tmp
+export XDG_CONFIG_HOME="${XDG_CONFIG_HOME:=$HOME/.config}"
+export XDG_DATA_HOME="${XDG_DATA_HOME:=$HOME/.local/share}"
+export XDG_CACHE_HOME="${XDG_CACHE_HOME:=$HOME/.cache}"
+if [[ -z ${XDG_RUNTIME_DIR+x} ]]; then
+   if [[ ! -w ${XDG_RUNTIME_DIR:="/run/user/$UID"} ]]; then
+      echo "\$XDG_RUNTIME_DIR ($XDG_RUNTIME_DIR) not writable. Setting to /tmp." >&2
+      XDG_RUNTIME_DIR=/tmp
+   fi
 fi
 export XDG_RUNTIME_DIR
 
@@ -65,11 +69,12 @@ export NPM_CONFIG_USERCONFIG=$XDG_CONFIG_HOME/npm/config
 export NPM_CONFIG_CACHE=$XDG_CACHE_HOME/npm
 export NPM_CONFIG_TMP=$XDG_RUNTIME_DIR/npm
 
+# # Uncommenting breaks Manjaro login
 # X11
-export XAUTHORITY="$XDG_CACHE_HOME/Xauthority"
-mkdir -p "$XDG_RUNTIME_DIR/X11"
-export ICEAUTHORITY="$XDG_RUNTIME_DIR/X11/ICEauthority"
-export XAUTHORITY="$XDG_RUNTIME_DIR/X11/Xauthority"
+# export XAUTHORITY="$XDG_CACHE_HOME/Xauthority"
+# mkdir -p "$XDG_RUNTIME_DIR/X11"
+# export ICEAUTHORITY="$XDG_RUNTIME_DIR/X11/ICEauthority"
+# export XAUTHORITY="$XDG_RUNTIME_DIR/X11/Xauthority"
 
 # vim - Set vimrc and viminfo location before vim startup
 export VIMINIT='let $MYVIMRC="'"$XDG_CONFIG_HOME"'/vim/vimrc"|source $MYVIMRC'

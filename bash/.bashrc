@@ -3,7 +3,7 @@
 
 source "$HOME/.config/bash/xdg" # Needed for $XDG* variables below
 
-export PATH="$HOME/bin:$PATH:/usr/local/heroku/bin:$HOME/.cabal/bin"
+export PATH="$HOME/bin:$(ruby -e 'print Gem.user_dir')/bin:$PATH:/usr/local/heroku/bin:$HOME/.cabal/bin"
 export EDITOR=vim
 export RUBYLIB="$HOME"/lib:"$RUBYLIB"
 export GNULIB_SRCDIR="$HOME"/repo/gnulib
@@ -73,15 +73,17 @@ done <<DOTFILES
     $XDG_DATA_HOME/fzf/fzf.bash
     $tmuxbash
     # $HOME/.vim/bundle/gruvbox/gruvbox_256palette.sh
-    /usr/local/share/chruby/chruby.sh
-    /usr/local/share/chruby/auto.sh
+    /usr/share/git/completion/git-prompt.sh
+    /usr/share/chruby/chruby.sh
+    /usr/share/chruby/auto.sh
 DOTFILES
 unset tmuxbash
 
 # alias g=git (done in .bash_aliases)
 # This needs to be here - doesn't work inside .bash_aliases for some reason
 # See http://stackoverflow.com/a/39507158/5353461
-_xfunc git __git_complete g _git
+## Not needed in Manjaro with bash-completion
+#_xfunc git __git_complete g _git
 
 # This tells bash to reinterpret PS1 after every command, which we
 # need because __git_ps1 will return different text and colors

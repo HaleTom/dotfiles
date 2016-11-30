@@ -33,6 +33,7 @@ alias cuc=cucumber
 alias grep='GREP_COLOR="1;33;40" LANG=C grep --color=auto'
 alias tmux='TERM=xterm-256color tmux'
 alias tmuxinator='TERM=xterm-256color tmuxinator'
+alias gith="git --git-dir=$HOME/.githome --work-tree=$HOME"
 
 alias head='head -n $((${LINES:-12}-2))' # as many as possible without scrolling
 alias tail='tail -n $((${LINES:-12}-2)) -s.1' # Likewise, also more responsive -f
