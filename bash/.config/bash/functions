@@ -1,8 +1,21 @@
 #!/bin/bash
+# ^ For shellcheck's happiness
 
-# Functions to be sourced by .bashrc
-# Ensure that ones to be accessed outside of .bashrc have an 'export -f <func-name>'
+# An assortment of useful {z,ba}sh functions
 
+# Allow functions to be accessed from the command line by:
+# 'export_function <func-name>'
+
+function sh_is_zsh { [[ -n $ZSH_VERSION ]]; }
+function sh_is_bash { [[ -n $BASH_VERSION ]]; }
+
+# shellcheck disable=SC2163
+function export_function {
+  sh_is_bash && export -f "$@"
+  sh_is_zsh && export "$@"
+}
+
+export_function sh_is_bash sh_is_zsh
 
 ######### Start non-exported functions ##########
 
@@ -35,7 +48,7 @@ function mkcd {
   cd "$1" || return 1
   return ${exit:-0}
 }
-export -f mkcd
+export_function mkcd
 
 
 #------ function make_completion_wrapper
@@ -68,7 +81,7 @@ function make_completion_wrapper {
 eval "$funktion"
 # echo "$funktion"
 }
-export -f make_completion_wrapper
+export_function make_completion_wrapper
 
 # Print the absolute path of the containing directory
 function abs_dirname {
@@ -78,7 +91,7 @@ function abs_dirname {
     [[ $? -ne 0 ]] && return 1
   done
 }
-export -f abs_dirname
+export_function abs_dirname
 
 
 # Wrapper for systems that don't support `readlink -f`
@@ -94,7 +107,7 @@ function abs_path {
     shift
   done
 }
-export -f abs_path
+export_function abs_path
 
 
 # The name of the git directory (usually '.git') of the current repository
@@ -104,7 +117,7 @@ function git_dir {
   dir=$(git rev-parse --git-dir) || return 1
   abs_path "$dir"
 }
-export -f git_dir
+export_function git_dir
 
 
 # TL;DR: Just use printf "%q " "$@"
@@ -123,7 +136,7 @@ function quote_args {
   done
   printf "'\n"
 }
-export -f quote_args
+export_function quote_args
 
 function double_quote {
   case $# in 0) return 0; esac
@@ -136,7 +149,7 @@ function double_quote {
   done
   printf "\"\n"
 }
-export -f double_quote
+export_function double_quote
 
 # http://unix.stackexchange.com/a/14444/143394
 # Usage: confirm "Really" && rm /
@@ -149,7 +162,7 @@ function confirm_no {
     * )    false;;
   esac
 }
-export -f confirm_no
+export_function confirm_no
 
 function confirm_yes {
   local reply
@@ -160,7 +173,7 @@ function confirm_yes {
     * )    true;;
   esac
 }
-export -f confirm_yes
+export_function confirm_yes
 
 
 # Print the name of the git repository's working tree's root directory
@@ -196,7 +209,7 @@ function git_root {
     false
   fi
 }
-export -f git_root
+export_function git_root
 
 
 # Change working directory to git repository root
@@ -205,7 +218,7 @@ function cd_git_root {
   root=$(git_root) || return # git_root will print any errors
   cd "$root" || return
 }
-export -f cd_git_root
+export_function cd_git_root
 
 
 # apt: Update only given sources 
@@ -215,7 +228,7 @@ function apt_update_repo() {
     -o Dir::Etc::sourceparts="-" -o APT::Get::List-Cleanup="0"    
   done
 }
-export -f apt_update_repo
+export_function apt_update_repo
 
 
 ##################
