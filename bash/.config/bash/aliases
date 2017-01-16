@@ -27,7 +27,10 @@ alias s="git s"
 # Two letters
 alias gh="git logda" # Git History
 
+# Configuration of base command
 alias ag="ag --color"
+alias cp='cp --reflink=auto'
+
 alias cal='cal -3' # show 3 months by default
 alias cuc=cucumber
 alias grep='GREP_COLOR="1;33;40" LANG=C grep --color=auto'
