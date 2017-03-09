@@ -29,14 +29,16 @@ alias gh="git logda" # Git History
 
 # Configuration of base command
 alias ag="ag --color"
-alias cp='cp --reflink=auto'
-
 alias cal='cal -3' # show 3 months by default
+alias cp='cp --reflink=auto'
 alias cuc=cucumber
+alias diff='diff --color=auto'
 alias grep='GREP_COLOR="1;33;40" LANG=C grep --color=auto'
+alias home="git --git-dir=$HOME/.githome --work-tree=$HOME"
+alias open='&>>~/.xsession-errors xdg-open'
+alias nixnote2='LD_PRELOAD=libcurl.so.3 nixnote2 &'
 alias tmux='TERM=xterm-256color tmux'
 alias tmuxinator='TERM=xterm-256color tmuxinator'
-alias home="git --git-dir=$HOME/.githome --work-tree=$HOME"
 
 alias head='head -n $((${LINES:-12}-2))' # as many as possible without scrolling
 alias tail='tail -n $((${LINES:-12}-2)) -s.1' # Likewise, also more responsive -f
