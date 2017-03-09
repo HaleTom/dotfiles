@@ -62,9 +62,9 @@ if [[ ! -f $tmuxinator_source ]]; then
     # If not readable or is a symlink to nowhere
     if [[ ! -e $tmuxinator_source ]] || [[ -L $tmuxinator_source ]] && [[ ! -e $tmuxinator_source ]]; then
         echo "Creating ${tmuxinator_source##*/} symlink:"
-        tmp=$(gem which tmuxinator) # tmuxinator executable
-        tmp=$(readlink -f "${tmp%/*}/../completion") # completion scripts dir
-        ln -fsv "$tmp/${tmuxinator_source##*/}" "$tmuxinator_source"
+        tmp=$(gem which tmuxinator) && # tmuxinator executable
+            tmp=$(readlink -f "${tmp%/*}/../completion") && # completion scripts dir
+            ln -fsv "$tmp/${tmuxinator_source##*/}" "$tmuxinator_source"
         unset tmp
     else
       echo "Not creating symlink at at existing:"
@@ -102,10 +102,13 @@ source_files <<DOTFILES
     $tmuxinator_source
     # $HOME/.vim/bundle/gruvbox/gruvbox_256palette.sh
     /usr/share/git/completion/git-prompt.sh
-    # /usr/share/chruby/chruby.sh
-    # /usr/share/chruby/auto.sh
+    /usr/share/chruby/chruby.sh
+    /usr/share/chruby/auto.sh
 DOTFILES
 unset tmuxinator_source
+
+# Let chruby see ruby versions in the path. Needs to occur after sourcing chruby
+# export RUBIES+=( $(which --all --skip-alias --skip-functions ruby | sed -n 's/\/bin\/ruby//gp' |sort -u) )
 
 # Bash only
 if sh_is_bash; then
@@ -129,7 +132,7 @@ fi
 
 # This tells bash to reinterpret PS1 after every command, which we
 # need because __git_ps1 will return different text and colors
-PROMPT_COMMAND=__set_bash_prompt # see "functions" sourced file
+sh_is_bash && PROMPT_COMMAND=__set_bash_prompt # see "functions" sourced file
 
 ############################
 # Comments only below here #

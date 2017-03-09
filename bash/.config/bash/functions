@@ -31,6 +31,9 @@ greph() { e="$1"; shift; grep --col=always -Eih "$e|$" "$@"; }
 ord() { printf '%x\n' "'$1"; }
 ord10() { printf '%d\n' "'$1"; }
 
+# diff-so-fancy
+dsf() { git diff --no-index --color "$@" | diff-so-fancy; }
+
 ######### End non-exported functions ##########
 
 
