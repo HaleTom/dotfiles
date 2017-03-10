@@ -30,7 +30,7 @@ echo "Stow of packages complete"
 
 # Install fzf if not installed
 if [[ ! -d "$XDG_DATA_HOME/fzf" ]]; then
-  git clone --depth 1 https://github.com/junegunn/fzf.git "$XDG_DATA_HOME/fzf"
+  git clone --single-branch --depth 1 https://github.com/junegunn/fzf.git "$XDG_DATA_HOME/fzf"
     && yes | "$XDG_DATA_HOME/fzf/install" --no-update-rc
   mv -i ~/.fzf.{bash,zsh} "$XDG_DATA_HOME/fzf/"
 else
@@ -40,7 +40,7 @@ fi
 # Install neobundle to bootstrap vim plugin installation
 neobundle_dir="$XDG_DATA_HOME/vim/bundle/neobundle.vim"
 if [[ ! -d "$XDG_DATA_HOME/fzf" ]]; then
-  git clone --depth 1 --shallow-submodules https://github.com/Shougo/neobundle.vim.git "$neobundle_dir"
+  git clone --single-branch ---depth 1 --shallow-submodules https://github.com/Shougo/neobundle.vim.git "$neobundle_dir"
 else
   echo "NeoBundle already installed in $neobundle_dir"
 fi
