@@ -97,6 +97,7 @@ function source_files {
 
 # Both zsh and bash
 source_files <<DOTFILES
+    ~/.extend.bashrc
     $XDG_CONFIG_HOME/bash/functions
     $XDG_CONFIG_HOME/bash/aliases
     $tmuxinator_source

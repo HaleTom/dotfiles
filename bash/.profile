@@ -8,6 +8,11 @@
 # for ssh logins, install and configure the libpam-umask package.
 #umask 022
 
+# Manjaro defaults:
+[[ "$XDG_CURRENT_DESKTOP" == "KDE" ]] || [[ "$XDG_CURRENT_DESKTOP" == "GNOME" ]] || export QT_QPA_PLATFORMTHEME="qt5ct"
+[[ -f ~/.extend.profile ]] && . ~/.extend.profile
+
+
 ## Mapped this via MS Windows VM Host instead
 # if [ -x `which setxkbmap` ]; then
 #     setxkbmap -option 'caps:ctrl_modifier'
