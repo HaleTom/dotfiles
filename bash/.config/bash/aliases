@@ -42,3 +42,8 @@ alias tmuxinator='TERM=xterm-256color tmuxinator'
 
 alias head='head -n $((${LINES:-12}-2))' # as many as possible without scrolling
 alias tail='tail -n $((${LINES:-12}-2)) -s.1' # Likewise, also more responsive -f
+
+alias pbcopy='xclip -selection clipboard -in'
+alias pbpaste='xclip -selection clipboard -out'
+
+alias droidsync='rsync --no-p --no-o --no-g --rsync-path="su root rsync"'
