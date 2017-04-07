@@ -97,7 +97,8 @@ function source_files {
 
 # Both zsh and bash
 source_files <<DOTFILES
-    ~/.extend.bashrc
+    # Must use $HOME as ~ not expanded in double quotes
+    $HOME/.extend.bashrc
     $XDG_CONFIG_HOME/bash/functions
     $XDG_CONFIG_HOME/bash/aliases
     $tmuxinator_source
@@ -133,7 +134,7 @@ fi
 
 # This tells bash to reinterpret PS1 after every command, which we
 # need because __git_ps1 will return different text and colors
-sh_is_bash && PROMPT_COMMAND=__set_bash_prompt # see "functions" sourced file
+sh_is_bash && PROMPT_COMMAND=_set_bash_prompt # see "functions" sourced file
 
 ############################
 # Comments only below here #

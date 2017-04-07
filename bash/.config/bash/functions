@@ -91,7 +91,7 @@ function abs_dirname {
   if [[ $# = 0 ]]; then set .; fi # current directory if no arguments
   for path in "$@"; do 
     (cd "${dir:="$(dirname "$path")"}" && pwd || exit 1 )
-    [[ $? -ne 0 ]] && return 1
+    [[ ! $? ]] && return 1
   done
 }
 export_function abs_dirname
@@ -236,6 +236,7 @@ export_function apt_update_repo
 ansi_colours() {
         local fgc bgc vals seq0
 
+        # shellcheck disable=SC2016
         printf "Color escapes are %s\n" '\e[${value};...;${value}m'
         printf "Values 30..37 are \e[33mforeground colors\e[m\n"
         printf "Values 40..47 are \e[43mbackground colors\e[m\n"
@@ -254,8 +255,8 @@ ansi_colours() {
 
                         seq0="${vals:+\e[${vals}m}"
                         printf "  %-9s" "${seq0:-(default)}"
-                        printf " ${seq0}TEXT\e[m"
-                        printf " \e[${vals:+${vals+$vals;}}1mBOLD\e[m"
+                        printf " %sTEXT\e[m" "$seq0"
+                        printf " \e[%s1mBOLD\e[m" "${vals:+${vals+$vals;}}"
                 done
                 echo; echo
         done
@@ -288,15 +289,45 @@ export GIT_PS1_DESCRIBE_STYLE="describe"  # detached HEAD style:
 #  default       exactly eatching tag
 
 # Check if we support colours
-__colour_enabled() {
+_colour_enabled() {
   local -i colors
   colors=$(tput colors 2>/dev/null)
-  [[ $? -eq 0 ]] && [[ $colors -gt 2 ]]
+  [[ $? ]] && [[ $colors -gt 2 ]]
 }
 
+
+# Commands inside the git prompt make sshfs prompts slooooow.
+# By filesystem:  https://unix.stackexchange.com/questions/72223/check-if-folder-is-a-mounted-remote-filesystem
+possibly_disable_git_prompt() {
+  # echo "Running possibly_disable_git_prompt()"
+  unset _disable_git_prompt # default git section of prompt emabled
+  case $PWD in
+    /mnt/ravidroid*) ;&
+    # /other/directory*) ;&
+    disable)
+      # echo "Set _disable_git_prompt=true"
+      _disable_git_prompt=true # existance matters, value is irrelevant
+  esac
+}
+
+# Commands to run after changing directory
+_cd_hook () {
+  # echo "Running _cd_hook()"
+  if [ "$PWD" == "$_last_cmd_pwd" ]; then
+    return;
+	else # directory was changed
+    _last_cmd_pwd=$PWD;
+    printf "\e]1;%s\a" "$PWD" # set $PWD as tab title
+    possibly_disable_git_prompt
+  fi
+}
+
+
 # Sets prompt like: ravi@boxy:~/prj/sample_app
-__set_bash_prompt() {
+_set_bash_prompt() {
   local exit="$?" # Save the exit status of the last command
+
+  _cd_hook # Do things if directory has changed
 
   # PS1 is made from $PreGitPS1 + <git-status> + $PostGitPS1
   local PreGitPS1="${debian_chroot:+($debian_chroot)}"
@@ -305,7 +336,7 @@ __set_bash_prompt() {
   # Disable unused variables check for unused colours
   # shellcheck disable=SC2034
   # https://github.com/koalaman/shellcheck/issues/145
-  if  __colour_enabled; then
+  if _colour_enabled; then
     export GIT_PS1_SHOWCOLORHINTS=1;
 
     # Wrap the colour codes between \[ and \], so that
@@ -340,7 +371,7 @@ __set_bash_prompt() {
     PostGitPS1="$Red[$exit]"
   fi
 
-  # Change colour of prompt if root
+  # Change colour of final character if root
   if [[ ${EUID} == 0 ]]; then
     PostGitPS1+="$BRed"'\$ '"$None"
   else
@@ -348,7 +379,7 @@ __set_bash_prompt() {
   fi
 
   # Allow for a prompt without an error if __git_ps1 is undefined
-  if [[ $(type -t __git_ps1 2>/dev/null) == function ]]; then
+  if [[ ! -v _disable_git_prompt && $(type -t __git_ps1 2>/dev/null) == function ]]; then
     # Set PS1 from $PreGitPS1 + <git-status> + $PostGitPS1
   __git_ps1 "$PreGitPS1" "$PostGitPS1" '(%s)'
   else
