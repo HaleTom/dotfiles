@@ -363,7 +363,8 @@
   # Bypass pager: git --no-pager ...
   # " = true" means use pager defined in [core]
   # add      = true # disabled currently due to bug
-  diff     = "diff-hi | less -FRX --tabs=4"
+  # diff     = "diff-hi | less -FRX --tabs=4"
+  diff     = "diff-so-fancy | less -FRX --tabs=4"
   difftool = true
   log      = true
   show     = true
