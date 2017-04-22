@@ -328,6 +328,18 @@ _cd_hook () {
 _set_bash_prompt() {
   local exit="$?" # Save the exit status of the last command
 
+  # local -- - # Make shell options local to this function, restore on completion
+  # set +ex    # Don't debug or die in setting the prompt!'
+  
+  # local set_opts=${-//[^x]/} && set +x
+  # local set_opts  # Temporarily disable and restore "set -ex"
+
+  # # Save current state of "set -x" for restore at end of command
+  # case $- in
+  #  *x* ) set +x; set_opts+=x; ;;& # Do -x first for increased silence
+  #  *e* ) set +e; set_opts+=e; ;;& # continue testing...
+  #  # * )   unset set_opts ;;
+  # esac
   _cd_hook # Do things if directory has changed
 
   # PS1 is made from $PreGitPS1 + <git-status> + $PostGitPS1
@@ -390,4 +402,10 @@ _set_bash_prompt() {
 
   # defaut user prompt:
   # PS1='${debian_chroot:+($debian_chroot)}\[\033[01;32m\]\u@\h\[\033[01;34m\] \w\[\033[00m\] $(__git_ps1 "(%s)") \$ '
+
+  # # Restore "set -ex" to previous state
+  # case "$set_opts" in
+  #  *e* ) set -e ;;& # continue testing...
+  #  *x* ) set -x ;;& # Do this last for greater silence
+  # esac
 }
