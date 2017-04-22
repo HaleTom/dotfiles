@@ -298,17 +298,18 @@ _colour_enabled() {
 
 # Commands inside the git prompt make sshfs prompts slooooow.
 # By filesystem:  https://unix.stackexchange.com/questions/72223/check-if-folder-is-a-mounted-remote-filesystem
-possibly_disable_git_prompt() {
+_possibly_disable_git_prompt() {
   # echo "Running possibly_disable_git_prompt()"
   unset _disable_git_prompt # default git section of prompt emabled
-  case $PWD in
-    /mnt/ravidroid*) ;&
+  case $PWD in # ;& is fall-through
+    /ssh/*) ;&
     # /other/directory*) ;&
-    disable)
+    disable) # Won't match itself as all paths start with /
       # echo "Set _disable_git_prompt=true"
       _disable_git_prompt=true # existance matters, value is irrelevant
   esac
 }
+
 
 # Commands to run after changing directory
 _cd_hook () {
@@ -318,7 +319,7 @@ _cd_hook () {
 	else # directory was changed
     _last_cmd_pwd=$PWD;
     printf "\e]1;%s\a" "$PWD" # set $PWD as tab title
-    possibly_disable_git_prompt
+    _possibly_disable_git_prompt
   fi
 }
 
