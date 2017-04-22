@@ -86,6 +86,7 @@ eval "$funktion"
 }
 export_function make_completion_wrapper
 
+
 # Print the absolute path of the containing directory
 function abs_dirname {
   if [[ $# = 0 ]]; then set .; fi # current directory if no arguments
@@ -123,7 +124,7 @@ function git_dir {
 export_function git_dir
 
 
-# TL;DR: Just use printf "%q " "$@"
+# TL;DR: Just use printf "%q\n" "$@"
 # Escape arguments for use in eval. From
 # http://stackoverflow.com/questions/12162010/posix-sh-equivalent-for-bash-s-printf-q
 
@@ -141,6 +142,7 @@ function quote_args {
 }
 export_function quote_args
 
+
 function double_quote {
   case $# in 0) return 0; esac
   while :; do
@@ -154,6 +156,7 @@ function double_quote {
 }
 export_function double_quote
 
+
 # http://unix.stackexchange.com/a/14444/143394
 # Usage: confirm "Really" && rm /
 function confirm_no {
@@ -166,6 +169,7 @@ function confirm_no {
   esac
 }
 export_function confirm_no
+
 
 function confirm_yes {
   local reply
@@ -233,6 +237,7 @@ function apt_update_repo() {
 }
 export_function apt_update_repo
 
+
 ansi_colours() {
         local fgc bgc vals seq0
 
@@ -288,6 +293,7 @@ export GIT_PS1_DESCRIBE_STYLE="describe"  # detached HEAD style:
 #  describe      relative to older annotated tag (v1.6.3.1-13-gdd42c2f)
 #  default       exactly eatching tag
 
+
 # Check if we support colours
 _colour_enabled() {
   local -i colors
@@ -324,23 +330,37 @@ _cd_hook () {
 }
 
 
-# Sets prompt like: ravi@boxy:~/prj/sample_app
+_debug() {
+  echo "Stack: ${FUNCNAME[*]:1}"
+  echo "Command: $BASH_COMMAND"
+}
+
+
+# Run before every command (via DEBUG trap)
+_pre_command() {
+  # Bail in Bash when generating the prompt
+  [[ $BASH_COMMAND = "$PROMPT_COMMAND" ]] && return
+
+  # Reset the time when to-be-executed command is just about to start
+  _timer_start=$SECONDS
+}
+trap '_pre_command' DEBUG
+
+
+# Sets prompt like: ravi@boxy:~/prj/sample_app[elapsed][exit]$
 _set_bash_prompt() {
   local exit="$?" # Save the exit status of the last command
 
+  # If the timer is unset, the elapsed time should be 0.
+  local timer_elapsed=$(( SECONDS - ${_timer_start:-$SECONDS} ))
+  # Handle user simply pressing enter at the prompt
+  unset _timer_start
+
   # local -- - # Make shell options local to this function, restore on completion
   # set +ex    # Don't debug or die in setting the prompt!'
-  
-  # local set_opts=${-//[^x]/} && set +x
-  # local set_opts  # Temporarily disable and restore "set -ex"
 
-  # # Save current state of "set -x" for restore at end of command
-  # case $- in
-  #  *x* ) set +x; set_opts+=x; ;;& # Do -x first for increased silence
-  #  *e* ) set +e; set_opts+=e; ;;& # continue testing...
-  #  # * )   unset set_opts ;;
-  # esac
-  _cd_hook # Do things if directory has changed
+  # Have we changed directory?
+  _cd_hook
 
   # PS1 is made from $PreGitPS1 + <git-status> + $PostGitPS1
   local PreGitPS1="${debian_chroot:+($debian_chroot)}"
@@ -384,6 +404,12 @@ _set_bash_prompt() {
     PostGitPS1="$Red[$exit]"
   fi
 
+  # Print elapsed time if non-trivial
+  echo "Timer elapsed: $timer_elapsed"
+  if [[ $timer_elapsed -gt 2 ]]; then
+    PostGitPS1+="$Blu[$timer_elapsed]"
+  fi
+
   # Change colour of final character if root
   if [[ ${EUID} == 0 ]]; then
     PostGitPS1+="$BRed"'\$ '"$None"
@@ -399,13 +425,4 @@ _set_bash_prompt() {
     PS1="$PreGitPS1$PostGitPS1"
   fi
   # echo '$PS1='"$PS1"
-
-  # defaut user prompt:
-  # PS1='${debian_chroot:+($debian_chroot)}\[\033[01;32m\]\u@\h\[\033[01;34m\] \w\[\033[00m\] $(__git_ps1 "(%s)") \$ '
-
-  # # Restore "set -ex" to previous state
-  # case "$set_opts" in
-  #  *e* ) set -e ;;& # continue testing...
-  #  *x* ) set -x ;;& # Do this last for greater silence
-  # esac
 }
