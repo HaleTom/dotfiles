@@ -335,21 +335,46 @@ _debug() {
   echo "Command: $BASH_COMMAND"
 }
 
+# Functions to time time since last prompt
+_timer_now() {
+  date +%s%N
+}
+
+_timer_start() {
+  _timer_start=${_timer_start:-$(_timer_now)}
+}
+
+# Taken from:
+# http://stackoverflow.com/a/34812608/5353461
+_timer_stop() {
+  local delta_us=$((($(_timer_now) - _timer_start) / 1000))
+  local us=$((delta_us % 1000))
+  local ms=$(((delta_us / 1000) % 1000))
+  local s=$(((delta_us / 1000000) % 60))
+  local m=$(((delta_us / 60000000) % 60))
+  local h=$((delta_us / 3600000000))
+  # Goal: always show around 3 digits of accuracy
+  if ((h > 0)); then _timer_show=${h}h${m}m
+  elif ((m > 0)); then _timer_show=${m}m${s}s
+  elif ((s >= 10)); then _timer_show=${s}.$((ms / 100))s
+  elif ((s > 0)); then _timer_show=${s}.$(printf %03d $ms)s
+  elif ((ms >= 100)); then _timer_show=${ms}ms
+  elif ((ms > 0)); then _timer_show=${ms}.$((us / 100))ms
+  else _timer_show=${us}us
+  fi
+  unset _timer_start
+}
+# See also:
+# http://jakemccrary.com/blog/2015/05/03/put-the-last-commands-run-time-in-your-bash-prompt/
+
 
 # Run before every command (via DEBUG trap)
 _pre_command() {
   # When generating the prompt
   if [[ $BASH_COMMAND = "$PROMPT_COMMAND" ]]; then
-    # If the timer is unset, the elapsed time should be 0.
-    _timer_elapsed=$(( SECONDS - ${_timer_start:-$SECONDS} ))
-    # echo Stopping timer
-    return
+    :
   fi
-
-  # Reset the time when to-be-executed command is just about to start
-  # If timer is alredy started, don't reset it for compound commands
-  # echo Starting timer
-  _timer_start=${_timer_start:-$SECONDS}
+  _timer_start
 }
 trap '_pre_command' DEBUG
 
@@ -358,8 +383,7 @@ trap '_pre_command' DEBUG
 _set_bash_prompt() {
   local exit="$?" # Save the exit status of the last command
 
-  # Handle user simply pressing enter at the prompt
-  unset _timer_start
+   _timer_stop
 
   # local -- - # Make shell options local to this function, restore on completion
   # set +ex    # Don't debug or die in setting the prompt!'
@@ -409,11 +433,7 @@ _set_bash_prompt() {
     PostGitPS1="$Red[$exit]"
   fi
 
-  # Print elapsed time if non-trivial
-  echo "Timer elapsed: $_timer_elapsed"
-  if [[ ${_timer_elapsed:=0} -gt 2 ]]; then
-    PostGitPS1+="$Blu[$_timer_elapsed]"
-  fi
+  PostGitPS1+="$Blu[$_timer_show]"
 
   # Change colour of final character if root
   if [[ ${EUID} == 0 ]]; then
