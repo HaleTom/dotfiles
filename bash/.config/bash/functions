@@ -322,7 +322,7 @@ _cd_hook () {
   # echo "Running _cd_hook()"
   if [ "$PWD" == "$_last_cmd_pwd" ]; then
     return;
-	else # directory was changed
+  else # directory was changed
     _last_cmd_pwd=$PWD;
     printf "\e]1;%s\a" "$PWD" # set $PWD as tab title
     _possibly_disable_git_prompt
@@ -338,11 +338,18 @@ _debug() {
 
 # Run before every command (via DEBUG trap)
 _pre_command() {
-  # Bail in Bash when generating the prompt
-  [[ $BASH_COMMAND = "$PROMPT_COMMAND" ]] && return
+  # When generating the prompt
+  if [[ $BASH_COMMAND = "$PROMPT_COMMAND" ]]; then
+    # If the timer is unset, the elapsed time should be 0.
+    _timer_elapsed=$(( SECONDS - ${_timer_start:-$SECONDS} ))
+    # echo Stopping timer
+    return
+  fi
 
   # Reset the time when to-be-executed command is just about to start
-  _timer_start=$SECONDS
+  # If timer is alredy started, don't reset it for compound commands
+  # echo Starting timer
+  _timer_start=${_timer_start:-$SECONDS}
 }
 trap '_pre_command' DEBUG
 
@@ -351,8 +358,6 @@ trap '_pre_command' DEBUG
 _set_bash_prompt() {
   local exit="$?" # Save the exit status of the last command
 
-  # If the timer is unset, the elapsed time should be 0.
-  local timer_elapsed=$(( SECONDS - ${_timer_start:-$SECONDS} ))
   # Handle user simply pressing enter at the prompt
   unset _timer_start
 
@@ -405,9 +410,9 @@ _set_bash_prompt() {
   fi
 
   # Print elapsed time if non-trivial
-  echo "Timer elapsed: $timer_elapsed"
-  if [[ $timer_elapsed -gt 2 ]]; then
-    PostGitPS1+="$Blu[$timer_elapsed]"
+  echo "Timer elapsed: $_timer_elapsed"
+  if [[ ${_timer_elapsed:=0} -gt 2 ]]; then
+    PostGitPS1+="$Blu[$_timer_elapsed]"
   fi
 
   # Change colour of final character if root
