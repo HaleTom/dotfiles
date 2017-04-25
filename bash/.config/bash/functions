@@ -36,6 +36,12 @@ dsf() { git diff --no-index --color "$@" | diff-so-fancy; }
 
 ######### End non-exported functions ##########
 
+# True if argument is a function
+# http://stackoverflow.com/a/9529981/5353461
+is_function() {
+    declare -fF "$1" > /dev/null
+    return $?
+}
 
 
 # Make a directory and move the working directory
@@ -310,7 +316,7 @@ _possibly_disable_git_prompt() {
   case $PWD in # ;& is fall-through
     /ssh/*) ;&
     # /other/directory*) ;&
-    disable) # Won't match itself as all paths start with /
+    disable) # Won't match itself as all paths start with /   #' < Syntastic bug
       # echo "Set _disable_git_prompt=true"
       _disable_git_prompt=true # existance matters, value is irrelevant
   esac
@@ -391,9 +397,10 @@ _set_bash_prompt() {
   # Have we changed directory?
   _cd_hook
 
-  # PS1 is made from $PreGitPS1 + <git-status> + $PostGitPS1
+  # PS1 is made from $PreGitPS1 + <git-status> + $PostGitPS1 >>> $PS1RHS
   local PreGitPS1="${debian_chroot:+($debian_chroot)}"
   local PostGitPS1=""
+  local PS1RHS="" # Printed on the right hand side of terminal
 
   # Disable unused variables check for unused colours
   # shellcheck disable=SC2034
@@ -433,8 +440,6 @@ _set_bash_prompt() {
     PostGitPS1="$Red[$exit]"
   fi
 
-  PostGitPS1+="$Blu[$_timer_show]"
-
   # Change colour of final character if root
   if [[ ${EUID} == 0 ]]; then
     PostGitPS1+="$BRed"'\$ '"$None"
@@ -449,5 +454,26 @@ _set_bash_prompt() {
   else
     PS1="$PreGitPS1$PostGitPS1"
   fi
-  # echo '$PS1='"$PS1"
+
+  #
+  # Right hand side of prompt
+  #
+
+  # Create a string like:  "[ 16.5ms | Apr 25 16:06 ]"
+  printf -v PS1RHS "[ %s | %(%b %d %H:%M)T ]" "$_timer_show" -1 # -1 is current time
+
+  # Reference: https://en.wikipedia.org/wiki/ANSI_escape_code
+  local Save='\e[s' # Save cursor position
+  local Rest='\e[u' # Restore cursor to save point
+
+  # Save cursor position, jump to right hand edge, then go left N columns where N
+  # is the length of the RHS string. Print the RHS string, then return to the saved
+  # position and print the LHS prompt.
+
+  # Note: "\[" and "\]" are used so that bash can calculate the number of
+  # printed characters. The colour variables already include these so they
+  # can't be used inside the explicit "\[" and "\]" because of nesting issues.
+  PS1="${Blu}\[${Save}\e[${COLUMNS}C\e[${#PS1RHS}D${PS1RHS}${Rest}\]${PS1}"
+
+  # echo "\$PS1=$PS1"
 }

@@ -8,6 +8,7 @@ export PATH="$HOME/bin:$(ruby -e 'print Gem.user_dir')/bin:$PATH:/usr/local/hero
 export EDITOR=vim
 export RUBYLIB="$HOME"/lib:"$RUBYLIB"
 export GNULIB_SRCDIR="$HOME"/repo/gnulib
+export GCC_COLORS=1 # Enable gcc colours, available since gcc 4.9.0
 
 # Have less display colours
 # from: https://wiki.archlinux.org/index.php/Color_output_in_console#man
@@ -49,9 +50,6 @@ fi
 
 # Zsh only
 sh_is_zsh && export HISTFILE="$XDG_DATA_HOME"/zsh/history
-
-# Enable gcc colours, available since gcc 4.9.0
-export GCC_COLORS=1
 
 # shopt -s histverify # Show output of !! - press enter twice
 
@@ -97,17 +95,27 @@ function source_files {
 
 # Both zsh and bash
 source_files <<DOTFILES
+    # /usr/share/git/completion/git-prompt.sh
+    /home/ravi/repo/git/contrib/completion/git-prompt.sh
+    /usr/share/chruby/chruby.sh
+    /usr/share/chruby/auto.sh
     # Must use $HOME as ~ not expanded in double quotes
     $HOME/.extend.bashrc
+    # $HOME/bin/bash_command_timer.sh
     $XDG_CONFIG_HOME/bash/functions
     $XDG_CONFIG_HOME/bash/aliases
     $tmuxinator_source
     # $HOME/.vim/bundle/gruvbox/gruvbox_256palette.sh
-    /usr/share/git/completion/git-prompt.sh
-    /usr/share/chruby/chruby.sh
-    /usr/share/chruby/auto.sh
 DOTFILES
 unset tmuxinator_source
+
+# Resolve hogging of `trap DEBUG` and $PROMPT_COMMAND
+trap -- '[[ "$BASH_COMMAND" != "$PROMPT_COMMAND" ]] && chruby_auto; _pre_command' DEBUG
+
+# This tells bash to reinterpret PS1 after every command, which we
+# need because __git_ps1 will return different text and colors.
+# See "functions" sourced file for _set_bash_prompt
+sh_is_bash && PROMPT_COMMAND='_set_bash_prompt'
 
 # Let chruby see ruby versions in the path. Needs to occur after sourcing chruby
 # export RUBIES+=( $(which --all --skip-alias --skip-functions ruby | sed -n 's/\/bin\/ruby//gp' |sort -u) )
@@ -131,10 +139,6 @@ fi
 # See http://stackoverflow.com/a/39507158/5353461
 ## Not needed in Manjaro with bash-completion
 #_xfunc git __git_complete g _git
-
-# This tells bash to reinterpret PS1 after every command, which we
-# need because __git_ps1 will return different text and colors
-sh_is_bash && PROMPT_COMMAND=_set_bash_prompt # see "functions" sourced file
 
 ############################
 # Comments only below here #
