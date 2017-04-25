@@ -71,7 +71,8 @@
   chc    = cherry-pick --continue
   cinit  = commit --allow-empty -m 'Initialise repository'
   cl     = clone
-  cls    = clone --depth 1 --shallow-submodules
+  cls    = clone --depth 5 --shallow-submodules
+  clss   = "!git clone --depth 5 --shallow-submodules --single-branch --branch \"$@\" #  eg git clss maint git://github.com/user/repo"
   clear  = "!bash -c ' git clean -n | sed \"s/^Would remove //\"; \
     read -rn1 -p \"Delete all the above? [y/N] \" r; echo; \
     [[ x$r =~ ^x[yY] ]] && git clean -f || echo Untouched.'"
