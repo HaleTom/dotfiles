@@ -47,3 +47,5 @@ alias pbcopy='xclip -selection clipboard -in'
 alias pbpaste='xclip -selection clipboard -out'
 
 alias droidsync='rsync --no-p --no-o --no-g --rsync-path="su root rsync"'
+alias fatsync='rsync --no-p --no-o --no-g '
+alias rsyncmv='rsync -a --remove-source-files'
