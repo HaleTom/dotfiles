@@ -341,8 +341,10 @@ _debug() {
   echo "Command: $BASH_COMMAND"
 }
 
-# Functions to time time since last prompt
+# Functions to get the time since last prompt
 _timer_now() {
+  # See https://github.com/jichu4n/bash-command-timer/blob/master/bash_command_timer.sh#L77
+  # for a OSX compatible way to do this
   date +%s%N
 }
 
@@ -360,14 +362,16 @@ _timer_stop() {
   local m=$(((delta_us / 60000000) % 60))
   local h=$((delta_us / 3600000000))
   # Goal: always show around 3 digits of accuracy
-  if ((h > 0)); then _timer_show=${h}h${m}m
+  if ((h > 0)); then _timer_show=${h}h${m}m${s}s
   elif ((m > 0)); then _timer_show=${m}m${s}s
   elif ((s >= 10)); then _timer_show=${s}.$((ms / 100))s
   elif ((s > 0)); then _timer_show=${s}.$(printf %03d $ms)s
   elif ((ms >= 100)); then _timer_show=${ms}ms
-  elif ((ms > 0)); then _timer_show=${ms}.$((us / 100))ms
+  elif ((ms >= 10)); then _timer_show=${ms}.$((us / 100))ms
+  elif ((ms > 0)); then _timer_show=${ms}.$(printf %03d $us)ms
   else _timer_show=${us}us
   fi
+  _timer_show+=" ($delta_us)" # Debug
   unset _timer_start
 }
 # See also:
@@ -400,7 +404,6 @@ _set_bash_prompt() {
   # PS1 is made from $PreGitPS1 + <git-status> + $PostGitPS1 >>> $PS1RHS
   local PreGitPS1="${debian_chroot:+($debian_chroot)}"
   local PostGitPS1=""
-  local PS1RHS="" # Printed on the right hand side of terminal
 
   # Disable unused variables check for unused colours
   # shellcheck disable=SC2034
@@ -458,22 +461,35 @@ _set_bash_prompt() {
   #
   # Right hand side of prompt
   #
+  local PS1RHS="" # String to be printed on the right hand side of terminal
 
   # Create a string like:  "[ 16.5ms | Apr 25 16:06 ]"
-  printf -v PS1RHS "[ %s | %(%b %d %H:%M)T ]" "$_timer_show" -1 # -1 is current time
+  printf -v PS1RHS "\e[0m[ %s | \e[0;1;31m%(%b %d %H:%M)T \e[0m]" "$_timer_show" -1 # -1 is current time
+
+  # Strip ANSI commands before counting length
+  # From: https://www.commandlinefu.com/commands/view/12043/remove-color-special-escape-ansi-codes-from-text-with-sed
+  # PS1RHS_stripped=$(sed "s,\x1B\[[0-9;]*[a-zA-Z],,g" <<<"$PS1RHS")
+  # Emulate commented command above, but with no subprocesses
+  # Save state of extglob, required for the *(pattern) match
+  ! shopt -q extglob && { local extglob_was_disabled=1; shopt -qs extglob; }
+  local PS1RHS_stripped=${PS1RHS//$'\e['*([0-9;])[a-zA-Z]/}
+  [ -v extglob_was_disabled ] && shopt -qu extglob # restore state of extglob
 
   # Reference: https://en.wikipedia.org/wiki/ANSI_escape_code
   local Save='\e[s' # Save cursor position
   local Rest='\e[u' # Restore cursor to save point
 
-  # Save cursor position, jump to right hand edge, then go left N columns where N
-  # is the length of the RHS string. Print the RHS string, then return to the saved
-  # position and print the LHS prompt.
+  # Save cursor position, jump to right hand edge, then go left N columns where
+  # N is the length of the printable RHS string. Print the RHS string, then
+  # return to the saved position and print the LHS prompt.
 
   # Note: "\[" and "\]" are used so that bash can calculate the number of
-  # printed characters. The colour variables already include these so they
-  # can't be used inside the explicit "\[" and "\]" because of nesting issues.
-  PS1="${Blu}\[${Save}\e[${COLUMNS}C\e[${#PS1RHS}D${PS1RHS}${Rest}\]${PS1}"
+  # printed characters so that the prompt doesn't do strange things when
+  # editing the entered text.
+
+  # The colour variables already include these so they can't be used inside the
+  # explicit "\[" and "\]" because of nesting issues.
+  PS1="${Blu}\[${Save}\e[${COLUMNS}C\e[${#PS1RHS_stripped}D${PS1RHS}${Rest}\]${PS1}"
 
   # echo "\$PS1=$PS1"
 }
