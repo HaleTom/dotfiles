@@ -35,8 +35,8 @@ alias cuc=cucumber
 alias diff='diff --color=auto'
 alias grep='GREP_COLOR="1;33;40" LANG=C grep --color=auto'
 alias home="git --git-dir=$HOME/.githome --work-tree=$HOME"
-alias open='&>>~/.xsession-errors xdg-open'
 alias nixnote2='LD_PRELOAD=libcurl.so.3 nixnote2 &'
+alias sctl=systemctl
 alias tmux='TERM=xterm-256color tmux'
 alias tmuxinator='TERM=xterm-256color tmuxinator'
 
@@ -49,3 +49,11 @@ alias pbpaste='xclip -selection clipboard -out'
 alias droidsync='rsync --no-p --no-o --no-g --rsync-path="su root rsync"'
 alias fatsync='rsync --no-p --no-o --no-g '
 alias rsyncmv='rsync -a --remove-source-files'
+
+# Allow completion for git aliases defined above
+# See https://github.com/cykerway/complete-alias for a generic solution
+if is_function __git_complete; then
+  __git_complete g __git_main
+  __git_complete home __git_main
+  __git_complete s _git_status
+fi
