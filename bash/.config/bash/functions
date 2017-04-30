@@ -349,12 +349,13 @@ _timer_now() {
 }
 
 _timer_start() {
+  # Do nothing if timer already started
   _timer_start=${_timer_start:-$(_timer_now)}
 }
 
-# Taken from:
-# http://stackoverflow.com/a/34812608/5353461
 _timer_stop() {
+  # Taken from: http://stackoverflow.com/a/34812608/5353461
+  # See also: http://jakemccrary.com/blog/2015/05/03/put-the-last-commands-run-time-in-your-bash-prompt/
   local delta_us=$((($(_timer_now) - _timer_start) / 1000))
   local us=$((delta_us % 1000))
   local ms=$(((delta_us / 1000) % 1000))
@@ -371,15 +372,14 @@ _timer_stop() {
   elif ((ms > 0)); then _timer_show=${ms}.$(printf %03d $us)ms
   else _timer_show=${us}us
   fi
-  _timer_show+=" ($delta_us)" # Debug
+  # _timer_show+=" ($delta_us)" # Debug
   unset _timer_start
 }
-# See also:
-# http://jakemccrary.com/blog/2015/05/03/put-the-last-commands-run-time-in-your-bash-prompt/
 
 
 # Run before every command (via DEBUG trap)
 _pre_command() {
+  # echo _pre_command started # Debug
   # When generating the prompt
   if [[ $BASH_COMMAND = "$PROMPT_COMMAND" ]]; then
     :
@@ -389,7 +389,8 @@ _pre_command() {
 trap '_pre_command' DEBUG
 
 
-# Sets prompt like: ravi@boxy:~/prj/sample_app[elapsed][exit]$
+# Sets prompt like:
+# ravi@boxy:~/prj/sample_app[exit]$         (master*% u=) 4.595ms | Apr 30 22:27
 _set_bash_prompt() {
   local exit="$?" # Save the exit status of the last command
 
@@ -423,6 +424,7 @@ _set_bash_prompt() {
     local None='\[\e[0m\]' # Return to default colour
   else # No colour
     unset GIT_PS1_SHOWCOLORHINTS
+    # Don't die if set -u
     local Red BRed Gre BGre Yel BYel Blu BBlu Mag BMag Cya BCya Whi BWhi None
   fi
 
@@ -436,7 +438,7 @@ _set_bash_prompt() {
   # Working directory
   PreGitPS1+="$BBlu\w$None"
 
-  # Now build the part after git's status
+  # Now build the part after git's status (if git status is on the left)
 
   # Highlight non-standard exit codes
   if [[ $exit != 0 ]]; then
@@ -450,30 +452,75 @@ _set_bash_prompt() {
     PostGitPS1+="$Yel"'\$ '"$None"
   fi
 
-  # Allow for a prompt without an error if __git_ps1 is undefined
+  #
+  # Git status
+  #
+
+
+  # # Save current state of user shopt values promptvars and extglob
+  # local user_shopt
+  # user_shopt=$(shopt -p promptvars extglob)
+  # shopt -qu promptvars;
+  # shopt -qs extglob
+
+  # extglob is required for the ${variable//@(pattern)/} replacements
+  ! shopt -q extglob && { local extglob_was_unset=1 && shopt -qs extglob; }
+
+  # Allow disabling git status and no error if __git_ps1 undefined
   if [[ ! -v _disable_git_prompt && $(type -t __git_ps1 2>/dev/null) == function ]]; then
-    # Set PS1 from $PreGitPS1 + <git-status> + $PostGitPS1
-  __git_ps1 "$PreGitPS1" "$PostGitPS1" '(%s)'
-  else
-    PS1="$PreGitPS1$PostGitPS1"
+    # __git_ps1 will only write colour inside $PS1
+    __git_ps1 "" "" "%s" # force colour; no default round bracket (decorations)
+
+    # __git_ps1 usually returns literal text "${__git_ps1_branch_name}" rather
+    # than the contained branch name, eg "master". This prevents calculating
+    # the length of the printable characers in the RHS string (used to move the
+    # cursor that many columns left from the terminal's right edge.) However if
+    # "shopt promptvars" is unset, __git_ps1 it will include the dereferenced
+    # branch name instead, but let's not assume this.
+    local git=${PS1/$'${__git_ps1_branch_name}'/$__git_ps1_branch_name}
   fi
+
+  # if [[ -v git ]]; then # git variable defined
+  #   # Set PS1 from $PreGitPS1 + <git-status> + $PostGitPS1
+  #   # __git_ps1 "$PreGitPS1" "$PostGitPS1" '(%s)'
+  #   PS1=${PreGitPS1}\(${git}\)${PostGitPS1}
+  # else
+  #   PS1="$PreGitPS1$PostGitPS1"
+  # fi
+  PS1="$PreGitPS1$PostGitPS1"
 
   #
   # Right hand side of prompt
   #
   local PS1RHS="" # String to be printed on the right hand side of terminal
 
-  # Create a string like:  "[ 16.5ms | Apr 25 16:06 ]"
-  printf -v PS1RHS "\e[0m[ %s | \e[0;1;31m%(%b %d %H:%M)T \e[0m]" "$_timer_show" -1 # -1 is current time
+  # Create a string like: "Apr 25 13:15"
+  local date_time
+  printf -v date_time "%(%b %d %H:%M)T" -1 # -1 is current time
 
-  # Strip ANSI commands before counting length
-  # From: https://www.commandlinefu.com/commands/view/12043/remove-color-special-escape-ansi-codes-from-text-with-sed
-  # PS1RHS_stripped=$(sed "s,\x1B\[[0-9;]*[a-zA-Z],,g" <<<"$PS1RHS")
-  # Emulate commented command above, but with no subprocesses
-  # Save state of extglob, required for the *(pattern) match
-  ! shopt -q extglob && { local extglob_was_disabled=1; shopt -qs extglob; }
-  local PS1RHS_stripped=${PS1RHS//$'\e['*([0-9;])[a-zA-Z]/}
-  [ -v extglob_was_disabled ] && shopt -qu extglob # restore state of extglob
+  # Format the RHS prompt
+  PS1RHS="\e[0m($git) ${_timer_show} | \e[0;1;31m${date_time}\e[0m"
+
+  # Strip "\[" and "\[": non-printable character markers can't be nested.
+  # __git_ps1 includes them but the whole of the RHS prompt needs to be
+  # included in these markers.
+
+  # Also strip ANSI CSI commands (eg colours) to enble counting the length of
+  # printable characters, giving offset of cursor from terminal RHS edge (from
+  # https://www.commandlinefu.com/commands/view/12043/remove-color-special-escape-ansi-codes-from-text-with-sed)
+
+  local PS1RHS_stripped=${PS1RHS//@(\\@(\[|]|[Ee]\[*([0-9;])[a-zA-Z]))/}
+  # or, in using sed:
+  # local PS1RHS_stripped=$(sed -e 's,\\[][]\|\\[Ee]\[\([0-9;]\)*[A-Za-z],,g' <<< "$PS1RHS")
+  # Neither bash not sed support lookbehind zero-length assertions, so it's not
+  # possible to ignore "\\e", (ie a literal '\' followed by a literal 'e'), yet
+  # still remove "\e" (ie ESC)
+
+  # Restore shopt extglob if needed
+  [[ -v extglob_was_unset ]] && { shopt -qu extglob && echo restored; }
+
+   # _timer_stop
+   # echo "Time: $_timer_show"
 
   # Reference: https://en.wikipedia.org/wiki/ANSI_escape_code
   local Save='\e[s' # Save cursor position
@@ -485,11 +532,12 @@ _set_bash_prompt() {
 
   # Note: "\[" and "\]" are used so that bash can calculate the number of
   # printed characters so that the prompt doesn't do strange things when
-  # editing the entered text.
+  # command line editing/browsing/completion
 
   # The colour variables already include these so they can't be used inside the
   # explicit "\[" and "\]" because of nesting issues.
   PS1="${Blu}\[${Save}\e[${COLUMNS}C\e[${#PS1RHS_stripped}D${PS1RHS}${Rest}\]${PS1}"
-
+  # If $COLUMNS happens to be unset (some cygwin, OSX)
+  # PS1="${Blu}\[${Save}\e[$(tput cols)C\e[${#PS1RHS_stripped}D${PS1RHS}${Rest}\]${PS1}"
   # echo "\$PS1=$PS1"
 }
