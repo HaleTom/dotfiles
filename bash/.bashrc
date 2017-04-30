@@ -123,13 +123,15 @@ sh_is_bash && PROMPT_COMMAND='_set_bash_prompt'
 # Bash only
 if sh_is_bash; then
     source_files <<DOTFILES
-        $XDG_DATA_HOME/fzf/.fzf.bash
-        $XDG_CONFIG_HOME/bash/completion
+    /usr/share/git/completion/git-completion.bash
+    $XDG_DATA_HOME/fzf/.fzf.bash
+    $XDG_CONFIG_HOME/bash/completion
 DOTFILES
 fi
 
 # Zsh only
 if sh_is_zsh; then source_files <<DOTFILES
+    /usr/share/git/completion/git-completion.zsh
     $XDG_DATA_HOME/fzf/.fzf.zsh
 DOTFILES
 fi
