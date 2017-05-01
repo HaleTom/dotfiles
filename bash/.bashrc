@@ -104,6 +104,7 @@ source_files <<DOTFILES
     # $HOME/bin/bash_command_timer.sh
     $XDG_CONFIG_HOME/bash/functions
     $XDG_CONFIG_HOME/bash/aliases
+    $XDG_CONFIG_HOME/bash/prompt
     $tmuxinator_source
     # $HOME/.vim/bundle/gruvbox/gruvbox_256palette.sh
 DOTFILES
