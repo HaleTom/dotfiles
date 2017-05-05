@@ -26,6 +26,9 @@ set show-mode-in-prompt on
 set completion-ignore-case on
 set history-preserve-point on # preserve cursor coloumn position in history
 set keyseq-timeout 400
+set blink-matching-paren on
+set colored-completion-prefix on
+
 
 # The length in characters of the common prefix of a list of possible
 # completions that is displayed without modification. When set to a value
