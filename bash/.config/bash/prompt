@@ -38,7 +38,7 @@ _colour_enabled() {
 # By filesystem:  https://unix.stackexchange.com/questions/72223/check-if-folder-is-a-mounted-remote-filesystem
 _possibly_disable_git_prompt() {
   # echo "Running possibly_disable_git_prompt()"
-  unset _disable_git_prompt # default git section of prompt emabled
+  unset -v _disable_git_prompt # default git section of prompt emabled
   case $PWD in # ;& is fall-through
     /ssh/*) ;&
     # /other/directory*) ;&
@@ -97,7 +97,7 @@ _timer_stop() {
   else _timer_show=${us}us
   fi
   # _timer_show+=" ($delta_us)" # Debug
-  unset _timer_start
+  unset -v _timer_start
 }
 
 # Run before every command (via DEBUG trap)
@@ -111,6 +111,34 @@ _pre_command() {
 }
 trap '_pre_command' DEBUG
 
+# Allow user to set a simple prompt for capturing sample output
+# by setting variable $ps1 (not $PS1)
+_simple_prompt() {
+  if [[ -z $_restore_mode_in_prompt ]]; then
+    # First time generating a simple prompt
+    # Determine whether to restore readline show-mode-in-prompt
+    if bind -v | grep "show-mode-in-prompt on" &>/dev/null; then
+      _restore_mode_in_prompt=1
+    else
+      _restore_mode_in_prompt=0
+    fi
+  fi
+
+  case $ps1 in
+    [Xx]) # Cancel simple prompt behaviour
+      [[ $_restore_mode_in_prompt -eq 1 ]] && bind "set show-mode-in-prompt on"
+      unset -v ps1 unset _restore_mode_in_prompt
+      _set_bash_prompt # Print the full prompt
+      ;; # Don't fall through 'here
+    "") # Set default simple prompt allowing for user laziness
+      ps1='\$ '
+      ;& # Fall through...
+    *) # User has set explicit prompt string
+      bind "set show-mode-in-prompt off" ;;
+      PS1=${ps1}
+  esac
+}
+
 # Sets prompt like:
 # ravi@boxy:~/prj/sample_app[exit]$         (master*% u=) 4.595ms | Apr 30 22:27
 _set_bash_prompt() {
@@ -121,11 +149,11 @@ _set_bash_prompt() {
   # local -- - # Make shell options local to this function, restore on completion
   # set +ex    # Don't debug or die in setting the prompt!'
 
+  # Allow for a simple prompt for copy / paste examples
+  [[ -v ps1 ]] && { _simple_prompt; return 0; }
+
   # Have we changed directory?
   _cd_hook
-
-  # Create the left-hand side prompt
-  local lhs="${debian_chroot:+($debian_chroot)}"
 
   # Disable unused variables check for unused colours
   # shellcheck disable=SC2034
@@ -149,15 +177,18 @@ _set_bash_prompt() {
     local Red BRed Gre BGre Yel BYel Blu BBlu Mag BMag Cya BCya Whi BWhi None
   fi
 
+  # Create the left-hand side prompt
+  local lhs="${debian_chroot:+($debian_chroot)}"
+
   # No username and bright colour if root
   if [[ ${EUID} = 0 ]]; then
     lhs+="$BRed\h "
   else
-    lhs+="$BGre\u@\h$None:"
+    lhs+="$BWhi\u$None@$BBlu\h$None:"
   fi
 
   # Working directory
-  lhs+="$BBlu\w$None"
+  lhs+="$BCya\w$None"
 
   # Highlight non-standard exit codes
   if [[ $exit != 0 ]]; then
@@ -168,7 +199,7 @@ _set_bash_prompt() {
   if [[ ${EUID} == 0 ]]; then
     lhs+="$BRed"'\$ '"$None"
   else
-    lhs+="$Yel"'\$ '"$None"
+    lhs+="$BYel"'\$ '"$None"
   fi
 
   #
@@ -212,7 +243,7 @@ _set_bash_prompt() {
 
   # Format the RHS prompt
   [[ -n $git ]] && rhs="$git | " #"
-  rhs+="${_timer_show} | ${BCya}${date_time}"
+  rhs+="${_timer_show} | \e[0;0;36m${date_time}"
 
   # Strip ANSI CSI commands (eg colours) to enble counting the length of
   # printable characters, giving offset of cursor from terminal RHS edge (from
@@ -220,7 +251,7 @@ _set_bash_prompt() {
   # Neither bash not sed support lookbehind zero-length assertions, so it's not
   # possible to ignore "\\e", (ie a literal '\' followed by a literal 'e'), yet
   # still remove "\e" (ie ESC)
-  local rhs_printable=${rhs//@(\\@(\[|]|[Ee]\[*([0-9;])[a-zA-Z]))/}
+  local rhs_printable=${rhs//@(\\@(\[|\]|[Ee]\[*([0-9;])[a-zA-Z]))/}
   # or, in using sed (but requires exec):
   # local rhs_printable=$(sed -e 's,\\[][]\|\\[Ee]\[\([0-9;]\)*[A-Za-z],,g' <<< "$rhs")
 
@@ -238,6 +269,10 @@ _set_bash_prompt() {
 
   # The colour variables already include these so they can't be used inside the
   # explicit "\[" and "\]" because of nesting issues.
+
+  # Edge case todo: Don't print more RHS characters than will fit on one line:
+  # http://stackoverflow.com/a/43744552/5353461
+
   PS1="\[\e[0m${Save}\e[$((COLUMNS - ${#rhs_printable}))G${rhs}${Rest}\]${lhs}"
   # If $COLUMNS happens to be unset (some cygwin, OSX)
   # PS1="${lhs}${Blu}\[${Save}\e[$(($(tput cols) - ${#rhs_printable}))G${rhs}${Rest}\]${PS1}"
