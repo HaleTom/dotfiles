@@ -134,8 +134,8 @@ _simple_prompt() {
       ps1='\$ '
       ;& # Fall through...
     *) # User has set explicit prompt string
-      bind "set show-mode-in-prompt off" ;;
-      PS1=${ps1}
+      bind "set show-mode-in-prompt off"
+      PS1=${ps1} ;;
   esac
 }
 
