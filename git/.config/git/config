@@ -168,6 +168,9 @@
   tm     = tag -m
   td     = tag -d
 
+  # Show changes in a file, following renames
+  changes = git log --follow --stat --patch
+
   # Print only the first hash encountered
   grep-1hash = !"awk 'match($0, /[a-f0-9]{7,40}/) {print substr($0, RSTART, RLENGTH); exit}' #"
   # Print the first has on each line
