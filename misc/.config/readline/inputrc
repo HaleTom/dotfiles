@@ -19,16 +19,22 @@
 
 
 # Variables
-# See ttps://www.gnu.org/software/bash/manual/html_node/Readline-Init-File-Syntax.html#Readline-Init-File-Syntax
+# See https://www.gnu.org/software/bash/manual/html_node/Readline-Init-File-Syntax.html#Readline-Init-File-Syntax
 set editing-mode emacs  # This has the best starting set of commands
 set bell-style visible
-set show-mode-in-prompt on
 set completion-ignore-case on
 set history-preserve-point on # preserve cursor coloumn position in history
 set keyseq-timeout 400
 set blink-matching-paren on
 set colored-completion-prefix on
 
+# Set readline mode strings
+set show-mode-in-prompt on
+set emacs-mode-string  "\1\e[0;1;32m\2@\1\e[0m\e[4 q\2" # green '@' underscore cursor
+set vi-cmd-mode-string "\1\e[0;1;31m\2:\1\e[0m\e[2 q\2" # red ':', block cursor
+set vi-ins-mode-string "\1\e[0;1;37m\2 \1\e[0m\e[6 q\2" # blue ' ', steady I-beam cursor
+# Colurs: https://en.wikipedia.org/wiki/ANSI_escape_code#CSI_codes
+# Cursors: https://askubuntu.com/a/620306/478705
 
 # The length in characters of the common prefix of a list of possible
 # completions that is displayed without modification. When set to a value
@@ -136,6 +142,9 @@ set convert-meta off
 set keymap emacs
 "\C-x\C-r": re-read-init-file  # This the default binding for emacs mode
 
+# switch to block cursor before executing a command
+RETURN: "\e\n"
+
 # Executing vi-movement-mode doesn't change the prompt prefix. See:
 # http://unix.stackexchange.com/questions/303637/readline-how-do-i-change-from-emacs-to-vi-command-with-a-binding
 # http://unix.stackexchange.com/questions/303631/how-can-i-setup-a-hybrid-readline-with-emacs-insert-mode-and-vi-command-mode/303632#303632
@@ -221,6 +230,8 @@ set keymap vi-command
 # vi INSERT mode
 ######################################################################
 set keymap vi-insert
+# switch to block cursor before executing a command
+RETURN: "\e\n"
 "\ee": emacs-editing-mode
 "jk": vi-movement-mode
 "kj": vi-movement-mode

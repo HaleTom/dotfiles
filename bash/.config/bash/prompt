@@ -103,10 +103,12 @@ _timer_stop() {
 # Run before every command (via DEBUG trap)
 _pre_command() {
   # echo _pre_command started # Debug
-  # When generating the prompt
-  if [[ $BASH_COMMAND = "$PROMPT_COMMAND" ]]; then
-    :
-  fi
+
+  # Run only when generating the prompt
+  # if [[ $BASH_COMMAND = "$PROMPT_COMMAND" ]]; then
+  #   :
+  # fi
+
   _timer_start
 }
 trap '_pre_command' DEBUG
@@ -144,10 +146,13 @@ _simple_prompt() {
 _set_bash_prompt() {
   local exit="$?" # Save the exit status of the last command
 
+  # Allow user to set $ps1_debug to have "set -xe" continue through the prompt
+  # shellcheck disable=SC2154
+  if [[ ! -v ps1_debug ]]; then
+    local -- - # Make shell options local to this function, restore on completion
+    set +ex    # Don''t debug or die in setting the prompt!
+  fi
    _timer_stop
-
-  # local -- - # Make shell options local to this function, restore on completion
-  # set +ex    # Don't debug or die in setting the prompt!'
 
   # Allow for a simple prompt for copy / paste examples
   [[ -v ps1 ]] && { _simple_prompt; return 0; }

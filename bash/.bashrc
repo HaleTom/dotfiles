@@ -87,31 +87,30 @@ function source_file {
 function source_files {
     while read -r dotfile ; do
         case "$dotfile" in
-            \#*) continue;; # Skip commented lines
-            *  ) source_file "$dotfile"
+            "") ;& # fall through...
+            \#*) continue;; # Skip blank or commented lines
+            *  ) source_file "$dotfile" ;;
         esac
     done
 }
 
 # Both zsh and bash
 source_files <<DOTFILES
-    # /usr/share/git/completion/git-prompt.sh
-    /home/ravi/repo/git/contrib/completion/git-prompt.sh
+    /usr/share/git/completion/git-prompt.sh
     /usr/share/chruby/chruby.sh
     /usr/share/chruby/auto.sh
+
     # Must use $HOME as ~ not expanded in double quotes
-    $HOME/.extend.bashrc
-    # $HOME/bin/bash_command_timer.sh
+
+    # breaks zsh, needs to be before prompt
+    # $HOME/.extend.bashrc
+
     $XDG_CONFIG_HOME/bash/functions
     $XDG_CONFIG_HOME/bash/aliases
-    $XDG_CONFIG_HOME/bash/prompt
     $tmuxinator_source
     # $HOME/.vim/bundle/gruvbox/gruvbox_256palette.sh
 DOTFILES
 unset tmuxinator_source
-
-# Resolve hogging of `trap DEBUG` and $PROMPT_COMMAND
-trap -- '[[ "$BASH_COMMAND" != "$PROMPT_COMMAND" ]] && chruby_auto; _pre_command' DEBUG
 
 # This tells bash to reinterpret PS1 after every command, which we
 # need because __git_ps1 will return different text and colors.
@@ -126,16 +125,23 @@ if sh_is_bash; then
     source_files <<DOTFILES
     /usr/share/git/completion/git-completion.bash
     $XDG_DATA_HOME/fzf/.fzf.bash
+    $XDG_CONFIG_HOME/bash/prompt
     $XDG_CONFIG_HOME/bash/completion
 DOTFILES
+
+    # Resolve hogging of `trap DEBUG` and $PROMPT_COMMAND
+    trap -- '[[ "$BASH_COMMAND" != "$PROMPT_COMMAND" ]] && chruby_auto; _pre_command' DEBUG
 fi
 
 # Zsh only
 if sh_is_zsh; then source_files <<DOTFILES
-    /usr/share/git/completion/git-completion.zsh
     $XDG_DATA_HOME/fzf/.fzf.zsh
 DOTFILES
 fi
+
+PROMPT='%F{red}%n%f@%F{blue}%m%f %F{yellow}%1~%f %# '
+RPROMPT='[%F{yellow}%?%f]'
+
 
 # alias g=git (done in .bash_aliases)
 # This needs to be here - doesn't work inside .bash_aliases for some reason

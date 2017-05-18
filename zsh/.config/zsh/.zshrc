@@ -12,7 +12,8 @@ zstyle ':completion:*' matcher-list 'r:|[._-]=* r:|=*' 'm:{[:lower:]}={[:upper:]
 zstyle ':completion:*' menu select=4
 zstyle ':completion:*' original true
 zstyle ':completion:*' preserve-prefix '//[^/]##/'
-zstyle ':completion:*' select-prompt %SScrolling active: current selection at %p (%l)%s
+# causes: /home/ravi/.config/zsh/.zshrc:15: no matches found: (%l)%s
+# zstyle ':completion:*' select-prompt %SScrolling active: current selection at %p (%l)%s
 zstyle ':completion:*' special-dirs true
 zstyle ':completion:*' verbose true
 zstyle :compinstall filename '/home/ravi/.config/zsh/.zshrc'
@@ -20,6 +21,20 @@ zstyle :compinstall filename '/home/ravi/.config/zsh/.zshrc'
 autoload -Uz compinit
 compinit
 # End of lines added by compinstall
+
+zstyle ':completion:*:*:git:*' script /usr/share/git/completion/git-completion.zsh
+
+# https://wiki.archlinux.org/index.php/Zsh#Help_command
+unalias run-help
+alias help=run-help
+autoload -Uz run-help
+autoload -Uz run-help-git
+autoload -Uz run-help-ip
+autoload -Uz run-help-openssl
+autoload -Uz run-help-p4
+autoload -Uz run-help-sudo
+autoload -Uz run-help-svk
+autoload -Uz run-help-svn
 
 # Ensure zsh knows about compdef via compinit before requiring it via .bashrc:
 source ~/.bashrc
