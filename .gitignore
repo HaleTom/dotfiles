@@ -1,3 +1,6 @@
 # Ignore personal configuration for git when sharing to GitHub:
 /git/.gitconfig.local
 /*-ravi
+
+/zsh/.config/zsh/history
+/zsh/.config/zsh/.zcompdump

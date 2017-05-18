@@ -139,7 +139,7 @@ if sh_is_zsh; then source_files <<DOTFILES
 DOTFILES
 fi
 
-PROMPT='%F{red}%n%f@%F{blue}%m%f %F{yellow}%1~%f %# '
+PROMPT='%F{red}%n%f@%F{blue}%m%f %F{yellow}%~%f %# '
 RPROMPT='[%F{yellow}%?%f]'
 
 
