@@ -26,14 +26,21 @@ if [ -f "$XDG_CONFIG_HOME/user-dirs.dirs" ]; then
     export XDG_DESKTOP_DIR XDG_DOWNLOAD_DIR XDG_TEMPLATES_DIR XDG_PUBLICSHARE_DIR XDG_DOCUMENTS_DIR XDG_MUSIC_DIR XDG_PICTURES_DIR XDG_VIDEOS_DIR
 fi
 
-# Check that only one version of XDG files exist
-while read -r file; do
-    case "$file" in
-        \#*) continue # Allow for commened out files
-    esac
-    if [ -e "$file" ]; then
-        echo "Warning: XDG shadowed file: $file" >&2
-    fi
+# Check that only one version of files exist
+while read -r file; do # HERE doc at end
+  case "$file" in
+    "") ;&
+    \#*) continue # Allow for blank and commened out files
+  esac
+  if [[ -e $file ]]; then { # bracket for STDERRR
+    printf "%s" "Warning: XDG shadowed "
+      [[ -L $file ]] && printf "symlink" || { # symlinks are "both"
+        [[ -d $file ]] && printf "directory"
+        [[ -f $file ]] && printf "file";
+      }
+      printf ": %s\n" "$file"
+    } >&2
+  fi
 done << XDGFILES
    $HOME/.inputrc
    $HOME/.less
@@ -43,12 +50,14 @@ done << XDGFILES
    # $HOME/.Xauthority
    # $HOME/.ICEauthority
    $HOME/.gitconfig
-   $HOME/.vim
-   $HOME/.viminfo
    $HOME/.npm
    $HOME/.npmrc
    $HOME/.mostrc
    $HOME/.tmuxinator
+   $HOME/.vim
+   $HOME/.viminfo
+   $HOME/.vimperator
+   $HOME/.wgetrc
 XDGFILES
 
 # Tell programs to look for files in $XDG_*
@@ -61,11 +70,15 @@ XDGFILES
 export INPUTRC="$XDG_CONFIG_HOME/readline/inputrc"
 export GNUPGHOME="$XDG_CONFIG_HOME/gnupg"
 export MOST_INITFILE="$XDG_CONFIG_HOME/most/config"
+export WGETRC="$XDG_CONFIG_HOME/wgetrc"
 
 # Begin multi-line config
 
 export LESSKEY="$XDG_CONFIG_HOME/less/keys"
 export LESSHISTFILE="$XDG_CACHE_HOME/less/history"
+
+export VIMPERATOR_INIT=":source $XDG_CONFIG_HOME/vimperator/vimperatorrc"
+export VIMPERATOR_RUNTIME="$XDG_CONFIG_HOME/vimperator"
 
 # npm
 # see npm config ls -l | grep /

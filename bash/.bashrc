@@ -134,14 +134,14 @@ DOTFILES
 fi
 
 # Zsh only
-if sh_is_zsh; then source_files <<DOTFILES
+if sh_is_zsh; then
+    PROMPT='%F{red}%n%f@%F{blue}%m%f %F{yellow}%~%f %# '
+    RPROMPT='[%F{yellow}%?%f]'
+
+    source_files <<DOTFILES
     $XDG_DATA_HOME/fzf/.fzf.zsh
 DOTFILES
 fi
-
-PROMPT='%F{red}%n%f@%F{blue}%m%f %F{yellow}%~%f %# '
-RPROMPT='[%F{yellow}%?%f]'
-
 
 # alias g=git (done in .bash_aliases)
 # This needs to be here - doesn't work inside .bash_aliases for some reason

@@ -34,7 +34,7 @@ alias cp='cp --reflink=auto'
 alias cuc=cucumber
 alias diff='diff --color=auto'
 alias grep='GREP_COLOR="1;33;40" LANG=C grep --color=auto'
-alias home="git --git-dir=$HOME/.githome --work-tree=$HOME"
+alias home='git --git-dir=$HOME/.githome --work-tree=$HOME'
 alias nixnote2='LD_PRELOAD=libcurl.so.3 nixnote2 &'
 alias sctl=systemctl
 alias tmux='TERM=xterm-256color tmux'
@@ -46,8 +46,10 @@ alias tail='tail -n $((${LINES:-12}-2)) -s.1' # Likewise, also more responsive -
 alias pbcopy='xclip -selection clipboard -in'
 alias pbpaste='xclip -selection clipboard -out'
 
-alias droidsync='rsync --no-p --no-o --no-g --rsync-path="su root rsync"'
-alias fatsync='rsync --no-p --no-o --no-g '
+alias droidsync='f(){ rsync "$@" --no-p --no-o --no-g --rsync-path="su root rsync";};f'
+# FAT stores to two-second accuracy, NTFS 100 nanoseconds
+# https://corengen.wordpress.com/2010/03/22/comparing-file-timestamps-on-ntfs-and-fat32/
+alias fatrsync='f(){ rsync "$@" --modify-window=2 --no-p --no-o --no-g;};f'
 alias rsyncmv='rsync -a --remove-source-files'
 
 # Allow completion for git aliases defined above
