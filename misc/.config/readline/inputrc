@@ -20,7 +20,7 @@
 
 # Variables
 # See https://www.gnu.org/software/bash/manual/html_node/Readline-Init-File-Syntax.html#Readline-Init-File-Syntax
-set editing-mode emacs  # This has the best starting set of commands
+set editing-mode vi  # emacs defaults have the best starting set of commands
 set bell-style visible
 set completion-ignore-case on
 set history-preserve-point on # preserve cursor coloumn position in history
@@ -29,12 +29,18 @@ set blink-matching-paren on
 set colored-completion-prefix on
 
 # Set readline mode strings
+# Colours: https://en.wikipedia.org/wiki/ANSI_escape_code#CSI_codes
 set show-mode-in-prompt on
-set emacs-mode-string  "\1\e[0;1;32m\2@\1\e[0m\e[4 q\2" # green '@' underscore cursor
-set vi-cmd-mode-string "\1\e[0;1;31m\2:\1\e[0m\e[2 q\2" # red ':', block cursor
-set vi-ins-mode-string "\1\e[0;1;37m\2 \1\e[0m\e[6 q\2" # blue ' ', steady I-beam cursor
-# Colurs: https://en.wikipedia.org/wiki/ANSI_escape_code#CSI_codes
+set emacs-mode-string  "\1\e[0;1;32m\2@\1\e[0m\2" # green
+set vi-cmd-mode-string "\1\e[0;1;31m\2:\1\e[0m\2" # red
+set vi-ins-mode-string "\1\e[0;1;37m\2 \1\e[0m\2" # blue
+
 # Cursors: https://askubuntu.com/a/620306/478705
+# Cursors disabled for Octave and text terminals:
+# set emacs-mode-string  "\1\e[0;1;32m\2@\1\e[0m\e[4 q\2" # green '@' underscore cursor
+# set vi-cmd-mode-string "\1\e[0;1;31m\2:\1\e[0m\e[2 q\2" # red ':', block cursor
+# set vi-ins-mode-string "\1\e[0;1;37m\2 \1\e[0m\e[6 q\2" # blue ' ', steady I-beam cursor
+
 
 # The length in characters of the common prefix of a list of possible
 # completions that is displayed without modification. When set to a value

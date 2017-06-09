@@ -1,0 +1,57 @@
+# https://wiki.archlinux.org/index.php/Zathura
+#
+# https://man.cx/zathurarc(5)
+
+set smooth-scroll true
+set scroll-step 100
+
+set adjust-open width
+set window-width 1400
+set window-height 1800
+
+set selection-clipboard clipboard
+set highlight-color "#fdf6e3" # green
+
+set window-title-page true
+set window-title-basename true
+
+set incremental-search true
+
+#Change column of first page
+set pages-per-row 1
+set first-page-column 1:1:1:1
+
+#
+# Mappings only below here
+#
+
+# J, K for a full page, C-j for a half screen
+map [normal]     <C-j> scroll half-down
+map [normal]     <C-k> scroll half-up
+map [fullscreen] <C-j> scroll half-down
+map [fullscreen] <C-k> scroll half-up
+
+map [normal]     i toggle_index
+map [fullscreen] i toggle_index
+
+map [normal]     u toggle_fullscreen
+map [fullscreen] u toggle_fullscreen
+
+map [normal]     <A-1> set "first-page-column 1:1"
+map [fullscreen] <A-1> set "first-page-column 1:1"
+map [fullscreen] <A-2> set "first-page-column 1:2"
+map [fullscreen] <A-2> set "first-page-column 1:2"
+
+# Why are these only defined for normal mode by default?
+map [fullscreen] a adjust_window best-fit
+map [fullscreen] s adjust_window width
+map [fullscreen] f follow
+map [fullscreen] d toggle_page_mode 2
+map [fullscreen] <Tab> toggle_index
+map [fullscreen] j scroll down
+map [fullscreen] k scroll up
+map [fullscreen] <C-d> scroll half-down
+map [fullscreen] <C-u> scroll half-up
+map [fullscreen] <C-o> jumplist backward
+map [fullscreen] <C-i> jumplist forward
+map [index] q quit
