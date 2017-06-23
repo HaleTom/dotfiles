@@ -1,0 +1,56 @@
+# https://standards.freedesktop.org/mime-apps-spec/mime-apps-spec-latest.html
+# See also: https://www.freedesktop.org/wiki/Specifications/mime-apps-spec/
+
+[Default Applications]
+application/xml=mousepad.desktop
+application/x-cd-image=open-fuse-iso.desktop
+application/x-raw-disk-image=open-fuse-iso.desktop
+application/x-bittorrent=deluge.desktop
+image/jpeg=viewnior.desktop
+image/png=viewnior.desktop
+image/gif=viewnior.desktop
+text/plain=mousepad.desktop
+video/x-ms-wmv=vlc.desktop
+video/mp4=vlc.desktop
+video/x-flv=vlc.desktop
+video/ogg=vlc.desktop
+video/x-ogm+ogg=vlc.desktop
+video/x-theora+ogg=vlc.desktop
+
+x-scheme-handler/chrome=google-chrome.desktop
+application/x-extension-htm=google-chrome.desktop;firefox.desktop
+application/x-extension-html=google-chrome.desktop;firefox.desktop
+application/x-extension-shtml=google-chrome.desktop;firefox.desktop
+application/xhtml+xml=google-chrome.desktop;firefox.desktop
+application/x-extension-xhtml=google-chrome.desktop;firefox.desktop
+application/x-extension-xht=google-chrome.desktop;firefox.desktop
+text/html=google-chrome.desktop;firefox.desktop
+text/mml=google-chrome.desktop;firefox.desktop
+x-scheme-handler/http=google-chrome.desktop;firefox.desktop
+x-scheme-handler/https=google-chrome.desktop;firefox.desktop
+x-scheme-handler/ftp=google-chrome.desktop;firefox.desktop
+
+##
+## The [Added Associations] group defines additional associations of applications with mimetypes, as if the .desktop file was listing this mimetype in the first place.
+##
+
+[Added Associations]
+application/octet-stream=qpdfview.desktop;uget-gtk.desktop;mousepad.desktop;
+application/pdf=zathura-pdf-mupdf.desktop;
+application/x-gettext-translation=mousepad.desktop;
+application/x-wine-extension-ini=mousepad.desktop;
+audio/mpeg=vlc.desktop;
+audio/mp4=vlc.desktop;
+image/gif=viewnior.desktop;gimp.desktop;
+image/jpeg=viewnior.desktop;
+video/mp4=vlc.desktop;
+
+# exo-open is a command line frontend to the Xfce Preferred Applications framework.
+inode/directory=exo-file-manager.desktop
+x-scheme-handler/trash=exo-file-manager.desktop
+x-scheme-handler/http=exo-web-browser.desktop
+x-scheme-handler/https=exo-web-browser.desktop
+
+##
+## The [Removed Associations] group removes associations of applications with mimetypes, as if the .desktop file was NOT listing this mimetype in the first place.
+##
