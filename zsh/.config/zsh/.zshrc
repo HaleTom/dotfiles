@@ -24,6 +24,10 @@ compinit
 
 zstyle ':completion:*:*:git:*' script /usr/share/git/completion/git-completion.zsh
 
+# ssh: use my (and the system's) ssh known hosts file.
+# https://unix.stackexchange.com/a/377765/143394
+zstyle -e ':completion:*:(ssh|scp|sftp|rsh|rsync):hosts' hosts 'reply=(${=${${(f)"$(cat {/etc/ssh_,~/.ssh/known_}hosts(|2)(N) /dev/null)"}%%[# ]*}//,/ })'
+
 # https://wiki.archlinux.org/index.php/Zsh#Help_command
 unalias run-help
 alias help=run-help
