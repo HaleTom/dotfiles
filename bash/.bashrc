@@ -37,6 +37,9 @@ export COMMAND_NOT_FOUND_INSTALL_PROMPT=1
 export BINARY_SSH=/usr/bin/ssh
 export BINARY_SCP=/usr/bin/scp
 
+# Browser
+export BROWSER=/usr/bin/google-chrome-stable
+
 # Allow shell-specific code
 function sh_is_zsh { [[ -n $ZSH_VERSION ]]; }
 function sh_is_bash { [[ -n $BASH_VERSION ]]; }
