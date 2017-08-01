@@ -40,17 +40,22 @@ map [normal]     K scroll half-up
 map [fullscreen] J scroll half-down
 map [fullscreen] K scroll half-up
 
-# C-j/k for full screen down / up
-map [normal]     <C-j> scroll full-down
-map [normal]     <C-k> scroll full-up
-map [fullscreen] <C-j> scroll full-down
-map [fullscreen] <C-k> scroll full-up
+# Space/shift-Space for full screen down / up
+map [normal]     <Space> scroll full-down
+map [normal]     <S-Space> scroll full-up
+map [fullscreen] <Space> scroll full-down
+map [fullscreen] <S-Space> scroll full-up
 
 # Paper page down / up
 map [normal]     n navigate next
 map [normal]     p navigate previous
 map [fullscreen] n navigate next
 map [fullscreen] p navigate previous
+
+map [normal]     <C-j> navigate next
+map [normal]     <C-k> navigate previous
+map [fullscreen] <C-j> navigate next
+map [fullscreen] <C-k> navigate previous
 
 # Zoom: Releasing shift to press '-' is weird. Hold and press _/+
 map [normal]     + zoom in
