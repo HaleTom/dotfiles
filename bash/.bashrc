@@ -30,6 +30,12 @@ export LESS=-FMRXis
 # u = send backspaces and carriage returns directly to the terminal (breaks colored man)
 export MANPAGER='less -Ms +Gg' # Show line percentage in man pages
 
+# Package management
+# pacaur, yaourt, makepkg: use powerpill instead of pacman
+pacman -Q powerpill >& /dev/null && export PACMAN=/usr/bin/powerpill
+# pacmatic: use pacaur instead of pacman
+pacman -Q pacaur >& /dev/null && export pacman_program=/usr/bin/pacaur
+
 # Have command-not-found ask to install
 export COMMAND_NOT_FOUND_INSTALL_PROMPT=1
 
