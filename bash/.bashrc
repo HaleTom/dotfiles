@@ -4,7 +4,6 @@
 # 1) Determine shell.  2) Silence when trying to source from variable
 
 source "$HOME/.config/bash/xdg" # Needed for $XDG* variables below
-export PATH="$HOME/bin:$(ruby -e 'print Gem.user_dir')/bin:$PATH:/usr/local/heroku/bin:$HOME/.cabal/bin"
 export EDITOR=vim
 export RUBYLIB="$HOME"/lib:"$RUBYLIB"
 export GNULIB_SRCDIR="$HOME"/repo/gnulib
@@ -28,6 +27,11 @@ export LESS=-FMRXis
 # m = show :w
 # s = squash multiple blank lines into one
 # u = send backspaces and carriage returns directly to the terminal (breaks colored man)
+
+# Highlight source code if available
+highlight=/usr/bin/source-highlight-esc.sh
+[ -x "$highlight" ] && export LESSOPEN="| $highlight %s"; unset highlight
+
 export MANPAGER='less -Ms +Gg' # Show line percentage in man pages
 
 # Package management
@@ -121,6 +125,9 @@ source_files <<DOTFILES
 DOTFILES
 unset tmuxinator_source
 
+#_Must be after sourcing chruby
+export PATH="$HOME/bin:$(ruby -e 'print Gem.user_dir')/bin:$PATH:/usr/local/heroku/bin:$HOME/.cabal/bin"
+
 # This tells bash to reinterpret PS1 after every command, which we
 # need because __git_ps1 will return different text and colors.
 # See "functions" sourced file for _set_bash_prompt
@@ -143,6 +150,8 @@ DOTFILES
 fi
 
 # Zsh only
+# shellcheck disable=SC2034
+# disable "foo appears unused. Verify it or export it."
 if sh_is_zsh; then
     PROMPT='%F{red}%n%f@%F{blue}%m%f %F{yellow}%~%f %# '
     RPROMPT='[%F{yellow}%?%f]'

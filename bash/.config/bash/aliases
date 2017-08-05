@@ -26,9 +26,10 @@ alias s="git s"
 
 # Two letters
 alias gh="git logda" # Git History
+alias sc='sudo systemctl'
 
 # Configuration of base command
-alias ag="ag --color"
+alias ag='ag --color'
 alias cal='cal -3' # show 3 months by default
 alias cp='cp --reflink=auto'
 alias cuc=cucumber
