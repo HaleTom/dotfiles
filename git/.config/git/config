@@ -5,7 +5,8 @@
 
 [core]
   editor = vim
-  pager = less -FRX --tabs=4
+  # pager = less -FRX --tabs=4
+  pager = "diff-so-fancy | less -FRX --tabs=4"
   excludesfile = ~/.config/git/ignore
 
 [mailmap]
@@ -92,6 +93,9 @@
   debug  = "!set -x; export GIT_TRACE=2 GIT_CURL_VERBOSE=2 GIT_TRACE_PERFORMANCE=2 GIT_TRACE_PACK_ACCESS=2 GIT_TRACE_PACKET=2 GIT_TRACE_PACKFILE=2 GIT_TRACE_SETUP=2 GIT_TRACE_SHALLOW=2; git"
   dc     = diff --cached --ws-error-highlight=old,new # old,new,context,all
   df     = diff --ws-error-highlight=old,new
+  # "diff -U" format, but colourised
+  dfhi   = !"git -c core.pager='diff-highlight | less -FRX --tabs=4' -c interactive.DiffFilter='diff-highlight | less -FRX --tabs=4'"
+
 ## Fixme bash not needed, quoting problem when shown in g la
   dfc    = "!bash -c 'case \"$1\" in -*) ;; *) c=\"$(git rpc \"${1:-HEAD}\")\";shift; esac; git diff --ws-error-highlight=old,new \"$@\" \"$c\" \"`git child \"$c\"`\"' -" # Diff with first child
   dfp    = "!bash -c 'case \"$1\" in -*) ;; *) c=\"$(git rpc \"$1\")\";shift; esac; git diff --ws-error-highlight=old,new \"$@\" \"${c:=HEAD}~\" \"$c\"' -" # Diff with first parent
@@ -310,7 +314,7 @@
   [color "diff"]
     # context =   # same as "plain"
     meta = yellow bold
-    frag = magenta bold
+    frag = yellow bold
     old = red bold
     new = green bold
     commit = yellow
@@ -364,14 +368,15 @@
   stat = true # show what changed
 
 [interactive]
-  diffFilter = "diff-hi | less -FRX --tabs=4"
+  diffFilter = "diff-so-fancy | less -FRX --tabs=4"
 
 [pager]
   # Bypass pager: git --no-pager ...
   # " = true" means use pager defined in [core]
-  # add      = true # disabled currently due to bug
+  # add      = true # disabled currently due to bug - doesn't prompt with git add --patch
   # diff     = "diff-hi | less -FRX --tabs=4"
-  diff     = "diff-so-fancy | less -FRX --tabs=4"
+  # diff     = "diff-so-fancy | less -FRX --tabs=4"
+  diff     = true
   difftool = true
   log      = true
   show     = true
