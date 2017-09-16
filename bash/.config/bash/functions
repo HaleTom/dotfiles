@@ -18,8 +18,7 @@ function export_function {
 export_function sh_is_bash sh_is_zsh
 
 ######### Start non-exported functions ##########
-
-# Single line functions
+# These are to be run interactively, not by scripts
 
 # less - highlight occurences of first argument
 lessh() { e="$1"; shift; less -i -p "*$e" "$@"; }
@@ -34,15 +33,37 @@ ord10() { printf '%d\n' "'$1"; }
 # diff-so-fancy
 dsf() { git diff --no-index --color "$@" | diff-so-fancy; }
 
-######### End non-exported functions ##########
-
-# True if argument is a function
-# http://stackoverflow.com/a/9529981/5353461
-is_function() {
-    declare -fF "$1" > /dev/null
-    return $?
+function man {
+  local vman="$XDG_DATA_HOME/vim/bundle/vim-superman/bin/vman"
+  if [[ -t 1 && -x $vman ]]; then
+    # STDOUT is a tty, $vman is executable
+    for arg; do # Loop over "$@"
+      case "$arg" in
+        --) break;; # end of options
+        -[sS]*|--section=*) continue ;; #These work with vim's :Man
+        -*) vman="$(which man)" # unknown option. Use usual man instead.
+      esac
+    done
+    "$vman" "$@"
+  else
+    echo command man "$@"
+  fi
 }
 
+######### End non-exported functions ##########
+
+# True if argument is a function. Works in zsh and bash
+# https://unix.stackexchange.com/a/332047/143394
+is_function() {
+    typeset -f "$1" > /dev/null
+}
+export_function is_function
+
+function pause {
+  read -n1 -rsp "Press any key to continue... " _
+  printf "\n"
+}
+export_function pause
 
 # Make a directory and move the working directory
 function mkcd {
