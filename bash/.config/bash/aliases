@@ -1,4 +1,5 @@
 #!/bin/bash #for-shellcheck
+# shellcheck disable=SC2142 # Allow fancy pants aliases with positional parameters
 # This file gets sourced from .bashrc
 
 # ls aliases
@@ -26,20 +27,29 @@ alias s="git s"
 
 # Two letters
 alias gh="git logda" # Git History
+alias jc=journalctl
 alias sc='sudo systemctl'
+
+# Completions for aliases
+# https://brbsix.github.io/2015/11/23/perform-tab-completion-for-aliases-in-bash/
+# https://unix.stackexchange.com/questions/4219/how-do-i-get-bash-completion-for-command-aliases
+# General format: complete -o bashdefault -o default -o nospace -F _git g
+_completion_loader systemctl; complete -o bashdefault -o default -o nospace -F _systemctl sc
 
 # Configuration of base command
 alias ag='ag --color'
 alias cal='cal -3' # show 3 months by default
-alias cp='cp --reflink=auto'
+alias cp='cp --reflink=auto --sparse=always'
 alias cuc=cucumber
 alias diff='diff --color=auto'
 alias grep='GREP_COLOR="1;33;40" LANG=C grep --color=auto'
 alias home='git --git-dir=$HOME/.githome --work-tree=$HOME'
 alias nixnote2='LD_PRELOAD=libcurl.so.3 nixnote2 &'
-alias pac='sudo pacmatic'
-alias tmux='TERM=xterm-256color tmux'
+alias pac='pacmatic' # no sudo so pacaur will process AUR
+alias rsync='rsync --sparse'
+alias tmux='TERM=xterm-256color tmux -f "$XDG_CONFIG_HOME"/tmux/tmux.conf'
 alias tmuxinator='TERM=xterm-256color tmuxinator'
+alias vimpager='$XDG_DATA_HOME/vim/bundle/vimpager/vimpager'
 
 alias head='head -n $((${LINES:-12}-2))' # as many as possible without scrolling
 alias tail='tail -n $((${LINES:-12}-2)) -s.1' # Likewise, also more responsive -f
