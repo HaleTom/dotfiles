@@ -26,8 +26,8 @@ if [ -f "$XDG_CONFIG_HOME/user-dirs.dirs" ]; then
     export XDG_DESKTOP_DIR XDG_DOWNLOAD_DIR XDG_TEMPLATES_DIR XDG_PUBLICSHARE_DIR XDG_DOCUMENTS_DIR XDG_MUSIC_DIR XDG_PICTURES_DIR XDG_VIDEOS_DIR
 fi
 
-# Only print symlinks links on the odd occasion
-((RANDOM % 50)) && _print_links=true
+# Only warn that symlinks are shadowed on the odd occasion
+((RANDOM % 50 == 0)) && _print_links=true
 
 # Check that only one version of files exist
 while read -r file; do # HERE doc at end
@@ -38,7 +38,7 @@ while read -r file; do # HERE doc at end
   if [[ -e $file ]]; then { # bracket for STDERRR
     if [[ -L $file && ! -v _print_links ]]; then continue; fi
     printf "%s" "Warning: XDG shadowed "
-    # shellcheck disable SC2015 # A && B || C is not if-then-else. C may run when A is true. [SC2015]
+    # shellcheck disable=SC2015 # A && B || C is not if-then-else. C may run when A is true. [SC2015]
       [[ -L $file ]] && printf "symlink" || { # symlinks are "both"
         [[ -d $file ]] && printf "directory"
         [[ -f $file ]] && printf "file";
