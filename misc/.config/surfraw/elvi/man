@@ -1,0 +1,41 @@
+#!/bin/sh
+#
+# AUTHOR: Tom "Ravi" Hale
+# DATE:   2017-09-17
+# DESC:   Elvi to open a man-page
+# elvis: man		-- view a man page from manned.org
+. surfraw || exit 1
+
+w3_usage_hook () {
+    cat <<EOF
+Usage: $w3_argv0 [options] [search words]...
+Description:
+  Look up a manual page
+EOF
+    w3_global_usage
+}
+
+w3_config
+w3_parse_args "$@"
+
+# w3_args now contains a list of arguments
+if test -z "$w3_args"; then
+    w3_browse_url "http://man7.org/linux/man-pages/dir_all_alphabetic.html"
+    exit 0
+fi
+
+escaped_args=`w3_url_of_arg $w3_args`
+w3_browse_url "https://manned.org/${escaped_args}" 2>/dev/null
+
+#
+# # Use the same section search order as /bin/man
+# for section in 1 n l 8 3 0 2 5 4 9 6 7; do
+#   url="http://man7.org/linux/man-pages/man${section}/truncate.${section}.html"
+#   # From https://stackoverflow.com/questions/12199059/how-to-check-if-an-url-exists-with-the-shell-and-probably-curl
+#   if curl --output /dev/null --silent --head --fail "$url"; then
+#     echo "URL exists: $url"
+#   else
+#     echo "URL does not exist: $url"
+#   fi
+# done
+#
