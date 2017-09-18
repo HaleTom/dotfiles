@@ -186,23 +186,23 @@ export_function double_quote
 
 # http://unix.stackexchange.com/a/14444/143394
 # Usage: confirm "Dangerous. Are you sure?" && rm /
-function confirm_no {
+function confirm {
   local reply
-  while IFS= read -rn1 -p "$* [y/N]? " reply; do
+  while IFS= read -rn1 -p "${*:-Are you sure} [y/N]? " reply; do
     [ ! "$reply" = '' ] && printf "\n"
     case "$reply" in
       # See https://unix.stackexchange.com/q/383197/143394 regarding '\n' -> ''
-      [Nn\ ]|'' ) return 0;;
-      Y|y* )      return 1;;
+      Y|y* )      return 0;;
+      [Nn\ ]|'' ) return 1;;
     esac
   done
 }
-export_function confirm_no
+export_function confirm
 
 
 function confirm_yes {
   local reply
-  while IFS= read -rn1 -p "$* [Y/n]? " reply; do
+  while IFS= read -rn1 -p "${*:-Are you sure} [Y/n]? " reply; do
     [ ! "$reply" = '' ] && printf "\n"
     case "$reply" in
       # See https://unix.stackexchange.com/q/383197/143394 regarding '\n' -> ''
