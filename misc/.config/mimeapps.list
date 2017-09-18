@@ -6,6 +6,10 @@ application/xml=mousepad.desktop
 application/x-cd-image=open-fuse-iso.desktop
 application/x-raw-disk-image=open-fuse-iso.desktop
 application/x-bittorrent=deluge.desktop
+application/doc=wps-office-wps.desktop
+application/docx=wps-office-wps.desktop
+application/xls=wps-office-wps.desktop
+application/xlsx=wps-office-wps.desktop
 image/jpeg=viewnior.desktop
 image/png=viewnior.desktop
 image/gif=viewnior.desktop
@@ -17,6 +21,7 @@ video/ogg=vlc.desktop
 video/x-ogm+ogg=vlc.desktop
 video/x-theora+ogg=vlc.desktop
 
+# Chrome
 x-scheme-handler/chrome=google-chrome.desktop
 application/x-extension-htm=google-chrome.desktop;firefox.desktop
 application/x-extension-html=google-chrome.desktop;firefox.desktop
@@ -39,17 +44,26 @@ application/octet-stream=qpdfview.desktop;uget-gtk.desktop;mousepad.desktop;
 application/pdf=zathura-pdf-mupdf.desktop;
 application/x-gettext-translation=mousepad.desktop;
 application/x-wine-extension-ini=mousepad.desktop;
-audio/mpeg=vlc.desktop;
-audio/mp4=vlc.desktop;
+
 image/gif=viewnior.desktop;gimp.desktop;
 image/jpeg=viewnior.desktop;
-video/mp4=vlc.desktop;
-
-# exo-open is a command line frontend to the Xfce Preferred Applications framework.
 inode/directory=exo-file-manager.desktop
 x-scheme-handler/trash=exo-file-manager.desktop
 x-scheme-handler/http=exo-web-browser.desktop
 x-scheme-handler/https=exo-web-browser.desktop
+application/wps-office.xlsx=wps-office-et.desktop;
+text/plain=mousepad.desktop;
+image/vnd.microsoft.icon=viewnior.desktop;
+application/epub+zip=engrampa.desktop;
+application/x-mobipocket-ebook=libreoffice-writer.desktop;
+
+# VLC
+audio/mpeg=vlc.desktop;
+audio/mp4=vlc.desktop;
+video/mp4=vlc.desktop;
+video/x-matroska=vlc.desktop;
+video/x-msvideo=vlc.desktop;
+
 
 ##
 ## The [Removed Associations] group removes associations of applications with mimetypes, as if the .desktop file was NOT listing this mimetype in the first place.
