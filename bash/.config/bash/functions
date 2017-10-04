@@ -33,6 +33,20 @@ ord10() { printf '%d\n' "'$1"; }
 # diff-so-fancy
 dsf() { git diff --no-index --color "$@" | diff-so-fancy; }
 
+function nbin {
+  local dir;
+  dir=$(npm bin)
+  if [ -d "$dir" ]; then
+    ( # subshell to not change this shell's $PATH
+      PATH=$dir:$PATH
+      eval "$@"
+    )
+  else
+    echo "\"$dir\" is not an npm binary directory." >&1
+    return 1
+  fi
+}
+
 function man {
   local vman="$XDG_DATA_HOME/vim/bundle/vim-superman/bin/vman"
   if [[ -t 1 && -x $vman ]]; then
