@@ -88,10 +88,9 @@ export VIMPERATOR_INIT=":source $XDG_CONFIG_HOME/vimperator/vimperatorrc"
 export VIMPERATOR_RUNTIME="$XDG_CONFIG_HOME/vimperator"
 
 # npm
-# see npm config ls -l | grep /
+# Check config with:   npm config ls -l | grep / | grep -v '^;'
+# More XDG config is inside the config file itself:
 export NPM_CONFIG_USERCONFIG=$XDG_CONFIG_HOME/npm/config
-export NPM_CONFIG_CACHE=$XDG_CACHE_HOME/npm
-export NPM_CONFIG_TMP=$XDG_RUNTIME_DIR/npm
 
 # # Uncommenting breaks Manjaro login
 # X11
