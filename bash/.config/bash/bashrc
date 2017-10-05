@@ -104,6 +104,7 @@ function source_file {
         # [ shell_is_zsh ] && echo "${(%):-%x line %i}: Cannot source $dotfile";
         # [ shell_is_zsh ] && echo "${(%):-%N}: Cannot source $dotfile";
         [[ -n $BASH_VERSION ]] && echo "${BASH_SOURCE[0]}: Cannot source $dotfile";
+        # shellcheck disable=SC2154 # This file is also sourced by zsh...
         [[ -n $ZSH_VERSION ]] && echo "${(%):-%x}: Cannot source $dotfile";
         return 1
     fi
@@ -146,7 +147,11 @@ unset tmuxinator_source
 #  }
 
 #_PATH must be set after sourcing chruby
-export PATH="$HOME/bin:$(ruby -e 'print Gem.user_dir')/bin:$PATH:/usr/local/heroku/bin:$HOME/.cabal/bin"
+prefix_path=$HOME/bin:$HOME/.local/bin
+if ruby_gems=$(ruby -e 'print Gem.user_dir')/bin; then
+    prefix_path=$prefix_path:$ruby_gems
+fi
+export PATH=$prefix_path:$PATH:/usr/local/heroku/bin:$HOME/.cabal/bin
 
 
 # This tells bash to reinterpret PS1 after every command, which we
