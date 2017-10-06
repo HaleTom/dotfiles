@@ -36,6 +36,10 @@ alias sc='sudo systemctl'
 # General format: complete -o bashdefault -o default -o nospace -F _git g
 _completion_loader systemctl; complete -o bashdefault -o default -o nospace -F _systemctl sc
 
+# Currently done as function
+# https://stackoverflow.com/a/34071958/5353461
+# alias sbin='export PATH=$(npm bin):$PATH'
+
 # Configuration of base command
 alias ag='ag --color'
 alias cal='cal -3' # show 3 months by default
