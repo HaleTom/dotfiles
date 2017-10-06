@@ -27,7 +27,8 @@ if [ -f "$XDG_CONFIG_HOME/user-dirs.dirs" ]; then
 fi
 
 # Only warn that symlinks are shadowed on the odd occasion
-((RANDOM % 50 == 0)) && _print_links=true
+# Set XDG_CHECK=1 to force the check
+((RANDOM % 50 == 0)) || [ $XDG_CHECK ] && _print_links=true
 
 # Check that only one version of files exist
 while read -r file; do # HERE doc at end
@@ -47,23 +48,25 @@ while read -r file; do # HERE doc at end
     } >&2
   fi
 done << XDGFILES
+   $HOME/.gitconfig
+   $HOME/.gnupg
+   $HOME/.histfile
    $HOME/.inputrc
    $HOME/.less
-   $HOME/.gnupg
    $HOME/.lesshst
-   # X/ICEauth don't listen currently, silence them...
-   # $HOME/.Xauthority
-   # $HOME/.ICEauthority
-   $HOME/.gitconfig
+   $HOME/.mostrc
    $HOME/.npm
    $HOME/.npmrc
-   $HOME/.mostrc
+   $HOME/.npm-init.js
    $HOME/.tmux
    $HOME/.tmuxinator
    $HOME/.vim
    $HOME/.viminfo
    $HOME/.vimperator
    $HOME/.wgetrc
+   # X/ICEauth don't listen currently, silence them...
+   # $HOME/.Xauthority
+   # $HOME/.ICEauthority
 XDGFILES
 unset _print_links
 
@@ -90,7 +93,7 @@ export VIMPERATOR_RUNTIME="$XDG_CONFIG_HOME/vimperator"
 # npm
 # Check config with:   npm config ls -l | grep / | grep -v '^;'
 # More XDG config is inside the config file itself:
-export NPM_CONFIG_USERCONFIG=$XDG_CONFIG_HOME/npm/config
+export NPM_CONFIG_USERCONFIG=$XDG_CONFIG_HOME/npm/npmrc
 
 # # Uncommenting breaks Manjaro login
 # X11
