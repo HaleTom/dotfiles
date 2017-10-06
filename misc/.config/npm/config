@@ -1,1 +1,0 @@
-init-module = ${XDG_CONFIG_HOME}/npm/config/npm-init.js
