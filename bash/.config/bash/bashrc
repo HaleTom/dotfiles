@@ -72,6 +72,8 @@ if sh_is_bash; then
     export HISTFILE="$XDG_DATA_HOME"/bash/history
     # Exclude duplicates and commands starting with a <space> from history
     export HISTCONTROL=ignorespace:ignoredups
+elif sh_is_zsh; then
+    export HISTFILE="$XDG_DATA_HOME"/zsh/history
 fi
 
 # Zsh only
@@ -147,7 +149,7 @@ unset tmuxinator_source
 #  }
 
 #_PATH must be set after sourcing chruby
-prefix_path=$HOME/bin:$HOME/.local/bin
+prefix_path=$HOME/bin:$XDG_DATA_HOME/npm/bin:$HOME/.local/bin
 if ruby_gems=$(ruby -e 'print Gem.user_dir')/bin; then
     prefix_path=$prefix_path:$ruby_gems
 fi
