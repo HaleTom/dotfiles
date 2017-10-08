@@ -168,7 +168,9 @@ sh_is_bash && PROMPT_COMMAND='_set_bash_prompt'
 if sh_is_bash; then
     source_files <<DOTFILES
     /usr/share/git/completion/git-completion.bash
-    $XDG_DATA_HOME/fzf/.fzf.bash
+    # $XDG_DATA_HOME/fzf/.fzf.bash
+    /usr/share/fzf/key-bindings.bash
+    /usr/share/fzf/completion.bash
     $XDG_CONFIG_HOME/bash/prompt
     $XDG_CONFIG_HOME/bash/completion
 DOTFILES
@@ -190,7 +192,9 @@ if sh_is_zsh; then
     RPROMPT='[%F{yellow}%?%f]'
 
     source_files <<DOTFILES
-    $XDG_DATA_HOME/fzf/.fzf.zsh
+    # $XDG_DATA_HOME/fzf/.fzf.zsh
+    /usr/share/fzf/key-bindings.zsh
+    /usr/share/fzf/completion.zsh
 DOTFILES
 fi
 
