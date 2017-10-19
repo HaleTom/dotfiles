@@ -1,7 +1,9 @@
 # https://docs.npmjs.com/misc/config
+#
+# Check config with:   npm config ls -l | grep / | grep -v '^; | sort'
 
 # XDG Base Dirs compliance
-prefix=${XDG_DATA_HOME}/npm
+# prefix=${XDG_DATA_HOME}/npm  # Incompatible with nvm
 cache=${XDG_CACHE_HOME}/npm
 tmp=${XDG_RUNTIME_DIR}/npm
 init-module=${XDG_CONFIG_HOME}/npm/config/npm-init.js
