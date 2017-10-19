@@ -48,25 +48,26 @@ while read -r file; do # HERE doc at end
     } >&2
   fi
 done << XDGFILES
-   $HOME/.gitconfig
-   $HOME/.gnupg
-   $HOME/.histfile
-   $HOME/.inputrc
-   $HOME/.less
-   $HOME/.lesshst
-   $HOME/.mostrc
-   $HOME/.npm
-   $HOME/.npmrc
-   $HOME/.npm-init.js
-   $HOME/.tmux
-   $HOME/.tmuxinator
-   $HOME/.vim
-   $HOME/.viminfo
-   $HOME/.vimperator
-   $HOME/.wgetrc
-   # X/ICEauth don't listen currently, silence them...
-   # $HOME/.Xauthority
-   # $HOME/.ICEauthority
+  $HOME/.gitconfig
+  $HOME/.gnupg
+  $HOME/.histfile
+  $HOME/.inputrc
+  $HOME/.less
+  $HOME/.lesshst
+  $HOME/.mostrc
+  $HOME/.npm
+  $HOME/.npmrc
+  $HOME/.npm-init.js
+  $HOME/.tmux
+  $HOME/.tmuxinator
+  $HOME/.vim
+  $HOME/.viminfo
+  $HOME/.vimperator
+  $HOME/.wgetrc
+  $HOME/.nvm
+  # X/ICEauth don't listen currently, silence them...
+  # $HOME/.Xauthority
+  # $HOME/.ICEauthority
 XDGFILES
 unset _print_links
 
@@ -90,10 +91,12 @@ export LESSHISTFILE="$XDG_CACHE_HOME/less/history"
 export VIMPERATOR_INIT=":source $XDG_CONFIG_HOME/vimperator/vimperatorrc"
 export VIMPERATOR_RUNTIME="$XDG_CONFIG_HOME/vimperator"
 
-# npm
+# Node.js / nvm / npm
 # Check config with:   npm config ls -l | grep / | grep -v '^;'
 # More XDG config is inside the config file itself:
+export NODE_REPL_HISTORY="$XDG_DATA_HOME"/node_repl_history
 export NPM_CONFIG_USERCONFIG=$XDG_CONFIG_HOME/npm/npmrc
+export NVM_DIR="$XDG_DATA_HOME"/nvm
 
 # # Uncommenting breaks Manjaro login
 # X11

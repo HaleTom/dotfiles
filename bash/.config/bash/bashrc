@@ -128,6 +128,7 @@ source_files <<DOTFILES
     /usr/share/git/completion/git-prompt.sh
     /usr/share/chruby/chruby.sh
     /usr/share/chruby/auto.sh
+    /usr/share/nvm/init-nvm.sh
 
     # Must use $HOME as ~ not expanded in double quotes
 
