@@ -42,9 +42,10 @@
 
 # Logs and databases #
 ######################
-*.log
-*.sql
-*.sqlite
+yarn-error.log
+# *.log
+# *.sql
+# *.sqlite
 
 # OS generated files #
 ######################
