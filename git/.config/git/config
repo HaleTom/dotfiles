@@ -7,7 +7,7 @@
   editor = vim
   # pager = less -FRX --tabs=4
   pager = "diff-so-fancy | less -FRX --tabs=4"
-  excludesfile = ~/.config/git/ignore
+  excludesFile = ~/.config/git/ignore
 
 [mailmap]
   file = ~/.config/git/mailmap
@@ -107,7 +107,9 @@
   dt     = difftool -y -t vimdiff --noprompt
   ec     = !"git status -sz  | sed -rnz 's/^(U.|.U) (.*)/\\2/p' | xargs -0 $EDITOR #"
   elc    = !"git edit-config"
+  elx    = !"git edit-local-excludes"
   egc    = !"git edit-global-config"
+  egx    = !"git edit-global-excludes"
   head   = "!c=\"`git rpc \"$1\"`\" && p=\"$(git log -n1 --oneline --decorate)\" && git update-ref --no-deref -m \"Move from $p\" HEAD \"$c\" #" # Move HEAD to specified commit-ish
   icdiff = difftool --no-prompt --extcmd icdiff # \"$@\"
   lf     = log --pretty=full
@@ -284,14 +286,19 @@
   bclean = "!f() { git branch --merged ${1-master} | grep -v " ${1-master}$" | xargs -r git branch -d; }; f"
 
   # Simple diff ignoring line number changes
-  sortdiff = !sh -c 'git diff "$@" | grep "^[+-]" | sort --key=1.2 | uniq -u -s1'
+  sortdiff = !"git diff \"$@\" | grep \"^[+-]\" | sort --key=1.2 | uniq -u -s1 #"
 
   # Edit this module's config file
   edit-config = !"$EDITOR \"`git rev-parse --git-dir`\"/config #"
+
   # Manage this config file
-  edit-global-config = "!bash -c '[ -f ~/.gitconfig -a -f ~/.config/git/config ] && ! confirm_no \"Two config files exist. Proceed?\" && exit || git config -e --global'"
+  edit-global-config = "!bash -c '[ -f ~/.gitconfig -a -f ~/.config/git/config ] && ! confirm \"Two config files exist. Proceed?\" && exit || git config -e --global'"
   backup-config = "!c=~/.config/git/config;g=~/.gitconfig; [ -e \"$g\" -a x$1 != x-f ] && echo \"$g exists. Not modified\" || cp -vp \"$c\" \"$g\" #"
   rmbackup-config = "!rm -v ~/.gitconfig"
+
+  # Edit excludes files
+  edit-global-excludes = !"bash -c 'f=$(git config core.excludesFile); \"$EDITOR\" \"${f/#\\~/$HOME}\"' #"
+  edit-local-excludes = !"\"$EDITOR\" \"$(git rev-parse --show-toplevel)/.gitignore\" #"
 
 [branch]
   # tell git-branch and git-checkout to setup new branches so that git-pull(1)
