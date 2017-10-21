@@ -39,6 +39,7 @@
 *.tgz
 *.zip
 *.Z
+node_modules/
 
 # Logs and databases #
 ######################
