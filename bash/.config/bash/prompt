@@ -253,6 +253,7 @@ _set_bash_prompt() {
   # Right hand side of prompt
   #
   local rhs="" # String to be printed on the right hand side of terminal
+  local date_time virtualenv
 
   # Create a string like: "25 Apr 13:15"
   printf -v date_time "%(%e %b %H:%M)T" -1 # -1 is current time
@@ -260,6 +261,11 @@ _set_bash_prompt() {
   # Format the RHS prompt
   # [[ -n $git ]] && rhs="$git | " #"
   rhs+="${_timer_show} | \e[0;0;36m${date_time}"
+
+  # Prepend python virtualenv if applicable
+  local virtualenv
+  virtualenv=$(basename "$VIRTUAL_ENV")
+  [[ -n  $virtualenv ]] && rhs="(venv=${virtualenv}) $rhs"
 
   # Strip ANSI CSI commands (eg colours) to enble counting the length of
   # printable characters, giving offset of cursor from terminal RHS edge (from
