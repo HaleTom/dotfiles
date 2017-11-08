@@ -141,8 +141,44 @@ _simple_prompt() {
   esac
 }
 
+#
+# Git status string
+#
+git_status() {
+  # Save current state of user shopt settings promptvars and extglob
+  local user_shopt git_status
+  user_shopt=$(shopt -p promptvars extglob)
+  # __git_ps1 usually returns literal text "${__git_ps1_branch_name}" rather
+  # than the contained branch name, eg "master". This prevents calculating
+  # the length of the printable characers in the RHS string (used to move the
+  # cursor that many columns left from the terminal's right edge.) However if
+  # "shopt promptvars" is unset, __git_ps1 it will include the dereferenced
+  # branch name instead.
+  shopt -qu promptvars
+  # extglob is required for the ${variable//@(pattern)/} replacements
+  shopt -qs extglob
+
+  # Allow disabling git status and no error if __git_ps1 undefined
+  if [[ ! -v _disable_git_prompt && $(type -t __git_ps1 2>/dev/null) == function ]]; then
+    # __git_ps1 will only make pretty colours inside $PS1
+    local old_PS1=$PS1
+    __git_ps1 "" "" "%s" # force colour; no default round bracket (decorations)
+
+    # Strip "\[" and "\[": non-printable character markers. __git_ps1 outputs
+    # them however the whole of the RHS prompt needs to be included in these
+    # markers, and they can't be nested.
+    git_status=${PS1//@(\\@(\[|\]))/}
+    PS1=$old_PS1
+  fi
+
+  # Restore shell options
+  eval "$user_shopt"
+  printf "%s" "$git_status"
+}
+
+
 # Sets prompt like:
-# ravi@boxy:~/prj/sample_app[exit]$         (master*% u=) 4.595ms | Apr 30 22:27
+# ravi@boxy:~/prj/sample_app master*% u= [exit]$        (venv=name) 4.595ms | Apr 30 22:27
 _set_bash_prompt() {
   local exit="$?" # Save the exit status of the last command
 
@@ -195,9 +231,15 @@ _set_bash_prompt() {
   # Working directory
   lhs+="$BCya\w$None"
 
+  # Git status
+  local git
+  git=$(git_status)
+  # Bright before the $git part has the branch name go bold, which is a nice "feature"
+  [[ -n $git ]] && lhs+=" ${BWhi}${git}${BWhi}"
+
   # Highlight non-standard exit codes
   if [[ $exit != 0 ]]; then
-    lhs+="$Red[$exit]"
+    lhs+=" ${BWhi}[${Red}$exit${BWhi}]"
   fi
 
   # Change colour of final character if root
@@ -208,46 +250,15 @@ _set_bash_prompt() {
   fi
 
   #
-  # Git status
-  #
-
-  # Save current state of user shopt settings promptvars and extglob
-  local user_shopt
-  user_shopt=$(shopt -p promptvars extglob)
-  # __git_ps1 usually returns literal text "${__git_ps1_branch_name}" rather
-  # than the contained branch name, eg "master". This prevents calculating
-  # the length of the printable characers in the RHS string (used to move the
-  # cursor that many columns left from the terminal's right edge.) However if
-  # "shopt promptvars" is unset, __git_ps1 it will include the dereferenced
-  # branch name instead.
-  shopt -qu promptvars
-  # extglob is required for the ${variable//@(pattern)/} replacements
-  shopt -qs extglob
-
-  # Allow disabling git status and no error if __git_ps1 undefined
-  if [[ ! -v _disable_git_prompt && $(type -t __git_ps1 2>/dev/null) == function ]]; then
-    # __git_ps1 will only make pretty colours inside $PS1
-    local old_PS1=$PS1
-    __git_ps1 "" "" "%s" # force colour; no default round bracket (decorations)
-
-    # Strip "\[" and "\[": non-printable character markers. __git_ps1 outputs
-    # them however the whole of the RHS prompt needs to be included in these
-    # markers, and they can't be nested.
-    git=${PS1//@(\\@(\[|\]))/}
-    PS1=$old_PS1
-  fi
-
-  #
   # Right hand side of prompt
   #
   local rhs="" # String to be printed on the right hand side of terminal
 
   # Create a string like: "25 Apr 13:15"
-  local date_time
   printf -v date_time "%(%e %b %H:%M)T" -1 # -1 is current time
 
   # Format the RHS prompt
-  [[ -n $git ]] && rhs="$git | " #"
+  # [[ -n $git ]] && rhs="$git | " #"
   rhs+="${_timer_show} | \e[0;0;36m${date_time}"
 
   # Strip ANSI CSI commands (eg colours) to enble counting the length of
@@ -282,7 +293,6 @@ _set_bash_prompt() {
   # If $COLUMNS happens to be unset (some cygwin, OSX)
   # PS1="${lhs}${Blu}\[${Save}\e[$(($(tput cols) - ${#rhs_printable}))G${rhs}${Rest}\]${PS1}"
 
-  eval "$user_shopt"
   # echo "\$PS1=$PS1" # Debug
 }
 
