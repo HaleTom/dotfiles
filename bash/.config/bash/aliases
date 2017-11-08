@@ -34,7 +34,7 @@ alias sc='sudo systemctl'
 # https://brbsix.github.io/2015/11/23/perform-tab-completion-for-aliases-in-bash/
 # https://unix.stackexchange.com/questions/4219/how-do-i-get-bash-completion-for-command-aliases
 # General format: complete -o bashdefault -o default -o nospace -F _git g
-_completion_loader systemctl; complete -o bashdefault -o default -o nospace -F _systemctl sc
+[[ -n $BASH_VERSION ]] && _completion_loader systemctl; complete -o bashdefault -o default -o nospace -F _systemctl sc
 
 # Currently done as function
 # https://stackoverflow.com/a/34071958/5353461
@@ -51,9 +51,12 @@ alias home='git --git-dir=$HOME/.githome --work-tree=$HOME'
 alias nixnote2='LD_PRELOAD=libcurl.so.3 nixnote2 &'
 alias pac='pacdiff_program="sudo pacdiff" pacmatic' # pacaur can't be run as root
 alias rsync='rsync --sparse'
+alias vimpager='$XDG_DATA_HOME/vim/bundle/vimpager/vimpager'
+
+# tmux / tmuxinator
 alias tmux='TERM=xterm-256color tmux -f "$XDG_CONFIG_HOME"/tmux/tmux.conf'
 alias tmuxinator='TERM=xterm-256color tmuxinator'
-alias vimpager='$XDG_DATA_HOME/vim/bundle/vimpager/vimpager'
+alias mux='TERM=xterm-256color tmuxinator'
 
 alias head='head -n $((${LINES:-12}-2))' # as many as possible without scrolling
 alias tail='tail -n $((${LINES:-12}-2)) -s.1' # Likewise, also more responsive -f
