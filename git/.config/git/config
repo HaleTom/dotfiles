@@ -312,6 +312,7 @@
 # Colours: black, red, green, yellow, blue, magenta, cyan, white, reset
 # Modifiers: bold dim italic ul blink reverse strike
 # Also: 24-bit colours: #ff69b4; no-bold or nobold
+# Get complete list of variables: http://shallowsky.com/blog/programming/gitcolors.html
   ui = auto
   [color "branch"]
     current = yellow reverse
@@ -321,8 +322,9 @@
     plain = white
   [color "diff"]
     # context =   # same as "plain"
-    meta = yellow bold
-    frag = yellow bold
+    plain = normal
+    meta = magenta
+    frag = white bold
     old = red bold
     new = green bold
     commit = yellow
@@ -333,10 +335,20 @@
     oldHighlight = red bold 52
     newNormal = green bold
     newHighlight = green bold 22
+  [color "grep"]
+    match = yellow bold
+  [color "interactive"]
+    prompt = yellow bold
+    header = magenta
+    help = green
+    error = red bold
   [color "status"]
     added = yellow
-    changed = green
+    changed = red
+    header = normal
+    nobranch = red bold
     untracked = cyan
+    updated = green
 
 [commit]
   verbose = true # include diff output for easy review
