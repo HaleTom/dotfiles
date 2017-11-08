@@ -2,14 +2,25 @@
 # shellcheck disable=SC1090
 # Above two lines are for shellcheck's happiness:
 # #1) Determine shell. #2) Silence when trying to source a filename in a variable
+#
+# Allow shell-specific code
+function sh_is_zsh { [[ -n $ZSH_VERSION ]]; }
+function sh_is_bash { [[ -n $BASH_VERSION ]]; }
 
 # Enable extended globbing:
 # https://www.gnu.org/software/bash/manual/bash.html#Pattern-Matching
 # https://unix.stackexchange.com/questions/276911/is-it-dangerous-to-always-have-extglob-on
-shopt -s extglob failglob
+sh_is_bash && shopt -s extglob failglob
 
-source "$HOME/.config/bash/xdg" # Needed for $XDG* variables below
+# Setup $XDG* variables
+source "$HOME/.config/bash/xdg"
+
+# Standard-ish programs
+export BROWSER=/usr/bin/google-chrome-stable
 export EDITOR=vim
+export MANPAGER='less -Ms +Gg' # Show line percentage in man pages
+
+
 export RUBYLIB="$HOME"/lib:"$RUBYLIB"
 export GNULIB_SRCDIR="$HOME"/repo/gnulib
 export GCC_COLORS=1 # Enable gcc colours, available since gcc 4.9.0
@@ -37,12 +48,10 @@ export LESS=-FMRXis
 # https://lists.archlinux.org/pipermail/arch-dev-public/2009-February/010411.html
 # export GROFF_SGR=1
 
-# Highlight source code if available
+# Have less highlight source code
 highlight=/usr/bin/src-hilite-lesspipe.sh
 [ -x "$highlight" ] && export LESSOPEN="| $highlight %s";
 unset highlight
-
-export MANPAGER='less -Ms +Gg' # Show line percentage in man pages
 
 # Set $LS_COLORS
 [ -x /usr/bin/dircolors ] && eval "$(/usr/bin/dircolors)"
@@ -60,12 +69,7 @@ export COMMAND_NOT_FOUND_INSTALL_PROMPT=1
 export BINARY_SSH=/usr/bin/ssh
 export BINARY_SCP=/usr/bin/scp
 
-# Browser
-export BROWSER=/usr/bin/google-chrome-stable
 
-# Allow shell-specific code
-function sh_is_zsh { [[ -n $ZSH_VERSION ]]; }
-function sh_is_bash { [[ -n $BASH_VERSION ]]; }
 
 # Bash only
 if sh_is_bash; then
@@ -125,10 +129,18 @@ function source_files {
 
 # Both zsh and bash
 source_files <<DOTFILES
+    # Git
     /usr/share/git/completion/git-prompt.sh
+
+    # Ruby
     /usr/share/chruby/chruby.sh
     /usr/share/chruby/auto.sh
+
+    # Node.js
     /usr/share/nvm/init-nvm.sh
+
+    # Python
+    /usr/bin/virtualenvwrapper_lazy.sh
 
     # Must use $HOME as ~ not expanded in double quotes
 
@@ -155,6 +167,7 @@ if ruby_gems=$(ruby -e 'print Gem.user_dir')/bin; then
     prefix_path=$prefix_path:$ruby_gems
 fi
 export PATH=$prefix_path:$PATH:/usr/local/heroku/bin:$HOME/.cabal/bin
+unset prefix_path
 
 
 # This tells bash to reinterpret PS1 after every command, which we
