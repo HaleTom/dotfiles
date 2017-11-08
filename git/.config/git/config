@@ -45,6 +45,7 @@
   brd    = branch -d
   brdd   = branch -D
   brf    = branch -f
+  brl    = branch --list
   brm    = branch --move # rename
   brt    = branch --track
   brsut  = branch --set-upstream-to
