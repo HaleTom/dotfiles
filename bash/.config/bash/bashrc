@@ -69,6 +69,9 @@ export COMMAND_NOT_FOUND_INSTALL_PROMPT=1
 export BINARY_SSH=/usr/bin/ssh
 export BINARY_SCP=/usr/bin/scp
 
+# Python virtualenvwrapper
+export WORKON_HOME=$XDG_DATA_HOME/virtualenvs
+export PROJECT_HOME=$HOME/prj # Used by mkproject
 
 
 # Bash only
@@ -211,6 +214,12 @@ if sh_is_zsh; then
     /usr/share/fzf/completion.zsh
 DOTFILES
 fi
+
+# Setup direnv
+# Required after any prompt manipulates the prompt says: https://github.com/direnv/direnv
+sh_is_zsh && eval "$(direnv hook zsh)"
+sh_is_bash && eval "$(direnv hook bash)"
+
 
 # alias g=git (done in .bash_aliases)
 # This needs to be here - doesn't work inside .bash_aliases for some reason
