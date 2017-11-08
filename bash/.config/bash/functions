@@ -2,19 +2,18 @@
 # ^ For shellcheck's happiness
 
 # An assortment of useful {z,ba}sh functions
-
-# Allow functions to be accessed from the command line by:
-# 'export_function <func-name>'
+# This file is expected to be sourced, not run.
 
 function sh_is_zsh { [[ -n $ZSH_VERSION ]]; }
 function sh_is_bash { [[ -n $BASH_VERSION ]]; }
 
-# shellcheck disable=SC2163
+# Allow functions to be accessed from bash sub-shells by:
+# 'export_function <func-name>'
 function export_function {
+  # shellcheck disable=SC2163
   sh_is_bash && export -f "$@"
-  sh_is_zsh && export "$@"
+  # zsh can't export functions: https://stackoverflow.com/a/1896039/5353461
 }
-
 export_function sh_is_bash sh_is_zsh
 
 ######### Start non-exported functions ##########
