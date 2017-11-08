@@ -49,7 +49,7 @@ alias diff='diff --color=auto'
 alias grep='GREP_COLOR="1;33;40" LANG=C grep --color=auto'
 alias home='git --git-dir=$HOME/.githome --work-tree=$HOME'
 alias nixnote2='LD_PRELOAD=libcurl.so.3 nixnote2 &'
-alias pac='pacmatic' # no sudo so pacaur will process AUR
+alias pac='pacdiff_program="sudo pacdiff" pacmatic' # pacaur can't be run as root
 alias rsync='rsync --sparse'
 alias tmux='TERM=xterm-256color tmux -f "$XDG_CONFIG_HOME"/tmux/tmux.conf'
 alias tmuxinator='TERM=xterm-256color tmuxinator'
