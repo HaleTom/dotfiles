@@ -4,3 +4,6 @@
 
 /zsh/.config/zsh/history
 /zsh/.config/zsh/.zcompdump
+
+# Personal alllowed .envrc files
+/misc/.config/direnv/allow/
