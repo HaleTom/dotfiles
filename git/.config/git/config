@@ -310,9 +310,11 @@
 
 [color]
 # Colours: black, red, green, yellow, blue, magenta, cyan, white, reset
-# Modifiers: bold dim italic ul blink reverse strike
-# Also: 24-bit colours: #ff69b4; no-bold or nobold
-# Get complete list of variables: http://shallowsky.com/blog/programming/gitcolors.html
+# After the foreground color, you can optionally list a background color
+# Modifiers: bold dim italic ul blink reverse strike.
+# Also: 24-bit colours: #ff69b4; Disable modifier: no-<modifier>
+# Get complete list of variables: https://stackoverflow.com/q/47176670/5353461
+# http://shallowsky.com/blog/programming/gitcolors.html
   ui = auto
   [color "branch"]
     current = yellow reverse
@@ -321,22 +323,42 @@
     upstream = cyan
     plain = white
   [color "diff"]
-    # context =   # same as "plain"
-    plain = normal
-    meta = magenta
-    frag = white bold
-    old = red bold
-    new = green bold
     commit = yellow
-    whitespace = red reverse
+    context = normal
+    frag = yellow bold
     func = white bold
+    meta = yellow bold
+    new = green bold
+    old = red bold
+    whitespace = red reverse
+    # Zebra pair #1
+    oldMoved = blue dim strike
+    newMovedAlternative = blue italic
+    # Zebra pair #2
+    newMoved = cyan dim strike
+    oldMovedAlternative = cyan strike
+    # Dimmed pair #1
+    oldMovedDimmed = dim blue strike
+    newMovedAlternativeDimmed = blue italic
+    # Dimmed pair #2
+    oldMovedAlternativeDimmed = dim cyan strike
+    newMovedDimmed = cyan italic
+
   [color "diff-highlight"]
     oldNormal = red bold
     oldHighlight = red bold 52
     newNormal = green bold
     newHighlight = green bold 22
   [color "grep"]
+    context = normal
+    filename = normal
+    function = normal
+    linenumber= normal
     match = yellow bold
+    matchContext = normal
+    matchSelected = normal
+    selected = normal
+    separator = normal
   [color "interactive"]
     prompt = yellow bold
     header = magenta
@@ -354,8 +376,12 @@
   verbose = true # include diff output for easy review
 
 [diff]
-  tool = vimdiff
+  # https://git-scm.com/docs/git-diff
   algorithm = patience # Take longer for a smaller diff
+  # colorMoved = zebra
+  colorMoved = dimmed_zebra
+  interHunkContext = 2
+  tool = vimdiff
 
   # https://git-scm.com/docs/gitattributes
   # Remove cachetextconv via : git update-ref -d refs/notes/textconv/<driver>
