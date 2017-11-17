@@ -151,9 +151,11 @@ source_files <<DOTFILES
     # $HOME/.extend.bashrc
 
     $XDG_CONFIG_HOME/bash/functions
-    $XDG_CONFIG_HOME/bash/aliases
     $tmuxinator_source
     # $HOME/.vim/bundle/gruvbox/gruvbox_256palette.sh
+
+    # Source my personal ones last so they're not overridden
+    $XDG_CONFIG_HOME/bash/aliases
 DOTFILES
 unset tmuxinator_source
 
@@ -164,13 +166,49 @@ unset tmuxinator_source
 #   export CW_COLORIZE=grey+
 #  }
 
-#_PATH must be set after sourcing chruby
-prefix_path=$HOME/bin:$XDG_DATA_HOME/npm/bin:$HOME/.local/bin
+# Add directories to $PATH iff they're not already there
+# Append directories to $PATH by default
+# Based on https://unix.stackexchange.com/a/4973/143394
+# and https://unix.stackexchange.com/a/217629/143394
+add_to_PATH () {
+  local prepend  # Prepend to path if set
+  local prefix   # Temporary prepended path
+  local IFS      # Avoid restoring for added laziness
+
+  case $1 in
+    after|append)   shift;; # Default is to append
+    before|prepend) prepend=true; shift;;
+  esac
+
+  # Arguments can be single paths or :-separated $PATH-like strings
+  for arg; do
+    IFS=: # Split argument by path separator
+    for dir in $arg; do
+      #  Canonicalise symbolic links
+      dir=$({ cd -- "$dir" && { pwd -P || pwd; } } 2>/dev/null)
+      if [ -z "$dir" ]; then continue; fi  # Skip non-existent directory
+      case ":$PATH:" in
+        *":$dir:"*) :;; # skip - already present
+        *) if [ "$prepend" ]; then
+           # ${prefix:+$prefix:} will expand to "" if $prefix is empty to avoid
+           # starting with a ":".  Expansion is "$prefix:" if non-empty.
+            prefix=${prefix+$prefix:}$dir
+          else
+            PATH=$PATH:$dir  # Append by default
+          fi;;
+      esac
+    done
+  done
+  [ "$prefix" ] && PATH=$prefix:$PATH
+}
+
+# $PATH must be set after sourcing chruby
+add_to_PATH before $HOME/bin:$XDG_DATA_HOME/virtualenvs/default/bin:$XDG_DATA_HOME/npm/bin:$HOME/.local/bin
 if ruby_gems=$(ruby -e 'print Gem.user_dir')/bin; then
-    prefix_path=$prefix_path:$ruby_gems
+    add_to_PATH before "$ruby_gems"
 fi
-export PATH=$prefix_path:$PATH:/usr/local/heroku/bin:$HOME/.cabal/bin
-unset prefix_path
+add_to_PATH after /usr/local/heroku/bin:$HOME/.cabal/bin
+# echo $PATH | tr : "\n"; echo;
 
 
 # This tells bash to reinterpret PS1 after every command, which we
