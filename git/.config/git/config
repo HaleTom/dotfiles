@@ -39,7 +39,7 @@
   bi     = bisect
   bis    = bisect start
   bib    = bisect bad
-  big    = branch good
+  big    = bisect good
   bir    = bisect reset
   br     = branch
   brd    = branch -d
@@ -98,8 +98,8 @@
   dfhi   = !"git -c core.pager='diff-highlight | less -FRX --tabs=4' -c interactive.DiffFilter='diff-highlight | less -FRX --tabs=4'"
 
 ## Fixme bash not needed, quoting problem when shown in g la
-  dfc    = "!bash -c 'case \"$1\" in -*) ;; *) c=\"$(git rpc \"${1:-HEAD}\")\";shift; esac; git diff --ws-error-highlight=old,new \"$@\" \"$c\" \"`git child \"$c\"`\"' -" # Diff with first child
-  dfp    = "!bash -c 'case \"$1\" in -*) ;; *) c=\"$(git rpc \"$1\")\";shift; esac; git diff --ws-error-highlight=old,new \"$@\" \"${c:=HEAD}~\" \"$c\"' -" # Diff with first parent
+  dfc    = "!case \"$1\" in -*) ;; *) x=$(git rpc \"${1:-HEAD}\");shift; esac; git diff --ws-error-highlight=old,new \"$@\" \"$x\" \"$(git child-hash \"$x\")\" #" # Diff with first child
+  dfp    = "!case \"$1\" in -*) ;; *) x=$(git rpc \"$1\");shift; esac; git diff --ws-error-highlight=old,new \"$@\" \"${x:=HEAD}~\" \"$x\" #" # Diff with first parent
   dh     = diff --ws-error-highlight=old,new HEAD
   dhh    = diff --ws-error-highlight=old,new HEAD~1
   dch    = diff --cached --ws-error-highlight=old,new HEAD
@@ -110,14 +110,15 @@
   elc    = !"git edit-config"
   elx    = !"git edit-local-excludes"
   egc    = !"git edit-global-config"
+  head   = !"c=$(git rpc \"$1\") && p=$(git log -n1 --oneline --decorate) && git update-ref --no-deref -m \"Move from $p\" HEAD \"$c\" #" # Move HEAD to specified commit-ish
   egx    = !"git edit-global-excludes"
   head   = "!c=\"`git rpc \"$1\"`\" && p=\"$(git log -n1 --oneline --decorate)\" && git update-ref --no-deref -m \"Move from $p\" HEAD \"$c\" #" # Move HEAD to specified commit-ish
   icdiff = difftool --no-prompt --extcmd icdiff # \"$@\"
   lf     = log --pretty=full
   logd   = log --oneline --graph --decorate --remotes --max-count=20
-  logd   = !"eval git log `git fmt-commit-1line` --graph --remotes --max-count=20 #"
+  logd   = !"eval git log $(git fmt-commit-1line) --graph --remotes --max-count=20 #"
   logda  = !"lines=$(($(tput lines)*3/5)); eval git log $(git fmt-commit-1line) --graph --all --remotes --color=always \"$@\" | head -n$lines #"
-  logdaa = !"eval git log `git fmt-commit-1line` --graph --all --remotes --color=always \"$@\" #"
+  logdaa = !"eval git log $(git fmt-commit-1line) --graph --all --remotes --color=always \"$@\" #"
   ls     = ls-files
   mnf    = merge --no-ff
   mom    = merge origin/master
@@ -132,7 +133,7 @@
   pum    = pull upstream master
   rb     = rebase
   rba    = rebase --abort
-  rbb    = !sh -c \"git rebase -i `git merge-base $1 HEAD` #\" # Rebase to branch-name # http://stackoverflow.com/a/31036518/5353461
+  rbb    = !"git rebase -i $(git merge-base $1 HEAD) #" # Rebase to branch-name # http://stackoverflow.com/a/31036518/5353461
   rbc    = rebase --continue
 ## Fixme as shown by g la:
   rbi    = !" git rebase --interactive --autostash --autosquash \"$(git rpc \"${1:-HEAD~20}\")\" #"
@@ -143,19 +144,20 @@
   reh    = reset --hard
   rep    = reset --patch
   res    = reset --soft
-  resc   = !"git reset --soft `c=\\`git child\\`; [ \"$c\" ] && echo $c || git children`" # Move HEAD to the child
+  # XXX test with $(:) resc
+  resc   = !"git reset --soft $(c=$(git child); [ \"$c\" ] && echo $c || git children)" # Move HEAD to the child
   resa   = reset --soft HEAD~ # Move HEAD to the first Ancestor
   rl     = reflog
   rp     = rev-parse
-  rpc    = !"git rev-parse --verify \"`git rev-parse \\\"$1\\\"`\"^{commit} #" # allow :/<regex> format
-  rpt    = !"git rev-parse --verify \"`git rev-parse \\\"$1\\\"`\"^{tag} #" # allow :/<regex> format
+  rpc    = !"git rev-parse --verify $(git rev-parse \"$1\")^{commit} #" # allow :/<regex> format
+  rpt    = !"git rev-parse --verify $(git rev-parse \"$1\")^{tag} #" # allow :/<regex> format
   rr     = rerere
   rrd    = rerere diff
   rrr    = rerere remaining
   rrs    = rerere status
   rmc    = rm --cached
   s      = !"git print-commit-1 HEAD; git status --short"
-  si      = !"git print-commit-1 HEAD; git status --short --ignored"
+  si     = !"git print-commit-1 HEAD; git status --short --ignored"
   sm     = submodule
   sms    = submodule status
   sa     = stash apply
@@ -166,8 +168,13 @@
   sl     = stash list
   spi    = stash pop --index
   sp     = stash pop
-  ss     = stash save --keep-index
-  ssa    = stash save --all --keep-index # includes ignored
+  ss     = stash save
+  ssa    = stash save --all # includes ignored
+  ssk    = stash save --keep-index
+  ssp    = stash save --patch
+  ssu    = stash save --include-untracked
+  sska   = stash save --keep-index --all # includes ignored
+  ssku   = stash save --keep-index --include-untracked
   ssu    = stash save --include-untracked --keep-index
   si     = status --short --ignored
   t      = tag
@@ -190,11 +197,11 @@
 
   # Print line(s) like:
   # 8d048fa (HEAD -> master) local-update: add cabal and npm 30 hours ago Tom Hale
-  fmt-commit-1line = "!echo '--format=\"%C(auto)%h %s %d%C(auto,yellow)[%C(auto,nobold green)%cd%C(auto)%C(auto,bold blue) %aN%C(auto,nobold yellow)]\" --date=relative' #"
-  print-commit-1 = "!for c in \"$@\"; do c=\"$(git rpc \"$c\")\" && eval \"git log -n1 $(git fmt-commit-1line) $c\"; done #"
+  fmt-commit-1line = !"echo '--format=\"%C(auto)%h %s %d%C(auto,yellow)[%C(auto,nobold green)%cd%C(auto)%C(auto,bold blue) %aN%C(auto,nobold yellow)]%Creset\" --date=relative' #"
+  print-commit-1 = !"for c in \"$@\"; do c=\"$(git rpc \"$c\")\" && eval \"git log -n1 $(git fmt-commit-1line) $c\"; done #"
   # Print line(s) like:
   # 8d048fa (HEAD -> master) local-update: add cabal and npm 2016-10-03 12:29:38 +0700 Tom Hale
-  print-commit-1-long = "!for c in \"$@\"; do c=\"$(git rpc \"$c\")\" && eval \"git log -n1 $(git fmt-commit-1line) --date=iso $c\"; done #"
+  print-commit-1-long = !"for c in \"$@\"; do c=\"$(git rpc \"$c\")\" && eval \"git log -n1 $(git fmt-commit-1line) --date=iso $c\"; done #"
 
   # Print the --decorations of `git log` without the ( ) eg "HEAD -> master, tag: head, origin/master"
   # TODO: for HEAD (or commit-ish if given)
@@ -207,14 +214,15 @@
   #
   # All children hashes of current (or specified) commit-ish sorted newest first
   children-hash = !"c=\"$(git rpc \"${1:-@}\")\" && set -- $(git rev-list --all --not \"$c\"^@ --children | grep \"$c\"); shift; for c in $*; do echo $c; done | tac #"
-  children = "!git print-commit-1 `git children-hash \"$1\"` #"
-  children-long = "!git print-commit-1-long `git children-hash \"$1\"` #"
+  children = !"git print-commit-1 $(git children-hash \"$1\") #"
+  children-long = !"git print-commit-1-long $(git children-hash \"$1\") #"
 
-  # Scions: (yes, it's a word)
+  # Scions (definition): A descendant, especially a first-generation descendant; a shoot or twig.
   # Descendant paths from $2 path back to $1
   # Newest first is required for --graph to do it's pretty thing
   # Includes $2, excludes $1
   # Use 'HEAD' if $1 not given. Use last checked out branch if $2 not given
+
   # scions = !"sh -c \"git log $(git fmt-commit-1line) --graph --ancestry-path ${1:-HEAD}..${2:-\\\"$(git rev-parse @{-1})\\\"}\" -"
   # scions-long = "!git print-commit-1-long $(git scions-hash \"$1\" \"$2\") #"
 
@@ -224,11 +232,12 @@
   # try setting from to variables then using.
   # scions = !"eval git log $(git fmt-commit-1line) --graph --ancestry-path \"$(git rpc \"${1:-@}\")\"..\"$(git rev-parse \"${2:-\"@{-1}\"}\")\" #"
   #
-  scions = !"sh -c \"git log $(git fmt-commit-1line) --graph --ancestry-path ${1:-HEAD}.. ${2:-\\\"$(git rev-parse @{-1})\\\"}\" -"
-  scions-long = !"sh -c \"git log $(git fmt-commit-1line) --date=iso --graph --ancestry-path ${1:-HEAD}..${2:-\\\"$(git rev-parse @{-1})\\\"}\" -"
-  scions-hash = "!bash -c 'git log --format=%H --ancestry-path ${1:-HEAD}..${2:-\"$(git rev-parse @{-1})\"}' -"
-  scions-list = "!git print-commit-1 $(git scions-hash \"$1\" \"$2\") #"
-  scions-list-long = "!git print-commit-1-long $(git scions-hash \"$1\" \"$2\") #"
+  scions = !"eval git log $(git fmt-commit-1line) --graph --ancestry-path \"${1:-HEAD}\"..\"${2:-$(git rev-parse @{-1})}\" #"
+  scions-long = !"eval git log $(git fmt-commit-1line) --date=iso --graph --ancestry-path \"${1:-HEAD}\"..\"${2:-$(git rev-parse @{-1})}\" #"
+
+  scions-hash = !"git log --format=%H --ancestry-path \"${1:-HEAD}\"..\"${2:-$(git rev-parse @{-1})}\" #"
+  scions-list = !"git print-commit-1 $(git scions-hash \"$1\" \"$2\") #"
+  scions-list-long = !"git print-commit-1-long $(git scions-hash \"$1\" \"$2\") #"
 
   # ---------------- Good above here -------------------- #
 
@@ -240,14 +249,14 @@
 
   # Direct-decendant commits of $1 which are also ancestors of $2, sorted newest first
   # Use 'HEAD' if $1 not given. Use last checked out branch if $2 not given
-  children-branch = "!git print-commit-1 `git children-branch \"$1\" \"$2\"` #" # Subshell unquoted to split output into arguments 
-  children-branch-hash = "!bash -c 'c=$(git children \"$1\") && git scions \"$1\" | grep -xF \"$c\"' #"
+  children-branch = !"git print-commit-1 $(git children-branch \"$1\" \"$2\") #" # Subshell unquoted to split output into arguments 
+  children-branch-hash = !"c=$(git children \"$1\") && git scions \"$1\" | grep -xF \"$c\" #"
 
   # TODO split into a function which announces if there is more than one child and whether the oldest is a branch-child
   # The newest child commit with descendant $2, else the newest child overall
   #FIXMEEEEE IFS:
-  child-hash = "!c=\"`git scions-hash \"$1\" \"$2\" | tail -1`\" && if [ \"$c\" ]; then echo $c; ${IFS:#else} git children-hash \"$1\" | tail -1; echo no branch; fi #"
-  child = "!git print-commit-1 `git child-hash \"$1\" \"$2\"` #"
+  child-hash = !"c=$(git scions-hash \"$1\" \"$2\" | tail -1) && if [ \"$c\" ]; then echo $c; else git children-branch-hash \"$1\" | tail -1 || echo no branch; fi #"
+  child = !"git print-commit-1 $(git child-hash \"$1\" \"$2\") #"
 
 
   # TODO:
@@ -264,7 +273,7 @@
 
   # Run a command in the root of the working tree
   sh   = !bash -c '\"$@\"' - # default to bash
-  bsh = !\"$@\" - # Bourne shell, save some typing in default case :)
+  bsh = !\"$@\" - # BOURNE shell, save some typing in default case :)
 
   # Aliases
   la = !git config --list | grep ^alias\\. | cut -c 7- | grep -Ei --color \"$1\" "#" # List aliases
@@ -290,7 +299,7 @@
   sortdiff = !"git diff \"$@\" | grep \"^[+-]\" | sort --key=1.2 | uniq -u -s1 #"
 
   # Edit this module's config file
-  edit-config = !"$EDITOR \"`git rev-parse --git-dir`\"/config #"
+  edit-config = !"$EDITOR $(git rev-parse --git-dir)/config #"
 
   # Manage this config file
   edit-global-config = "!bash -c '[ -f ~/.gitconfig -a -f ~/.config/git/config ] && ! confirm \"Two config files exist. Proceed?\" && exit || git config -e --global'"
