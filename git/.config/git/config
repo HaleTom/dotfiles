@@ -43,7 +43,7 @@
   bir    = bisect reset
   br     = branch
   brd    = branch -d
-  brdd   = branch -D
+  brD    = branch -D
   brf    = branch -f
   brl    = branch --list
   brm    = branch --move # rename
@@ -105,7 +105,7 @@
   dch    = diff --cached --ws-error-highlight=old,new HEAD
   dchh   = diff --cached --ws-error-highlight=old,new HEAD~1
   ds     = diff --stat # lines added and removed
-  dt     = difftool -y -t vimdiff --noprompt
+  dt     = difftool -y
   ec     = !"git status -sz  | sed -rnz 's/^(U.|.U) (.*)/\\2/p' | xargs -0 $EDITOR #"
   elc    = !"git edit-config"
   elx    = !"git edit-local-excludes"
@@ -122,6 +122,7 @@
   ls     = ls-files
   mnf    = merge --no-ff
   mom    = merge origin/master
+  mt     = mergetool -y
   mum    = merge upstream/master
   psf    = push --force-with-lease
   psuo   = push --set-upstream origin
@@ -389,7 +390,9 @@
   algorithm = patience # Take longer for a smaller diff
   # colorMoved = zebra
   colorMoved = dimmed_zebra
+  indentHeuristic = true # New default from v2.14, see https://github.com/blog/2188-git-2-9-has-been-released
   interHunkContext = 2
+  renames = copies
   tool = vimdiff
 
   # https://git-scm.com/docs/gitattributes
@@ -412,7 +415,11 @@
     binary=true # Mark as a binary even though they are meaningless text
 
 [difftool]
-  prompt = false
+  prompt = true # Use alias for no-prompt
+  trustExitCode = true # true by default, :cq in vim to exit non-zero
+
+[interactive]
+  diffFilter = "diff-so-fancy | less -FRX --tabs=4"
 
 [log]
   mailmap = true
@@ -422,8 +429,11 @@
   tool = vimdiff
   stat = true # show what changed
 
-[interactive]
-  diffFilter = "diff-so-fancy | less -FRX --tabs=4"
+[mergetool]
+  prompt = true # Use alias for no-prompt
+
+[mergetool "vimdiff"]
+  trustExitCode = true # true by default, :cq in vim to exit non-zero
 
 [pager]
   # Bypass pager: git --no-pager ...
