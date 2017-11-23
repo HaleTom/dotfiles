@@ -23,6 +23,7 @@ export MANPAGER='less -Ms +Gg' # Show line percentage in man pages
 export RUBYLIB="$HOME"/lib:"$RUBYLIB"
 export GNULIB_SRCDIR="$HOME"/repo/gnulib
 export GCC_COLORS=1 # Enable gcc colours, available since gcc 4.9.0
+export RSYNC_PARTIAL_DIR=.rsync-tmp-partial # Automatically set --partial-dir with --partial
 
 # Have less display colours
 # from: https://wiki.archlinux.org/index.php/Color_output_in_console#man
