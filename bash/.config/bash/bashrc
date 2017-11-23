@@ -88,20 +88,22 @@ sh_is_zsh && export HISTFILE="$XDG_DATA_HOME"/zsh/history
 # shopt -s histverify # Show output of !! - press enter twice
 
 # Update "tmuxinator.{z,ba}sh" symlink if needed
-tmuxinator_source="$XDG_CONFIG_HOME/tmuxinator/tmuxinator.$(sh_is_zsh && printf zsh || printf bash)"
-# If not a regular file or symlink to one
-if [[ ! -f $tmuxinator_source ]]; then
-    # If doesn't exist or already a symlink
-    if [[ ! -e $tmuxinator_source || -L $tmuxinator_source ]]; then
-        echo "Creating ${tmuxinator_source##*/} symlink:"
-        tmp=$(gem which tmuxinator) && # tmuxinator executable
-            tmp=$(readlink -f "${tmp%/*}/../completion") && # completion scripts dir
-            ln -fsv "$tmp/${tmuxinator_source##*/}" "$tmuxinator_source"
-        unset tmp
-    else
-      echo "Not creating symlink at at existing:"
-      ls -lF "$tmuxinator_source"
-    fi
+if { [[ -x $(which tmuxinator) && -x $(which gem) ]] 2>/dev/null; }; then
+  tmuxinator_source="$XDG_CONFIG_HOME/tmuxinator/tmuxinator.$(sh_is_zsh && printf zsh || printf bash)"
+  # If not a regular file or symlink to one
+  if [[ ! -f $tmuxinator_source ]]; then
+      # If doesn't exist or already a symlink
+      if [[ ! -e $tmuxinator_source || -L $tmuxinator_source ]]; then
+          echo "Creating ${tmuxinator_source##*/} symlink:"
+          tmp=$(gem which tmuxinator) && # tmuxinator executable
+              tmp=$(readlink -f "${tmp%/*}/../completion") && # completion scripts dir
+              ln -fsv "$tmp/${tmuxinator_source##*/}" "$tmuxinator_source"
+          unset tmp
+      else
+        echo "Not creating symlink at at existing:"
+        ls -lF "$tmuxinator_source"
+      fi
+  fi
 fi
 
 # Source files given as arguments
