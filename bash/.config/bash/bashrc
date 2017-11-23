@@ -131,6 +131,10 @@ function source_files {
     done
 }
 
+# TODO: Change this to be an array instead. Comments and blanks allowed.
+# https://stackoverflow.com/a/12814475/5353461
+# TODO: check if base command installed before trying to configure it.
+
 # Both zsh and bash
 source_files <<DOTFILES
     # Git
