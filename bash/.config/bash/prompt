@@ -279,7 +279,7 @@ _set_bash_prompt() {
 
   # Reference: https://en.wikipedia.org/wiki/ANSI_escape_code
   local Save='\e[s' # Save cursor position
-  local Rest='\e[u' # Restore cursor to save point
+  local Restore='\e[u' # Restore cursor to save point
 
   # Save cursor position, jump to (right hand edge minus N columns) where N is
   # the length of the printable RHS string. Print the RHS string, then return
@@ -295,9 +295,11 @@ _set_bash_prompt() {
   # Edge case todo: Don't print more RHS characters than will fit on one line:
   # http://stackoverflow.com/a/43744552/5353461
 
-  PS1="\[\e[0m${Save}\e[$((COLUMNS - ${#rhs_printable}))G${rhs}${Rest}\]${lhs}"
+  # TODO: Strip \[ and \] from git prompt or add to other parts - causing weirdness when git part shown and command is long.
+
+  PS1="\[\e[0m${Save}\e[$((COLUMNS - ${#rhs_printable}))G${rhs}${Restore}\]${lhs}"
   # If $COLUMNS happens to be unset (some cygwin, OSX)
-  # PS1="${lhs}${Blu}\[${Save}\e[$(($(tput cols) - ${#rhs_printable}))G${rhs}${Rest}\]${PS1}"
+  # PS1="${lhs}${Blu}\[${Save}\e[$(($(tput cols) - ${#rhs_printable}))G${rhs}${Restore}\]${PS1}"
 
   # echo "\$PS1=$PS1" # Debug
 }
