@@ -71,6 +71,7 @@ export BINARY_SCP=/usr/bin/scp
 
 # Python virtualenvwrapper
 export WORKON_HOME=$XDG_DATA_HOME/virtualenvs
+export VIRTUALENVWRAPPER_PYTHON=$WORKON_HOME/default/bin/python
 export PROJECT_HOME=$HOME/prj # Used by mkproject
 
 
