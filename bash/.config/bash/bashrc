@@ -202,7 +202,7 @@ add_to_PATH () {
 }
 
 # $PATH must be set after sourcing chruby
-add_to_PATH before $HOME/bin:$XDG_DATA_HOME/virtualenvs/default/bin:$XDG_DATA_HOME/miniconda3/bin:$XDG_DATA_HOME/npm/bin:$HOME/.local/bin
+add_to_PATH before $HOME/bin:$XDG_DATA_HOME/miniconda3/bin:$XDG_DATA_HOME/virtualenvs/default/bin:$XDG_DATA_HOME/npm/bin:$HOME/.local/bin
 if ruby_gems=$(ruby -e 'print Gem.user_dir')/bin; then
     add_to_PATH before "$ruby_gems"
 fi
