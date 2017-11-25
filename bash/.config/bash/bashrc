@@ -165,13 +165,6 @@ source_files <<DOTFILES
 DOTFILES
 unset tmuxinator_source
 
-# # cwrapper - colorise output - USE GRC INSTEAD
-# [ -d /usr/lib/cw ] && {
-#   PATH="/usr/lib/cw:$PATH" # Prepend cwrapper to default
-#   export NOCOLOR_PIPE=1
-#   export CW_COLORIZE=grey+
-#  }
-
 # Add directories to $PATH iff they're not already there
 # Append directories to $PATH by default
 # Based on https://unix.stackexchange.com/a/4973/143394
