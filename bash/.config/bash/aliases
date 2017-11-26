@@ -51,7 +51,7 @@ alias diff='diff --color=auto'
 alias grep='GREP_COLOR="1;33;40" LANG=C grep --color=auto'
 alias home='git --git-dir=$HOME/.githome --work-tree=$HOME'
 alias nixnote2='LD_PRELOAD=libcurl.so.3 nixnote2 &'
-alias pac='pacdiff_program="sudo pacdiff" pacmatic' # pacaur can't be run as root
+alias pac='PYTHONPATH=/usr/lib/python3.6/site-packages pacdiff_program="sudo pacdiff" pacmatic' # pacaur can't be run as root
 alias rsync='rsync --sparse'
 alias vimpager='$XDG_DATA_HOME/vim/bundle/vimpager/vimpager'
 
