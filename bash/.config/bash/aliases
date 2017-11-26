@@ -5,29 +5,29 @@
 # ls aliases
 # https://www.gnu.org/software/coreutils/manual/html_node/Block-size.html
 alias ls="BLOCK_SIZE=\'1 ls --color=auto" #enable thousands grouping and colour
-alias l="ls -bCF"         # escape non printable || columns || decorated
-alias la="ls -CAFb"       # Almost all - no . and ..
-alias ld="ls -dlaFb */"   # no-dereference symlinks, directory entry instead of contents
-alias ll="ls -laFb"
-alias ls.="ls -dbCF .[^.]?*" # Hidden files except . and .. (currend directory only)
-alias lsd="ls -Abl | grep --color=never ^d"   # list only directories
+alias l='ls -bCF'         # escape non printable || columns || decorated
+alias la='ls -CAFb'       # Almost all - no . and ..
+alias ld='ls -dlaFb */'   # no-dereference symlinks, directory entry instead of contents
+alias ll='ls -laFb'
+alias ls.='ls -dbCF .[^.]?*' # Hidden files except . and .. (currend directory only)
+alias lsd='ls -Abl | grep --color=never ^d'   # list only directories
 
-alias -- -="cd -" # go to previous dir
-alias ..="cd .."
-alias ...="cd ../.."
-alias ....="cd ../../.."
-alias .....="cd ../../../.."
+alias -- -='cd -' # go to previous dir
+alias ..='cd ..'
+alias ...='cd ../..'
+alias ....='cd ../../..'
+alias .....='cd ../../../..'
 
 # One letter aliases
-alias g="git"
-alias h="history"
-alias j="jobs"
-alias r="rake"
-alias s="git s"
+alias g='git'
+alias h='history'
+alias j='jobs'
+alias r='rake'
+alias s='git s'
 
 # Two letters
-alias gh="git logda" # Git History
-alias jc=journalctl
+alias gh='git logda' # Git History
+alias jc='journalctl'
 alias sc='sudo systemctl'
 
 alias scu='systemctl --user'
@@ -46,7 +46,7 @@ alias scu='systemctl --user'
 alias ag='ag --color'
 alias cal='cal -3' # show 3 months by default
 alias cp='cp --reflink=auto --sparse=always'
-alias cuc=cucumber
+alias cuc='cucumber'
 alias diff='diff --color=auto'
 alias grep='GREP_COLOR="1;33;40" LANG=C grep --color=auto'
 alias home='git --git-dir=$HOME/.githome --work-tree=$HOME'
