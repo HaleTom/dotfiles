@@ -207,7 +207,7 @@ add_to_PATH before $HOME/bin:$XDG_DATA_HOME/miniconda3/bin:$XDG_DATA_HOME/virtua
 if ruby_gems=$(ruby -e 'print Gem.user_dir')/bin; then
     add_to_PATH before "$ruby_gems"
 fi
-add_to_PATH after /usr/local/heroku/bin:$HOME/.cabal/bin
+add_to_PATH after /usr/lib/systemd:/usr/local/heroku/bin:$HOME/.cabal/bin
 # echo $PATH | tr : "\n"; echo;
 
 
