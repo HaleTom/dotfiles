@@ -53,6 +53,7 @@ alias home='git --git-dir=$HOME/.githome --work-tree=$HOME'
 alias nixnote2='LD_PRELOAD=libcurl.so.3 nixnote2 &'
 alias pac='PYTHONPATH=/usr/lib/python3.6/site-packages pacdiff_program="sudo pacdiff" pacmatic' # pacaur can't be run as root
 alias rsync='rsync --sparse'
+alias setvars='(set -o posix; set)'
 alias vimpager='$XDG_DATA_HOME/vim/bundle/vimpager/vimpager'
 
 # tmux / tmuxinator
