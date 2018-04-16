@@ -6,8 +6,8 @@ set smooth-scroll true
 set scroll-step 100
 
 set adjust-open width
-set window-width 1400
-set window-height 1800
+set window-width 3000
+set window-height 3000
 
 set selection-clipboard clipboard
 set highlight-color "#fdf6e3" # green
