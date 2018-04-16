@@ -75,9 +75,10 @@
   cl     = clone
   cls    = clone --depth 5 --shallow-submodules
   clss   = "!git clone --depth 5 --shallow-submodules --single-branch --branch \"$@\" #  eg git clss maint git://github.com/user/repo"
-  clear  = "!bash -c ' git clean -n | sed \"s/^Would remove //\"; \
+  # Note git clean operates from the current directory, same behaviour:
+  clear  = !"cd ${GIT_PREFIX:-.} && bash -c 'git clean -nd \"$@\" | sed \"s/^Would remove //\"; \
     read -rn1 -p \"Delete all the above? [y/N] \" r; echo; \
-    [[ x$r =~ ^x[yY] ]] && git clean -f || echo Untouched.'"
+    [[ x$r =~ ^x[yY] ]] && git clean -df \"$@\" || echo Untouched.' removed \"$@\" #"
   cm     = commit -m
   cn     = commit --amend
   cnn    = commit --amend --no-edit
@@ -157,7 +158,7 @@
   rrr    = rerere remaining
   rrs    = rerere status
   rmc    = rm --cached
-  s      = !"git print-commit-1 HEAD; git status --short"
+  s      = !"cd ${GIT_PREFIX:-.} && git print-commit-1 HEAD; git status --short" # allow for git s .
   si     = !"git print-commit-1 HEAD; git status --short --ignored"
   sm     = submodule
   sms    = submodule status
