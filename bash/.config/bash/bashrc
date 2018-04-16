@@ -24,6 +24,7 @@ export RUBYLIB="$HOME"/lib:"$RUBYLIB"
 export GNULIB_SRCDIR="$HOME"/repo/gnulib
 export GCC_COLORS=1 # Enable gcc colours, available since gcc 4.9.0
 export RSYNC_PARTIAL_DIR=.rsync-tmp-partial # Automatically set --partial-dir with --partial
+export GOPATH="$XDG_DATA_HOME/go"
 
 # Have less display colours
 # from: https://wiki.archlinux.org/index.php/Color_output_in_console#man
@@ -205,7 +206,8 @@ add_to_PATH () {
 }
 
 # $PATH must be set after sourcing chruby
-add_to_PATH before $HOME/bin:$XDG_DATA_HOME/miniconda3/bin:$XDG_DATA_HOME/virtualenvs/default/bin:$XDG_DATA_HOME/npm/bin:$HOME/.local/bin
+add_to_PATH before "$HOME/bin:$XDG_DATA_HOME/miniconda3/bin:$XDG_DATA_HOME/virtualenvs/default/bin:$XDG_DATA_HOME/npm/bin:$HOME/.local/bin:$XDG_DATA_HOME/go/bin"
+
 if ruby_gems=$(ruby -e 'print Gem.user_dir')/bin; then
     add_to_PATH before "$ruby_gems"
 fi
