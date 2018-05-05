@@ -15,6 +15,10 @@
 ###################
 .byebug_history
 
+# Jupyter checkpoints #
+#######################
+.ipynb_checkpoints/
+
 # Caches #
 ##########
 __pycache__/
