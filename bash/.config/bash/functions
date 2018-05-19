@@ -32,6 +32,28 @@ ord10() { printf '%d\n' "'$1"; }
 # diff-so-fancy
 dsf() { git diff --no-index --color "$@" | diff-so-fancy; }
 
+# Change directory to the deepest existant part of a path
+function cdup {
+  # Eg:
+  # $ mkdir -p a/b/c
+  # $ cdup a/b/c/d/e
+  # $ pwd
+  # ~/a/b/c
+
+  [[ $# -ne 1  ]] && { echo "${FUNCNAME[0]}: Must specify one directory" 2>&1; return 1; }
+  try="$1"
+
+  until [[ $try == . ]]; do
+      if [[ -d $try && -x $try ]]; then
+          cd "$try" && return $?
+      fi
+      try=$(dirname "$try")
+  done
+  return 1 # Couldn't cd to any part of the path
+}
+export_function cdup
+
+
 function nbin {
   local dir;
   dir=$(npm bin)
@@ -81,12 +103,12 @@ export_function pause
 # Make a directory and move the working directory
 function mkcd {
   if [ "$#" -ne 1 ]; then
-    echo "mkcd: Make and change into a directory" >&2
-    echo "Usage: mkcd DIRECTORY" >&2
+    echo "${FUNCNAME[0]}: Make and change into a directory" >&2
+    echo "Usage: ${FUNCNAME[0]} DIRECTORY" >&2
     return 69
   fi
 
-  [[ -d "$1" ]] && exit=2 && echo "mkcd: Warning: $1 already exists." >&2
+  [[ -d "$1" ]] && exit=2 && echo "${FUNCNAME[0]}: Warning: $1 already exists." >&2
   mkdir -p "$1" || return 1
   cd "$1" || return 1
   return ${exit:-0}
@@ -244,7 +266,7 @@ function git_root {
     # Store the commit id of the first commit to compare later
     # It's possible that $GIT_DIR points somewhere not inside the repo
     first_commit=$(git rev-list --parents HEAD | tail -1) || # --reverse with head -1?
-      echo "$0: Can't get initial commit" 2>&1 && false && return
+      echo "${FUNCNAME[0]}: Can't get initial commit" 2>&1 && false && return
     root=$(git rev-parse --git-dir)/.. &&
       # subshell so we don't change the user's working directory
     ( cd "$root" &&
