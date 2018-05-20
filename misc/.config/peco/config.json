@@ -1,0 +1,19 @@
+{
+    "_homepage": "https://github.com/peco/peco",
+    "_default_keymap": "https://github.com/peco/peco#default-keymap",
+    "StickySelection": true,
+    "OnCancel": "error",
+
+    "Keymap": {
+        "C-j": "peco.SelectDown",
+        "C-k": "peco.SelectUp",
+        "C-l": "peco.RefreshScreen",
+        "C-z": "peco.ToggleRangeMode",
+        "C-t": "peco.ToggleQuery",
+        "C-h": "peco.ToggleSingleKeyJump"
+    },
+
+	"SingleKeyJump": {
+		"ShowPrefix": true
+	}
+}
