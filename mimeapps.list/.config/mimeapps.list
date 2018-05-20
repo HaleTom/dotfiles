@@ -34,13 +34,14 @@ text/mml=google-chrome.desktop;firefox.desktop
 x-scheme-handler/http=google-chrome.desktop;firefox.desktop
 x-scheme-handler/https=google-chrome.desktop;firefox.desktop
 x-scheme-handler/ftp=google-chrome.desktop;firefox.desktop
+audio/x-ms-wma=vlc.desktop
 
 ##
 ## The [Added Associations] group defines additional associations of applications with mimetypes, as if the .desktop file was listing this mimetype in the first place.
 ##
 
 [Added Associations]
-application/octet-stream=qpdfview.desktop;uget-gtk.desktop;mousepad.desktop;
+application/octet-stream=uget-gtk.desktop;deluge.desktop;qpdfview.desktop;mousepad.desktop;
 application/pdf=zathura-pdf-mupdf.desktop;
 application/x-gettext-translation=mousepad.desktop;
 application/x-wine-extension-ini=mousepad.desktop;
@@ -63,6 +64,11 @@ audio/mp4=vlc.desktop;
 video/mp4=vlc.desktop;
 video/x-matroska=vlc.desktop;
 video/x-msvideo=vlc.desktop;
+
+application/x-xpinstall=thunderbird.desktop;firefox.desktop;
+audio/x-ms-wma=picard.desktop;vlc.desktop;
+application/wps-office.docx=wps-office-wps.desktop;
+application/wps-office.doc=wps-office-wps.desktop;
 
 
 ##
