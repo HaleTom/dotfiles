@@ -163,11 +163,15 @@ git_status() {
     # __git_ps1 will only make pretty colours inside $PS1
     local old_PS1=$PS1
     __git_ps1 "" "" "%s" # force colour; no default round bracket (decorations)
+    git_status=$PS1
 
-    # Strip "\[" and "\[": non-printable character markers. __git_ps1 outputs
-    # them however the whole of the RHS prompt needs to be included in these
-    # markers, and they can't be nested.
-    git_status=${PS1//@(\\@(\[|\]))/}
+    if [[ $1 == RHS ]]; then
+      # We're generating for a RHS prompt. Work-around is needed for bash only.
+      # Strip "\[" and "\[": non-printable character markers. __git_ps1 outputs
+      # them however the whole of the RHS prompt needs to be included in these
+      # markers, and they can't be nested.
+      git_status=${git_status//@(\\@(\[|\]))/}
+    fi
     PS1=$old_PS1
   fi
 
@@ -233,7 +237,7 @@ _set_bash_prompt() {
 
   # Git status
   local git
-  git=$(git_status)
+  git=$(git_status LHS) # Generate git status for a LHS prompt string
   # Bright before the $git part has the branch name go bold, which is a nice "feature"
   [[ -n $git ]] && lhs+=" ${BWhi}${git}${BWhi}"
 
