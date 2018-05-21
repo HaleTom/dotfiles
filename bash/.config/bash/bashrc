@@ -57,6 +57,9 @@ unset highlight
 # Set $LS_COLORS
 [ -x /usr/bin/dircolors ] && eval "$(/usr/bin/dircolors)"
 
+# Colour iostat when on a terminal. This should be default, but needed to be set at 2018-05-21.
+export S_COLORS=auto
+
 # Package management
 # pacaur, yaourt, makepkg: use powerpill instead of pacman
 pacman -Qq powerpill >& /dev/null && export PACMAN=/usr/bin/powerpill
