@@ -17,7 +17,7 @@ source "$HOME/.config/bash/xdg"
 
 # Standard-ish programs
 export BROWSER=/usr/bin/google-chrome-stable
-export EDITOR=vim
+export EDITOR=nvim
 export MANPAGER='less -Ms +Gg' # Show line percentage in man pages
 
 export RUBYLIB="$HOME"/lib:"$RUBYLIB"
