@@ -51,22 +51,30 @@ alias diff='diff --color=auto'
 alias grep='GREP_COLOR="1;33;40" LANG=C grep --color=auto'
 alias home='git --git-dir=$HOME/.githome --work-tree=$HOME'
 alias nixnote2='LD_PRELOAD=libcurl.so.3 nixnote2 &'
-alias pac='PYTHONPATH=/usr/lib/python3.6/site-packages pacdiff_program="sudo pacdiff" pacmatic' # pacaur can't be run as root
 alias rsync='rsync --sparse'
 alias setvars='(set -o posix; set)'
 alias vimpager='$XDG_DATA_HOME/vim/bundle/vimpager/vimpager'
+
+# AUR helpers
+alias pac=aurman
+alias aurman='pacman_program=/usr/bin/aurman pacmatic'
+alias pakku=' pacman_program=/usr/bin/pakku  pacmatic'
+alias pacmatic='PYTHONPATH=/usr/lib/python3.6/site-packages pacdiff_program="sudo pacdiff" /usr/bin/pacmatic' # AUR helpers can't be run as root
 
 # tmux / tmuxinator
 alias tmux='TERM=xterm-256color tmux -f "$XDG_CONFIG_HOME"/tmux/tmux.conf'
 alias tmuxinator='TERM=xterm-256color tmuxinator'
 alias mux='TERM=xterm-256color tmuxinator'
 
+# head & tail
 alias head='head -n $((${LINES:-12}-2))' # as many as possible without scrolling
-alias tail='tail -n $((${LINES:-12}-2)) -s.1' # Likewise, also more responsive -f
+alias tail='tail -n $((${LINES:-12}-2)) --sleep-interval=0.2' # 200ms
 
+# Clipboard
 alias pbcopy='xclip -selection clipboard -in'
 alias pbpaste='xclip -selection clipboard -out'
 
+# rsync
 alias droidsync='f(){ rsync "$@" --no-p --no-o --no-g --rsync-path="su root rsync";};f'
 # FAT stores to two-second accuracy, NTFS 100 nanoseconds
 # https://corengen.wordpress.com/2010/03/22/comparing-file-timestamps-on-ntfs-and-fat32/

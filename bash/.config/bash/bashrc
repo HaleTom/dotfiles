@@ -60,11 +60,8 @@ unset highlight
 # Colour iostat when on a terminal. This should be default, but needed to be set at 2018-05-21.
 export S_COLORS=auto
 
-# Package management
-# pacaur, yaourt, makepkg: use powerpill instead of pacman
-pacman -Qq powerpill >& /dev/null && export PACMAN=/usr/bin/powerpill
-# pacmatic: use pacaur instead of pacman
-pacman -Qq pacaur >& /dev/null && export pacman_program=/usr/bin/pacaur
+# Use powerpill as pacman wrapper if installed
+[[ -x /usr/bin/powerpill ]] && export PACMAN=/usr/bin/powerpill
 
 # Have command-not-found ask to install
 export COMMAND_NOT_FOUND_INSTALL_PROMPT=1
