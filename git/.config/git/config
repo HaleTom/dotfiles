@@ -4,7 +4,7 @@
   path = ~/.config/git/config-ravi
 
 [core]
-  editor = vim
+  editor = nvim
   # pager = less -FRX --tabs=4
   pager = "diff-so-fancy | less -FRX --tabs=4"
   excludesFile = ~/.config/git/ignore
@@ -420,7 +420,16 @@
   trustExitCode = true # true by default, :cq in vim to exit non-zero
 
 [interactive]
-  diffFilter = "diff-so-fancy | less -FRX --tabs=4"
+  # diff-so-fancy not working with --patch:
+  # https://github.com/so-fancy/diff-so-fancy/issues/35
+  # https://github.com/so-fancy/diff-so-fancy/pull/172
+  # https://github.com/so-fancy/diff-so-fancy/issues/296
+  #
+  # diffFilter = "diff-so-fancy | less -FRX --tabs=4" # My original
+  # diffFilter = "diff-so-fancy --patch-mode| less -FRX --tabs=4" # Suggested by above issue
+
+  # The default seems to be "diff-highlight"
+  diffFilter = "diff-highlight | less -FRX --tabs=4"
 
 [log]
   mailmap = true
