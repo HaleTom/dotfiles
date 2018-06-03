@@ -57,7 +57,7 @@ alias vimpager='$XDG_DATA_HOME/vim/bundle/vimpager/vimpager'
 
 # AUR helpers
 alias pac=aurman
-alias aurman='pacman_program=/usr/bin/aurman pacmatic'
+alias aurman='pacman_program="/usr/bin/aurman --optimistic_versioning" pacmatic'
 alias pakku=' pacman_program=/usr/bin/pakku  pacmatic'
 alias pacmatic='PYTHONPATH=/usr/lib/python3.6/site-packages pacdiff_program="sudo pacdiff" /usr/bin/pacmatic' # AUR helpers can't be run as root
 
