@@ -59,7 +59,7 @@ alias vimpager='$XDG_DATA_HOME/vim/bundle/vimpager/vimpager'
 alias pac=aurman
 alias aurman='pacman_program="/usr/bin/aurman --optimistic_versioning" pacmatic'
 alias pakku=' pacman_program=/usr/bin/pakku  pacmatic'
-alias pacmatic='PYTHONPATH=/usr/lib/python3.6/site-packages pacdiff_program="sudo pacdiff" /usr/bin/pacmatic' # AUR helpers can't be run as root
+alias pacmatic='export PYTHONPATH=/usr/lib/python3.6/site-packages pacdiff_program="sudo pacdiff"; sudo /usr/bin/pacmatic' # AUR helpers can't be run as root
 
 # tmux / tmuxinator
 alias tmux='TERM=xterm-256color tmux -f "$XDG_CONFIG_HOME"/tmux/tmux.conf'
