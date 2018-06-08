@@ -112,26 +112,28 @@ if { [[ -x $(which tmuxinator) && -x $(which gem) ]] 2>/dev/null; }; then
 fi
 
 # Source files given as arguments
-function source_file {
-    if [[ -f $1 ]]; then
-        source "$1"
+function _source_file {
+    file=$1
+    if [[ -f $file ]]; then
+        source "$file"
     else
         # [ shell_is_zsh ] && echo "${(%):-%x line %i}: Cannot source $dotfile";
         # [ shell_is_zsh ] && echo "${(%):-%N}: Cannot source $dotfile";
-        [[ -n $BASH_VERSION ]] && echo "${BASH_SOURCE[0]}: Cannot source $dotfile";
-        # shellcheck disable=SC2154 # This file is also sourced by zsh...
-        [[ -n $ZSH_VERSION ]] && echo "${(%):-%x}: Cannot source $dotfile";
+        [[ -n $BASH_VERSION ]] && echo "${FUNCNAME[0]}@$LINENO: Cannot source $file";
+        # This is also sourced by zsh...
+        # shellcheck disable=SC2154
+        [[ -n $ZSH_VERSION ]] && echo "$funcstack[1]@${(%):-%i}: Cannot source $file";
         return 1
     fi
 }
 
 # Source .dotfiles listed on STDIN (one per line)
-function source_files {
+function _source_files {
     while read -r dotfile ; do
         case "$dotfile" in
             "") ;& # fall through...
             \#*) continue;; # Skip blank or commented lines
-            *  ) source_file "$dotfile" ;;
+            *  ) _source_file "$dotfile" ;;
         esac
     done
 }
@@ -141,7 +143,7 @@ function source_files {
 # TODO: check if base command installed before trying to configure it.
 
 # Both zsh and bash
-source_files <<DOTFILES
+_source_files <<DOTFILES
     # Git
     /usr/share/git/completion/git-prompt.sh
 
@@ -225,7 +227,7 @@ sh_is_bash && PROMPT_COMMAND='_set_bash_prompt'
 
 # Bash only
 if sh_is_bash; then
-    source_files <<DOTFILES
+    _source_files <<DOTFILES
     /usr/share/git/completion/git-completion.bash
     # $XDG_DATA_HOME/fzf/.fzf.bash
     /usr/share/fzf/key-bindings.bash
@@ -233,6 +235,7 @@ if sh_is_bash; then
     $XDG_CONFIG_HOME/bash/prompt
     $XDG_CONFIG_HOME/bash/completion
 DOTFILES
+unset -f _source_file _source_files # clean up namespace
 
      # Resolve `trap DEBUG` contention of chruby_auto and _set_bash_prompt
      # shellcheck disable=SC2034,2016
