@@ -51,6 +51,10 @@ setopt appendhistory autocd beep extendedglob nomatch notify
 bindkey -v
 # End of lines configured by zsh-newuser-install
 
+# Set the prompt
+PS1='%B%n%b@%B%F{blue}%m%b%F{white}:%B%F{cyan}%~%(0?.. %F{white}[%F{red}%?% %F{white}])%F{yellow}%b%# %F{reset}'
+RPS1='%D %*'
+
 # Move these to where they will work!!
 bindkey '^_' undo
 bindkey '^Y' redo
