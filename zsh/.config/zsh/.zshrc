@@ -17,10 +17,12 @@
 # zstyle ':completion:*' special-dirs true
 # zstyle ':completion:*' verbose true
 # zstyle :compinstall filename '/home/ravi/.config/zsh/.zshrc'
-
-autoload -Uz compinit
-compinit
 # End of lines added by compinstall
+
+autoload -Uz compinit; compinit
+
+# Run combined {ba,z}sh commands
+source ~/.bashrc
 
 zstyle ':completion:*:*:git:*' script /usr/share/git/completion/git-completion.zsh
 
@@ -40,9 +42,6 @@ autoload -Uz run-help-sudo
 autoload -Uz run-help-svk
 autoload -Uz run-help-svn
 
-# Ensure zsh knows about compdef via compinit before requiring it via .bashrc:
-source ~/.bashrc
-
 # Lines configured by zsh-newuser-install
 HISTFILE=~/.config/zsh/history
 HISTSIZE=10000
@@ -54,6 +53,19 @@ bindkey -v
 # Set the prompt
 PS1='%B%n%b@%B%F{blue}%m%b%F{white}:%B%F{cyan}%~%(0?.. %F{white}[%F{red}%?% %F{white}])%F{yellow}%b%# %F{reset}'
 RPS1='%D %*'
+
+_source_files <<DOTFILES
+    # $XDG_DATA_HOME/fzf/.fzf.zsh
+    /usr/share/fzf/key-bindings.zsh
+    /usr/share/fzf/completion.zsh
+DOTFILES
+
+unfunction _source_file _source_files
+
+# Setup direnv
+# Required after setting the prompt says: https://github.com/direnv/direnv
+eval "$(direnv hook zsh)"
+
 
 # Move these to where they will work!!
 bindkey '^_' undo
