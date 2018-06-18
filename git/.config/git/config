@@ -180,7 +180,6 @@
   ssu    = stash save --include-untracked
   sska   = stash save --keep-index --all # includes ignored
   ssku   = stash save --keep-index --include-untracked
-  ssu    = stash save --include-untracked --keep-index
   si     = status --short --ignored
   t      = tag
   tl     = "!git tag -n1 --list | sort -V"
