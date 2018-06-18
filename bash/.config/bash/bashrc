@@ -50,9 +50,7 @@ export LESS=-FMRXis
 # export GROFF_SGR=1
 
 # Have less highlight source code
-highlight=/usr/bin/src-hilite-lesspipe.sh
-[ -x "$highlight" ] && export LESSOPEN="| $highlight %s";
-unset highlight
+LESSOPEN="|-$HOME/bin/highlight-less-wrapper"' "%s"'  # shellcheck disable=SC2034
 
 # Set $LS_COLORS
 [ -x /usr/bin/dircolors ] && eval "$(/usr/bin/dircolors)"
