@@ -5,8 +5,8 @@
 
 [core]
   editor = nvim
-  # pager = less -FRX --tabs=4
-  pager = "diff-so-fancy | less -FRX --tabs=4"
+  # pager = less -FLRX --tabs=4
+  pager = "diff-so-fancy | less -FLRX --tabs=4"
   excludesFile = ~/.config/git/ignore
 
 [mailmap]
@@ -96,7 +96,7 @@
   dc     = diff --cached --ws-error-highlight=old,new # old,new,context,all
   df     = diff --ws-error-highlight=old,new
   # "diff -U" format, but colourised
-  dfhi   = !"git -c core.pager='diff-highlight | less -FRX --tabs=4' -c interactive.DiffFilter='diff-highlight | less -FRX --tabs=4'"
+  dfhi   = !"git -c core.pager='diff-highlight | less -FLRX --tabs=4' -c interactive.DiffFilter='diff-highlight | less -FLRX --tabs=4'"
 
 ## Fixme bash not needed, quoting problem when shown in g la
   dfc    = "!case \"$1\" in -*) ;; *) x=$(git rpc \"${1:-HEAD}\");shift; esac; git diff --ws-error-highlight=old,new \"$@\" \"$x\" \"$(git child-hash \"$x\")\" #" # Diff with first child
@@ -429,11 +429,11 @@
   # https://github.com/so-fancy/diff-so-fancy/pull/172
   # https://github.com/so-fancy/diff-so-fancy/issues/296
   #
-  # diffFilter = "diff-so-fancy | less -FRX --tabs=4" # My original
-  # diffFilter = "diff-so-fancy --patch-mode| less -FRX --tabs=4" # Suggested by above issue
+  # diffFilter = "diff-so-fancy | less -FLRX --tabs=4" # My original
+  # diffFilter = "diff-so-fancy --patch-mode| less -FLRX --tabs=4" # Suggested by above issue
 
   # The default seems to be "diff-highlight"
-  diffFilter = "diff-highlight | less -FRX --tabs=4"
+  diffFilter = "diff-highlight | less -FLRX --tabs=4"
 
 [log]
   mailmap = true
@@ -451,10 +451,11 @@
 
 [pager]
   # Bypass pager: git --no-pager ...
-  # " = true" means use pager defined in [core]
-  # add      = true # disabled currently due to bug - doesn't prompt with git add --patch
-  # diff     = "diff-hi | less -FRX --tabs=4"
-  # diff     = "diff-so-fancy | less -FRX --tabs=4"
+  # "X = true" means use pager defined in [core]
+  # add      = /usr/bin/less -FLRX --tabs=4
+  # add      = true # disabled currently due to bug - doesn't prompt with git add --patch # TODO raise issue
+  # diff     = "diff-hi | less -FLRX --tabs=4"
+  # diff     = "diff-so-fancy | less -FLRX --tabs=4"
   diff     = true
   difftool = true
   log      = true
@@ -463,7 +464,7 @@
   # but ugly when less than one screen's worth of output - blank lines are all '~'
 
   # Allow hunk movement with n/p keys
-  # diff = diff-hi | less -FRX --tabs=4 --pattern '^(\\@\\@.*,.*,.*\\@\\@|diff --git .* .*)$' # Allow hunk movement with n/p keys
+  # diff = diff-hi | less -FLRX --tabs=4 --pattern '^(\\@\\@.*,.*,.*\\@\\@|diff --git .* .*)$' # Allow hunk movement with n/p keys
 
 [push]
   default = simple
