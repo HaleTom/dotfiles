@@ -35,15 +35,19 @@ export LESS_TERMCAP_us=$'\e[01;37m'    # begin underline
 export LESS_TERMCAP_me=$'\e[0m'        # reset bold/blink
 export LESS_TERMCAP_se=$'\e[0m'        # reset reverse video
 export LESS_TERMCAP_ue=$'\e[0m'        # reset underline
-export LESS=-FMRXis
+export LESS='-FJMRWXis -x4 -z-4'
 # F = exit if all can be displayed on first creen
+# J = status column
 # M = show line numbers and percentage if known
 # R = interpret ANSI colour codes
+# W = highlight first unread line (see -z)
 # X = don't send termcap initialization and deinitialization strings (eg clear)
 # i = smartcase searching
 # m = show :w
 # s = squash multiple blank lines into one
 # u = send backspaces and carriage returns directly to the terminal (breaks colored man)
+# x = Convert tabs to <arg> spaces
+# z = sets window to n lines less than current terminal given '-n'
 
 # Have groff emit ANSI codes instead of overstrike
 # https://lists.archlinux.org/pipermail/arch-dev-public/2009-February/010411.html
