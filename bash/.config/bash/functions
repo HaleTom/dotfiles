@@ -80,7 +80,7 @@ function nbin {
   local dir;
   dir=$(npm bin)
   if [ -d "$dir" ]; then
-    ( # subshell to not change this shell's $PATH
+    (  # subshell to not change this shell's $PATH   #' Grr, vim syntax-highlight
       PATH=$dir:$PATH
       eval "$@"
     )
@@ -91,14 +91,14 @@ function nbin {
 }
 
 function man {
-  local vman="$XDG_DATA_HOME/vim/bundle/vim-superman/bin/vman"
+  local vman=${XDG_DATA_HOME-$HOME/.local/share}/vim/bundle/vim-superman/bin/vman
   if [[ -t 1 && -x $vman ]]; then
     # STDOUT is a tty, $vman is executable
     for arg; do # Loop over "$@"
       case "$arg" in
         --) break;; # end of options
         -[sS]*|--section=*) continue ;; #These work with vim's :Man
-        -*) vman="$(which man)" # unknown option. Use usual man instead.
+        -*) vman=$(command -v man) # unknown option. Use usual man instead.
       esac
     done
     "$vman" "$@"
@@ -121,6 +121,7 @@ function pause {
   printf "\n"
 }
 export_function pause
+
 
 # Make a directory and move the working directory
 function mkcd {
@@ -236,7 +237,7 @@ function double_quote {
     case $# in 0) break; esac
     printf '" '
   done
-  printf "\"\n"
+  printf '"\n'
 }
 export_function double_quote
 
