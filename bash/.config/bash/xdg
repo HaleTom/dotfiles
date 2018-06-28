@@ -50,6 +50,12 @@ export LESSHISTFILE=$XDG_CACHE_HOME/less/history
 export VIMPERATOR_INIT=":source $XDG_CONFIG_HOME/vimperator/vimperatorrc"
 export VIMPERATOR_RUNTIME=$XDG_CONFIG_HOME/vimperator
 
+# Ruby
+export GEM_HOME=$XDG_DATA_HOME/gem GEM_SPEC_CACHE=$XDG_CACHE_HOME/gem
+export BUNDLE_USER_CONFIG=$XDG_CONFIG_HOME/bundle
+export BUNDLE_USER_CACHE=$XDG_CACHE_HOME/bundle
+export BUNDLE_USER_PLUGIN=$XDG_DATA_HOME/bundle
+
 # Node.js / nvm / npm
 # Check config with:   npm config ls -l | grep / | grep -v '^;'
 # More XDG config is inside the config file itself:
