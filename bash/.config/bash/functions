@@ -131,8 +131,10 @@ export_function get_keypress
 
 
 function pause {
-  read -n1 -rsp "Press any key to continue... " _
-  printf "\n"
+  >/dev/tty printf 'Press any key to continue...'
+  [[ $ZSH_VERSION ]] && read -krs  # Use -u0 to read from STDIN
+  [[ $BASH_VERSION ]] && </dev/tty read -rsn1
+  printf '\n'
 }
 export_function pause
 
@@ -276,31 +278,19 @@ export_function get_yes_keypress
 
 
 # http://unix.stackexchange.com/a/14444/143394
-# Usage: confirm "Dangerous. Are you sure?" && rm /
+# Prompt to confirm, defaulting to NO on <enter>
+# Usage: confirm "Dangerous. Are you sure?" && rm *
 function confirm {
-  local reply
-  while IFS= read -rn1 -p "${*:-Are you sure} [y/N]? " reply; do
-    [ ! "$reply" = '' ] && printf "\n"
-    case "$reply" in
-      # See https://unix.stackexchange.com/q/383197/143394 regarding '\n' -> ''
-      Y|y* )      return 0;;
-      [Nn\ ]|'' ) return 1;;
-    esac
-  done
+  local prompt="${*:-Are you sure} [y/N]? "
+  get_yes_keypress "$prompt" 1
 }
 export_function confirm
 
 
+# Prompt to confirm, defaulting to YES on <enter>
 function confirm_yes {
-  local reply
-  while IFS= read -rn1 -p "${*:-Are you sure} [Y/n]? " reply; do
-    [ ! "$reply" = '' ] && printf "\n"
-    case "$reply" in
-      # See https://unix.stackexchange.com/q/383197/143394 regarding '\n' -> ''
-      [Yy\ ]|'' ) return 0;;
-      N|n )       return 1;;
-    esac
-  done
+  local prompt="${*:-Are you sure} [Y/n]? "
+  get_yes_keypress "$prompt" 0
 }
 export_function confirm_yes
 
