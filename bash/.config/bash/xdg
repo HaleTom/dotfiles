@@ -21,55 +21,11 @@ fi
 export XDG_RUNTIME_DIR
 
 # Export the XDG user directories
-if [ -f "$XDG_CONFIG_HOME/user-dirs.dirs" ]; then
+if [[ -f $XDG_CONFIG_HOME/user-dirs.dirs ]]; then
     . "$XDG_CONFIG_HOME/user-dirs.dirs"
     export XDG_DESKTOP_DIR XDG_DOWNLOAD_DIR XDG_TEMPLATES_DIR XDG_PUBLICSHARE_DIR XDG_DOCUMENTS_DIR XDG_MUSIC_DIR XDG_PICTURES_DIR XDG_VIDEOS_DIR
 fi
 
-# Only warn that symlinks are shadowed on the odd occasion
-# Set XDG_CHECK=1 to force the check
-((RANDOM % 50 == 0)) || [ $XDG_CHECK ] && _print_links=true
-
-# Check that only one version of files exist
-while read -r file; do # HERE doc at end
-  case "$file" in
-    "") ;&
-    \#*) continue # Allow for blank and commened out files
-  esac
-  if [[ -e $file ]]; then { # bracket for STDERRR
-    if [[ -L $file && ! -v _print_links ]]; then continue; fi
-    printf "%s" "Warning: XDG shadowed "
-    # shellcheck disable=SC2015 # A && B || C is not if-then-else. C may run when A is true. [SC2015]
-      [[ -L $file ]] && printf "symlink" || { # symlinks are "both"
-        [[ -d $file ]] && printf "directory"
-        [[ -f $file ]] && printf "file";
-      }
-      printf ": %s\n" "$file"
-    } >&2
-  fi
-done << XDGFILES
-  $HOME/.gitconfig
-  $HOME/.gnupg
-  $HOME/.histfile
-  $HOME/.inputrc
-  $HOME/.less
-  $HOME/.lesshst
-  $HOME/.mostrc
-  $HOME/.npm
-  $HOME/.npmrc
-  $HOME/.npm-init.js
-  $HOME/.tmux
-  $HOME/.tmuxinator
-  $HOME/.vim
-  $HOME/.viminfo
-  $HOME/.vimperator
-  $HOME/.wgetrc
-  $HOME/.nvm
-  # X/ICEauth don't listen currently, silence them...
-  # $HOME/.Xauthority
-  # $HOME/.ICEauthority
-XDGFILES
-unset _print_links
 
 # Tell programs to look for files in $XDG_*
 # When adding a file here, ensure it's default location is added
@@ -114,3 +70,53 @@ export NVM_DIR=$XDG_DATA_HOME/nvm
 # vim - Set vimrc and viminfo location before vim startup
 # shellcheck disable=2016
 export VIMINIT='let $MYVIMRC="'"$XDG_CONFIG_HOME"'/vim/vimrc"|source $MYVIMRC'
+
+# A function so that it can be run in the background immediately after declaration
+function check_shadowed_files {
+  # Only warn that symlinks are shadowed on the odd occasion
+  # Set XDG_CHECK=1 to force the check
+  ((RANDOM % 50 == 0)) || [[ $XDG_CHECK ]] && local print_links=true
+
+  # Check that only one version of files exist
+  while read -r file; do # HERE doc at end
+    case "$file" in
+      "") ;&
+      \#*) continue # Allow for blank and commened out files
+    esac
+    if [[ -e $file ]]; then { # bracket for STDERRR
+      if [[ -L $file && ! -v print_links ]]; then continue; fi
+      printf "%s" "Warning: XDG shadowed "
+      # shellcheck disable=SC2015 # A && B || C is not if-then-else. C may run when A is true. [SC2015]
+        [[ -L $file ]] && printf "symlink" || { # symlinks are "both"
+          [[ -d $file ]] && printf "directory"
+          [[ -f $file ]] && printf "file";
+        }
+        printf ': %s\n' "$file"
+      } >&2
+    fi
+  done <<XDGFILES
+    $HOME/.gitconfig
+    $HOME/.gnupg
+    $HOME/.histfile
+    $HOME/.inputrc
+    $HOME/.less
+    $HOME/.lesshst
+    $HOME/.mostrc
+    $HOME/.npm
+    $HOME/.npmrc
+    $HOME/.npm-init.js
+    $HOME/.parallel
+    $HOME/.tmux
+    $HOME/.tmuxinator
+    $HOME/.vim
+    $HOME/.viminfo
+    $HOME/.vimperator
+    $HOME/.wgetrc
+    $HOME/.nvm
+    # X/ICEauth don't listen currently, silence them...
+    # $HOME/.Xauthority
+    # $HOME/.ICEauthority
+XDGFILES
+}
+
+silent_background check_shadowed_files

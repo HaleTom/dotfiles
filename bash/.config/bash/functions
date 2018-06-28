@@ -16,7 +16,9 @@ function export_function {
 }
 export_function sh_is_bash sh_is_zsh
 
+#
 ######### Start non-exported functions ##########
+#
 # These are to be run interactively, not by scripts
 
 # less - highlight occurences of first argument
@@ -31,6 +33,26 @@ ord10() { printf '%d\n' "'$1"; }
 
 # diff-so-fancy
 dsf() { git diff --no-index --color "$@" | diff-so-fancy; }
+
+#
+######### End non-exported functions ##########
+#
+
+# Run the command given by "$@" in the background
+silent_background() {
+  if [[ -n $ZSH_VERSION ]]; then  # zsh:  https://superuser.com/a/1285272/365890
+    setopt local_options no_notify no_monitor
+    # We'd use &| to background and disown, but incompatible with bash, so:
+    "$@" &
+  elif [[ -n $BASH_VERSION ]]; then  # bash: https://stackoverflow.com/a/27340076/5353461
+    { 2>&3 "$@"& } 3>&2 2>-
+  else  # Unknownness - just background it
+    "$@" &
+  fi
+  disown &>-  # Close STD{OUT,ERR} to prevent whine if job has already completed
+}
+export_function silent_background
+
 
 # Change directory to the deepest existant part of a path
 function cdup {
