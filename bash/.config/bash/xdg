@@ -6,14 +6,14 @@
 # XDG - set defaults as they may not be set (eg Ubuntu 14.04 LTS)
 # See https://standards.freedesktop.org/basedir-spec/basedir-spec-latest.html
 # and https://wiki.archlinux.org/index.php/XDG_Base_Directory_support
-export XDG_CONFIG_HOME="${XDG_CONFIG_HOME:=$HOME/.config}"
-export XDG_DATA_HOME="${XDG_DATA_HOME:=$HOME/.local/share}"
-export XDG_CACHE_HOME="${XDG_CACHE_HOME:=$HOME/.cache}"
+export XDG_CONFIG_HOME=${XDG_CONFIG_HOME:=$HOME/.config}
+export XDG_DATA_HOME=${XDG_DATA_HOME:=$HOME/.local/share}
+export XDG_CACHE_HOME=${XDG_CACHE_HOME:=$HOME/.cache}
 
 # See http://pubs.opengroup.org/onlinepubs/9699919799/utilities/V3_chap02.html#tag_18_06_02 for this "+x" syntax
 # Note that quotes are needed should IFS=x and not in [[
 if [[ -z ${XDG_RUNTIME_DIR+x} ]]; then
-   if [[ ! -w ${XDG_RUNTIME_DIR:="/run/user/$UID"} ]]; then
+   if [[ ! -w ${XDG_RUNTIME_DIR:=/run/user/$UID} ]]; then
       echo "\$XDG_RUNTIME_DIR ($XDG_RUNTIME_DIR) not writable. Setting to /tmp." >&2
       XDG_RUNTIME_DIR=/tmp
    fi
@@ -78,25 +78,28 @@ unset _print_links
 
 
 # Single-line config
-export INPUTRC="$XDG_CONFIG_HOME/readline/inputrc"
-export GNUPGHOME="$XDG_CONFIG_HOME/gnupg"
-export MOST_INITFILE="$XDG_CONFIG_HOME/most/config"
-export WGETRC="$XDG_CONFIG_HOME/wgetrc"
+export INPUTRC=$XDG_CONFIG_HOME/readline/inputrc
+export GNUPGHOME=$XDG_CONFIG_HOME/gnupg
+export MOST_INITFILE=$XDG_CONFIG_HOME/most/config
+export WGETRC=$XDG_CONFIG_HOME/wgetrc
+export PARALLEL_HOME=$XDG_CONFIG_HOME/parallel
 
+#
 # Begin multi-line config
+#
 
-export LESSKEY="$XDG_CONFIG_HOME/less/keys"
-export LESSHISTFILE="$XDG_CACHE_HOME/less/history"
+export LESSKEY=$XDG_CONFIG_HOME/less/keys
+export LESSHISTFILE=$XDG_CACHE_HOME/less/history
 
 export VIMPERATOR_INIT=":source $XDG_CONFIG_HOME/vimperator/vimperatorrc"
-export VIMPERATOR_RUNTIME="$XDG_CONFIG_HOME/vimperator"
+export VIMPERATOR_RUNTIME=$XDG_CONFIG_HOME/vimperator
 
 # Node.js / nvm / npm
 # Check config with:   npm config ls -l | grep / | grep -v '^;'
 # More XDG config is inside the config file itself:
-export NODE_REPL_HISTORY="$XDG_DATA_HOME"/node_repl_history
+export NODE_REPL_HISTORY=$XDG_DATA_HOME/node_repl_history
 export NPM_CONFIG_USERCONFIG=$XDG_CONFIG_HOME/npm/npmrc
-export NVM_DIR="$XDG_DATA_HOME"/nvm
+export NVM_DIR=$XDG_DATA_HOME/nvm
 # export NPM_CONFIG_PREFIX=${XDG_DATA_HOME}/npm  # nvm removes from npmrc and complains at shell startup
 # This seems to get unset, setting in /home/ravi/.config/npm/npmrc instead:
 # export NPM_CONFIG_PREFIX=$XDG_DATA_HOME/npm
