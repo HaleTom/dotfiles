@@ -261,12 +261,12 @@ export_function double_quote
 
 
 # Get a y/n from the user, return yes=0, no=1 enter=$2
-# Prompt with $1. If set, return $2 on pressing enter
+# Prompt using $1.
+# If set, return $2 on pressing enter, useful for cancel or defualting
 function get_yes_keypress {
-  local prompt=$1
+  local prompt="${1:-Are you sure} [y/n]? "
   local enter_return=$2
   local REPLY
-  [[ ! $prompt ]] && prompt="[y/n]? "
   while REPLY=$(get_keypress "$prompt"); do
     [[ $REPLY ]] && printf '\n' # $REPLY blank if user presses enter
     case "$REPLY" in
@@ -279,9 +279,10 @@ function get_yes_keypress {
 export_function get_yes_keypress
 
 
-# http://unix.stackexchange.com/a/14444/143394
 # Prompt to confirm, defaulting to NO on <enter>
 # Usage: confirm "Dangerous. Are you sure?" && rm *
+# For a shorter non-single-key version
+# http://unix.stackexchange.com/a/14444/143394
 function confirm {
   local prompt="${*:-Are you sure} [y/N]? "
   get_yes_keypress "$prompt" 1
