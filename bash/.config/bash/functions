@@ -116,6 +116,20 @@ is_function() {
 }
 export_function is_function
 
+
+# Read a single char from /dev/tty, prompting with "$*"
+# Note: pressing enter will return a null string. Perhaps a version terminated with X and then remove it in caller?
+function get_keypress {
+  local REPLY IFS=
+  >/dev/tty printf '%s' "$*"
+  [[ $ZSH_VERSION ]] && read -rk1  # Use -u0 to read from STDIN
+  # See https://unix.stackexchange.com/q/383197/143394 regarding '\n' -> ''
+  [[ $BASH_VERSION ]] && </dev/tty read -rn1
+  printf '%s' "$REPLY"
+}
+export_function get_keypress
+
+
 function pause {
   read -n1 -rsp "Press any key to continue... " _
   printf "\n"
@@ -240,6 +254,25 @@ function double_quote {
   printf '"\n'
 }
 export_function double_quote
+
+
+# Get a y/n from the user, return yes=0, no=1 enter=$2
+# Prompt with $1. If set, return $2 on pressing enter
+function get_yes_keypress {
+  local prompt=$1
+  local enter_return=$2
+  local REPLY
+  [[ ! $prompt ]] && prompt="[y/n]? "
+  while REPLY=$(get_keypress "$prompt"); do
+    [[ $REPLY ]] && printf '\n' # $REPLY blank if user presses enter
+    case "$REPLY" in
+      Y|y)  return 0;;
+      N|n)  return 1;;
+      '')   [[ $enter_return ]] && return "$enter_return"
+    esac
+  done
+}
+export_function get_yes_keypress
 
 
 # http://unix.stackexchange.com/a/14444/143394
