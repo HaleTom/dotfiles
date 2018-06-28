@@ -4,8 +4,8 @@
 # An assortment of useful {z,ba}sh functions
 # This file is expected to be sourced, not run.
 
-function sh_is_zsh { [[ -n $ZSH_VERSION ]]; }
-function sh_is_bash { [[ -n $BASH_VERSION ]]; }
+function sh_is_zsh { [[ $ZSH_VERSION ]]; }
+function sh_is_bash { [[ $BASH_VERSION ]]; }
 
 # Allow functions to be accessed from bash sub-shells by:
 # 'export_function <func-name>'
