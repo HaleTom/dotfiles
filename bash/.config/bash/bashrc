@@ -4,13 +4,16 @@
 # #1) Determine shell. #2) Silence when trying to source a filename in a variable
 #
 # Allow shell-specific code
-function sh_is_zsh { [[ -n $ZSH_VERSION ]]; }
-function sh_is_bash { [[ -n $BASH_VERSION ]]; }
+function sh_is_zsh { [[ $ZSH_VERSION ]]; }
+function sh_is_bash { [[ $BASH_VERSION ]]; }
 
 # Enable extended globbing:
 # https://www.gnu.org/software/bash/manual/bash.html#Pattern-Matching
 # https://unix.stackexchange.com/questions/276911/is-it-dangerous-to-always-have-extglob-on
 sh_is_bash && shopt -s extglob failglob
+
+# Setup functions (required for XDG)
+source "$HOME/.config/bash/functions"
 
 # Setup $XDG* variables
 source "$HOME/.config/bash/xdg"
@@ -95,7 +98,7 @@ sh_is_zsh && export HISTFILE="$XDG_DATA_HOME"/zsh/history
 # shopt -s histverify # Show output of !! - press enter twice
 
 # Update "tmuxinator.{z,ba}sh" symlink if needed
-if { [[ -x $(which tmuxinator) && -x $(which gem) ]] 2>/dev/null; }; then
+if { [[ -x $(command -v tmuxinator) && -x $(command -v gem) ]] 2>/dev/null; }; then
   tmuxinator_source="$XDG_CONFIG_HOME/tmuxinator/tmuxinator.$(sh_is_zsh && printf zsh || printf bash)"
   # If not a regular file or symlink to one
   if [[ ! -f $tmuxinator_source ]]; then
@@ -123,7 +126,7 @@ function _source_file {
         # [ shell_is_zsh ] && echo "${(%):-%N}: Cannot source $dotfile";
         [[ -n $BASH_VERSION ]] && echo "${FUNCNAME[0]}@$LINENO: Cannot source $file";
         # This is also sourced by zsh...
-        # shellcheck disable=SC2154
+        # shellcheck disable=SC1087,SC2154  # zsh in a bash file
         [[ -n $ZSH_VERSION ]] && echo "$funcstack[1]@${(%):-%i}: Cannot source $file";
         return 1
     fi
@@ -164,7 +167,6 @@ _source_files <<DOTFILES
     # breaks zsh, needs to be before prompt
     # $HOME/.extend.bashrc
 
-    $XDG_CONFIG_HOME/bash/functions
     $tmuxinator_source
     # $HOME/.vim/bundle/gruvbox/gruvbox_256palette.sh
 
@@ -212,10 +214,11 @@ add_to_PATH () {
 # $PATH must be set after sourcing chruby
 add_to_PATH before "$HOME/bin:$XDG_DATA_HOME/miniconda3/bin:$XDG_DATA_HOME/virtualenvs/default/bin:$XDG_DATA_HOME/npm/bin:$HOME/.local/bin:$XDG_DATA_HOME/go/bin"
 
-if ruby_gems=$(ruby -e 'print Gem.user_dir')/bin; then
-    add_to_PATH before "$ruby_gems"
-fi
-add_to_PATH after /usr/lib/systemd:/usr/local/heroku/bin:$HOME/.cabal/bin
+# Handled by chruby
+# if ruby_gems=$(ruby -e 'print Gem.user_dir')/bin; then
+#     add_to_PATH before "$ruby_gems"
+# fi
+add_to_PATH after "/usr/lib/systemd:/usr/local/heroku/bin:$HOME/.cabal/bin"
 # echo $PATH | tr : "\n"; echo;
 
 sh_is_zsh && return
