@@ -119,6 +119,7 @@ export_function is_function
 
 # Read a single char from /dev/tty, prompting with "$*"
 # Note: pressing enter will return a null string. Perhaps a version terminated with X and then remove it in caller?
+# See https://unix.stackexchange.com/a/367880/143394 for dealing with multi-byte, etc.
 function get_keypress {
   local REPLY IFS=
   >/dev/tty printf '%s' "$*"
@@ -130,8 +131,9 @@ function get_keypress {
 export_function get_keypress
 
 
+# Prompt for a keypress to continue. Customise prompt with $*
 function pause {
-  >/dev/tty printf 'Press any key to continue...'
+  >/dev/tty printf '%s' "${*:-Press any key to continue... }"
   [[ $ZSH_VERSION ]] && read -krs  # Use -u0 to read from STDIN
   [[ $BASH_VERSION ]] && </dev/tty read -rsn1
   printf '\n'
