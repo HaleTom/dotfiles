@@ -284,7 +284,7 @@ export_function double_quote
 # Prompt using $1.
 # If set, return $2 on pressing enter, useful for cancel or defualting
 function get_yes_keypress {
-  local prompt="${1:-Are you sure} [y/n]? "
+  local prompt="${1:-Are you sure [y/n]? }"
   local enter_return=$2
   local REPLY
   while REPLY=$(get_keypress "$prompt"); do
