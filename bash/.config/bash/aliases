@@ -41,12 +41,6 @@ alias sc='sudo systemctl'
 
 alias scu='systemctl --user'
 
-# Completions for aliases
-# https://brbsix.github.io/2015/11/23/perform-tab-completion-for-aliases-in-bash/
-# https://unix.stackexchange.com/questions/4219/how-do-i-get-bash-completion-for-command-aliases
-# General format: complete -o bashdefault -o default -o nospace -F _git g
-[[ -n $BASH_VERSION ]] && _completion_loader systemctl; complete -o bashdefault -o default -o nospace -F _systemctl sc
-
 # Currently done as function
 # https://stackoverflow.com/a/34071958/5353461
 # alias sbin='export PATH=$(npm bin):$PATH'
@@ -101,10 +95,26 @@ alias droidsync='f(){ rsync "$@" --no-p --no-o --no-g --rsync-path="su root rsyn
 alias fatrsync='f(){ rsync "$@" --modify-window=2 --no-p --no-o --no-g;};f'
 alias rsyncmv='rsync -a --remove-source-files'
 
-# Allow completion for git aliases defined above
-# See https://github.com/cykerway/complete-alias for a generic solution
-if is_function __git_complete; then
-  __git_complete g __git_main
-  __git_complete home __git_main
-  __git_complete s _git_status
+
+
+##
+## Begin bash only
+##
+if [[ $BASH_VERSION ]]; then
+
+  alias as_bash=''  # zshrc has the zsh counterpart
+
+  # Completions for aliases
+  # https://brbsix.github.io/2015/11/23/perform-tab-completion-for-aliases-in-bash/
+  # https://unix.stackexchange.com/questions/4219/how-do-i-get-bash-completion-for-command-aliases
+  # General format: complete -o bashdefault -o default -o nospace -F _git g
+  _completion_loader systemctl; complete -o bashdefault -o default -o nospace -F _systemctl sc
+
+  # Allow completion for git aliases defined above
+  # See https://github.com/cykerway/complete-alias for a generic solution
+  if is_function __git_complete; then
+    __git_complete g __git_main
+    __git_complete home __git_main
+    __git_complete s _git_status
+  fi
 fi
