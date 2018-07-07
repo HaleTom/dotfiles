@@ -5,12 +5,16 @@
 # Issue: SC2142 occurs when parameters are used in a function #1263
 # https://github.com/koalaman/shellcheck/issues/1263
 
+
+# Alias colourify to '' if grc doesn't exist
+command -v grc > /dev/null || alias colourify=''
+
 # ls aliases
 # LS_BLOCK_SIZE = Separate thousands with ','
 # https://www.gnu.org/software/coreutils/manual/html_node/Block-size.html
 # -C = list entries by columns
 # -F, --classify = append indicator (one of */=>@|) to entries
-alias ls="ls -CF --block-size=\\'1 --color=auto --quoting-style=shell-escape"  #'"
+alias ls="colourify ls -CF --block-size=\\'1 --color=always --quoting-style=shell-escape"  #'"
 alias la='ls -A'       # Almost all - no . and ..
 alias lal='ls -la'
 alias ll='ls -l'
@@ -53,6 +57,8 @@ alias cal='cal -3' # show 3 months by default
 alias cp='cp -i --reflink=auto --sparse=always'
 alias Cp='command cp --reflink=auto --sparse=always'  # Allow overwrite
 alias cuc='cucumber'
+alias df="colourify df --block-size=\\'1K"  #'"
+alias df,='colourify df'
 alias diff='diff --color=auto'
 alias grep='GREP_COLOR="1;33;40" LANG=C grep --color=auto'
 alias home='git --git-dir=$HOME/.githome --work-tree=$HOME'
