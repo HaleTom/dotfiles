@@ -1,7 +1,7 @@
 #!/bin/bash
 # ^ For shellcheck's happiness
 
-# An assortment of useful {z,ba}sh functions
+# An assortment of useful bash functions. zsh sources this with 'emulate bash'.
 # This file is expected to be sourced, not run.
 
 function sh_is_zsh { [[ $ZSH_VERSION ]]; }
@@ -64,11 +64,11 @@ silent_background() {
     # We'd use &| to background and disown, but incompatible with bash, so:
     "$@" &
   elif [[ -n $BASH_VERSION ]]; then  # bash: https://stackoverflow.com/a/27340076/5353461
-    { 2>&3 "$@"& } 3>&2 2>-
+    { 2>&3 "$@"& } 3>&2 2>/dev/null
   else  # Unknownness - just background it
     "$@" &
   fi
-  disown &>-  # Close STD{OUT,ERR} to prevent whine if job has already completed
+  disown &>/dev/null  # /dev/null to prevent whine if job has already completed
 }
 export_function silent_background
 
@@ -142,6 +142,7 @@ export_function is_function
 function get_keypress {
   local REPLY IFS=
   >/dev/tty printf '%s' "$*"
+
   [[ $ZSH_VERSION ]] && read -rk1  # Use -u0 to read from STDIN
   # See https://unix.stackexchange.com/q/383197/143394 regarding '\n' -> ''
   [[ $BASH_VERSION ]] && </dev/tty read -rn1
