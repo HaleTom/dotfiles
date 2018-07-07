@@ -118,3 +118,63 @@ if [[ $BASH_VERSION ]]; then
     __git_complete s _git_status
   fi
 fi
+
+##
+## End bash only
+##
+
+[[ $BASH_VERSION ]] && return
+
+##
+## zsh only from here until EOF
+##
+
+[[ $ZSH_VERSION ]] && {
+  alias -g ...='../..'
+  alias -g ....='../../..'
+  alias -g .....='../../../..'
+  alias -g B='  | bust'  # Head
+  alias -g BA='|& bust'
+  alias -g C='| wc -l'
+  alias -g DN='    /dev/null'
+  alias -g DNO=' > /dev/null'
+  alias -g DNA='&> /dev/null'
+  alias -g DNE='2> /dev/null'
+  alias -g H='  | head'  # Head
+  alias -g HA='|& head'
+  alias -g G=' | grep -E'  # egrep is deprecated
+  alias -g GA='|& grep -E'
+  alias -g GE='|& grep -E' XXXXXXXX
+  alias -g L="  | less"
+  alias -g LA=" |& less"
+  alias -g LS=" | less -S"  # -S or --chop-long-lines
+  alias -g LSA="|& less -S"  # -S or --chop-long-lines
+  alias -g M='| more'
+  alias -g P='|'
+  alias -g R='| rear'
+  alias -g SU='| sort'
+  alias -g T='| tail'
+  alias -g US='| sort -u'
+  alias -g U='| uniq'
+  alias -g X='| xargs'
+
+# From zsh-lovers not yet checked
+  alias -g CA="2>&1 | cat -A"
+  alias -g D="DISPLAY=:0.0"
+  alias -g ED="export DISPLAY=:0.0"
+  alias -g ELS='|& less -S'
+  alias -g ETL='|& tail -20'
+  alias -g ET='|& tail'
+  alias -g F=' | fmt -'
+  alias -g Sk="*~(*.bz2|*.gz|*.tgz|*.zip|*.z)"
+  alias -g LL="2>&1 | less"
+  alias -g LS='| less -S'
+  alias -g MM='| most'
+  alias -g NE="2> /dev/null"
+  alias -g NS='| sort -n'
+  alias -g RNS='| sort -nr'
+  alias -g VM=/var/log/messages
+  alias -g X0G='| xargs -0 egrep'
+  alias -g X0='| xargs -0'
+  alias -g XG='| xargs egrep'
+}
