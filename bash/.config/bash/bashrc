@@ -9,7 +9,7 @@ set -o noclobber  # Use >|file to clobber
 function sh_is_zsh { [[ $ZSH_VERSION ]]; }
 function sh_is_bash { [[ $BASH_VERSION ]]; }
 
-# Setup functions (required for XDG)
+# Setup functions (required for XDG background checks)
 source "$HOME/.config/bash/functions"
 
 # Setup $XDG* variables
@@ -167,6 +167,9 @@ _source_files <<DOTFILES
 
     # Python
     /usr/bin/virtualenvwrapper_lazy.sh
+
+    # grc - Generic coloriser
+    /etc/profile.d/grc.bashrc
 
     # Must use $HOME as ~ not expanded in double quotes
 
