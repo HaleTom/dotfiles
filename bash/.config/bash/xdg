@@ -81,7 +81,10 @@ export VIMINIT='let $MYVIMRC="'"$XDG_CONFIG_HOME"'/vim/vimrc"|source $MYVIMRC'
 function check_shadowed_files {
   # Only warn that symlinks are shadowed on the odd occasion
   # Set XDG_CHECK=1 to force the check
-  ((RANDOM % 50 == 0)) || [[ $XDG_CHECK ]] && local print_links=true
+  if ((RANDOM % 50 == 0)) || [[ $XDG_CHECK ]]; then
+    echo "Running random spot check of XDG shadowed symlinks"
+    local print_links=true
+  fi
 
   # Check that only one version of files exist
   while read -r file; do # HERE doc at end
