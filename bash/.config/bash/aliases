@@ -1,16 +1,23 @@
 #!/bin/bash #for-shellcheck
-# shellcheck disable=SC2142 # Allow fancy pants aliases with positional parameters
 # This file gets sourced from .bashrc
 
+# shellcheck disable=SC2142  # Allow fancy pants aliases with positional parameters
+# Issue: SC2142 occurs when parameters are used in a function #1263
+# https://github.com/koalaman/shellcheck/issues/1263
+
 # ls aliases
+# LS_BLOCK_SIZE = Separate thousands with ','
 # https://www.gnu.org/software/coreutils/manual/html_node/Block-size.html
-alias ls="BLOCK_SIZE=\'1 ls --color=auto" #enable thousands grouping and colour
-alias l='ls -bCF'         # escape non printable || columns || decorated
-alias la='ls -CAFb'       # Almost all - no . and ..
-alias ld='ls -dlaFb */'   # no-dereference symlinks, directory entry instead of contents
-alias ll='ls -laFb'
-alias ls.='ls -dbCF .[^.]?*' # Hidden files except . and .. (currend directory only)
-alias lsd='ls -Abl | grep --color=never ^d'   # list only directories
+# -C = list entries by columns
+# -F, --classify = append indicator (one of */=>@|) to entries
+alias ls="ls -CF --block-size=\\'1 --color=auto --quoting-style=shell-escape"  #'"
+alias la='ls -A'       # Almost all - no . and ..
+alias lal='ls -la'
+alias ll='ls -l'
+alias lsd='ls -dla * --color=always | grep "^d" --color=never'   # non-hidden directories
+alias lsdd='ls -Al --color=always | grep --color=never ^d'   # directories including hidden
+alias lal='ls -la'
+alias l.='ls -d .[^.]?*' # Hidden files except . and .. (current directory only)
 
 alias -- -='cd -' # go to previous dir
 alias ..='cd ..'
@@ -22,6 +29,8 @@ alias .....='cd ../../../..'
 alias g='git'
 alias h='history'
 alias j='jobs'
+alias l='ll'  # l^J for ultimate laziness
+alias q='ls'  # mnemonic: q = query
 alias r='rake'
 alias s='git s'
 
