@@ -2,7 +2,9 @@
 # shellcheck disable=SC1090
 # Above two lines are for shellcheck's happiness:
 # #1) Determine shell. #2) Silence when trying to source a filename in a variable
-#
+
+set -o noclobber  # Use >|file to clobber
+
 # Allow shell-specific code
 function sh_is_zsh { [[ $ZSH_VERSION ]]; }
 function sh_is_bash { [[ $BASH_VERSION ]]; }
@@ -18,11 +20,12 @@ source "$HOME/.config/bash/functions"
 # Setup $XDG* variables
 source "$HOME/.config/bash/xdg"
 
-# Standard-ish programs
+# Standard-ish variables
 export BROWSER=/usr/bin/google-chrome-stable
-export EDITOR=nvim
+export EDITOR='vi -e' VISUAL=vi  # https://unix.stackexchange.com/q/4859/143394
 export MANPAGER='less -Ms +Gg' # Show line percentage in man pages
 export PAGER=less
+export QUOTING_STYLE=shell-escape  # https://www.gnu.org/software/coreutils/manual/html_node/Formatting-the-file-names.html
 
 export RUBYLIB="$HOME"/lib:"$RUBYLIB"
 export GNULIB_SRCDIR="$HOME"/repo/gnulib
@@ -167,6 +170,7 @@ function _source_files {
         esac
     done
 }
+
 
 # TODO: Change this to be an array instead. Comments and blanks allowed.
 # https://stackoverflow.com/a/12814475/5353461
