@@ -23,11 +23,11 @@ alias lsdd='ls -Al --color=always | grep --color=never ^d'   # directories inclu
 alias lal='ls -la'
 alias l.='ls -d .[^.]?*' # Hidden files except . and .. (current directory only)
 
-alias -- -='cd -' # go to previous dir
-alias ..='cd ..'
-alias ...='cd ../..'
-alias ....='cd ../../..'
-alias .....='cd ../../../..'
+alias -- -='builtin cd -' # go to previous dir
+alias ..='builtin cd ..'
+alias ...='builtin cd ../..'
+alias ....='builtin cd ../../..'
+alias .....='builtin cd ../../../..'
 
 # One letter aliases
 alias g='git'
