@@ -22,6 +22,9 @@ alias lsdd='ls -Al --color=always | grep --color=never ^d'   # directories inclu
 alias lal='ls -la'
 alias l.='ls -d .[^.]?*' # Hidden files except . and .. (current directory only)
 
+alias source='builtin source source-file source "$#" "$@"'
+alias      .='builtin source source-file .      "$#" "$@"'
+
 alias -- -='builtin cd -' # go to previous dir
 alias ..='builtin cd ..'
 alias ...='builtin cd ../..'
