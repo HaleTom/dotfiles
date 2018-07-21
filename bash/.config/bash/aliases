@@ -5,7 +5,6 @@
 # Issue: SC2142 occurs when parameters are used in a function #1263
 # https://github.com/koalaman/shellcheck/issues/1263
 
-
 # Alias colourify to '' if grc doesn't exist
 command -v grc > /dev/null || alias colourify=''
 
@@ -30,17 +29,17 @@ alias ....='builtin cd ../../..'
 alias .....='builtin cd ../../../..'
 
 # One letter aliases
-alias g='git'
+alias g='hub'
 alias h='history'
 alias j='jobs'
 alias l='ll'  # l^J for ultimate laziness
 alias q='ls'  # mnemonic: q = query
 alias r='rake'
-alias s='git s'
+alias s='hub s'
 
 # Two letters
 alias ft='faketty '  # space at end allows next word to be alias-expanded
-alias gh='git logda' # Git History
+alias gh='hub logda' # Git History
 alias jc='journalctl'
 alias sc='sudo systemctl'
 
@@ -61,7 +60,8 @@ alias df="colourify df --block-size=\\'1K"  #'"
 alias df,='colourify df'
 alias diff='diff --color=auto'
 alias grep='GREP_COLOR="1;33;40" LANG=C grep --color=auto'
-alias home='git --git-dir=$HOME/.githome --work-tree=$HOME'
+alias git='hub'
+alias home='hub --git-dir=$HOME/.githome --work-tree=$HOME'
 alias lesc='less-compressed-wrapper'
 alias mv='mv -i'
 alias Mv='command mv'  # Allow overwrite
@@ -184,7 +184,7 @@ fi
   alias -g NE="2> /dev/null"
   alias -g NS='| sort -n'
   alias -g RNS='| sort -nr'
-  alias -g VM=/var/log/messages
+  alias -g VM='/var/log/messages'
   alias -g X0G='| xargs -0 egrep'
   alias -g X0='| xargs -0'
   alias -g XG='| xargs egrep'
