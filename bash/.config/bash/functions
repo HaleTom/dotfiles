@@ -56,6 +56,24 @@ function yelp () {
 }
 export_function yelp
 
+function debug () {
+  [[ ! $DEBUG ]] && return
+  [[ $BASH_VERSION ]] && eval "${@@Q}"
+  # shellcheck disable=2154  # zsh syntax:
+  [[ $ZSH_VERSION ]] && eval "${(q)@}"
+}
+
+# Echo literally what follows, including ';', '#', etc.
+# https://www.chiark.greenend.org.uk/~sgtatham/aliases.html
+echo-literally-helper() {
+  [[ $BASH_VERSION ]] && local cmd='history 1'
+  [[ $ZSH_VERSION ]] && {  local cmd='fc -l -1'; echo Not implmented. return 1; }
+  local str; str=$(eval "$cmd")
+  str=${str#[\ ]*[0-9]*\ *echo-literally\ }  # remove leading space number space
+  echo "$str"
+}
+alias echo-literally='echo-literally-helper #'
+
 
 # Run the command given by "$@" in the background
 silent_background() {
