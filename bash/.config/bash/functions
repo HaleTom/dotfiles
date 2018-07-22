@@ -127,8 +127,11 @@ function nbin {
   fi
 }
 
+
 function man {
   local vman=${XDG_DATA_HOME-$HOME/.local/share}/vim/bundle/vim-superman/bin/vman
+  # shellcheck disable=2034
+  local EDITOR=vim  # https://github.com/jez/vim-superman/issues/19
   if [[ -t 1 && -x $vman ]]; then
     # STDOUT is a tty, $vman is executable
     for arg; do # Loop over "$@"
