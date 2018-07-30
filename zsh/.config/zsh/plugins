@@ -1,0 +1,144 @@
+#!/bin/bash
+#      ^----- get shellcheck hints based on bash
+# https://github.com/koalaman/shellcheck/issues/809
+#
+# shellcheck disable=SC1090 # sourced files with variables
+
+
+# Zplugin
+source "$XDG_DATA_HOME/zplugin/bin/zplugin.zsh"
+autoload -Uz _zplugin
+# shellcheck disable=SC2154,2034,2004
+(( ${+_comps} )) && _comps[zplugin]=_zplugin
+
+
+MODE_CURSOR_VICMD="green block"
+MODE_CURSOR_VIINS="#20d08a blinking bar"
+MODE_CURSOR_SEARCH="#ff00ff steady underline"
+# Friendly bindings for ZSH's vi mode
+# https://github.com/softmoth/zsh-vim-mode
+zplugin ice wait'0'
+zplugin light softmoth/zsh-vim-mode
+
+
+# Additional completion definitions for Zsh
+# https://github.com/zsh-users/zsh-completions
+zplugin ice wait'0' blockf # XXX what is this?
+zplugin light 'zsh-users/zsh-completions'
+
+
+# Add zsh's missing hooks, and support for user-defined hooks
+# eg zle-line-init of the Special Wigets in `man zshzle`
+# https://github.com/willghatch/zsh-hooks
+zplugin ice pick"zsh-hooks.plugin.zsh"
+zplugin light willghatch/zsh-hooks 
+
+
+# Auto-close and delete matching delimiters in zsh
+# https://github.com/hlissner/zsh-autopair
+zplugin ice wait'0'
+zplugin light hlissner/zsh-autopair
+unset 'AUTOPAIR_PAIRS[ ]'  # Make typing '[ x ]' consume the auto-inserted ']' and be compatible with Midnight Commander
+
+
+# Auto suggestions
+# https://github.com/zsh-users/zsh-autosuggestions
+zplugin ice wait'0' atload'_zsh_autosuggest_start'
+zplugin light zsh-users/zsh-autosuggestions
+ZSH_AUTOSUGGEST_STRATEGY=match_prev_cmd  # Match on previous history command also
+ZSH_AUTOSUGGEST_BUFFER_MAX_SIZE=20  # Recommended
+ZSH_AUTOSUGGEST_HIGHLIGHT_STYLE='fg=238'
+ZSH_AUTOSUGGEST_USE_ASYNC=1
+
+
+# enhancd: A next-generation cd command with an interactive filter
+# https://github.com/b4b4r07/enhancd
+zplugin ice wait'0' pick'init.sh'
+zplugin light 'b4b4r07/enhancd'
+export ENHANCD_DIR=$XDG_CONFIG_HOME/enhancd ENHANCD_DOT_SHOW_FULLPATH=1 # ENHANCD_FILTER=fzy:fzf:peco:percol
+
+
+# Reminds you to use existing aliases for commands you just typed
+# https://github.com/MichaelAquilina/zsh-you-should-use
+zplugin ice wait'0'
+zplugin light 'MichaelAquilina/zsh-you-should-use'
+
+
+# # Emoji completion on the command line
+# # https://github.com/b4b4r07/emoji-cli
+# zplugin ice wait'0'
+# zplugin light 'b4b4r07/emoji-cli'
+
+
+# Optimized and extended zsh-syntax-highlighting
+# https://github.com/zdharma/fast-syntax-highlighting
+zplugin ice wait'0'  # atinit"zpcompinit; zpcdreplay"
+zplugin light 'zdharma/fast-syntax-highlighting'
+FAST_THEME_NAME=free  # from fast-theme -l
+# fast-theme "$FAST_THEME_NAME"  # writes current_theme.zsh, don't run if not necessary
+typeset -A FAST_HIGHLIGHT_STYLES FAST_HIGHLIGHT
+# Customise colours of theme set via fast-theme  https://github.com/zdharma/fast-syntax-highlighting/issues/42
+# Available options in $XDG_CONFIG_HOME/zsh/.zplugin/plugins/zdharma---fast-syntax-highlighting/current_theme.zsh
+FAST_HIGHLIGHT[use_brackets]=1
+FAST_HIGHLIGHT_STYLES[${FAST_THEME_NAME}unknown-token]="fg=196"  # bright red
+FAST_HIGHLIGHT_STYLES[${FAST_THEME_NAME}alias]='fg=177'  # lavender
+FAST_HIGHLIGHT_STYLES[${FAST_THEME_NAME}reserved-word]='fg=214'  # orange
+FAST_HIGHLIGHT_STYLES[${FAST_THEME_NAME}suffix-alias]='fg=cyan'  # cyan
+FAST_HIGHLIGHT_STYLES[${FAST_THEME_NAME}builtin]='fg=148'  # leaf green
+FAST_HIGHLIGHT_STYLES[${FAST_THEME_NAME}function]='fg=117'  # cyan
+FAST_HIGHLIGHT_STYLES[${FAST_THEME_NAME}command]='fg=180'  # grey tinged brown
+FAST_HIGHLIGHT_STYLES[${FAST_THEME_NAME}precommand]='fg=255'  # white
+FAST_HIGHLIGHT_STYLES[${FAST_THEME_NAME}assign]='fg=219'  # pink
+# TODO:
+# : ${FAST_HIGHLIGHT_STYLES[freepath]:=fg=166}
+# : ${FAST_HIGHLIGHT_STYLES[freepath_pathseparator]:=}
+# : ${FAST_HIGHLIGHT_STYLES[freeglobbing]:=fg=112}
+# : ${FAST_HIGHLIGHT_STYLES[freehistory-expansion]:=fg=blue,bold}
+# : ${FAST_HIGHLIGHT_STYLES[freesingle-hyphen-option]:=fg=110}
+# : ${FAST_HIGHLIGHT_STYLES[freedouble-hyphen-option]:=fg=110}
+# : ${FAST_HIGHLIGHT_STYLES[freeback-quoted-argument]:=none}
+# : ${FAST_HIGHLIGHT_STYLES[freesingle-quoted-argument]:=fg=150}
+# : ${FAST_HIGHLIGHT_STYLES[freedouble-quoted-argument]:=fg=150}
+# : ${FAST_HIGHLIGHT_STYLES[freedollar-quoted-argument]:=fg=150}
+# : ${FAST_HIGHLIGHT_STYLES[freeback-or-dollar-double-quoted-argument]:=fg=110}
+# : ${FAST_HIGHLIGHT_STYLES[freeback-dollar-quoted-argument]:=fg=110}
+#
+
+return
+##
+## Null code and comments only beyond here
+##
+
+# # zsh syntax highlighting
+# # https://github.com/zsh-users/zsh-syntax-highlighting
+# # Must be at end, after any widgets, any 'zle -N', and compinit
+# zplugin light 'zsh-users/zsh-syntax-highlighting'
+# ZSH_HIGHLIGHT_HIGHLIGHTERS=(main brackets pattern regexp root)
+# typeset -A ZSH_HIGHLIGHT_STYLES
+# ZSH_HIGHLIGHT_STYLES[alias]='fg=magenta,bold'
+# ZSH_HIGHLIGHT_STYLES[arg0]='fg=blue'
+# ZSH_HIGHLIGHT_STYLES[suffix-alias]='fg=blue,underline'
+# ZSH_HIGHLIGHT_STYLES[precommand]='fg=green'
+# ZSH_HIGHLIGHT_STYLES[path]='fg=cyan'
+# ZSH_HIGHLIGHT_STYLES[root]='bg=red'
+# ZSH_HIGHLIGHT_STYLES[bracket-level-1]='fg=green,bold'
+# ZSH_HIGHLIGHT_STYLES[bracket-level-2]='fg=yellow,bold'
+# ZSH_HIGHLIGHT_STYLES[bracket-level-3]='fg=red,bold'
+# ZSH_HIGHLIGHT_STYLES[bracket-level-4]='fg=magenta,bold'
+# # These aren't working
+# ZSH_HIGHLIGHT_PATTERNS+=('foo' 'fg=white,bold,bg=red')
+# ZSH_HIGHLIGHT_REGEXP+=('\bsudo\b' 'fg=white,bold,bg=red')
+# # fg=, bg=, bold, standout, underline none, black, red, green, yellow, blue, magenta, cyan and white
+
+# For shell-check to see variables used
+# shellcheck disable=SC2128  # Arrays without indexing
+cat <<END > /dev/null
+
+$ZSH_AUTOSUGGEST_BUFFER_MAX_SIZE $ZSH_AUTOSUGGEST_USE_ASYNC
+$ZSH_AUTOSUGGEST_STRATEGY $ZSH_HIGHLIGHT_HIGHLIGHTERS $ZSH_HIGHLIGHT_STYLES
+$ZSH_HIGHLIGHT_PATTERNS $ZSH_HIGHLIGHT_REGEXP $ZSH_AUTOSUGGEST_HIGHLIGHT_STYLE
+$FAST_HIGHLIGHT_STYLES $MODE_CURSOR_VICMD $MODE_CURSOR_VIINS
+$MODE_CURSOR_SEARCH $ENHANCD_DIR $ENHANCD_FILTER $ENHANCD_DOT_SHOW_FULLPATH
+$FAST_HIGHLIGHT
+
+END

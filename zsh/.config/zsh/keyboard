@@ -1,0 +1,84 @@
+#!/bin/bash
+
+# Bind single keys from their terminfo definitions
+# From: https://gist.github.com/AbigailBuccaneer/1fcf12edf13e03e45030
+# and:  https://github.com/mattjj/my-oh-my-zsh/blob/master/keyboard.zsh
+
+# Create a zkbd compatible hash;
+# to add other keys to this hash, see: man 5 terminfo
+typeset -g -A key
+# shellcheck disable=2190,1087
+key=(
+  'Control'   '\C-'
+  'Ctl'       '\C-'
+  'Escape'    '\e'
+  'Esc'       '\e'
+  'Meta'      '\M-'
+  'F1'        "$terminfo[kf1]"
+  'F2'        "$terminfo[kf2]"
+  'F3'        "$terminfo[kf3]"
+  'F4'        "$terminfo[kf4]"
+  'F5'        "$terminfo[kf5]"
+  'F6'        "$terminfo[kf6]"
+  'F7'        "$terminfo[kf7]"
+  'F8'        "$terminfo[kf8]"
+  'F9'        "$terminfo[kf9]"
+  'F10'       "$terminfo[kf10]"
+  'F11'       "$terminfo[kf11]"
+  'F12'       "$terminfo[kf12]"
+  'Backspace' "$terminfo[kbs]"
+  'Insert'    "$terminfo[kich1]"
+  'Home'      "$terminfo[khome]"
+  'PageUp'    "$terminfo[kpp]"
+  'Delete'    "$terminfo[kdch1]"
+  'End'       "$terminfo[kend]"
+  'PageDown'  "$terminfo[knp]"
+  'Up'        "$terminfo[kcuu1]"
+  'Left'      "$terminfo[kcub1]"
+  'Down'      "$terminfo[kcud1]"
+  'Right'     "$terminfo[kcuf1]"
+  'BackTab'   "$terminfo[kcbt]"
+)
+
+# Cycle through history based on characters already typed on the line
+# https://unix.stackexchange.com/a/285151/143394
+autoload -U up-line-or-beginning-search
+autoload -U down-line-or-beginning-search
+zle -N up-line-or-beginning-search
+zle -N down-line-or-beginning-search
+
+# Setup key accordingly
+[[ -n "${key[Home]}"    ]]  && bindkey  "${key[Home]}"    beginning-of-line
+[[ -n "${key[End]}"     ]]  && bindkey  "${key[End]}"     end-of-line
+[[ -n "${key[Insert]}"  ]]  && bindkey  "${key[Insert]}"  overwrite-mode
+[[ -n "${key[Delete]}"  ]]  && bindkey  "${key[Delete]}"  delete-char
+[[ -n "${key[Up]}"      ]]  && bindkey  "${key[Up]}"      up-line-or-beginning-search
+[[ -n "${key[Down]}"    ]]  && bindkey  "${key[Down]}"    down-line-or-beginning-search
+[[ -n "${key[Left]}"    ]]  && bindkey  "${key[Left]}"    backward-char
+[[ -n "${key[Right]}"   ]]  && bindkey  "${key[Right]}"   forward-char
+
+# Make sure the terminal is in application mode, when zle is active. Only then
+# are the values from $terminfo valid.
+
+# https://stackoverflow.com/a/29408977/5353461
+# http://invisible-island.net/xterm/xterm.faq.html#xterm_arrows
+# https://github.com/fish-shell/fish-shell/issues/2139#issuecomment-117548585
+
+# Linux consoles don't have capability 'smkx'
+# shellcheck disable=2154
+if ! [[ ${terminfo[smkx]} && ${terminfo[rmkx]} ]]; then
+    return
+fi
+
+# keypad_xmit / application / transmit mode
+function zle-keypad-xmit () {
+    echoti smkx
+}
+
+# keypad_local / normal / raw / non-transmit mode
+function zle-keypad-local () {
+    echoti rmkx
+}
+
+hooks-add-hook zle_line_init_hook   zle-keypad-xmit
+hooks-add-hook zle_line_finish_hook zle-keypad-local

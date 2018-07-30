@@ -1,0 +1,99 @@
+#!/bin/bash
+#      ^----- get shellcheck hints based on bash
+# https://github.com/koalaman/shellcheck/issues/809
+
+# shellcheck disable=SC1090 # sourced files with variables
+# shut up shellcheck use before assign
+
+# Setup $keys array and bind sensible things to special keys
+source "${${(%):-%x}:h}/keyboard"  # file in the same directory as this one
+
+# TODO: add more from: 
+# https://github.com/robbyrussell/oh-my-zsh/blob/master/lib/key-bindings.zsh
+
+# The time the shell waits, in hundredths of seconds, for another key to be pressed when reading bound multi-character sequences.
+KEYTIMEOUT=10
+#
+# Have word movement commands stop at a '/'
+WORDCHARS=$WORDCHARS:s:/:
+
+bindkey ' ' magic-space  # Perform history expansion
+
+bindkey jk vi-cmd-mode
+bindkey kj vi-cmd-mode
+
+bindkey '\C-p' history-beginning-search-backward
+bindkey '\C-n' history-beginning-search-forward
+
+
+## Cycle through history based on characters already typed on the line
+## https://unix.stackexchange.com/a/285151/143394
+# autoload -U up-line-or-beginning-search
+# autoload -U down-line-or-beginning-search
+# zle -N up-line-or-beginning-search
+# zle -N down-line-or-beginning-search
+# bindkey "$terminfo[kcuu1]" up-line-or-beginning-search
+# bindkey "$terminfo[kcud1]" down-line-or-beginning-search
+
+autoload -Uz select-word-style
+select-word-style shell # Eg with ^W  # XXX Test me
+
+bindkey -v # Selects keymap `viins' for any operations by the current command. Also link `viins' to `main' so that it is selected by default
+
+# Why aren't these working?
+bindkey -a '^_' undo
+bindkey -a '^Y' redo
+bindkey -a '^Q' push-input  # https://stackoverflow.com/a/11690592/5353461
+
+# Tested OK below here
+bindkey -a '^K' kill-line
+bindkey -a '\e.' insert-last-word  # Insert $! repeating back through history
+bindkey -a '^[[3~' delete-char # Del key works as expected
+bindkey -a '^[[1;5C' forward-word
+bindkey -a '^[[1;5D' backward-word
+
+# Better searching in command mode
+bindkey -M vicmd '?' history-incremental-search-backward
+bindkey -M vicmd '/' history-incremental-search-forward
+
+# Beginning search with arrow keys
+bindkey "^[OA" up-line-or-beginning-search
+bindkey "^[OB" down-line-or-beginning-search
+bindkey -M vicmd "k" up-line-or-beginning-search
+bindkey -M vicmd "j" down-line-or-beginning-search
+
+
+#   bindkey from man zshzle:
+#   -m    Add the built-in set of meta-key bindings to the selected
+#         keymap.  Only keys that are unbound or bound to self-insert
+#         are affected.
+
+
+# Expand aliases
+# https://unix.stackexchange.com/a/150737/143394
+expand-aliases() {
+  unset 'functions[_expand-aliases]'
+  # shellcheck disable=SC2154  # Use of _expand and aliases
+  functions[_expand-aliases]=$BUFFER
+  (($+functions[_expand-aliases])) &&
+    BUFFER=${functions[_expand-aliases]#$'\t'} &&
+    CURSOR=$#BUFFER
+}
+
+zle -N expand-aliases
+bindkey '\e^E' expand-aliases
+
+return
+##
+## Null code and comments only beyond here
+##
+
+# For shell-check to see variables used
+# shellcheck disable=SC2128  # Arrays without indexing
+cat <<END > /dev/null 
+
+$KEYTIMEOUT $CURSOR
+
+END
+
+
