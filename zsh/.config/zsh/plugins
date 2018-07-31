@@ -64,19 +64,23 @@ zplugin ice wait'0'
 zplugin light 'MichaelAquilina/zsh-you-should-use'
 
 
+# # Find a emoji.json and setup a key to trigger the search as ^s doesn't seem to work
+# # https://github.com/b4b4r07/emoji-cli/issues/15
 # # Emoji completion on the command line
 # # https://github.com/b4b4r07/emoji-cli
 # zplugin ice wait'0'
 # zplugin light 'b4b4r07/emoji-cli'
 
-
 # Optimized and extended zsh-syntax-highlighting
 # https://github.com/zdharma/fast-syntax-highlighting
 zplugin ice wait'0'  # atinit"zpcompinit; zpcdreplay"
 zplugin light 'zdharma/fast-syntax-highlighting'
-FAST_THEME_NAME=free  # from fast-theme -l
-# fast-theme "$FAST_THEME_NAME"  # writes current_theme.zsh, don't run if not necessary
-typeset -A FAST_HIGHLIGHT_STYLES FAST_HIGHLIGHT
+FAST_THEME_NAME=free  # from fast-theme -l. -t to test
+if [[ ! -r ${ZPLGM[PLUGINS_DIR]}/zdharma---fast-syntax-highlighting/current_theme.zsh ]]; then
+  # Writes out current_theme.zsh, don't run if not necessary
+  fast-theme "$FAST_THEME_NAME"
+fi
+typeset -gA FAST_HIGHLIGHT_STYLES FAST_HIGHLIGHT
 # Customise colours of theme set via fast-theme  https://github.com/zdharma/fast-syntax-highlighting/issues/42
 # Available options in $XDG_CONFIG_HOME/zsh/.zplugin/plugins/zdharma---fast-syntax-highlighting/current_theme.zsh
 FAST_HIGHLIGHT[use_brackets]=1
@@ -102,7 +106,7 @@ FAST_HIGHLIGHT_STYLES[${FAST_THEME_NAME}assign]='fg=219'  # pink
 # : ${FAST_HIGHLIGHT_STYLES[freedollar-quoted-argument]:=fg=150}
 # : ${FAST_HIGHLIGHT_STYLES[freeback-or-dollar-double-quoted-argument]:=fg=110}
 # : ${FAST_HIGHLIGHT_STYLES[freeback-dollar-quoted-argument]:=fg=110}
-#
+
 
 return
 ##
