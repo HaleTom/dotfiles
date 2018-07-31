@@ -130,13 +130,16 @@ fi
 # Source files given as arguments
 # shellcheck disable=SC1087,SC2154  # zsh in a bash file
 function _source_file {
-    file=$1
-    if [[ -f $file ]]; then
-        source "$file"
-    else
-        yelp "Cannot source $file" >&2
-        return 1
-    fi
+  # zsh global aliases can cause syntax errors
+  [[ $ZSH_VERSION ]] && setopt local_options no_aliases
+
+  file=$1
+  if [[ -f $file ]]; then
+      source "$file"
+  else
+      yelp "Cannot source $file" >&2
+      return 1
+  fi
 }
 
 # Source .dotfiles listed on STDIN (one per line)
