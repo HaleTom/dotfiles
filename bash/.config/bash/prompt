@@ -9,12 +9,17 @@
 # https://github.com/mathiasbynens/dotfiles
 # Or see https://github.com/magicmonty/bash-git-prompt (not used here)
 
+# Bash:
+# trap fn DEBUG        # calls fn before each command
+# PROMPT_COMMAND=fn    # calls the function after each command (generate next prompt)
+# Note: that the function defined in PROMPT_COMMAND is run before each prompt, even empty ones.
+
 # set variable identifying the chroot you work in (used in the prompt below)
-if [ -z "${debian_chroot:-}" ] && [ -r /etc/debian_chroot ]; then
+if [[ -z "${debian_chroot:-}" && -r /etc/debian_chroot ]]; then
   debian_chroot=$(cat /etc/debian_chroot)
 fi
 
-# Select git info displayed, see /usr/lib/git-core/git-sh-prompt for more
+# Select git info displayed, see /usr/share/git/git-prompt.sh for more
 export GIT_PS1_SHOWDIRTYSTATE=1           # '*'=unstaged, '+'=staged
 export GIT_PS1_SHOWSTASHSTATE=1           # '$'=stashed
 export GIT_PS1_SHOWUNTRACKEDFILES=1       # '%'=untracked
@@ -25,6 +30,71 @@ export GIT_PS1_DESCRIBE_STYLE="describe"  # detached HEAD style:
 #  contains      relative to newer annotated tag (v1.6.3.2~35)
 #  branch        relative to newer tag or branch (master~4)
 #  default       exactly eatching tag
+
+
+#
+# Git status string
+#
+_git_status_gen() {
+
+  _git_status=''  # Global variable
+
+  if [[ $BASH_VERSION ]]; then
+    # Save current state of user shopt settings promptvars and extglob
+    local user_shopt
+    user_shopt=$(shopt -p promptvars extglob)
+
+    # __git_ps1 usually returns literal text "${__git_ps1_branch_name}" rather
+    # than the contained branch name, eg "master". This prevents calculating
+    # the length of the printable characers in the RHS string (used to move the
+    # cursor that many columns left from the terminal's right edge.) However if
+    # "shopt promptvars" is unset, __git_ps1 it will include the dereferenced
+    # branch name instead.
+    shopt -qu promptvars
+    # extglob is required for the ${variable//@(pattern)/} replacements
+    shopt -qs extglob
+  fi
+
+  # zsh: If $_git_status contains ${__git_ps1_branch_name} it will not be
+  # recursively expanded. Force literal text to be produced by __git_ps1.
+  [[ $ZSH_VERSION ]] && setopt local_options no_prompt_subst
+  # if [[ $ZSH_VERSION && -o prompt_subst ]]; then
+  #    setopt local_options no_prompt_subst
+     # local prompt_vars=1;  # Flag to restore later
+     # set +o prompt_subst;
+  # fi
+
+  # Allow disabling git status. Avoid error if __git_ps1 undefined.
+  # $__git_printf_supports_v is set if git-prompt.sh is sourced
+  if [[ ! -v _disable_git_string && -v __git_printf_supports_v ]]; then
+  # if [[ ! -v _disable_git_string && $(type -t __git_ps1 2>/dev/null) == function ]]; then
+    # __git_ps1 will only generate colour commands inside $PS1
+    local PS1  # __git_ps1 will overwrite it
+    __git_ps1 "" "" "%s" # force colour; no default round bracket (decorations)
+    _git_status="${PS1:+ $PS1}"  # Add leading space if not null to separate from rest of prompt
+
+    if [[ $BASH_VERSION && $1 == RHS ]]; then
+      # We're generating for a RHS prompt. Work-around is needed for bash only.
+      # Strip "\[" and "\[": non-printable character markers. __git_ps1 outputs
+      # them however the whole of the RHS prompt needs to be included in these
+      # markers, and they can't be nested.
+      _git_status=${_git_status//@(\\@(\[|\]))/}
+    fi
+  fi
+
+  # Restore saved shell options
+  if [[ $BASH_VERSION ]]; then
+    eval "$user_shopt"  # Restore saved shell options
+  # else  # zsh
+  #   [[ -v prompt_vars ]] && set -o prompt_subst
+  fi
+}
+
+
+##
+## End zsh-only functions
+##
+[[ $BASH_VERSION ]] && return
 
 
 # Check if we support colours
