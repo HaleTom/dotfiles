@@ -64,16 +64,21 @@ function debug () {
   [[ $ZSH_VERSION ]] && eval "${(q)@}"
 }
 
+
 # Echo literally what follows, including ';', '#', etc.
-# https://www.chiark.greenend.org.uk/~sgtatham/aliases.html
-echo-literally-helper() {
-  [[ $BASH_VERSION ]] && local cmd='history 1'
-  [[ $ZSH_VERSION ]] && {  local cmd='fc -l -1'; echo Not implmented. return 1; }
-  local str; str=$(eval "$cmd")
-  str=${str#[\ ]*[0-9]*\ *echo-literally\ }  # remove leading space number space
-  echo "$str"
+# https://unix.stackexchange.com/q/456508/143394
+echo_literally_helper() {
+  local str
+  if [[ $BASH_VERSION ]]; then
+    str=$(history 1)
+    echo "${str#[\ ]*[0-9]*\ \ echo-literally\ }"  # rm leading space, number, alias
+  else  # zsh
+    # shellcheck disable=2154  # history variable not assigned
+    str=${history[$(print -P %h)]}
+    echo "${str#*echo_literally\ }"
+  fi
 }
-alias echo-literally='echo-literally-helper #'
+alias echo_literally='echo_literally_helper #'
 
 
 # Run the command given by "$@" in the background
