@@ -11,7 +11,7 @@ function sh_is_bash { [[ $BASH_VERSION ]]; }
 # 'export_function <func-name>'
 function export_function {
   # shellcheck disable=SC2163
-  sh_is_bash && export -f "$@"
+  if sh_is_bash; then export -f "$@"; fi
   # zsh can't export functions: https://stackoverflow.com/a/1896039/5353461
 }
 export_function sh_is_bash sh_is_zsh
@@ -41,6 +41,7 @@ dsf() { git diff --no-index --color "$@" | diff-so-fancy; }
 # Say the file, line number and optional message for debugging
 # Inspired by bash's `caller` builtin
 # Thanks to https://unix.stackexchange.com/a/453153/143394
+# shellcheck disable=2120  # Use of global $*
 function yelp () {
   # shellcheck disable=SC2154  # undeclared zsh variables in bash
   if [[ $BASH_VERSION ]]; then
@@ -52,7 +53,7 @@ function yelp () {
     local func=${funcstack[2]}
     [[ $func =~ / ]] && func=source  # $func may be filename. Use bash behaviour
   fi
-  echo "${file##*/}:$func:$line $*" > /dev/tty
+  echo "${file##*/}:$func:$line $*" >&2
 }
 export_function yelp
 
@@ -282,7 +283,7 @@ function quote_args {
     case $# in 0) break; esac
     printf "' "
   done
-  printf "'\n"
+  printf "'\\n"
 }
 export_function quote_args
 
