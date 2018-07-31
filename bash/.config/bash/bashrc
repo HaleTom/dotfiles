@@ -84,6 +84,8 @@ export WORKON_HOME=$XDG_DATA_HOME/virtualenvs
 export VIRTUALENVWRAPPER_PYTHON=$WORKON_HOME/default/bin/python
 export PROJECT_HOME=$HOME/prj # Used by mkproject
 
+export GITHUB_USER=HaleTom
+
 # Easier to read colours on Linux TTYs
 # https://raw.githubusercontent.com/xero/dotfiles/master/zsh/.zsh/sourcerer.zsh
 if [[ $TERM = linux ]]; then
