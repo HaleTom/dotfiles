@@ -25,6 +25,7 @@ alias l.='ls -d .[^.]?*' # Hidden files except . and .. (current directory only)
 alias source='builtin source source-file source "$#" "$@"'
 alias      .='builtin source source-file .      "$#" "$@"'
 
+alias cdh='cd $HOME'  # for enhancd https://github.com/b4b4r07/enhancd/issues/72
 alias -- -='builtin cd -' # go to previous dir
 alias ..='builtin cd ..'
 alias ...='builtin cd ../..'
@@ -158,7 +159,7 @@ fi
   alias -g HA='|& head'
   alias -g G=' | grep -E'  # egrep is deprecated
   alias -g GA='|& grep -E'
-  alias -g GE='|& grep -E' XXXXXXXX
+  alias -g GI=' | grep -Ei'
   alias -g L="  | less"
   alias -g LA=" |& less"
   alias -g LS=" | less -S"  # -S or --chop-long-lines
@@ -166,9 +167,9 @@ fi
   alias -g M='| more'
   alias -g P='|'
   alias -g R='| rear'
-  alias -g SU='| sort'
+  alias -g S=' | sort'
+  alias -g SU='| sort -u'
   alias -g T='| tail'
-  alias -g US='| sort -u'
   alias -g U='| uniq'
   alias -g X='| xargs'
 
