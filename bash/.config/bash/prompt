@@ -82,66 +82,79 @@ _git_status_gen() {
 }
 
 
-##
-## End zsh-only functions
-##
-[[ $BASH_VERSION ]] && return
+# Allow user to set a simple prompt for capturing sample output
+# by setting variable $ps1 (not $PS1)
+_simple_prompt() {
+  if [[ $BASH_VERSION && -z $_restore_mode_in_prompt ]]; then
+    # First time generating a simple prompt
+    # Determine whether to restore readline show-mode-in-prompt
+    if bind -v | grep "show-mode-in-prompt on" &>/dev/null; then
+      _restore_mode_in_prompt=1
+    else
+      _restore_mode_in_prompt=0
+    fi
+  fi
 
-
-# Check if we support colours
-_colour_enabled() {
-  local -i colors
-  colors=$(tput colors 2>/dev/null)
-  [[ $? ]] && [[ $colors -gt 2 ]]
-}
-
-# Commands inside the git prompt make sshfs prompts slooooow.
-# By filesystem:  https://unix.stackexchange.com/questions/72223/check-if-folder-is-a-mounted-remote-filesystem
-_possibly_disable_git_prompt() {
-  # echo "Running possibly_disable_git_prompt()"
-  unset -v _disable_git_prompt # default git section of prompt emabled
-  case $PWD in # ;& is fall-through
-    /ssh/*) ;&
-    # /other/directory*) ;&
-    disable) # Won't match itself as all paths start with /   #' < Syntastic bug
-      # echo "Set _disable_git_prompt=true"
-      _disable_git_prompt=true # existance matters, value is irrelevant
+  case $ps1 in
+    [Xx]) # Cancel simple prompt behaviour
+      [[ $_restore_mode_in_prompt -eq 1 && $BASH_VERSION ]] && bind "set show-mode-in-prompt on"
+      unset -v ps1 unset _restore_mode_in_prompt
+      [[ $BASH_VERSION ]] && _prompt_bash_set # Print the full prompt
+      [[ $ZSH_VERSION ]]  && _prompt_update_zsh
+      ;; # Don't fall through 'here
+    "") # Set default simple prompt allowing for user laziness of `ps1=`
+      [[ $BASH_VERSION ]] && ps1='\$ '
+      [[ $ZSH_VERSION ]]  && ps1='%% '
+      ;& # Fall through...
+    *) # User has set explicit prompt string
+      [[ $BASH_VERSION ]] && bind "set show-mode-in-prompt off"
+      PS1=${ps1} ;;
   esac
 }
 
-# Commands to run after changing directory
-_cd_hook () {
-  # echo "Running _cd_hook()"
-  if [ "$PWD" == "${_last_cmd_pwd-}" ]; then
-    return;
-  else # directory was changed
-    _last_cmd_pwd=$PWD;
-    printf "\e]1;%s\a" "$PWD" # set $PWD as tab title
-    _possibly_disable_git_prompt
-  fi
+
+# Commands inside the git prompt make sshfs prompts slooooow.
+# By filesystem:  https://unix.stackexchange.com/questions/72223/check-if-folder-is-a-mounted-remote-filesystem
+_maybe_disable_git_string() {
+  # echo "Running possibly_disable_git_string()"
+  unset -v _disable_git_string # default git section of prompt emabled
+  case $PWD in  # ;& is fall-through
+    /ssh/*) ;&
+    # /other/directory*) ;&
+    disable) # Won't match itself as all paths start with /   #' < Syntastic bug
+      # echo "Set _disable_git_string=true"
+      _disable_git_string=true # existance matters, value is irrelevant
+  esac
 }
 
-_debug() {
-  echo "Stack: ${FUNCNAME[*]:1}"
-  echo "Command: $BASH_COMMAND"
+# Things to do if working directory has changed
+_cd_hook() {
+  # printf '\e]1;%s\a' "$PWD" # set $PWD as tab title  # XXX doesn't seem to be working
+  _maybe_disable_git_string
+  # Change slash colour in prompt directory
+  if [[ $ZSH_VERSION ]]; then _prompt_update_zsh; fi
 }
+
 
 # Functions to get the time since last prompt
 _timer_now() {
   # See https://github.com/jichu4n/bash-command-timer/blob/master/bash_command_timer.sh#L77
   # for a OSX compatible way to do this
   date +%s%N
+  # TODO zsh without subprocess: https://unix.stackexchange.com/a/204807/143394
 }
 
-_timer_start() {
+
+_prompt_timer_start() {
   # Do nothing if timer already started
-  _timer_start=${_timer_start:-$(_timer_now)}
+  _prompt_timer_start=${_prompt_timer_start:-$(_timer_now)}
 }
 
-_timer_stop() {
+
+_prompt_timer_stop() {
   # Taken from: http://stackoverflow.com/a/34812608/5353461
   # See also: http://jakemccrary.com/blog/2015/05/03/put-the-last-commands-run-time-in-your-bash-prompt/
-  local delta_us=$((($(_timer_now) - _timer_start) / 1000))
+  local delta_us=$((($(_timer_now) - _prompt_timer_start) / 1000))
   local us=$((delta_us % 1000))
   local ms=$(((delta_us / 1000) % 1000))
   local s=$(((delta_us / 1000000) % 60))
@@ -158,8 +171,34 @@ _timer_stop() {
   else _timer_show=${us}us
   fi
   # _timer_show+=" ($delta_us)" # Debug
-  unset -v _timer_start
+  unset -v _prompt_timer_start
 }
+
+
+##
+## End zsh-only functions
+##
+[[ $ZSH_VERSION ]] && return
+
+
+# Check if we support colours
+_colour_enabled() {
+  local -i colors
+  colors=$(tput colors 2>/dev/null)  # TODO cache this
+  [[ $? && $colors -gt 2 ]]
+}
+
+# Has directory changed?
+_cd_hook_bash() {
+  # echo "Running _cd_hook()"
+  if [ "$PWD" == "${_last_cmd_pwd-}" ]; then
+    return;
+  else # directory was changed
+    _last_cmd_pwd=$PWD;
+    _cd_hook
+  fi
+}
+
 
 # Run before every command (via DEBUG trap)
 _pre_command() {
@@ -170,96 +209,29 @@ _pre_command() {
   #   :
   # fi
 
-  _timer_start
+  _prompt_timer_start
 }
 trap '_pre_command' DEBUG
-
-# Allow user to set a simple prompt for capturing sample output
-# by setting variable $ps1 (not $PS1)
-_simple_prompt() {
-  if [[ -z $_restore_mode_in_prompt ]]; then
-    # First time generating a simple prompt
-    # Determine whether to restore readline show-mode-in-prompt
-    if bind -v | grep "show-mode-in-prompt on" &>/dev/null; then
-      _restore_mode_in_prompt=1
-    else
-      _restore_mode_in_prompt=0
-    fi
-  fi
-
-  case $ps1 in
-    [Xx]) # Cancel simple prompt behaviour
-      [[ $_restore_mode_in_prompt -eq 1 ]] && bind "set show-mode-in-prompt on"
-      unset -v ps1 unset _restore_mode_in_prompt
-      _set_bash_prompt # Print the full prompt
-      ;; # Don't fall through 'here
-    "") # Set default simple prompt allowing for user laziness
-      ps1='\$ '
-      ;& # Fall through...
-    *) # User has set explicit prompt string
-      bind "set show-mode-in-prompt off"
-      PS1=${ps1} ;;
-  esac
-}
-
-#
-# Git status string
-#
-git_status() {
-  # Save current state of user shopt settings promptvars and extglob
-  local user_shopt git_status
-  user_shopt=$(shopt -p promptvars extglob)
-  # __git_ps1 usually returns literal text "${__git_ps1_branch_name}" rather
-  # than the contained branch name, eg "master". This prevents calculating
-  # the length of the printable characers in the RHS string (used to move the
-  # cursor that many columns left from the terminal's right edge.) However if
-  # "shopt promptvars" is unset, __git_ps1 it will include the dereferenced
-  # branch name instead.
-  shopt -qu promptvars
-  # extglob is required for the ${variable//@(pattern)/} replacements
-  shopt -qs extglob
-
-  # Allow disabling git status and no error if __git_ps1 undefined
-  if [[ ! -v _disable_git_prompt && $(type -t __git_ps1 2>/dev/null) == function ]]; then
-    # __git_ps1 will only make pretty colours inside $PS1
-    local old_PS1=$PS1
-    __git_ps1 "" "" "%s" # force colour; no default round bracket (decorations)
-    git_status=$PS1
-
-    if [[ $1 == RHS ]]; then
-      # We're generating for a RHS prompt. Work-around is needed for bash only.
-      # Strip "\[" and "\[": non-printable character markers. __git_ps1 outputs
-      # them however the whole of the RHS prompt needs to be included in these
-      # markers, and they can't be nested.
-      git_status=${git_status//@(\\@(\[|\]))/}
-    fi
-    PS1=$old_PS1
-  fi
-
-  # Restore shell options
-  eval "$user_shopt"
-  printf "%s" "$git_status"
-}
 
 
 # Sets prompt like:
 # ravi@boxy:~/prj/sample_app master*% u= [exit]$        (venv=name) 4.595ms | Apr 30 22:27
-_set_bash_prompt() {
+_prompt_bash_set() {
   local exit="$?" # Save the exit status of the last command
 
   # Allow user to set $ps1_debug to have "set -xe" continue through the prompt
   # shellcheck disable=SC2154
   if [[ ! -v ps1_debug ]]; then
     local -- - # Make shell options local to this function, restore on completion
-    set +ex    # Don''t debug or die in setting the prompt!
+    set +ex    # Don\'t debug or die in setting the prompt!
   fi
-   _timer_stop
+  _prompt_timer_stop
 
   # Allow for a simple prompt for copy / paste examples
   [[ -v ps1 ]] && { _simple_prompt; return 0; }
 
   # Have we changed directory?
-  _cd_hook
+  _cd_hook_bash
 
   # Disable unused variables check for unused colours
   # shellcheck disable=SC2034
@@ -288,19 +260,19 @@ _set_bash_prompt() {
 
   # No username and bright colour if root
   if [[ ${EUID} = 0 ]]; then
-    lhs+="$BRed\h "
+    lhs+="$BRed\\h "
   else
-    lhs+="$BWhi\u$None@$BBlu\h$None:"
+    lhs+="$BWhi\\u$None@$BBlu\\h$None:"
   fi
 
   # Working directory
-  lhs+="$BCya\w$None"
+  lhs+="$BCya\\w$None"
 
   # Git status
-  local git
-  git=$(git_status LHS) # Generate git status for a LHS prompt string
+  _git_status_gen LHS  # Generate git status for a LHS prompt string
   # Bright before the $git part has the branch name go bold, which is a nice "feature"
-  [[ -n $git ]] && lhs+=" ${BWhi}${git}${BWhi}"
+  [[ -n $_git_status ]] && lhs+="${BWhi}${_git_status}${BWhi}"
+  # TODO only create the prompt once per directory change, and include expand $_git_status via shell options
 
   # Highlight non-standard exit codes
   if [[ $exit != 0 ]]; then
@@ -324,12 +296,12 @@ _set_bash_prompt() {
   printf -v date_time "%(%e %b %H:%M)T" -1 # -1 is current time
 
   # Format the RHS prompt
-  # [[ -n $git ]] && rhs="$git | " #"
-  rhs+="${_timer_show} | \e[0;0;36m${date_time}"
+  # [[ -n $git_status ]] && rhs="$git_status | " #"
+  rhs+="${_timer_show} | \\e[0;0;36m${date_time}"
 
   # Prepend python virtualenv if applicable
   local virtualenv
-  virtualenv=$(basename "$VIRTUAL_ENV")
+  virtualenv=$(basename "$VIRTUAL_ENV")  ## XXX use substitution
   [[ -n  $virtualenv ]] && rhs="(venv=${virtualenv}) $rhs"
 
   # Strip ANSI CSI commands (eg colours) to enble counting the length of
@@ -360,9 +332,7 @@ _set_bash_prompt() {
   # Edge case todo: Don't print more RHS characters than will fit on one line:
   # http://stackoverflow.com/a/43744552/5353461
 
-  # TODO: Strip \[ and \] from git prompt or add to other parts - causing weirdness when git part shown and command is long.
-
-  PS1="\[\e[0m${Save}\e[$((COLUMNS - ${#rhs_printable}))G${rhs}${Restore}\]${lhs}"
+  PS1='\[\e[0m'${Save}'\e['$((COLUMNS - ${#rhs_printable}))G${rhs}${Restore}'\]'${lhs}
   # If $COLUMNS happens to be unset (some cygwin, OSX)
   # PS1="${lhs}${Blu}\[${Save}\e[$(($(tput cols) - ${#rhs_printable}))G${rhs}${Restore}\]${PS1}"
 
