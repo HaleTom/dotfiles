@@ -58,20 +58,15 @@ _git_status_gen() {
   # zsh: If $_git_status contains ${__git_ps1_branch_name} it will not be
   # recursively expanded. Force literal text to be produced by __git_ps1.
   [[ $ZSH_VERSION ]] && setopt local_options no_prompt_subst
-  # if [[ $ZSH_VERSION && -o prompt_subst ]]; then
-  #    setopt local_options no_prompt_subst
-     # local prompt_vars=1;  # Flag to restore later
-     # set +o prompt_subst;
-  # fi
 
   # Allow disabling git status. Avoid error if __git_ps1 undefined.
   # $__git_printf_supports_v is set if git-prompt.sh is sourced
   if [[ ! -v _disable_git_string && -v __git_printf_supports_v ]]; then
-  # if [[ ! -v _disable_git_string && $(type -t __git_ps1 2>/dev/null) == function ]]; then
     # __git_ps1 will only generate colour commands inside $PS1
     local PS1  # __git_ps1 will overwrite it
     __git_ps1 "" "" "%s" # force colour; no default round bracket (decorations)
-    _git_status="${PS1:+ $PS1}"  # Add leading space if not null to separate from rest of prompt
+    _git_status=$PS1
+    [[ ! $_git_status = '' ]] && _git_status=" (${_git_status})"
 
     if [[ $BASH_VERSION && $1 == RHS ]]; then
       # We're generating for a RHS prompt. Work-around is needed for bash only.
@@ -82,12 +77,8 @@ _git_status_gen() {
     fi
   fi
 
-  # Restore saved shell options
-  if [[ $BASH_VERSION ]]; then
-    eval "$user_shopt"  # Restore saved shell options
-  # else  # zsh
-  #   [[ -v prompt_vars ]] && set -o prompt_subst
-  fi
+  # Restore saved shell options. Zsh sets them local only
+  if [[ $BASH_VERSION ]]; then eval "$user_shopt"; fi
 }
 
 
