@@ -404,16 +404,16 @@ ansi_colours() {
         local fgc bgc vals seq0
 
         # shellcheck disable=SC2016
-        printf "Color escapes are %s\n" '\e[${value};...;${value}m'
-        printf "Values 30..37 are \e[33mforeground colors\e[m\n"
-        printf "Values 40..47 are \e[43mbackground colors\e[m\n"
-        printf "Value  1 gives a  \e[1mbold-faced look\e[m\n"
+        printf 'Color escapes are %s\n' '\e[${value};...;${value}m'
+        printf 'Values 30..37 are \e[33mforeground colors\e[m\n'
+        printf 'Values 40..47 are \e[43mbackground colors\e[m\n'
+        printf 'Value  1 gives a  \e[1mbold-faced look\e[m\n'
         printf '%s\n\n' 'printf "\e[m" resets'
 
         # foreground colors
-        for fgc in {30..37}; do
+        for fgc in $(seq 30 37); do
                 # background colors
-                for bgc in {40..47}; do
+                for bgc in $(seq 40 47); do
                         fgc=${fgc#37} # white
                         bgc=${bgc#40} # black
 
@@ -422,8 +422,8 @@ ansi_colours() {
 
                         seq0="${vals:+\e[${vals}m}"
                         printf "  %-9s" "${seq0:-(default)}"
-                        printf " %sTEXT\e[m" "$seq0"
-                        printf " \e[%s1mBOLD\e[m" "${vals:+${vals+$vals;}}"
+                        printf " ${seq0}TEXT\\e[m"
+                        printf ' \e[%s1mBOLD\e[m' "${vals:+${vals+$vals;}}"
                 done
                 echo; echo
         done
