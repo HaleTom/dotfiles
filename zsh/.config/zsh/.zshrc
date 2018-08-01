@@ -42,6 +42,10 @@ setopt posix_aliases  # Don't expand aliases overloading reserved words
 function as_bash { emulate -LR bash; "$@"; }
 function as_zsh  { emulate -LR  zsh; "$@"; }
 
+# Run combined {ba,z}sh commands
+as_bash source ~/.bashrc
+_prompt_timer_start  # Have initial prompt show startup time from this point on
+
 # Set the prompt
 # http://zsh.sourceforge.net/Doc/Release/Prompt-Expansion.html
 # Colours: black, red, green, yellow, blue, magenta, cyan, white, [0-255]
@@ -65,7 +69,7 @@ _prompt_update_zsh () {
     #     local -- - # Make shell options local to this function, restore on completion
     #     set +ex    # Don''t debug or die in setting the prompt!
     # fi
-    # _timer_stop
+    # _prompt_timer_stop
     #
 
     # if _colour_enabled; then
@@ -84,7 +88,6 @@ _prompt_update_zsh () {
     #  branch        relative to newer tag or branch (master~4)
     #  default       exactly eatching tag
 
-    local user_host_dir='%B%n%F{black}@%B%F{blue}%m%b%F{white}:'${dir}
     local user_host_dir='%(#.'$root_colour'.%B)%n%B%F{black}@%B%F{blue}%m%b%F{white}:'${dir}
     local jobs='%(1j.%f(%B%F{green}%j%f%b%).)'
     local exit_status='%(?..%F{white}[%F{red}%?%F{white}])'
@@ -93,13 +96,11 @@ _prompt_update_zsh () {
     # '${_git_status}' is literal and replaced when option prompt_subst is set.
     # shellcheck disable=SC2154  # $_git_status not defined here
     PS1=${user_host_dir}'${_git_status}'${jobs}${exit_status}${percent_or_hash}
-    # shellcheck disable=2016
-    RPS1='${MODE_INDICATOR_PROMPT} %D %*'
+    # shellcheck disable=2016  # Keep variables literal
+    RPS1='${MODE_INDICATOR_PROMPT} ${_timer_show} | %D %*'
 }
+_git_status_gen && _prompt_update_zsh  # Set the initial prompt
 
-
-# Run combined {ba,z}sh commands
-as_bash source ~/.bashrc
 zstyle ':completion:*:*:git:*' script /usr/share/git/completion/git-completion.zsh
 
 # ssh: Use $USER's (and the system's) ssh known hosts file.
@@ -140,19 +141,39 @@ _source_files <<DOTFILES
     $ZDOTDIR/zle
 DOTFILES
 
+
 # Things to do after executing the last command
+# precmd - Executed BEFORE each prompt. Not re-executed if command line is redrawn
 precmd_zsh_hook () {
+    _prompt_timer_stop
     # Allow for a simple prompt for copy / paste examples
     [[ -v ps1 ]] && { _simple_prompt; unset RPS1; return 0; }
     _git_status_gen  # Update the prompt's git component
+
+    # TODO Add classified job status to prompt
+    # https://unix.stackexchange.com/a/68635/143394
+    # https://stackoverflow.com/questions/12646917/show-job-count-in-bash-prompt-only-if-nonzero
 }
 
+
+# preexec - Executed just after a command has been read and is about to be executed.
+# NOT executed if user presses enter or on a blank command line
+preexec_zsh_hook () {
+    :
+}
+
+
+# zshaddhistory - Executed when a history line has been read interactively, but before it is executed.
+zshaddhistory_hook () {
+    _prompt_timer_start
+}
 # Setup $PROMPT
 # Couldn't get willghatch/zsh-hooks to work here.
 # Try to use it instead of add-zsh-hook as it support zle hooks also
-add-zsh-hook chpwd _cd_hook
-add-zsh-hook precmd precmd_zsh_hook # Update $_git_status prompt string
-_git_status_gen && _prompt_update_zsh  # Set the initial prompt
+add-zsh-hook chpwd         _cd_hook            # See source-d prompt file
+add-zsh-hook zshaddhistory zshaddhistory_hook  # Start prompt timer
+add-zsh-hook precmd        precmd_zsh_hook     # Stop prompt timer, update prompt?
+# add-zsh-hook preexec       preexec_zsh_hook    #
 
 # Clear the namespace of bootstrap functions
 unfunction _source_file _source_files
