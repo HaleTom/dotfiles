@@ -53,7 +53,7 @@ ZSH_AUTOSUGGEST_USE_ASYNC=1
 
 # enhancd: A next-generation cd command with an interactive filter
 # https://github.com/b4b4r07/enhancd
-zplugin ice wait'0' pick'init.sh'
+zplugin ice wait'0'
 zplugin light 'b4b4r07/enhancd'
 export ENHANCD_DIR=$XDG_CONFIG_HOME/enhancd ENHANCD_DOT_SHOW_FULLPATH=1 # ENHANCD_FILTER=fzy:fzf:peco:percol
 
@@ -73,13 +73,9 @@ zplugin light 'MichaelAquilina/zsh-you-should-use'
 
 # Optimized and extended zsh-syntax-highlighting
 # https://github.com/zdharma/fast-syntax-highlighting
-zplugin ice wait'0'  # atinit"zpcompinit; zpcdreplay"
+FAST_THEME_NAME=free  # From `fast-theme -l`. `fast-theme -t <theme>` to test
+zplugin ice wait'0' atload"[[ current_theme.zsh -nt themes/$FAST_THEME_NAME.ini ]] || fast-theme $FAST_THEME_NAME > /dev/null"
 zplugin light 'zdharma/fast-syntax-highlighting'
-FAST_THEME_NAME=free  # from fast-theme -l. -t to test
-if [[ ! -r ${ZPLGM[PLUGINS_DIR]}/zdharma---fast-syntax-highlighting/current_theme.zsh ]]; then
-  # Writes out current_theme.zsh, don't run if not necessary
-  fast-theme "$FAST_THEME_NAME"
-fi
 typeset -gA FAST_HIGHLIGHT_STYLES FAST_HIGHLIGHT
 # Customise colours of theme set via fast-theme  https://github.com/zdharma/fast-syntax-highlighting/issues/42
 # Available options in $XDG_CONFIG_HOME/zsh/.zplugin/plugins/zdharma---fast-syntax-highlighting/current_theme.zsh
@@ -93,6 +89,10 @@ FAST_HIGHLIGHT_STYLES[${FAST_THEME_NAME}function]='fg=117'  # cyan
 FAST_HIGHLIGHT_STYLES[${FAST_THEME_NAME}command]='fg=180'  # grey tinged brown
 FAST_HIGHLIGHT_STYLES[${FAST_THEME_NAME}precommand]='fg=255'  # white
 FAST_HIGHLIGHT_STYLES[${FAST_THEME_NAME}assign]='fg=219'  # pink
+FAST_HIGHLIGHT_STYLES[${FAST_THEME_NAME}paired-bracket]='bg:green'
+FAST_HIGHLIGHT_STYLES[${FAST_THEME_NAME}bracket-level-1]='fg=green,bold'
+FAST_HIGHLIGHT_STYLES[${FAST_THEME_NAME}bracket-level-2]='fg=yellow,bold'
+FAST_HIGHLIGHT_STYLES[${FAST_THEME_NAME}bracket-level-3]='fg=red,bold'
 # TODO:
 # : ${FAST_HIGHLIGHT_STYLES[freepath]:=fg=166}
 # : ${FAST_HIGHLIGHT_STYLES[freepath_pathseparator]:=}
