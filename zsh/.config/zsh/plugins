@@ -12,6 +12,12 @@ autoload -Uz _zplugin
 (( ${+_comps} )) && _comps[zplugin]=_zplugin
 
 
+# pip completion
+# shellcheck disable=2016  # Quoted eval
+zplugin ice svn wait'0' atload'command -v pip > /dev/null && eval "$(pip completion --zsh)"'
+zplugin light null  # create with `zplugin create null`, see https://github.com/zdharma/zplugin/issues/68
+
+
 MODE_CURSOR_VICMD="green block"
 MODE_CURSOR_VIINS="#20d08a blinking bar"
 MODE_CURSOR_SEARCH="#ff00ff steady underline"
