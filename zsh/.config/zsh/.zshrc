@@ -50,7 +50,6 @@ _prompt_timer_start  # Have initial prompt show startup time from this point on
 # http://zsh.sourceforge.net/Doc/Release/Prompt-Expansion.html
 # Colours: black, red, green, yellow, blue, magenta, cyan, white, [0-255]
 _prompt_update_zsh () {
-
     # Colour slashes in the directory  https://superuser.com/q/49092/365890
     local dir_colour='%B%F{cyan}'     # bold blue
     local slash_colour='%B%F{white}'  # bold white
@@ -96,8 +95,14 @@ _prompt_update_zsh () {
     # '${_git_status}' is literal and replaced when option prompt_subst is set.
     # shellcheck disable=SC2154  # $_git_status not defined here
     PS1=${user_host_dir}'${_git_status}'${jobs}${exit_status}${percent_or_hash}
+
+    # Python virtualenvwrapper calls this funciton via $XDG_DATA_HOME/virtualenvs/postactivate
+    local virtualenv
+    virtualenv=${VIRTUAL_ENV##*/}  # basename "$VIRTUAL_ENV"
+    [[ -n  $virtualenv ]] && virtualenv="%F{blue}(venv: ${virtualenv})%f "
+
     # shellcheck disable=2016  # Keep variables literal
-    RPS1='${MODE_INDICATOR_PROMPT} ${_timer_show} | %D %*'
+    RPS1='${MODE_INDICATOR_PROMPT} '"${virtualenv}"'${_timer_show} | %F{white}%D %*'
 }
 _git_status_gen && _prompt_update_zsh  # Set the initial prompt
 
