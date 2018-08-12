@@ -94,6 +94,12 @@ zplugin load 'MichaelAquilina/zsh-you-should-use'
 # zplugin light 'b4b4r07/emoji-cli'
 
 
+# A collection of LS_COLORS definitions; needs your contribution!
+# https://github.com/trapd00r/LS_COLORS
+zplugin ice wait'0' atclone"dircolors -b LS_COLORS > ls_colors.zsh" atpull'%atclone' pick"ls_colors.zsh"
+zplugin light trapd00r/LS_COLORS
+
+
 # Run commands in __zplg_async_run asynchronously
 zplugin ice wait'0' atload'__zplg_async_run'
 zplugin light null  # create with `zplugin create null`, see https://github.com/zdharma/zplugin/issues/68
