@@ -12,11 +12,26 @@ autoload -Uz _zplugin
 (( ${+_comps} )) && _comps[zplugin]=_zplugin
 
 
-# pip completion
-# shellcheck disable=2016  # Quoted eval
-zplugin ice svn wait'0' atload'command -v pip > /dev/null && eval "$(pip completion --zsh)"'
-zplugin light null  # create with `zplugin create null`, see https://github.com/zdharma/zplugin/issues/68
+# Use null plugin to run commands asynchronously. Work-around for https://github.com/zdharma/zplugin/issues/68
+# Faster and non-interactive version of `zplugin create null`
+_null_plug_dir=${ZPLGM[PLUGINS_DIR]}/_local---null
+if [[ ! -d $_null_plug_dir ]]; then
+  echo "Creating zplugin 'null' plugin directory at: $_null_plug_dir"
+  mkdir -p -- "$_null_plug_dir"
+fi
+unset _null_plug_dir
 
+
+# Run these commands asynchronously via null plugin
+__zplg_async_run () {
+  # Load pip completions if pip installed
+  # Alternatively, as suggested in https://github.com/zdharma/zplugin/issues/68#issuecomment-410531439
+  command -v pip > /dev/null && eval "$(pip completion --zsh)"
+
+  # Need to be sourced after zsh-vim-mode to have ^R work
+  _source_file /usr/share/fzf/key-bindings.zsh
+  _source_file /usr/share/fzf/completion.zsh
+}
 
 MODE_CURSOR_VICMD="green block"
 MODE_CURSOR_VIINS="#20d08a blinking bar"
@@ -29,7 +44,7 @@ zplugin light softmoth/zsh-vim-mode
 
 # Additional completion definitions for Zsh
 # https://github.com/zsh-users/zsh-completions
-zplugin ice wait'0' blockf # XXX what is this?
+zplugin ice wait'0' blockf  # have zplg manage completions  # https://github.com/zdharma/zplugin#completion-management
 zplugin light 'zsh-users/zsh-completions'
 
 
@@ -66,8 +81,9 @@ export ENHANCD_DIR=$XDG_CONFIG_HOME/enhancd ENHANCD_DOT_SHOW_FULLPATH=1 # ENHANC
 
 # Reminds you to use existing aliases for commands you just typed
 # https://github.com/MichaelAquilina/zsh-you-should-use
+# zplugin ice wait'0' load'[[ ! -v ps1 ]]' unload'[[ -v ps1 ]]'  # Doesn't work
 zplugin ice wait'0'
-zplugin light 'MichaelAquilina/zsh-you-should-use'
+zplugin load 'MichaelAquilina/zsh-you-should-use'
 
 
 # # Find a emoji.json and setup a key to trigger the search as ^s doesn't seem to work
@@ -77,10 +93,19 @@ zplugin light 'MichaelAquilina/zsh-you-should-use'
 # zplugin ice wait'0'
 # zplugin light 'b4b4r07/emoji-cli'
 
+
+# Run commands in __zplg_async_run asynchronously
+zplugin ice wait'0' atload'__zplg_async_run'
+zplugin light null  # create with `zplugin create null`, see https://github.com/zdharma/zplugin/issues/68
+
+
+# Syntax highlighting should be the last plugin
+
 # Optimized and extended zsh-syntax-highlighting
 # https://github.com/zdharma/fast-syntax-highlighting
 FAST_THEME_NAME=free  # From `fast-theme -l`. `fast-theme -t <theme>` to test
-zplugin ice wait'0' atload"[[ current_theme.zsh -nt themes/$FAST_THEME_NAME.ini ]] || fast-theme $FAST_THEME_NAME > /dev/null"
+zplugin ice wait'0' atinit'zpcompinit; zpcdreplay'
+zplugin ice atload"[[ current_theme.zsh -nt themes/$FAST_THEME_NAME.ini ]] || fast-theme $FAST_THEME_NAME > /dev/null"
 zplugin light 'zdharma/fast-syntax-highlighting'
 typeset -gA FAST_HIGHLIGHT_STYLES FAST_HIGHLIGHT
 # Customise colours of theme set via fast-theme  https://github.com/zdharma/fast-syntax-highlighting/issues/42

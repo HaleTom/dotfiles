@@ -96,7 +96,7 @@ _prompt_update_zsh () {
     # shellcheck disable=SC2154  # $_git_status not defined here
     PS1=${user_host_dir}'${_git_status}'${jobs}${exit_status}${percent_or_hash}
 
-    # Python virtualenvwrapper calls this funciton via $XDG_DATA_HOME/virtualenvs/postactivate
+    # Python virtualenvwrapper calls this funciton via $XDG_DATA_HOME/virtualenvs/post{de,}activate
     local virtualenv
     virtualenv=${VIRTUAL_ENV##*/}  # basename "$VIRTUAL_ENV"
     [[ -n  $virtualenv ]] && virtualenv="%F{blue}(venv: ${virtualenv})%f "
@@ -140,8 +140,6 @@ READNULLCMD=less  # have "< file" be piped to less
 
 _source_files <<DOTFILES
     # $XDG_DATA_HOME/fzf/.fzf.zsh  # It magically just works !??!
-    /usr/share/fzf/key-bindings.zsh
-    /usr/share/fzf/completion.zsh
     $ZDOTDIR/plugins
     $ZDOTDIR/zle
 DOTFILES
@@ -174,16 +172,19 @@ zshaddhistory_hook () {
 }
 # Setup $PROMPT
 # Couldn't get willghatch/zsh-hooks to work here.
-# Try to use it instead of add-zsh-hook as it support zle hooks also
+# Try to use it globally instead of add-zsh-hook as it support zle hooks also
+# hooks-add-hook chpwd  _cd_hook
 add-zsh-hook chpwd         _cd_hook            # See source-d prompt file
 add-zsh-hook zshaddhistory zshaddhistory_hook  # Start prompt timer
 add-zsh-hook precmd        precmd_zsh_hook     # Stop prompt timer, update prompt?
+
 # add-zsh-hook preexec       preexec_zsh_hook    #
 
-# Clear the namespace of bootstrap functions
-unfunction _source_file _source_files
+autoload -Uz compinit  # zplugin will do compinit later
 
-autoload -Uz compinit; compinit
+# Used in __zplg_async_run
+# Clear the namespace of bootstrap functions
+# unfunction _source_file _source_files
 
 # Setup direnv
 # Required at end of zshrc says: https://github.com/direnv/direnv
