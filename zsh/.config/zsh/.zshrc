@@ -145,12 +145,34 @@ _source_files <<DOTFILES
 DOTFILES
 
 
+# Allow user to set a simple prompt for capturing sample output
+# by setting variable $ps1 (not $PS1)
+_simple_prompt_zsh() {
+    case $ps1 in
+    [Xx]) # Cancel simple prompt behaviour
+        unset -v ps1
+        # shellcheck disable=2154,2004  # zsh
+        (( ${+functions[enable_you_should_use]} )) && enable_you_should_use
+        _prompt_update_zsh ;;
+    "") # Set default simple prompt allowing for user laziness of `ps1=`
+        PS1='%% ' ;;
+    *) # User has set explicit prompt string
+        PS1=${ps1} ;;
+    esac
+}
+
+
 # Things to do after executing the last command
 # precmd - Executed BEFORE each prompt. Not re-executed if command line is redrawn
 precmd_zsh_hook () {
     _prompt_timer_stop
     # Allow for a simple prompt for copy / paste examples
-    [[ -v ps1 ]] && { _simple_prompt; unset RPS1; return 0; }
+    if [[ -v ps1 ]]; then
+        _simple_prompt_zsh; unset RPS1;
+        # shellcheck disable=2154,2004  # zsh
+        (( ${+functions[disable_you_should_use]} )) && disable_you_should_use
+        return 0
+    fi
     _git_status_gen  # Update the prompt's git component
 
     # TODO Add classified job status to prompt
