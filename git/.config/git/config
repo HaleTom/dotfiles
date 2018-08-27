@@ -57,6 +57,7 @@
   # Create a branch tracking the same branch on origin.
   # '-' makes argument list start at $1
   cobt   = !sh -c 'git checkout -b "$1" && git branch --track origin/"$1"' -
+  cop    = checkout --patch
   # Pick chunks to include of changed files, include all untracked files.
   ca     = commit -a -v
   caa    = "!f() { git add -A && git commit \"$@\"; }; f"
@@ -135,6 +136,7 @@
   plrb   = pull --rebase=true --autostash
   plrbi  = pull --rebase=interactive --autostash
   ps     = push
+  prq    = !"hub pull-request \"$@\" #"
   pum    = pull upstream master
   rb     = rebase
   rba    = rebase --abort
@@ -151,7 +153,7 @@
   res    = reset --soft
   # XXX test with $(:) resc
   resc   = !"git reset --soft $(c=$(git child); [ \"$c\" ] && echo $c || git children)" # Move HEAD to the child
-  resa   = reset --soft HEAD~ # Move HEAD to the first Ancestor
+  resp   = reset --soft HEAD~ # Move HEAD to the first Ancestor
   rl     = reflog
   rp     = rev-parse
   rpc    = !"git rev-parse --verify $(git rev-parse \"$1\")^{commit} #" # allow :/<regex> format
@@ -161,7 +163,7 @@
   rrr    = rerere remaining
   rrs    = rerere status
   rmc    = rm --cached
-  s      = !"cd ${GIT_PREFIX:-.} && git print-commit-1 HEAD; git status --short" # allow for git s .
+  s      = !"cd \"${GIT_PREFIX:-.}\" && git print-commit-1 HEAD; git status --short" # allow for git s .
   si     = !"git print-commit-1 HEAD; git status --short --ignored"
   sm     = submodule
   sms    = submodule status

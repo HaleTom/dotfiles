@@ -14,6 +14,9 @@ command -v grc > /dev/null || alias colourify=''
 # -C = list entries by columns
 # -F, --classify = append indicator (one of */=>@|) to entries
 alias ls="colourify ls -CF --block-size=\\'1 --color=always --quoting-style=shell-escape"  #'"
+# exa:  https://github.com/ogham/exa/issues/407
+# exa: https://github.com/ogham/exa/issues/211#issuecomment-412268723
+# EXA_GRID_ROWS=15 exa -la --header --group --grid --bytes --color-scale --git
 alias la='ls -A'       # Almost all - no . and ..
 alias lal='ls -la'
 alias ll='ls -l'
@@ -60,6 +63,7 @@ alias cal='cal -3' # show 3 months by default
 alias cp='cp -i --reflink=auto --sparse=always'
 alias Cp='command cp --reflink=auto --sparse=always'  # Allow overwrite
 alias cuc='cucumber'
+alias ccze='ccze -Ao nolookups'  # Don't look up {user,service}names, etc.
 alias df="colourify df --block-size=\\'1K"  #'"
 alias df,='colourify df'
 alias diff='diff --color=auto'

@@ -59,7 +59,7 @@ export LESS='-FMRWXis -x4 -z-4'
 
 # Have less highlight source code
 # shellcheck disable=SC2034
-LESSOPEN="|-$HOME/bin/highlight-less-wrapper"' "%s"'
+LESSOPEN='|-"$HOME/bin/highlight-less-wrapper" %s'
 
 # Set $LS_COLORS
 [ -x /usr/bin/dircolors ] && eval "$(/usr/bin/dircolors)"
@@ -168,7 +168,7 @@ _source_files <<DOTFILES
     /usr/share/chruby/auto.sh
 
     # Node.js
-    /usr/share/nvm/init-nvm.sh
+    # /usr/share/nvm/init-nvm.sh
 
     # Python
     /usr/bin/virtualenvwrapper_lazy.sh
