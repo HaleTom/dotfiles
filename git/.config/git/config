@@ -114,6 +114,7 @@
   egc    = !"git edit-global-config"
   head   = !"c=$(git rpc \"$1\") && p=$(git log -n1 --oneline --decorate) && git update-ref --no-deref -m \"Move from $p\" HEAD \"$c\" #" # Move HEAD to specified commit-ish
   egx    = !"git edit-global-excludes"
+  fu     = fixup
   head   = "!c=\"`git rpc \"$1\"`\" && p=\"$(git log -n1 --oneline --decorate)\" && git update-ref --no-deref -m \"Move from $p\" HEAD \"$c\" #" # Move HEAD to specified commit-ish
   icdiff = difftool --no-prompt --extcmd icdiff # \"$@\"
   lf     = log --pretty=full
