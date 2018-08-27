@@ -284,7 +284,7 @@
   bsh = !\"$@\" - # BOURNE shell, save some typing in default case :)
 
   # Aliases
-  la = !git config --list | grep ^alias\\. | cut -c 7- | grep -Ei --color \"$1\" "#" # List aliases
+  la = !git config --list | grep ^alias\\. | cut -c 7- | grep -Ei --color -e \"$@\" "#" # List aliases
   # Quote / unquote a sh command, converting it to / from a git alias string
   quote-string = !"read -r l; printf !\\\"; printf %s \"$l\" | sed 's/\\([\\\"]\\)/\\\\\\1/g'; printf \" #\\\"\\n\" #"
   quote-string-undo = !"read -r l; printf %s \"$l\" | sed 's/\\\\\\([\\\"]\\)/\\1/g'; printf \"\\n\" #"
