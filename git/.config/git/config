@@ -146,7 +146,7 @@
   rbb    = !"git rebase -i $(git merge-base $1 HEAD) #" # Rebase to branch-name # http://stackoverflow.com/a/31036518/5353461
   rbc    = rebase --continue
 ## Fixme as shown by g la:
-  rbi    = !" git rebase --interactive --autostash --autosquash \"$(git rpc \"${1:-HEAD~20}\")\" #"
+  rbi    = !"git rebase --interactive --autostash --autosquash \"$(git rpc \"${1:-HEAD~20}\")\"^ #"
   rbo    = rebase --onto
   ro     = remote
   rov    = remote --verbose
