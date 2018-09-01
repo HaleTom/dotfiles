@@ -102,7 +102,7 @@
 
 ## Fixme bash not needed, quoting problem when shown in g la
   dfc    = "!case \"$1\" in -*) ;; *) x=$(git rpc \"${1:-HEAD}\");shift; esac; git diff --ws-error-highlight=old,new \"$@\" \"$x\" \"$(git child-hash \"$x\")\" #" # Diff with first child
-  dfp    = "!case \"$1\" in -*) ;; *) x=$(git rpc \"$1\");shift; esac; git diff --ws-error-highlight=old,new \"$@\" \"${x:=HEAD}~\" \"$x\" #" # Diff with first parent
+  dfp    = "!case \"$1\" in -*) ;; *) x=$(git rpc \"${1:-HEAD}\");shift; esac; git diff --ws-error-highlight=old,new \"$@\" \"${x:=HEAD}~\" \"$x\" #" # Diff with first parent
   dh     = diff --ws-error-highlight=old,new HEAD
   dhh    = diff --ws-error-highlight=old,new HEAD~1
   dch    = diff --cached --ws-error-highlight=old,new HEAD
