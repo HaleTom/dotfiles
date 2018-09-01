@@ -286,6 +286,11 @@
   # Automatically fix commit $1 based on index.  $2... are git commit options. # https://blog.filippo.io/git-fixup-amending-an-older-commit/
   fixup-auto = "!f() { commit=$(git rpc \"$1\") && git commit --fixup=\"$commit\" \"${@:2}\" && GIT_SEQUENCE_EDITOR=true git rbi \"$commit\"; }; f"
 
+  # Return true iff index and working directory are clean
+  status-clean = !"[ -z \"$(git status --porcelain)\" ] #"
+  # Return true iff index is unchanged
+  status-index-clean = !"[ -z \"$(git status -uno --porcelain)\" ] #"
+
   # TODO use -e only if no additional -m given
   squash = !"c=\"$1\"; shift; git commit -m \"squash! $(git log -1 --format='%s' \"$c\")\" \"$@\" -e #" # -e to add message to squash in
 
