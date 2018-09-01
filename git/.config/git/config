@@ -50,6 +50,7 @@
   brt    = branch --track
   brsut  = branch --set-upstream-to
   c      = commit
+  cfu    = !"git commit --fixup=\"$1\" \"${@:2}\" #"
   co     = checkout
   co-    = !"git checkout @{-1}; git print-commit-1 @ #"
   cob    = checkout -b
@@ -115,6 +116,7 @@
   head   = !"c=$(git rpc \"$1\") && p=$(git log -n1 --oneline --decorate) && git update-ref --no-deref -m \"Move from $p\" HEAD \"$c\" #" # Move HEAD to specified commit-ish
   egx    = !"git edit-global-excludes"
   fu     = fixup
+  fua    = fixup-auto
   head   = "!c=\"`git rpc \"$1\"`\" && p=\"$(git log -n1 --oneline --decorate)\" && git update-ref --no-deref -m \"Move from $p\" HEAD \"$c\" #" # Move HEAD to specified commit-ish
   icdiff = difftool --no-prompt --extcmd icdiff # \"$@\"
   lf     = log --pretty=full
@@ -150,6 +152,7 @@
   rov    = remote --verbose
   re     = reset
   reh    = reset --hard
+  rem    = reset --merge # Like hard but don't reset files that haven't been committed, failing if the target commit has changes in those files
   rep    = reset --patch
   res    = reset --soft
   # XXX test with $(:) resc
@@ -174,15 +177,18 @@
   sc     = stash clear # all
   sd     = stash drop # latest or specified
   sl     = stash list
-  spi    = stash pop --index
   sp     = stash pop
+  spi    = stash pop --index
+  sps    = stash push
+  spsp   = stash push --patch
   ss     = stash save
   ssa    = stash save --all # includes ignored
-  ssk    = stash save --keep-index
+  ssk    = stash save --keep-index # Changes to index are left intact
   ssp    = stash save --patch
   ssu    = stash save --include-untracked
   sska   = stash save --keep-index --all # includes ignored
   ssku   = stash save --keep-index --include-untracked
+  sskua  = stash save --keep-index --include-untracked --all
   si     = status --short --ignored
   t      = tag
   tl     = "!git tag -n1 --list | sort -V"
