@@ -435,10 +435,14 @@
   [diff "ps"]
     textconv = ps2ascii
     binary=true # Mark as a binary even though they are meaningless text
+  [diff "jupyternotebook"]
+    command = git-nbdiffdriver diff
 
 [difftool]
   prompt = true # Use alias for no-prompt
   trustExitCode = true # true by default, :cq in vim to exit non-zero
+  [difftool "nbdime"]
+    cmd = git-nbdifftool diff \"$LOCAL\" \"$REMOTE\" \"$BASE\"
 
 [interactive]
   # diff-so-fancy not working with --patch:
@@ -459,9 +463,14 @@
   conflictStyle = diff3 # include original lines
   tool = vimdiff
   stat = true # show what changed
+  [merge "jupyternotebook"]
+    driver = git-nbmergedriver merge %O %A %B %L %P
+    name = jupyter notebook merge driver
 
 [mergetool]
   prompt = true # Use alias for no-prompt
+  [mergetool "nbdime"]
+    cmd = git-nbmergetool merge \"$BASE\" \"$LOCAL\" \"$REMOTE\" \"$MERGED\"
 
 [mergetool "vimdiff"]
   trustExitCode = true # true by default, :cq in vim to exit non-zero

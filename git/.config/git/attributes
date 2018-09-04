@@ -27,6 +27,8 @@
 *.bin     diff=hexdump
 *.doc     diff=strings
 *.docx    diff=strings
+*.ipynb   diff=jupyternotebook
+*.ipynb   merge=jupyternotebook
 *.pdf     diff=pdf
 *.zip     diff=zip
 *.tar     diff=tar -tvv
