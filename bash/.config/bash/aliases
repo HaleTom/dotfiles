@@ -19,7 +19,6 @@ alias ls="colourify ls -CF --block-size=\\'1 --color=always --quoting-style=shel
 # EXA_GRID_ROWS=15 exa -la --header --group --grid --bytes --color-scale --git
 alias la='ls -A'       # Almost all - no . and ..
 alias lal='ls -la'
-alias ll='ls -l'
 alias lsd='ls -dla * --color=always | grep "^d" --color=never'   # non-hidden directories
 alias lsdd='ls -Al --color=always | grep --color=never ^d'   # directories including hidden
 alias lal='ls -la'
@@ -35,18 +34,41 @@ alias ...='builtin cd ../..'
 alias ....='builtin cd ../../..'
 alias .....='builtin cd ../../../..'
 
+
+# Git aliases - don't assume hub or scmb are installed
+if command -v hub > /dev/null; then
+  alias g='hub' git='hub'
+else
+  alias g='git'
+fi
+# shellcheck disable=2034  # exec_scmb_expand_args appears unused, verify or export
+# shellcheck disable=2139  # Expand at definition time
+if typeset -f exec_scmb_expand_args > /dev/null; then
+  alias g="exec_scmb_expand_args $(alias_expand g)"
+  alias git > /dev/null && alias git="exec_scmb_expand_args $(alias_expand git)"
+else  # scmbreeze not sourced
+  alias ll='ls -l'
+  # TODO check difference in aliases after sourcing scmb
+fi
+
+# Colourise ll alias output if grc is installed
+if command -v grcat > /dev/null; then
+  # shellcheck disable=2139  # expand at definition
+  alias ll="$(alias_expand ll) | grcat conf.ls"
+fi
+
+
 # One letter aliases
-alias g='hub'
 alias h='history'
 alias j='jobs'
 alias l='ll'  # l^J for ultimate laziness
 alias q='ls'  # mnemonic: q = query
 alias r='rake'
-alias s='hub s'
+alias s='git s'
 
 # Two letters
 alias ft='faketty '  # space at end allows next word to be alias-expanded
-alias gh='hub logda' # Git History
+alias gh='git logda' # Git History
 alias jc='journalctl'
 alias sc='sudo systemctl'
 
@@ -68,8 +90,7 @@ alias df="colourify df --block-size=\\'1K"  #'"
 alias df,='colourify df'
 alias diff='diff --color=auto'
 alias grep='GREP_COLOR="1;33;40" LANG=C grep --color=auto'
-alias git='hub'
-alias home='hub --git-dir=$HOME/.githome --work-tree=$HOME'
+alias home='git --git-dir=$HOME/.githome --work-tree=$HOME'
 alias lesc='less-compressed-wrapper'
 alias mv='mv -i'
 alias Mv='command mv'  # Allow overwrite
@@ -169,7 +190,7 @@ fi
   alias -g LS=" | less -S"  # -S or --chop-long-lines
   alias -g LSA="|& less -S"  # -S or --chop-long-lines
   alias -g M='| more'
-  alias -g P='|'
+  # alias -g P='|'
   alias -g R='| rear'
   alias -g S=' | sort'
   alias -g SU='| sort -u'
