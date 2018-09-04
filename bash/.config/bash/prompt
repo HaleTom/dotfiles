@@ -61,7 +61,8 @@ _git_status_gen() {
 
   # Allow disabling git status. Avoid error if __git_ps1 undefined.
   # $__git_printf_supports_v is set if git-prompt.sh is sourced
-  if [[ ! -v _disable_git_string && -v __git_printf_supports_v ]]; then
+  # shellcheck disable=2154  # $__git_printf_supports_v unset
+  if [[ -z ${_disable_git_string+x} && ! -z ${__git_printf_supports_v+x} ]]; then
     # __git_ps1 will only generate colour commands inside $PS1
     local PS1  # __git_ps1 will overwrite it
     __git_ps1 "" "" "%s" # force colour; no default round bracket (decorations)
@@ -86,7 +87,7 @@ _git_status_gen() {
 # by setting variable $ps1 (not $PS1)
 _simple_prompt_bash() {
   # Determine whether to restore readline show-mode-in-prompt
-  if [[ ! -v _restore_mode_in_prompt ]]; then  # First time generating a simple prompt
+  if [[ ! -z ${_restore_mode_in_prompt+x} ]]; then  # First time generating a simple prompt
     if bind -v | grep "show-mode-in-prompt on" &>/dev/null; then
       _restore_mode_in_prompt=1
     else
@@ -94,6 +95,7 @@ _simple_prompt_bash() {
     fi
   fi
 
+  # shellcheck disable=2154  # $ps1 unset
   case $ps1 in
     [Xx]) # Cancel simple prompt behaviour
       (( _restore_mode_in_prompt )) && bind "set show-mode-in-prompt on"
@@ -217,14 +219,14 @@ _prompt_bash_set() {
 
   # Allow user to set $ps1_debug to have "set -xe" continue through the prompt
   # shellcheck disable=SC2154
-  if [[ ! -v ps1_debug ]]; then
+  if [[ -z ${ps1_debug+x} ]]; then
     local -- - # Make shell options local to this function, restore on completion
     set +ex    # Don\'t debug or die in setting the prompt!
   fi
   _prompt_timer_stop
 
   # Allow for a simple prompt for copy / paste examples
-  [[ -v ps1 ]] && { _simple_prompt_bash; return 0; }
+  [[ ! -z ${ps1+x} ]] && { _simple_prompt_bash; return 0; }
 
   # Have we changed directory?
   _cd_hook_bash

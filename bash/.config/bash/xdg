@@ -14,7 +14,7 @@ export XDG_CACHE_HOME=${XDG_CACHE_HOME:=$HOME/.cache}
 # Note that quotes are needed should IFS=x and not in [[
 if [[ -z ${XDG_RUNTIME_DIR+x} ]]; then
    if [[ ! -w ${XDG_RUNTIME_DIR:=/run/user/$UID} ]]; then
-      echo "\$XDG_RUNTIME_DIR ($XDG_RUNTIME_DIR) not writable. Setting to /tmp." >&2
+      echo "\$XDG_RUNTIME_DIR ($XDG_RUNTIME_DIR) not writeable. Setting to /tmp." >&2
       XDG_RUNTIME_DIR=/tmp
    fi
 fi
@@ -27,10 +27,9 @@ if [[ -f $XDG_CONFIG_HOME/user-dirs.dirs ]]; then
 fi
 
 
-# Tell programs to look for files in $XDG_*
-# When adding a file here, ensure it's default location is added
-# to the XDGFILES "here" string above
-# Config
+# Tell programs to look for files in $XDG_* directories
+# When adding a file here, ensure its $HOME/.* location is added
+# to the XDGFILES "here" string below
 
 
 # Single-line config
@@ -92,8 +91,8 @@ function check_shadowed_files {
       "") ;&
       \#*) continue # Allow for blank and commened out files
     esac
-    if [[ -e $file ]]; then { # bracket for STDERRR
-      if [[ -L $file && ! -v print_links ]]; then continue; fi
+    if [[ -e $file ]]; then { # bracket for STDERR
+      if [[ -L $file && ! -z ${print_links+x} ]]; then continue; fi
       printf "%s" "Warning: XDG shadowed "
       # shellcheck disable=SC2015 # A && B || C is not if-then-else. C may run when A is true. [SC2015]
         [[ -L $file ]] && printf "symlink" || { # symlinks are "both"
