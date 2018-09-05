@@ -82,6 +82,7 @@
     read -rn1 -p \"Delete all the above? [y/N] \" r; echo; \
     [[ x$r =~ ^x[yY] ]] && git clean -df \"$@\" || echo Untouched.' removed \"$@\" #"
   cm     = commit -m
+  cmf    = "! [ $# -ge 2 ] || { echo 'Give arguments: <commit msg> <files>' >&2; exit 1; }; git add \"${@:2}\" && git commit -m \"$@\" #"
   cn     = commit --amend
   cnn    = commit --amend --no-edit
   cnm    = commit --amend -m
