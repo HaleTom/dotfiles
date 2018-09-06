@@ -137,8 +137,9 @@
   psuo   = push --set-upstream origin
   psuob  = "!b=\"$(git rev-parse --abbrev-ref HEAD)\" && git push --set-upstream origin \"$b\" #"
   pl     = pull
-  plrb   = pull --rebase=true --autostash
-  plrbi  = pull --rebase=interactive --autostash
+  plrf   = pull --rebase=false --autosquash --autostash
+  plri   = pull --rebase=interactive --autosquash --autostash
+  plrb   = "!git pull --autostash && git rebase --autosquash --autostash \"${1:-master}\" \"${@:2}\" #"
   ps     = push
   prq    = !"hub pull-request \"$@\" #"
   pum    = pull upstream master
