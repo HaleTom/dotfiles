@@ -136,6 +136,9 @@ alias rsyncmv='rsync -a --remove-source-files'
 alias pcat='pygmentize -f terminal256 -O style=monokai -g'
 alias pless='f(){ pygmentize -f terminal256 -O style=monokai -g "$@" | less -L; };f'
 
+# Change to git root directory
+alias cdgr='builtin cd "$(git rev-parse --show-toplevel)"'  # cd '' does nothing
+
 
 ##
 ## Begin bash only
