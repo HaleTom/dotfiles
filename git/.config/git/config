@@ -493,11 +493,15 @@
   # Allow hunk movement with n/p keys
   # diff = diff-hi | less -FLRX --tabs=4 --pattern '^(\\@\\@.*,.*,.*\\@\\@|diff --git .* .*)$' # Allow hunk movement with n/p keys
 
+[pull]
+  rebase = true
+
 [push]
   default = simple
 
 [rebase]
   autosquash = true
+  autostash = true
   missingCommitsCheck = warn # Protect against accidentally removed lines
   stat = true # show what changed
 
