@@ -220,7 +220,10 @@ _prompt_bash_set() {
   # Allow user to set $ps1_debug to have "set -xe" continue through the prompt
   # shellcheck disable=SC2154
   if [[ -z ${ps1_debug+x} ]]; then
-    local -- - # Make shell options local to this function, restore on completion
+    # Doesn't work on bash prior to v4.4:
+    # local -- - # Make shell options local to this function, restore on completion
+    [[ $- = *e* ]] && local set_e=1
+    [[ $- = *x* ]] && local set_x=1
     set +ex    # Don\'t debug or die in setting the prompt!
   fi
   _prompt_timer_stop
@@ -333,6 +336,9 @@ _prompt_bash_set() {
   PS1='\[\e[0m'${Save}'\e['$((COLUMNS - ${#rhs_printable}))G${rhs}${Restore}'\]'${lhs}
   # If $COLUMNS happens to be unset (some cygwin, OSX)
   # PS1="${lhs}${Blu}\[${Save}\e[$(($(tput cols) - ${#rhs_printable}))G${rhs}${Restore}\]${PS1}"
+
+  [[ $set_e ]] && set -e
+  [[ $set_x ]] && set -x
 
   # echo "\$PS1=$PS1" # Debug
 }
