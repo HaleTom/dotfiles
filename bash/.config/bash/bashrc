@@ -71,7 +71,8 @@ export S_COLORS=auto
 [[ -x /usr/bin/powerpill ]] && export PACMAN=/usr/bin/powerpill
 
 # Have command-not-found ask to install
-export COMMAND_NOT_FOUND_INSTALL_PROMPT=1
+unset COMMAND_NOT_FOUND_INSTALL_PROMPT
+unset -f command_not_found_handle 2>/dev/null # for Ubuntu 16.04 Xenial Xerus
 
 # ssh-ident
 export BINARY_SSH=/usr/bin/ssh
