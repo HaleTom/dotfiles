@@ -26,7 +26,8 @@
 # Quote ALL newline, " and \ characters as \n, \" and \\
 # A literal '#' or ';' must be inside "-quotes
 ; this is also a comment
-[alias]
+
+[alias]  # these are case INsensitive
   a      = add
   aa     = add -A
   aacm   = "!f() { git add -A && git commit -m \"$@\"; }; f"
@@ -43,7 +44,7 @@
   bir    = bisect reset
   br     = branch
   brd    = branch -d
-  brD    = branch -D
+  brdf   = branch -d --force # Same as branch -D. Allow deletion if branch is not merged.
   brf    = branch -f
   brl    = branch --list
   brm    = branch --move # rename
@@ -54,6 +55,7 @@
   co     = checkout
   co-    = !"git checkout @{-1}; git print-commit-1 @ #"
   cob    = checkout -b
+  cobb   = checkout -B
   cof    = checkout --force
   # Create a branch tracking the same branch on origin.
   # '-' makes argument list start at $1
