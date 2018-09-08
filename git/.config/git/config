@@ -457,7 +457,7 @@
   # diffFilter = "diff-so-fancy --patch-mode| less -FLRX --tabs=4" # Suggested by above issue
 
   # The default seems to be "diff-highlight"
-  diffFilter = "diff-highlight | less -FLRX --tabs=4"
+  diffFilter = "diff-hi | less -FLRX --tabs=4"
 
 [log]
   mailmap = true
