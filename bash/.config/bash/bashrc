@@ -238,6 +238,14 @@ add_to_PATH before "$HOME/bin:$XDG_DATA_HOME/miniconda3/bin:$XDG_DATA_HOME/virtu
 add_to_PATH after "/usr/lib/systemd:/usr/local/heroku/bin:$HOME/.cabal/bin"
 # echo $PATH | tr : "\n"; echo;
 
+# Print a fortune message if login shell or in TMUX
+# && and || have equal precedence outside [[ test ]]
+if [[ ${_disable_welcome_message:=0} -eq 0 ]] || \
+   { sh_is_bash && shopt -q login_shell; } || { sh_is_zsh && [[ -o login ]]; } || \
+   [[ -n ${TMUX=} && _disable_welcome_message -lt $SHLVL ]]; then
+  ~/bin/welcome-message
+fi
+export _disable_welcome_message=$(( SHLVL + 1 ))  # Don't print at this $SHLVL again
 
 [[ $ZSH_VERSION ]] && return
 ##
@@ -285,6 +293,7 @@ trap -- "$trap_str _pre_command" DEBUG; unset trap_str
 # Setup direnv
 # Required after setting the prompt says: https://github.com/direnv/direnv
 eval "$(direnv hook bash)"
+
 
 ############################
 # Comments only below here #
