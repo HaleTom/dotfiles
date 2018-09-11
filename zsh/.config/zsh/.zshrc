@@ -115,9 +115,9 @@ zstyle -e ':completion:*:(ssh|scp|sftp|rsh|rsync):hosts' hosts 'reply=(${=${${(f
 
 
 # https://wiki.archlinux.org/index.php/Zsh#Help_command
+autoload -Uz run-help
 unalias run-help
 alias help=run-help
-autoload -Uz run-help
 autoload -Uz run-help-git
 autoload -Uz run-help-ip
 autoload -Uz run-help-openssl
@@ -167,7 +167,7 @@ _simple_prompt_zsh() {
 precmd_zsh_hook () {
     _prompt_timer_stop
     # Allow for a simple prompt for copy / paste examples
-    if [[ -v ps1 ]]; then
+    if [[ ! -z ${ps1+x} ]]; then
         _simple_prompt_zsh; unset RPS1;
         # shellcheck disable=2154,2004  # zsh
         (( ${+functions[disable_you_should_use]} )) && disable_you_should_use

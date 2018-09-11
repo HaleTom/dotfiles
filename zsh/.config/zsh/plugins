@@ -26,11 +26,17 @@ unset _null_plug_dir
 __zplg_async_run () {
   # Load pip completions if pip installed
   # Alternatively, as suggested in https://github.com/zdharma/zplugin/issues/68#issuecomment-410531439
-  command -v pip > /dev/null && eval "$(pip completion --zsh)"
+  # shellcheck disable=2154  # $commands not assigned
+  [[ ${commands[pip]} ]] && eval "$(pip completion --zsh)"
 
-  # Need to be sourced after zsh-vim-mode to have ^R work
-  _source_file /usr/share/fzf/key-bindings.zsh
-  _source_file /usr/share/fzf/completion.zsh
+  # Source fzf files
+  # Needs to be sourced after zsh-vim-mode to have ^R work
+  if [[ ${commands[fzf]} ]]; then  # fzf is installed
+    _source_file /usr/share/fzf/key-bindings.zsh
+    _source_file /usr/share/fzf/completion.zsh
+  fi
+  # Setup my aliases after any turbo-loaded plugins
+  _source_file "$XDG_CONFIG_HOME/bash/aliases"
 }
 
 MODE_CURSOR_VICMD="green block"
@@ -39,7 +45,7 @@ MODE_CURSOR_SEARCH="#ff00ff steady underline"
 # Friendly bindings for ZSH's vi mode
 # https://github.com/softmoth/zsh-vim-mode
 zplugin ice wait'0'
-zplugin light softmoth/zsh-vim-mode
+zplugin light 'softmoth/zsh-vim-mode'
 
 
 # Additional completion definitions for Zsh
