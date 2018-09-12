@@ -44,7 +44,7 @@
   bir    = bisect reset
   br     = branch
   brd    = branch -d
-  brdf   = branch -d --force # Same as branch -D. Allow deletion if branch is not merged.
+  brdd   = branch -D # Same as branch --force. Allow deletion if branch is not merged.
   brf    = branch -f
   brl    = branch --list
   brm    = branch --move # rename
@@ -142,7 +142,7 @@
   plps   = "!git pull && git push #"
   plrf   = pull --rebase=false --autosquash --autostash
   plri   = pull --rebase=interactive --autosquash --autostash
-  plrb   = "!git pull --autostash && git rebase --autosquash --autostash \"${1:-master}\" \"${@:2}\" #"
+  plrbm  = "!git pull --autostash && git rebase --autosquash --autostash \"${1:-master}\" \"${@:2}\" #"
   ps     = push
   prq    = !"hub pull-request \"$@\" #"
   pum    = pull upstream master
