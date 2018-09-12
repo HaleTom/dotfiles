@@ -57,11 +57,91 @@ function yelp () {
 }
 export_function yelp
 
+
+# Return the first pathname in $PATH for name in $1
+function bin_path () {
+  if sh_is_zsh; then
+    builtin whence -cp "$1" 2> /dev/null
+  else  # bash
+     builtin type -P "$1"  # No output if not in $PATH
+  fi
+}
+
+
+function ostype () {
+  case "$OSTYPE" in
+    solaris*) echo "SOLARIS" ;;
+    darwin*)  echo "OSX" ;;
+    linux*)   echo "LINUX" ;;
+    bsd*)     echo "BSD" ;;
+    msys*)    echo "WINDOWS" ;;
+    *)        echo "unknown: $OSTYPE" ;;
+  esac
+}
+
+
+# Execute statements in $@ if $DEBUG is set
 function debug () {
   [[ ! $DEBUG ]] && return
   [[ $BASH_VERSION ]] && eval "${@@Q}"
   # shellcheck disable=2154  # zsh syntax:
   [[ $ZSH_VERSION ]] && eval "${(q)@}"
+}
+export_function debug
+
+
+# Expand an alias as text - https://unix.stackexchange.com/q/463327/143394
+function alias_expand {
+  if [[ $ZSH_VERSION ]]; then
+    # shellcheck disable=2154  # aliases referenced but not assigned
+    printf '%s\n' "${aliases[$1]}"
+  else  # bash
+    printf '%s\n' "${BASH_ALIASES[$1]}"
+  fi
+}
+
+
+# Expand the variable named by $1 into its value. Works in both {ba,z}sh
+function var_expand {
+  [[ -n ${1+x} ]] && return 1
+  eval printf '%s' "\"\${$1}\""
+}
+
+
+# Quote the contents of "$@"
+# Avoid printf '%q' as  'a b'  becomes  a\ b  in both {ba,z}sh
+# See also quote_args and double_quote
+function token_quote {
+  #Try built-in shell quoting first
+  if sh_is_zsh; then
+    # Single quotes only added when needed
+    # http://zsh.sourceforge.net/Doc/Release/Expansion.html#Parameter-Expansion-Flags
+    #shellcheck disable=2154  # zsh
+    eval echo '"${(q-)@}"' 2> /dev/null || local printf_quote=1
+  else  # bash
+    # Single quotes are always added
+    # ${parameter@operator} where parameter is ${@} and operator is 'Q'
+    # https://www.gnu.org/software/bash/manual/html_node/Shell-Parameter-Expansion.html
+    eval echo '"${@@Q}"' || local printf_quote=1
+  fi
+
+  # Older versions of {ba,z}sh don't support the syntax above, so fall back to printf %q
+  if [[ -n $printf_quote ]]; then
+    local quoted=()
+    for token; do
+      quoted+=( "$(printf '%q' "$token")" )
+    done
+    printf '%s\n' "${quoted[*]}"
+  fi
+}
+
+
+# Join the elements of $2... with $1 as a delimiter
+# https://stackoverflow.com/a/17841619
+function array_join {
+  local delim=$1; shift
+  echo -n "$1"; shift
+  printf "%s" "${@/#/$delim}"
 }
 
 
@@ -125,7 +205,7 @@ function nbin {
   if [ -d "$dir" ]; then
     (  # subshell to not change this shell's $PATH   #' Grr, vim syntax-highlight
       PATH=$dir:$PATH
-      eval "$@"
+      eval $(token_quote "$@")
     )
   else
     echo "\"$dir\" is not an npm binary directory." >&1
