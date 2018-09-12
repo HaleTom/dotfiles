@@ -53,7 +53,12 @@ function yelp () {
     local func=${funcstack[2]}
     [[ $func =~ / ]] && func=source  # $func may be filename. Use bash behaviour
   fi
-  echo "${file##*/}:$func:$line $*" >&2
+  local quoter
+  # Use shell-quote if it exists (nicer output in bash)
+  if ! quoter=$(command -v shell-quote); then
+    quoter=token_quote  # use function from this file
+  fi
+  echo "${file##*/}:$func:$line $("$quoter" "$@")" >&2
 }
 export_function yelp
 
