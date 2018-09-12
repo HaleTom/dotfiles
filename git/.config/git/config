@@ -199,8 +199,9 @@
   tm     = tag -m
   td     = tag -d
 
-  # root directory of repository
-  root = rev-parse --show-toplevel
+  # top level directory of repository
+  top       = !"git " # run command in repository top directory
+  top-print = rev-parse --show-toplevel
 
   # Show changes in a file, following renames
   changes = log --follow --stat --patch
