@@ -214,6 +214,8 @@
   # Pull a different branch without affecting the current one
   plbr = !"current=$(git symbolic-ref --short HEAD) && git stash save --all && git checkout \"${1:-master}\" && git pull && git checkout \"$current\" && git stash pop #"
 
+  commit-undo = "!git reset @~ \"$(git branch-name)\" && git commit --amend --no-edit --allow-empty #"
+
   # Print only the first hash encountered
   grep-1hash = !"awk 'match($0, /[a-f0-9]{7,40}/) {print substr($0, RSTART, RLENGTH); exit}' #"
   # Print the first has on each line
