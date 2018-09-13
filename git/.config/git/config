@@ -200,12 +200,19 @@
   tm     = tag -m
   td     = tag -d
 
-  # top level directory of repository
+  # Top level directory of repository
   top       = !"git " # run command in repository top directory
   top-print = rev-parse --show-toplevel
 
   # Show changes in a file, following renames
   changes = log --follow --stat --patch
+
+  #
+  # Branches
+  #
+  branch-name = "symbolic-ref --short HEAD"  # https://stackoverflow.com/a/19585361/5353461
+  # Pull a different branch without affecting the current one
+  plbr = !"current=$(git symbolic-ref --short HEAD) && git stash save --all && git checkout \"${1:-master}\" && git pull && git checkout \"$current\" && git stash pop #"
 
   # Print only the first hash encountered
   grep-1hash = !"awk 'match($0, /[a-f0-9]{7,40}/) {print substr($0, RSTART, RLENGTH); exit}' #"
