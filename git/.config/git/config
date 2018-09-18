@@ -51,16 +51,6 @@
   brt    = branch --track
   brsut  = branch --set-upstream-to
   c      = commit
-  cfu    = !"git commit --fixup=\"$1\" \"${@:2}\" #"
-  co     = checkout
-  co-    = !"git checkout @{-1}; git print-commit-1 @ #"
-  cob    = checkout -b
-  cobb   = checkout -B
-  cof    = checkout --force
-  # Create a branch tracking the same branch on origin.
-  # '-' makes argument list start at $1
-  cobt   = !sh -c 'git checkout -b "$1" && git branch --track origin/"$1"' -
-  cop    = checkout --patch
   # Pick chunks to include of changed files, include all untracked files.
   ca     = commit -a -v
   caa    = "!f() { git add -A && git commit \"$@\"; }; f"
@@ -72,6 +62,7 @@
   can    = commit -a --amend
   cann   = commit -a --amend --no-edit
   canm   = commit -a --amend -m
+  cfu    = !"git commit --fixup=\"$1\" \"${@:2}\" #"
   ch     = cherry-pick
   cha    = cherry-pick --abort
   chc    = cherry-pick --continue
@@ -88,6 +79,15 @@
   cn     = commit --amend
   cnn    = commit --amend --no-edit
   cnm    = commit --amend -m
+  co     = checkout
+  co-    = !"git checkout @{-1}; git print-commit-1 @ #"
+  cob    = checkout -b
+  cobb   = checkout -B
+  cof    = checkout --force
+  # Create a branch tracking the same branch on origin.
+  # '-' makes argument list start at $1
+  cobt   = !sh -c 'git checkout -b "$1" && git branch --track origin/"$1"' -
+  cop    = checkout --patch
   cp     = commit --patch
   cvp    = "!f() { git commit -v --patch \"$@\"; git st; }; f"
   # Select hunks from tracked files, then commit with all untracked files before commit
