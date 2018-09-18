@@ -78,6 +78,7 @@
   cmf    = "! [ $# -ge 2 ] || { echo 'Give arguments: <commit msg> <files>' >&2; exit 1; }; git add \"${@:2}\" && git commit -m \"$@\" #"
   cn     = commit --amend
   cnn    = commit --amend --no-edit
+  cnnra  = commit --amend --no-edit --reset-author
   cnm    = commit --amend -m
   co     = checkout
   co-    = !"git checkout @{-1}; git print-commit-1 @ #"
@@ -137,6 +138,7 @@
   mum    = merge upstream/master
   psf    = push --force-with-lease
   psuo   = push --set-upstream origin
+  psurb  = "![ $# -ne 1 ] && { echo 'Give argument: <remote-for-upstream>' >&2; exit 1; }; b=\"$(git rev-parse --abbrev-ref HEAD)\" && git push --set-upstream \"${1?}\" \"$b\" #"
   psuob  = "!b=\"$(git rev-parse --abbrev-ref HEAD)\" && git push --set-upstream origin \"$b\" #"
   pl     = pull
   plrf   = pull --rebase=false --autosquash --autostash
