@@ -382,6 +382,12 @@
     remote = green
     upstream = cyan
     plain = white
+  [color "decorate"]
+    branch = bold green
+    HEAD = red
+    remoteBranch = bold cyan
+    # stash =
+    # tag =
   [color "diff"]
     commit = yellow
     context = normal
