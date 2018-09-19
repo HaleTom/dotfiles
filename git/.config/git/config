@@ -391,9 +391,9 @@
     # stash =
     # tag =
   [color "diff"]
-    commit = yellow
+    commit = bold yellow
     context = normal
-    frag = yellow bold
+    frag = yellow
     func = white bold
     meta = yellow bold
     new = green bold
@@ -411,7 +411,6 @@
     # Dimmed pair #2
     oldMovedAlternativeDimmed = dim cyan strike
     newMovedDimmed = cyan italic
-
   [color "diff-highlight"]
     oldNormal = red bold
     oldHighlight = red bold 52
@@ -430,7 +429,7 @@
   [color "interactive"]
     prompt = yellow bold
     header = magenta
-    help = green
+    help = white bold
     error = red bold
   [color "status"]
     added = yellow
