@@ -88,7 +88,9 @@
   # Create a branch tracking the same branch on origin.
   # '-' makes argument list start at $1
   cobt   = !sh -c 'git checkout -b "$1" && git branch --track origin/"$1"' -
+  coo    = checkout --ours
   cop    = checkout --patch
+  cot    = checkout --theirs
   cp     = commit --patch
   cvp    = "!f() { git commit -v --patch \"$@\"; git st; }; f"
   # Select hunks from tracked files, then commit with all untracked files before commit
