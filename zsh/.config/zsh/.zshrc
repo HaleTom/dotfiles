@@ -51,7 +51,7 @@ _prompt_timer_start  # Have initial prompt show startup time from this point on
 # Colours: black, red, green, yellow, blue, magenta, cyan, white, [0-255]
 _prompt_update_zsh () {
     # Colour slashes in the directory  https://superuser.com/q/49092/365890
-    local dir_colour='%B%F{cyan}'     # bold blue
+    local dir_colour='%B%F{cyan}'     # bold blue - colour of non-/ characters
     local slash_colour='%B%F{white}'  # bold white
     local root_colour='%b%F{red}'     # red
     local reset='%f%k%b%u%s'  # reset fg, bg, bold, underline and standout to defaults
@@ -87,14 +87,16 @@ _prompt_update_zsh () {
     #  branch        relative to newer tag or branch (master~4)
     #  default       exactly eatching tag
 
-    local user_host_dir='%(#.'$root_colour'.%B)%n%B%F{black}@%B%F{blue}%m%b%F{white}:'${dir}
+    local user_at='%(#.'$root_colour'.%B)%n%B%F{black}@'
+    local host=${(%)${:-%m}}; host="%{$(candify "$host" || echo "$host")%${#host}G%}"
+    local colon_dir='%b%F{white}:'${dir}
     local jobs='%(1j.%f(%B%F{green}%j%f%b%).)'
-    local exit_status='%(?..%F{white}[%F{red}%?%F{white}])'
+    local exit_status='%(?.. %F{white}[%F{red}%?%F{white}])'
     local percent_or_hash='%(#.'${root_colour}'.%F{yellow})%#'${reset}" "
 
     # '${_git_status}' is literal and replaced when option prompt_subst is set.
     # shellcheck disable=SC2154  # $_git_status not defined here
-    PS1=${user_host_dir}'${_git_status}'${jobs}${exit_status}${percent_or_hash}
+    PS1=${user_at}${host}${colon_dir}'${_git_status}'${jobs}${exit_status}${percent_or_hash}
 
     # Python virtualenvwrapper calls this funciton via $XDG_DATA_HOME/virtualenvs/post{de,}activate
     local virtualenv
