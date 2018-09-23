@@ -141,6 +141,19 @@ function token_quote {
 }
 
 
+# https://stackoverflow.com/q/52465777/5353461
+# https://stackoverflow.com/a/52465819/5353461
+# https://superuser.com/a/1360645/365890
+function readline_ANSI_escape() {
+  if [[ $# -ge 1 ]]; then
+    echo "$*"
+  else
+    cat  # Read string from STDIN
+  fi | \
+  perl -pe 's/(?:(?<!\x1)|(?<!\\\[))(\x1b\[[0-9;]*[mG])(?!\x2|\\\])/\x1\1\x2/g'
+}
+
+
 # Join the elements of $2... with $1 as a delimiter
 # https://stackoverflow.com/a/17841619
 function array_join {
