@@ -242,6 +242,7 @@ _prompt_bash_set() {
 
     # Wrap the colour codes between \[ and \], so that
     # bash counts the correct number of characters for line wrapping:
+    local Bla='\[\e[0;30m\]'; local BBla='\[\e[1;30m\]'
     local Red='\[\e[0;31m\]'; local BRed='\[\e[1;31m\]'
     local Gre='\[\e[0;32m\]'; local BGre='\[\e[1;32m\]'
     local Yel='\[\e[0;33m\]'; local BYel='\[\e[1;33m\]'
@@ -253,18 +254,24 @@ _prompt_bash_set() {
   else # No colour
     unset GIT_PS1_SHOWCOLORHINTS
     # Don't die if set -u
-    local Red BRed Gre BGre Yel BYel Blu BBlu Mag BMag Cya BCya Whi BWhi None
+    local Bla BBla Red BRed Gre BGre Yel BYel Blu BBlu Mag BMag Cya BCya Whi BWhi None
   fi
 
   # Create the left-hand side prompt
   local lhs="${debian_chroot:+($debian_chroot)}"
 
-  # No username and bright colour if root
+  # Red username@ if root
   if [[ ${EUID} = 0 ]]; then
-    lhs+="$BRed\\h "
+    lhs+="${BRed}\\u@"
   else
-    lhs+="$BWhi\\u$None@$BBlu\\h$None:"
+    lhs+="${BWhi}\\u${BBla}@"
   fi
+
+  # hostname
+  local host='\h'
+  host=${host@P}  #  expand '\h' into a string
+  host="$(candify "$host" || echo "$host")"
+  lhs+="${host}$None:"
 
   # Working directory
   # Colour slashes in the directory  https://superuser.com/q/49092/365890
@@ -276,17 +283,17 @@ _prompt_bash_set() {
 
   [[ $EUID = 0 ]] && slash_colour=$root_colour
   dir=${dir//\//${slash_colour}/${dir_colour}}  # Replace / with coloured /
-  lhs+=${dir}${None}
+  lhs+=${dir}
 
   # Git status
   _git_status_gen LHS  # Generate git status for a LHS prompt string
   # Bright before the $git part has the branch name go bold, which is a nice "feature"
-  [[ -n $_git_status ]] && lhs+="${BWhi}${_git_status}${BWhi}"
+  [[ -n $_git_status ]] && lhs+="${BWhi}${_git_status}"
   # TODO only create the prompt once per directory change, and include expand $_git_status via shell options
 
   # Highlight non-standard exit codes
   if [[ $exit != 0 ]]; then
-    lhs+=" ${BWhi}[${Red}$exit${BWhi}]"
+    lhs+=" ${BWhi}[${Red}${exit}${BWhi}]"
   fi
 
   # Change colour of final character if root
