@@ -267,7 +267,16 @@ _prompt_bash_set() {
   fi
 
   # Working directory
-  lhs+="$BCya\\w$None"
+  # Colour slashes in the directory  https://superuser.com/q/49092/365890
+  local dir_colour=$BCya  # colour of non-/ characters
+  local slash_colour=$BYel
+  local root_colour=$Red
+  local dir='\w'  # Working directory
+  dir=${dir_colour}${dir@P}  # Initially colour expansion of '\w'
+
+  [[ $EUID = 0 ]] && slash_colour=$root_colour
+  dir=${dir//\//${slash_colour}/${dir_colour}}  # Replace / with coloured /
+  lhs+=${dir}${None}
 
   # Git status
   _git_status_gen LHS  # Generate git status for a LHS prompt string
