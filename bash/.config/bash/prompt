@@ -57,7 +57,7 @@ _git_status_gen() {
 
   # zsh: If $_git_status contains ${__git_ps1_branch_name} it will not be
   # recursively expanded. Force literal text to be produced by __git_ps1.
-  [[ $ZSH_VERSION ]] && setopt local_options no_prompt_subst
+  [[ -n $ZSH_VERSION ]] && setopt local_options no_prompt_subst
 
   # Allow disabling git status. Avoid error if __git_ps1 undefined.
   # $__git_printf_supports_v is set if git-prompt.sh is sourced
@@ -66,8 +66,17 @@ _git_status_gen() {
     # __git_ps1 will only generate colour commands inside $PS1
     local PS1  # __git_ps1 will overwrite it
     __git_ps1 "" "" "%s" # force colour; no default round bracket (decorations)
-    _git_status=$PS1
-    [[ ! $_git_status = '' ]] && _git_status=" (${_git_status})"
+    _git_status=${PS1}
+
+    if [[ $_git_status != '' ]]; then
+      if [[ -n $ZSH_VERSION ]]; then
+        _git_status=" (%B${_git_status}%b)"  # Avoid glitching
+      else
+        local bold='\[\e[1m\]'
+        local reset='\[\e[0m\]'
+        _git_status="${reset} (${bold}${_git_status}${reset})"
+      fi
+    fi
 
     if [[ $BASH_VERSION && $1 == RHS ]]; then
       # We're generating for a RHS prompt. Work-around is needed for bash only.
@@ -287,8 +296,7 @@ _prompt_bash_set() {
 
   # Git status
   _git_status_gen LHS  # Generate git status for a LHS prompt string
-  # Bright before the $git part has the branch name go bold, which is a nice "feature"
-  [[ -n $_git_status ]] && lhs+="${BWhi}${_git_status}"
+  lhs+="${_git_status}"
   # TODO only create the prompt once per directory change, and include expand $_git_status via shell options
 
   # Highlight non-standard exit codes
