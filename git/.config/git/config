@@ -154,6 +154,7 @@
   rbc    = rebase --continue
 ## Fixme as shown by g la:
   rbi    = !"git rebase --interactive --autostash --autosquash \"$(git rpc \"${1:-HEAD~20}\")\"^ #"
+  rbia   = !"GIT_SEQUENCE_EDITOR=true git rbi \"$@\" #"
   rbo    = rebase --onto
   ro     = remote
   rov    = remote --verbose
