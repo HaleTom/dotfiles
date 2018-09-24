@@ -99,22 +99,20 @@
     echo '# Add only new files silently' > /dev/null && \
     git commit -a --amend --no-edit && \
     git status -s; }; f"
+  d      = diff
   db     = "!export GIT_TRACE=1; git" # Use to debug an alias, Eg: git db <aliasname>
   debug  = "!set -x; export GIT_TRACE=2 GIT_CURL_VERBOSE=2 GIT_TRACE_PERFORMANCE=2 GIT_TRACE_PACK_ACCESS=2 GIT_TRACE_PACKET=2 GIT_TRACE_PACKFILE=2 GIT_TRACE_SETUP=2 GIT_TRACE_SHALLOW=2; git"
-  dc     = diff --cached --ws-error-highlight=old,new # old,new,context,all
-  df     = diff --ws-error-highlight=old,new
-  # "diff -U" format, but colourised
-  dfhi   = !"git -c core.pager='diff-highlight | less -FLRX --tabs=4' -c interactive.DiffFilter='diff-highlight | less -FLRX --tabs=4'"
-
-## Fixme bash not needed, quoting problem when shown in g la
-  dfc    = "!case \"$1\" in -*) ;; *) x=$(git rpc \"${1:-HEAD}\");shift; esac; git diff --ws-error-highlight=old,new \"$@\" \"$x\" \"$(git child-hash \"$x\")\" #" # Diff with first child
-  dfp    = "!case \"$1\" in -*|'') ;; *) x=$(git rpc \"${1:-HEAD}\");shift; esac; git diff --ws-error-highlight=old,new \"$@\" \"${x:=HEAD}~\" \"$x\" #" # Diff with first parent
-  dh     = diff --ws-error-highlight=old,new HEAD
-  dhh    = diff --ws-error-highlight=old,new HEAD~1
-  dch    = diff --cached --ws-error-highlight=old,new HEAD
-  dchh   = diff --cached --ws-error-highlight=old,new HEAD~1
-  ds     = diff --stat # lines added and removed
+  dc     = diff --cached
+  dcs    = diff --cached --compact-summary --dirstat
+  dcp    = diff --cached HEAD~
+  dcps   = diff --cached --compact-summary --dirstat HEAD~
+  dn     = diff --no-index
+  dp     = diff HEAD~
+  dps    = diff --compact-summary --dirstat HEAD~
+  ds     = diff --compact-summary --dirstat  # implies --stat
   dt     = difftool -y
+  dxc    = "!case \"$1\" in -*|'') ;; *) x=$(git rpc \"${1:-HEAD}\");shift;esac; git d \"$@\" \"$x\" \"$(git child-hash \"$x\")\" #" # Diff given with its first child
+  dxp    = "!case \"$1\" in -*|'') ;; *) x=$(git rpc \"${1:-HEAD}\");shift;esac; git d \"$@\" \"${x:=HEAD}~\" \"$x\" #" # Diff given with its first parent
   ec     = !"git status -sz  | sed -rnz 's/^(U.|.U) (.*)/\\2/p' | xargs -0 $EDITOR #"
   elc    = !"git edit-config"
   elx    = !"git edit-local-excludes"
@@ -451,6 +449,7 @@
   interHunkContext = 2
   renames = copies
   tool = vimdiff
+  wsErrorHighlight = old,new
 
   # https://git-scm.com/docs/gitattributes
   # Remove cachetextconv via : git update-ref -d refs/notes/textconv/<driver>
