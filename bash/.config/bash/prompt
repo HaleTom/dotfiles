@@ -314,6 +314,11 @@ _prompt_bash_set() {
   #
   # Right hand side of prompt
   #
+
+  # Note: Don't use the colour variables (eg $BRed) defined above as they
+  # include zero-length escaping of the ANSI codes.  Use unescaped codes as the
+  # whole RHS will be included in \[ and \], and these do not nest.
+
   local rhs="" # String to be printed on the right hand side of terminal
   local date_time virtualenv
 
@@ -343,9 +348,9 @@ _prompt_bash_set() {
   local Save='\e[s' # Save cursor position
   local Restore='\e[u' # Restore cursor to save point
 
-  # Save cursor position, jump to (right hand edge minus N columns) where N is
-  # the length of the printable RHS string. Print the RHS string, then return
-  # to the saved position and print the LHS prompt.
+  # Save cursor position, jump (\e#G) to (right hand edge minus N columns)
+  # where N is the length of the printable RHS string. Print the RHS string,
+  # then return to the saved position and print the LHS prompt.
 
   # Note: "\[" and "\]" are used so that bash can calculate the number of
   # printed characters so that the prompt doesn't do strange things when
@@ -354,12 +359,19 @@ _prompt_bash_set() {
   # The colour variables already include these so they can't be used inside the
   # explicit "\[" and "\]" because of nesting issues.
 
-  # Edge case todo: Don't print more RHS characters than will fit on one line:
+  # Edge case TODO: Don't print more RHS characters than will fit on one line:
   # http://stackoverflow.com/a/43744552/5353461
 
-  PS1='\[\e[0m'${Save}'\e['$((COLUMNS - ${#rhs_printable}))G${rhs}${Restore}'\]'${lhs}
-  # If $COLUMNS happens to be unset (some cygwin, OSX)
-  # PS1="${lhs}${Blu}\[${Save}\e[$(($(tput cols) - ${#rhs_printable}))G${rhs}${Restore}\]${PS1}"
+  local columns
+  if [[ -n $COLUMNS ]]; then
+    columns=$COLUMNS
+  else
+    columns=$(tput cols)
+  fi
+
+  # TODO: Use readline_ANSI_escape() to escape all non-printables only once.
+
+  PS1='\['${Save}'\e['$((columns - ${#rhs_printable}))G${rhs}${Restore}'\]'${lhs}
 
   [[ $set_e ]] && set -e
   [[ $set_x ]] && set -x
