@@ -279,7 +279,7 @@ _prompt_bash_set() {
   # hostname
   local host='\h'
   host=${host@P}  #  expand '\h' into a string
-  host="$(candify "$host" || echo "$host")"
+  host="$(candify "$host" | readline_ANSI_escape || echo "$host")"
   lhs+="${host}$None:"
 
   # Working directory
