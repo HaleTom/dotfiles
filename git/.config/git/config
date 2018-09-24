@@ -123,7 +123,8 @@
   fua    = fixup-auto
   head   = "!c=\"`git rpc \"$1\"`\" && p=\"$(git log -n1 --oneline --decorate)\" && git update-ref --no-deref -m \"Move from $p\" HEAD \"$c\" #" # Move HEAD to specified commit-ish
   icdiff = difftool --no-prompt --extcmd icdiff # \"$@\"
-  lf     = log --pretty=full
+  l      = log --compact-summary --dirstat
+  l1     = print-commit-1
   logd   = log --oneline --graph --decorate --remotes --max-count=20
   logd   = !"eval git log $(git fmt-commit-1line) --graph --remotes --max-count=20 #"
   logdi  = !"eval git log $(git fmt-commit-1line-iso) --graph --remotes --max-count=20 #"
@@ -131,6 +132,7 @@
   logdai  = !"lines=$(($(tput lines)*3/5)); eval git log $(git fmt-commit-1line-iso) --graph --all --remotes --color=always \"$@\" | head -n$lines #"
   logdaa = !"eval git log $(git fmt-commit-1line) --graph --all --remotes --color=always \"$@\" #"
   logdaai= !"eval git log $(git fmt-commit-1line-iso) --graph --all --remotes --color=always \"$@\" #"
+  lp     = log --patch --compact-summary --dirstat
   ls     = ls-files
   mnf    = merge --no-ff
   mom    = merge origin/master
