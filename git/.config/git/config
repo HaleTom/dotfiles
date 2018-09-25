@@ -452,7 +452,7 @@
   colorMoved = dimmed_zebra
   indentHeuristic = true # New default from v2.14, see https://github.com/blog/2188-git-2-9-has-been-released
   interHunkContext = 2
-  renames = copies
+  renames = copies  # detect both copies and renames
   tool = vimdiff
   wsErrorHighlight = old,new
 
