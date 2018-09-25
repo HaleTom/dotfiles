@@ -58,7 +58,7 @@ zplugin light 'zsh-users/zsh-completions'
 # eg zle-line-init of the Special Wigets in `man zshzle`
 # https://github.com/willghatch/zsh-hooks
 zplugin ice pick"zsh-hooks.plugin.zsh"
-zplugin light willghatch/zsh-hooks 
+zplugin light willghatch/zsh-hooks
 
 
 # Auto-close and delete matching delimiters in zsh
@@ -78,11 +78,12 @@ ZSH_AUTOSUGGEST_HIGHLIGHT_STYLE='fg=238'
 ZSH_AUTOSUGGEST_USE_ASYNC=1
 
 
-# enhancd: A next-generation cd command with an interactive filter
-# https://github.com/b4b4r07/enhancd
-zplugin ice wait'0'
-zplugin light 'b4b4r07/enhancd'
-export ENHANCD_DIR=$XDG_CONFIG_HOME/enhancd ENHANCD_DOT_SHOW_FULLPATH=1 # ENHANCD_FILTER=fzy:fzf:peco:percol
+# Awaiting: https://github.com/b4b4r07/enhancd/issues/77
+# # enhancd: A next-generation cd command with an interactive filter
+# # https://github.com/b4b4r07/enhancd
+# zplugin ice wait'0'
+# zplugin light 'b4b4r07/enhancd'
+# export ENHANCD_DIR=$XDG_CONFIG_HOME/enhancd ENHANCD_DOT_SHOW_FULLPATH=1 # ENHANCD_FILTER=fzy:fzf:peco:percol
 
 
 # Reminds you to use existing aliases for commands you just typed
