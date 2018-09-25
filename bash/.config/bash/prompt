@@ -276,19 +276,17 @@ _prompt_bash_set() {
     lhs+="${BWhi}\\u${BBla}@"
   fi
 
-  # hostname
-  local host='\h'
-  host=${host@P}  #  expand '\h' into a string
-  host="$(candify "$host" | readline_ANSI_escape || echo "$host")"
-  lhs+="${host}$None:"
+  # Hostname:
+  host="$(candify "$HOSTNAME" | readline_ANSI_escape || echo "$HOSTNAME")"
+  lhs+="${host}${None}:"
 
   # Working directory
   # Colour slashes in the directory  https://superuser.com/q/49092/365890
   local dir_colour=$BCya  # colour of non-/ characters
   local slash_colour=$BYel
   local root_colour=$Red
-  local dir='\w'  # Working directory
-  dir=${dir_colour}${dir@P}  # Initially colour expansion of '\w'
+  local dir=${PWD/#$HOME/'~'}  # Working directory
+  dir=${dir_colour}${dir}  # Initially colour expansion of '\w'
 
   [[ $EUID = 0 ]] && slash_colour=$root_colour
   dir=${dir//\//${slash_colour}/${dir_colour}}  # Replace / with coloured /
