@@ -292,7 +292,7 @@ trap -- "$trap_str _pre_command" DEBUG; unset trap_str
 
 # Setup direnv
 # Required after setting the prompt says: https://github.com/direnv/direnv
-eval "$(direnv hook bash)"
+command -v direnv &> /dev/null && eval "$(direnv hook bash)"
 
 
 ############################
