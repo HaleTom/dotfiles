@@ -145,6 +145,7 @@ _source_files <<DOTFILES
     $ZDOTDIR/plugins
     $ZDOTDIR/zle
 DOTFILES
+# $XDG_CONFIG_HOME/bash/aliases is sourced after plugins load to overwrite if necessary
 
 
 # Allow user to set a simple prompt for capturing sample output
@@ -169,7 +170,7 @@ _simple_prompt_zsh() {
 precmd_zsh_hook () {
     _prompt_timer_stop
     # Allow for a simple prompt for copy / paste examples
-    if [[ ! -z ${ps1+x} ]]; then
+    if [[ -n ${ps1+x} ]]; then
         _simple_prompt_zsh; unset RPS1;
         # shellcheck disable=2154,2004  # zsh
         (( ${+functions[disable_you_should_use]} )) && disable_you_should_use
