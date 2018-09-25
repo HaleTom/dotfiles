@@ -29,11 +29,13 @@
 
 [alias]  # these are case INsensitive
   a      = add
-  aa     = add -A
+  aa     = add -A  # deletions and new files
+  ar     = "!git add \"$(rev-parse --show-toplevel)\" \"$@\" #"  # Repo level: New and changed, no deletions
+  ax     = git add .  # Current directory: New and changed, no deletions
   aacm   = "!f() { git add -A && git commit -m \"$@\"; }; f"
   an     = add --intent-to-add # add -N
   ap     = add --patch
-  au     = add --update
+  au     = add --update  # deletions of tracked files but no new ones
   aut    = "!git ls-files -z -o --exclude-standard | xargs -0 git add; #" # Add only untracked files
   aw     = !git diff -U0 -w --no-color -- \"$@\" | git apply --cached --ignore-whitespace --unidiff-zero "#" # Add only non-whitespace changes
   aow    = !git add -- \"$@\" && git diff --cached -w | git apply --cached -R "#" # Add only whitespace changes
