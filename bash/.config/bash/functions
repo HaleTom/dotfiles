@@ -128,23 +128,20 @@ function token_quote {
   if sh_is_zsh; then  # shellcheck disable=2154
     # (q-) adds single quotes only when needed
     # http://zsh.sourceforge.net/Doc/Release/Expansion.html#Parameter-Expansion-Flags
-    #shellcheck disable=2154  # zsh
-    eval echo '"${(q-)@}"' 2> /dev/null || local printf_quote=1
+    eval echo '"${(q-)@}"' 2> /dev/null && return
   else  # bash
     # Single quotes are always added
     # ${parameter@operator} where parameter is ${@} and operator is 'Q'
     # https://www.gnu.org/software/bash/manual/html_node/Shell-Parameter-Expansion.html
-    eval echo '"${@@Q}"' || local printf_quote=1
+    eval echo '"${@@Q}"' 2> /dev/null && return
   fi
 
-  # Older versions of {ba,z}sh don't support the syntax above, so fall back to printf %q
-  if [[ -n $printf_quote ]]; then
-    local quoted=()
-    for token; do
-      quoted+=( "$(printf '%q' "$token")" )
-    done
-    printf '%s\n' "${quoted[*]}"
-  fi
+  # If we get to here, then we are an elder version of {ba,z}sh which don't support the syntax above
+  local quoted=()
+  for token; do
+    quoted+=( "$(printf '%q' "$token")" )
+  done
+  printf '%s\n' "${quoted[*]}"
 }
 
 
