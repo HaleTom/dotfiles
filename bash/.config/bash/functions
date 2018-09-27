@@ -117,9 +117,16 @@ function var_expand {
 # Avoid printf '%q' as  'a b'  becomes  a\ b  in both {ba,z}sh
 # See also quote_args and double_quote
 function token_quote {
-  #Try built-in shell quoting first
-  if sh_is_zsh; then
-    # Single quotes only added when needed
+  # If shell-quote exists, use it - it only quotes tokens where needed
+  # Some versions of bash are "enthuastic" when it comes to adding quotes
+  if command -v shell-quote &> /dev/null; then
+    shell-quote "$@"
+    return
+  fi
+
+  # Try built-in shell quoting first as it's generally prettier than printf %q
+  if sh_is_zsh; then  # shellcheck disable=2154
+    # (q-) adds single quotes only when needed
     # http://zsh.sourceforge.net/Doc/Release/Expansion.html#Parameter-Expansion-Flags
     #shellcheck disable=2154  # zsh
     eval echo '"${(q-)@}"' 2> /dev/null || local printf_quote=1
