@@ -6,6 +6,10 @@
 
 
 # Zplugin
+# https://github.com/zdharma/zplugin/issues/80
+# declare -A ZPLGM
+# ZPLGM[HOME_DIR]=$XDG_DATA_HOME/zplugin
+# rm ~/.config/zsh/.zplugin
 source "$XDG_DATA_HOME/zplugin/bin/zplugin.zsh"
 autoload -Uz _zplugin
 # shellcheck disable=SC2154,2034,2004
@@ -103,7 +107,7 @@ zplugin load 'MichaelAquilina/zsh-you-should-use'
 
 # A collection of LS_COLORS definitions; needs your contribution!
 # https://github.com/trapd00r/LS_COLORS
-zplugin ice wait'0' atclone"dircolors -b LS_COLORS > ls_colors.zsh" atpull'%atclone' pick"ls_colors.zsh"
+zplugin ice wait'0' atclone"dircolors -b LS_COLORS >| ls_colors.zsh" atpull'%atclone' pick"ls_colors.zsh"
 zplugin light trapd00r/LS_COLORS
 
 
@@ -115,7 +119,6 @@ zplugin light supercrabtree/k
 # Run commands in __zplg_async_run asynchronously
 zplugin ice wait'0' atload'__zplg_async_run'
 zplugin light null  # create with `zplugin create null`, see https://github.com/zdharma/zplugin/issues/68
-
 
 # Syntax highlighting should be the last plugin
 # Optimized and extended zsh-syntax-highlighting

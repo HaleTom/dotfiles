@@ -51,9 +51,9 @@ _prompt_timer_start  # Have initial prompt show startup time from this point on
 # Colours: black, red, green, yellow, blue, magenta, cyan, white, [0-255]
 _prompt_update_zsh () {
     # Colour slashes in the directory  https://superuser.com/q/49092/365890
-    local dir_colour='%B%F{cyan}'     # bold blue - colour of non-/ characters
-    local slash_colour='%B%F{white}'  # bold white
-    local root_colour='%b%F{red}'     # red
+    local dir_colour='%B%F{cyan}'      # Colour of non-/ characters
+    local slash_colour='%B%F{white}'   # '/' colour
+    local root_colour='%b%F{red}'      # Colour of slashes if EUID==0
     local reset='%f%k%b%u%s'  # reset fg, bg, bold, underline and standout to defaults
     local dir=${dir_colour}${(%):-%~}  # Initially colour prompt %~ directory
 
