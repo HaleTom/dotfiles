@@ -213,7 +213,7 @@ autoload -Uz compinit  # zplugin will do compinit later
 
 # Setup direnv
 # Required at end of zshrc says: https://github.com/direnv/direnv
-eval "$(direnv hook zsh)"
+command -v direnv &> /dev/null && eval "$(direnv hook zsh)"
 
 return
 ##
