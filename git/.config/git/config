@@ -146,14 +146,14 @@
   psuo   = push --set-upstream origin
   psurb  = "![ $# -ne 1 ] && { echo 'Give argument: <remote-for-upstream>' >&2; exit 1; }; b=\"$(git rev-parse --abbrev-ref HEAD)\" && git push --set-upstream \"${1?}\" \"$b\" #"
   psuob  = "!b=\"$(git rev-parse --abbrev-ref HEAD)\" && git push --set-upstream origin \"$b\" #"
-  pl     = pull --rebase --autostash
-  plrf   = pull --rebase=false
-  plri   = pull --rebase=interactive --autosquash --autostash
-  plrbm  = "!git pull --autostash && git rebase --autosquash --autostash \"${1:-master}\" \"${@:2}\" #"
-  pp     = "!git pull && git push #"
+  pl     = !"git pull-autostash"
+  plrf   = pull-autostash --rebase=false
+  plri   = pull-autostash --rebase=interactive
+  plrbm  = "!git pull-autostash && git rebase --autosquash --autostash \"${1:-master}\" \"${@:2}\" #"
+  pp     = "!git pull-autostash && git push #"
   ps     = push
   prq    = !"hub pull-request \"$@\" #"
-  pum    = pull upstream master
+  pum    = pull-autostash upstream master
   rb     = rebase
   rba    = rebase --abort
   rbb    = !"git rebase -i $(git merge-base $1 HEAD) #" # Rebase to branch-name # http://stackoverflow.com/a/31036518/5353461
@@ -223,7 +223,7 @@
   #
   branch-name = "symbolic-ref --short HEAD"  # https://stackoverflow.com/a/19585361/5353461
   # Pull a different branch without affecting the current one
-  plbr = !"current=$(git symbolic-ref --short HEAD) && git stash save --all && git checkout \"${1:-master}\" && git pull && git checkout \"$current\" && git stash pop #"
+  plbr = !"current=$(git symbolic-ref --short HEAD) && git stash save --all && git checkout \"${1:-master}\" && git pull-autostash && git checkout \"$current\" && git stash pop #"
 
   commit-undo = "!git reset @~ \"$(git branch-name)\" && git commit --amend --no-edit --allow-empty #"
 
@@ -535,6 +535,7 @@
 
 [pull]
   rebase = true
+  autostash = false  # See script: git-pull-autostash
 
 [push]
   default = simple
