@@ -81,6 +81,8 @@
   cn     = commit --amend
   cnn    = commit --amend --no-edit
   cnnra  = commit --amend --no-edit --reset-author
+  cnrbc  = !"git cn  && git rbc #"
+  cnnrbc = !"git cnn && git rbc #"
   cnm    = commit --amend -m
   co     = checkout
   co-    = !"git checkout @{-1}; git print-commit-1 @ #"
