@@ -122,29 +122,8 @@ export_function var_expand
 
 
 # Quote the contents of "$@"
-# Avoid printf '%q' as  'a b'  becomes  a\ b  in both {ba,z}sh
-# See also quote_args and double_quote
+# See also ~/bin/token-quote for prettier, user-facing quoting
 function token_quote {
-  # If shell-quote exists, use it - it only quotes tokens where needed
-  # Some versions of bash are "enthuastic" when it comes to adding quotes
-  if command -v shell-quote &> /dev/null; then
-    shell-quote "$@"
-    return
-  fi
-
-  # Try built-in shell quoting first as it's generally prettier than printf %q
-  if sh_is_zsh; then  # shellcheck disable=2154
-    # (q-) adds single quotes only when needed
-    # http://zsh.sourceforge.net/Doc/Release/Expansion.html#Parameter-Expansion-Flags
-    eval echo '"${(q-)@}"' 2> /dev/null && return
-  else  # bash
-    # Single quotes are always added
-    # ${parameter@operator} where parameter is ${@} and operator is 'Q'
-    # https://www.gnu.org/software/bash/manual/html_node/Shell-Parameter-Expansion.html
-    eval echo '"${@@Q}"' 2> /dev/null && return
-  fi
-
-  # If we get to here, then we are an elder version of {ba,z}sh which don't support the syntax above
   local quoted=()
   for token; do
     quoted+=( "$(printf '%q' "$token")" )
