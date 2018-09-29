@@ -87,10 +87,9 @@ function ostype () {
 
 # Execute statements in $@ if $DEBUG is set
 function debug () {
-  [[ ! $DEBUG ]] && return
-  [[ $BASH_VERSION ]] && eval "${@@Q}"
-  # shellcheck disable=2154  # zsh syntax:
-  [[ $ZSH_VERSION ]] && eval "${(q)@}"
+  if [[ -n $DEBUG ]]; then
+    eval "$(token_quote "$@")"
+  fi
 }
 export_function debug
 
@@ -130,6 +129,7 @@ function token_quote {
   done
   printf '%s\n' "${quoted[*]}"
 }
+export_function token_quote
 
 
 # https://stackoverflow.com/q/52465777/5353461
