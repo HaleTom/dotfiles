@@ -107,10 +107,18 @@ function alias_expand {
 
 
 # Expand the variable named by $1 into its value. Works in both {ba,z}sh
-function var_expand {
-  [[ -n ${1+x} ]] && return 1
-  eval printf '%s' "\"\${$1}\""
+# eg: a=HOME $(var_expand $a) == /home/me
+# https://unix.stackexchange.com/a/472058/143394
+# https://unix.stackexchange.com/a/472066/143394
+# https://stackoverflow.com/a/52556475/5353461
+var_expand() {
+  if [ "$#" -ne 1 ] || [ -z "${1-}" ]; then
+    printf 'var_expand: expected one argument\n' >&2;
+    return 1;
+  fi
+  eval printf '%s' "\"\${$1?}\""
 }
+export_function var_expand
 
 
 # Quote the contents of "$@"
