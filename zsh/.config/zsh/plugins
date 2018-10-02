@@ -116,6 +116,15 @@ zplugin light trapd00r/LS_COLORS
 # zplugin ice wait'[[ -n ${ZLAST_COMMANDS[(r)k*]} ]]' pick'k.sh'
 zplugin ice wait'0' pick'k.sh'
 zplugin light supercrabtree/k
+
+
+# # Adds numbered shortcuts to the output git status, and much more
+# # https://madebynathan.com/2011/10/19/git-shortcuts-like-youve-never-seen-before/
+# # https://github.com/scmbreeze/scm_breeze
+# zplugin ice wait'0'
+# zplugin light 'scmbreeze/scm_breeze'
+
+
 # Run commands in __zplg_async_run asynchronously
 # Do this 2nd last to be able to override plugin settings
 zplugin ice wait'0' atload'__zplg_async_run'
