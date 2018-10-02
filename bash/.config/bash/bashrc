@@ -70,9 +70,8 @@ export S_COLORS=auto
 # Use powerpill as pacman wrapper if installed
 [[ -x /usr/bin/powerpill ]] && export PACMAN=/usr/bin/powerpill
 
-# Have command-not-found ask to install
-unset COMMAND_NOT_FOUND_INSTALL_PROMPT
-unset -f command_not_found_handle 2>/dev/null # for Ubuntu 16.04 Xenial Xerus
+# Remove bash's command not found handler
+unset -f command_not_found_handle 2>/dev/null # https://superuser.com/a/1252874/365890
 
 # ssh-ident
 export BINARY_SSH=/usr/bin/ssh
