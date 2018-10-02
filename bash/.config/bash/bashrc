@@ -186,9 +186,6 @@ _source_files <<DOTFILES
     # $HOME/.vim/bundle/gruvbox/gruvbox_256palette.sh
 
     $XDG_CONFIG_HOME/bash/prompt
-
-    # Source my personal ones last so they're not overridden
-    $XDG_CONFIG_HOME/bash/aliases
 DOTFILES
 unset tmuxinator_source
 
@@ -275,6 +272,9 @@ _source_files <<DOTFILES
     /usr/share/fzf/key-bindings.bash
     /usr/share/fzf/completion.bash
     $XDG_CONFIG_HOME/bash/completion
+
+    # Source my personal files last so they're not overridden
+    $XDG_CONFIG_HOME/bash/aliases
 DOTFILES
 unset -f _source_file _source_files # clean up namespace
 
