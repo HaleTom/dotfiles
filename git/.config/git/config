@@ -193,6 +193,8 @@
   sc     = stash clear # all
   sd     = stash drop # latest or specified
   sl     = stash list
+  sls    = stash list --compact-summary --dirstat
+  slp    = stash list --patch --compact-summary --dirstat
   sp     = stash pop
   spi    = stash pop --index
   sps    = stash push
