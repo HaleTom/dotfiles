@@ -63,9 +63,11 @@ _git_status_gen() {
   # $__git_printf_supports_v is set if git-prompt.sh is sourced
   # shellcheck disable=2154  # $__git_printf_supports_v unset
   if [[ -z ${_disable_git_string+x} && ! -z ${__git_printf_supports_v+x} ]]; then
-    # __git_ps1 will only generate colour commands inside $PS1
     local PS1  # __git_ps1 will overwrite it
-    __git_ps1 "" "" "%s" # force colour; no default round bracket (decorations)
+
+    # __git_ps1 will only generate colour commands inside $PS1
+    # Force colour.  Also no default round bracket (decorations) with just %s
+    __git_ps1 "" "" "%s" 2> /dev/null  # STDERR EPERM can interrupt the prompt
     _git_status=${PS1}
 
     if [[ $_git_status != '' ]]; then
