@@ -146,7 +146,7 @@
   psuo   = push --set-upstream origin
   psurb  = "![ $# -ne 1 ] && { echo 'Give argument: <remote-for-upstream>' >&2; exit 1; }; b=\"$(git rev-parse --abbrev-ref HEAD)\" && git push --set-upstream \"${1?}\" \"$b\" #"
   psuob  = "!b=\"$(git rev-parse --abbrev-ref HEAD)\" && git push --set-upstream origin \"$b\" #"
-  pl     = !"git pull-autostash"
+  pl     = !"git pull-autostash --progress"
   plrf   = pull-autostash --rebase=false
   plri   = pull-autostash --rebase=interactive
   plrbm  = "!git pull-autostash && git rebase --autosquash --autostash \"${1:-master}\" \"${@:2}\" #"
