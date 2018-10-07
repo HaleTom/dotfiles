@@ -555,4 +555,12 @@
 
 [rerere] # .git/rr-cache
   enabled = true
-  autoupdate = true # auto-stage resolved conflicts
+  autoupdate = true  # Auto-stage resolved conflicts
+
+[tag]
+  sort = -version:refname  # Reverse sort versions numerically. See also [versionsort]
+
+[versionsort]
+  # prereleaseSuffix is deprecated in favour of suffix, but used for compatibility.
+  # https://git-scm.com/docs/git-config#git-config-versionsortprereleaseSuffixdeprecated
+  prereleaseSuffix = "-"  # Have 2.0-rc1 be earlier than 2.0
