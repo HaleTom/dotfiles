@@ -163,6 +163,11 @@
   rbia   = !"GIT_SEQUENCE_EDITOR=true git rbi \"$@\" #"
   rbo    = rebase --onto
   ro     = remote
+  roa    = remote add
+  rog    = remote get-url
+  rorm   = remote remove
+  rorn   = remote rename
+  ros    = remote set-url
   rov    = remote --verbose
   re     = reset
   reco   = !"cd \"${GIT_PREFIX:-.}\" && git reset \"$@\" && git checkout \"$@\" #"  # https://stackoverflow.com/a/52313420/5353461
