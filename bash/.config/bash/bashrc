@@ -22,7 +22,6 @@ export MANPAGER='less -Ms +Gg' # Show line percentage in man pages
 export PAGER=less
 export QUOTING_STYLE=shell-escape  # https://www.gnu.org/software/coreutils/manual/html_node/Formatting-the-file-names.html
 
-export RUBYLIB="$HOME"/lib:"$RUBYLIB"
 export GNULIB_SRCDIR="$HOME"/repo/gnulib
 export GCC_COLORS=1 # Enable gcc colours, available since gcc 4.9.0
 export RSYNC_PARTIAL_DIR=.rsync-tmp-partial # Automatically set --partial-dir with --partial
@@ -83,6 +82,17 @@ export PYTHONUSERBASE=$XDG_DATA_HOME/python
 export WORKON_HOME=$XDG_DATA_HOME/virtualenvs
 export VIRTUALENVWRAPPER_PYTHON=$WORKON_HOME/default/bin/python
 export PROJECT_HOME=$HOME/prj # Used by mkproject
+
+# Ruby
+for _entry in /usr/lib/ruby/gems/*; do
+  if [[ -d $_entry ]]; then
+    # TODO: Add only if not there already
+    export GEM_PATH=$_entry:$GEM_PATH
+  fi
+done
+unset _entry
+# TODO: Add only if not there already
+export RUBYLIB="$HOME"/lib:"$RUBYLIB"
 
 export GITHUB_USER=HaleTom
 
