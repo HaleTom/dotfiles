@@ -158,8 +158,7 @@
   rba    = rebase --abort
   rbb    = !"git rebase -i $(git merge-base $1 HEAD) #" # Rebase to branch-name # http://stackoverflow.com/a/31036518/5353461
   rbc    = rebase --continue
-## Fixme as shown by g la:
-  rbi    = !"git rebase --interactive --autostash --autosquash \"$(git rpc \"${1:-HEAD~20}\")\"^ #"
+  rbi    = !"git rebase --interactive --autostash --autosquash --root \"$(git rpc \"${1:-$(git parent 20)}\")\" \"${@:2}\" #"
   rbia   = !"GIT_SEQUENCE_EDITOR=true git rbi \"$@\" #"
   rbo    = rebase --onto
   ro     = remote
@@ -257,6 +256,17 @@
 
 
   #
+  # Ancestors
+  #
+
+  # TODO: warn if there is more than one parent
+
+  # Print the $1-th first-parent of commit $2, or the earliest existing commit if the beginning of history is reached
+  # Defaults: $1=1 %$2=HEAD. If 0th parent is requested, the commit itself is returned.
+  parent = !"[ \"${1:-1}\" -eq \"${1:-1}\" ] && c=$(git rev-parse \"${2:-@}\") && git log -n\"$(expr \"${1:-1}\" + 1)\" --first-parent --pretty=\"%H\" --reverse \"$c\" | head -n1 #"
+
+
+  #
   # Children / Descendants (scions)
   #
   # All children hashes of current (or specified) commit-ish sorted newest first
@@ -309,9 +319,6 @@
   # TODO:
   # Execute a fetch on all the remotes you have configured
   # fetchall = !bash -c 'source /etc/bash_completion.d/git && __git_remotes | xargs --no-run-if-empty -t -n1 git fetch $*' -
-
-  # TODO: warn if more than one parent
-  parent = rev-parse HEAD~
 
   # Generate fixup/squash for HEAD or specified commit
   fixup  = !"git commit -m \"fixup! $(git log -1 --format='%h %s' \"$(git rpc \"$1\")\")\" \"${@:2}\" #"
