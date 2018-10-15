@@ -1,4 +1,4 @@
 # https://github.com/ccontavalli/ssh-ident
 
 # Prevent "All keys already loaded"
-VERBOSITY = LOG_WARN
+VERBOSITY = LOG_ERROR
