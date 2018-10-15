@@ -1,3 +1,5 @@
+# Don't put a comment after a command!
+
 # Ignore personal configuration for git when sharing to GitHub:
 /git/.gitconfig.local
 /*-ravi
