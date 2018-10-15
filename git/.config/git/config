@@ -569,6 +569,9 @@
 [tag]
   sort = -version:refname  # Reverse sort versions numerically. See also [versionsort]
 
+[url "ssh://aur@aur.archlinux.org"]
+  pushInsteadOf = "https://aur.archlinux.org"
+
 [versionsort]
   # prereleaseSuffix is deprecated in favour of suffix, but used for compatibility.
   # https://git-scm.com/docs/git-config#git-config-versionsortprereleaseSuffixdeprecated
