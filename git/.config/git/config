@@ -164,9 +164,11 @@
   ro     = remote
   roa    = remote add
   rog    = remote get-url
+  rogp   = remote get-url --push
   rorm   = remote remove
   rorn   = remote rename
   ros    = remote set-url
+  rosp   = remote set-url --push
   rov    = remote --verbose
   re     = reset
   reco   = !"cd \"${GIT_PREFIX:-.}\" && git reset \"$@\" && git checkout \"$@\" #"  # https://stackoverflow.com/a/52313420/5353461
