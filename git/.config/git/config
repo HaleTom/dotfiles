@@ -150,7 +150,7 @@
   plrf   = pull-autostash --rebase=false
   plri   = pull-autostash --rebase=interactive
   plrbm  = "!git pull-autostash && git rebase --autosquash --autostash \"${1:-master}\" \"${@:2}\" #"
-  pp     = "!git pull-autostash && git push #"
+  pp     = "!echo Pull:; git pull-autostash && echo Push: && git push #"
   ps     = push
   prq    = !"hub pull-request \"$@\" #"
   pum    = pull-autostash upstream master
