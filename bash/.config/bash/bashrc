@@ -205,43 +205,6 @@ _source_files <<DOTFILES
 DOTFILES
 unset tmuxinator_source
 
-# Add directories to $PATH iff they're not already there
-# Append directories to $PATH by default
-# Based on https://unix.stackexchange.com/a/4973/143394
-# and https://unix.stackexchange.com/a/217629/143394
-# TODO: add move-to-front ability: https://unix.stackexchange.com/a/401978/143394
-# or just remove then add to front :)
-add_to_PATH () {
-  local prepend  # Prepend to path if set
-  local prefix   # Temporary prepended path
-  local IFS      # Avoid restoring for added laziness
-
-  case $1 in
-    after|append)   shift;; # Default is to append
-    before|prepend) prepend=true; shift;;
-  esac
-
-  # Arguments can be single paths or :-separated $PATH-like strings
-  for arg; do
-    IFS=: # Split argument by path separator
-    for dir in $arg; do
-      # Canonicalise symbolic links to avoid duplicates
-      dir=$({ cd -- "$dir" && { pwd -P || pwd; } } 2>/dev/null)
-      if [ -z "$dir" ]; then continue; fi  # Skip non-existent directory
-      case ":$PATH:" in  # Add : on both sides for easy matching
-        *":$dir:"*) :;;  # Skip - already present
-        *) if [ "$prepend" ]; then
-           # ${prefix:+$prefix:} will expand to "" if $prefix is empty to avoid
-           # starting with a ":".  Expansion is "$prefix:" if non-empty.
-            prefix=${prefix+$prefix:}$dir
-          else
-            PATH=$PATH:$dir  # Append by default
-          fi;;
-      esac
-    done
-  done
-  [ "$prefix" ] && PATH=$prefix:$PATH
-}
 
 # $PATH must be set after sourcing chruby
 add_to_PATH before "$HOME/bin:$XDG_DATA_HOME/miniconda3/bin:$XDG_DATA_HOME/virtualenvs/default/bin:$XDG_DATA_HOME/npm/bin:$HOME/.local/bin:$XDG_DATA_HOME/go/bin"

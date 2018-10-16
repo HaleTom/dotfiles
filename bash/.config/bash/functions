@@ -136,6 +136,72 @@ var_expand() {
 export_function var_expand
 
 
+# Set variable $1 to value given in $2
+var_set () {
+  if [ "$#" -ne 2 ] || [ -z "${1}" ]; then
+    printf 'var_set: expected one argument\n' >&2;
+    return 1;
+  fi
+  eval "$1=\"\$2\""
+}
+
+
+# Add directories to $PATH iff they're not already there
+# Append directories to $PATH by default
+# Based on https://unix.stackexchange.com/a/4973/143394
+# and https://unix.stackexchange.com/a/217629/143394
+# and https://unix.stackexchange.com/a/149054/143394
+# TODO: add move-to-front ability: https://unix.stackexchange.com/a/401978/143394
+# or just remove then add to front :)
+add_to_path_var () {
+  local path_var  # Name of $PATH-like variable to operate upon
+  local path_val  # Value of $path_var
+  local prepend   # Flag: prepend to path if non-null
+  local canon     # Canonical name of directory to add
+  local prefix    # Temporary prepended path
+  local suffix    # Temporary appended path
+  local IFS       # Avoid restoring for added laziness
+
+  if [[ "$#" -lt 3 ]]; then
+    echo "Usage: add_to_path_var <variable> (before|after) <path-string> ..." >&2
+    return 1
+  fi
+
+  path_var=$1
+  path_val=$(var_expand "$path_var")
+  case $2 in
+    after|append)   :;; # Default is to append
+    before|prepend) prepend=true;;
+  esac
+  shift 2
+
+  # Arguments can be single paths or :-separated $PATH-like strings
+  IFS=: # Split argument by path separator
+  for arg; do  # Allow multiple path-strings to add
+    for dir in $arg; do  # Automatically split on : due to $IFS
+      [ ! -d "$dir" ] && continue  # Skip non-existent directories
+
+      # Canonicalise symbolic link to avoid adding when target already there
+      canon=$({ cd -- "$dir" && { pwd -P || pwd; } } 2>/dev/null)
+
+      case ":$path_val:" in  # Add : on both sides for easy matching
+        *":$dir:"*|*":$canon:"*) :;;  # Skip - already present
+        *) if [ "$prepend" ]; then
+           # ${prefix:+$prefix:} will expand to "" if $prefix is empty to avoid
+           # starting with a ":".  Expansion is "$prefix:" if non-empty.
+            prefix=${prefix:+$prefix:}$dir  # only add : if non-null
+          else  # Append by default
+            suffix=${suffix:+$suffix:}$dir
+          fi;;
+      esac
+    done
+  done
+
+  path_val=${prefix:+$prefix:}${path_val}${suffix:+:$suffix} # only add : if needed
+  var_set "$path_var" "$path_val"
+}
+
+
 # Quote the contents of "$@"
 # See also ~/bin/token-quote for prettier, user-facing quoting
 function token_quote {
