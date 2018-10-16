@@ -105,6 +105,22 @@ function alias_expand {
 }
 
 
+# Safely remove the given entry from $PATH
+# https://unix.stackexchange.com/a/253760/143394
+function remove_from_PATH {
+  while case $PATH in
+          "$1") unset PATH; false;;
+          "$1:"*) PATH=${PATH#"$1:"};;
+          *":$1") PATH=${PATH%":$1"};;
+          *":$1:"*) PATH=${PATH%%":$1:"*}:${PATH#*":$1:"};;
+          *) false;;
+        esac
+  do
+    :
+  done
+}
+
+
 # Expand the variable named by $1 into its value. Works in both {ba,z}sh
 # eg: a=HOME $(var_expand $a) == /home/me
 # https://unix.stackexchange.com/a/472058/143394
