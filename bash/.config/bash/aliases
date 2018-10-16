@@ -101,14 +101,15 @@ alias vimpager='$XDG_DATA_HOME/vim/bundle/vimpager/vimpager'
 
 # Have pacmatic wrap aurman/pakku wrap powerpill wrap pacman
 # https://unix.stackexchange.com/a/384102/143394
-alias pac=aurman
+alias pac=yay
 # pacmatic needs to be run as root: https://github.com/keenerd/pacmatic/issues/35
 # alias pacmatic='export PYTHONPATH=/usr/lib/python3.6/site-packages; sudo --preserve-env=pacman_program,PYTHON_PATH /usr/bin/pacmatic'
 alias pacmatic='PYTHONPATH=/usr/lib/python3.6/site-packages sudo --preserve-env=pacman_program,PYTHON_PATH /usr/bin/pacmatic'
 # Downgrade permissions as AUR helpers expect to be run as a non-root user. $UID is read-only in {ba,z}sh.
 alias aurman=' pacman_program="sudo -u #$UID /usr/bin/aurman" pacmatic'
 alias aurmano='pacman_program="sudo -u #$UID /usr/bin/aurman --optimistic_versioning" pacmatic'
-alias pakku='  pacman_program="sudo -u #$UID /usr/bin/pakku" pacmatic'
+alias pakku='  pacman_program="sudo -u #$UID /usr/bin/pakku"  pacmatic'
+alias yay='    pacman_program="sudo -u #$UID /usr/bin/yay"    pacmatic'
 
 # tmux / tmuxinator
 alias tmux='TERM=xterm-256color tmux -f "$XDG_CONFIG_HOME"/tmux/tmux.conf'
