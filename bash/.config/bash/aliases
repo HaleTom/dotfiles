@@ -88,7 +88,6 @@ alias cuc='cucumber'
 alias ccze='ccze -Ao nolookups'  # Don't look up {user,service}names, etc.
 alias df="colourify df --block-size=\\'1K"  #'"
 alias df,='colourify df'
-alias grep='GREP_COLOR="1;33;40" LANG=C grep --color=auto'
 alias home='git --git-dir=$HOME/.githome --work-tree=$HOME'
 alias lesc='less-compressed-wrapper'
 alias mv='mv -i'
