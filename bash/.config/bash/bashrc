@@ -90,17 +90,6 @@ export PYTHONUSERBASE=$XDG_DATA_HOME/python
 # # export VIRTUALENVWRAPPER_PYTHON=$WORKON_HOME/default/bin/python
 # export PROJECT_HOME=$HOME/code # Used by mkproject
 
-# Ruby
-for _entry in /usr/lib/ruby/gems/*; do
-  if [[ -d $_entry ]]; then
-    # TODO: Add only if not there already
-    export GEM_PATH=$_entry:$GEM_PATH
-  fi
-done
-unset _entry
-# TODO: Add only if not there already
-export RUBYLIB="$HOME"/lib:"$RUBYLIB"
-
 export GITHUB_USER=HaleTom
 
 # Easier to read colours on Linux TTYs
@@ -215,6 +204,14 @@ add_to_PATH before "$HOME/bin:$XDG_DATA_HOME/miniconda3/bin:$XDG_DATA_HOME/virtu
 # fi
 add_to_PATH after "/usr/lib/systemd:/usr/local/heroku/bin:$HOME/.cabal/bin"
 # echo $PATH | tr : "\n"; echo;
+
+# Ruby
+add_to_path_var RUBYLIB before "$HOME"/lib
+for _entry in /usr/lib/ruby/gems/*; do
+  add_to_path_var GEM_PATH before "$_entry"
+done
+unset _entry
+export GEM_PATH RUBYLIB
 
 # Print a fortune message if login shell or in TMUX
 # && and || have equal precedence outside [[ test ]]
