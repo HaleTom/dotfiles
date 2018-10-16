@@ -138,6 +138,8 @@ alias pless='f(){ pygmentize -f terminal256 -O style=monokai -g "$@" | less -L; 
 # Change to git root directory
 alias cdgr='builtin cd "$(git rev-parse --show-toplevel)"'  # cd '' does nothing
 
+alias activate='source $XDG_DATA_HOME/miniconda3/bin/activate'
+alias deactivate='source $XDG_DATA_HOME/miniconda3/bin/deactivate'
 
 ##
 ## Begin bash only
