@@ -209,6 +209,8 @@ unset tmuxinator_source
 # Append directories to $PATH by default
 # Based on https://unix.stackexchange.com/a/4973/143394
 # and https://unix.stackexchange.com/a/217629/143394
+# TODO: add move-to-front ability: https://unix.stackexchange.com/a/401978/143394
+# or just remove then add to front :)
 add_to_PATH () {
   local prepend  # Prepend to path if set
   local prefix   # Temporary prepended path
@@ -223,11 +225,11 @@ add_to_PATH () {
   for arg; do
     IFS=: # Split argument by path separator
     for dir in $arg; do
-      #  Canonicalise symbolic links
+      # Canonicalise symbolic links to avoid duplicates
       dir=$({ cd -- "$dir" && { pwd -P || pwd; } } 2>/dev/null)
       if [ -z "$dir" ]; then continue; fi  # Skip non-existent directory
-      case ":$PATH:" in
-        *":$dir:"*) :;; # skip - already present
+      case ":$PATH:" in  # Add : on both sides for easy matching
+        *":$dir:"*) :;;  # Skip - already present
         *) if [ "$prepend" ]; then
            # ${prefix:+$prefix:} will expand to "" if $prefix is empty to avoid
            # starting with a ":".  Expansion is "$prefix:" if non-empty.
