@@ -76,12 +76,19 @@ unset -f command_not_found_handle 2>/dev/null # https://superuser.com/a/1252874/
 export BINARY_SSH=/usr/bin/ssh
 export BINARY_SCP=/usr/bin/scp
 
+#
 # Python
+#
+
+# Prevent creation of ~/.local/{bin,lib}
 export PYTHONUSERBASE=$XDG_DATA_HOME/python
-# Python virtualenvwrapper
-export WORKON_HOME=$XDG_DATA_HOME/virtualenvs
-export VIRTUALENVWRAPPER_PYTHON=$WORKON_HOME/default/bin/python
-export PROJECT_HOME=$HOME/prj # Used by mkproject
+
+# # virtualenvwrapper  (using miniconda instead)
+# export WORKON_HOME=$XDG_DATA_HOME/virtualenvs
+# # Make virtualenvwrapper use this python by default
+# export VIRTUALENVWRAPPER_PYTHON=/usr/bin/python  # Use system python for running virtualenvwrapper
+# # export VIRTUALENVWRAPPER_PYTHON=$WORKON_HOME/default/bin/python
+# export PROJECT_HOME=$HOME/code # Used by mkproject
 
 # Ruby
 for _entry in /usr/lib/ruby/gems/*; do
@@ -181,7 +188,7 @@ _source_files <<DOTFILES
     # /usr/share/nvm/init-nvm.sh
 
     # Python
-    /usr/bin/virtualenvwrapper_lazy.sh
+    # /usr/bin/virtualenvwrapper_lazy.sh
 
     # grc - Generic coloriser
     /etc/profile.d/grc.bashrc
