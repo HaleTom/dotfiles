@@ -131,7 +131,7 @@ var_expand() {
     printf 'var_expand: expected one argument\n' >&2;
     return 1;
   fi
-  eval printf '%s' "\"\${$1?}\""
+  eval printf '%s' "\"\${$1}\""
 }
 export_function var_expand
 
@@ -197,7 +197,12 @@ add_to_path_var () {
     done
   done
 
-  path_val=${prefix:+$prefix:}${path_val}${suffix:+:$suffix} # only add : if needed
+  # Only add prefix / suffix if non-null and only add : if $path_val non-null
+  if [ "$prepend" ] && [ -n "$prefix" ]; then
+    path_val=${prefix}${path_val:+:$path_val}
+  elif [ ! "$prepend" ] && [ -n "$suffix" ]; then
+    path_val=${path_val:+$path_val:}${suffix}
+  fi
   var_set "$path_var" "$path_val"
 }
 
