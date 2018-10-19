@@ -213,10 +213,11 @@ unset _entry
 export GEM_PATH RUBYLIB
 
 # Print a fortune message if login shell or in TMUX
-# && and || have equal precedence outside [[ test ]]
+# && and || have equal precedence outside [[ test ]], so put && last
 if [[ ${_disable_welcome_message:=0} -eq 0 ]] || \
    { sh_is_bash && shopt -q login_shell; } || { sh_is_zsh && [[ -o login ]]; } || \
-   [[ -n ${TMUX=} && _disable_welcome_message -lt $SHLVL ]]; then
+   [[ -n ${TMUX=} && _disable_welcome_message -lt $SHLVL ]] && \
+   [[ -z $DISABLE_WELCOME ]]; then
   ~/bin/welcome-message
 fi
 export _disable_welcome_message=$(( SHLVL + 1 ))  # Don't print at this $SHLVL again
