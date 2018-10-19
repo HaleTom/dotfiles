@@ -98,15 +98,21 @@ _prompt_update_zsh () {
     # shellcheck disable=SC2154  # $_git_status not defined here
     PS1=${user_at}${host}${colon_dir}'${_git_status}'${jobs}${exit_status}${percent_or_hash}
 
-    # Python virtualenvwrapper calls this funciton via $XDG_DATA_HOME/virtualenvs/post{de,}activate
-    local virtualenv
-    virtualenv=${VIRTUAL_ENV##*/}  # basename "$VIRTUAL_ENV"
-    [[ -n  $virtualenv ]] && virtualenv="%F{blue}(venv: ${virtualenv})%f "
+    # Python virtualenvwrapper calls this function via $XDG_DATA_HOME/virtualenvs/post{de,}activate
+    local environment
+    [[ -n ${VIRTUAL_ENV##*/} ]] && environment+="%F{blue}(venv: ${VIRTUAL_ENV##*/})%f "
+
+    # Called by $XDG_DATA_HOME/miniconda3/etc/conda/{de,}activate.d/prompt-update.sh
+    # shellcheck disable=2016  # Allow literal variable
+    [[ -n $CONDA_DEFAULT_ENV ]] && environment+='%F{green}(conda: $CONDA_DEFAULT_ENV)%f '
 
     # shellcheck disable=2016  # Keep variables literal
-    RPS1='${MODE_INDICATOR_PROMPT} '"${virtualenv}"'${_timer_show} | %F{white}%D %*'
+    RPS1='${MODE_INDICATOR_PROMPT} '"${environment}"'${_timer_show} | %F{white}%D %*'
 }
-_git_status_gen && _prompt_update_zsh  # Set the initial prompt
+
+# Set the initial prompt
+_git_status_gen
+_prompt_update_zsh
 
 zstyle ':completion:*:*:git:*' script /usr/share/git/completion/git-completion.zsh
 
