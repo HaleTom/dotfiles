@@ -337,7 +337,7 @@ function man {
     done
     "$vman" "$@"
   else
-    echo command man "$@"
+    command man "$@"
   fi
 }
 
