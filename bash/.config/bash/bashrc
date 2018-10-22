@@ -58,7 +58,7 @@ export LESS='-FMRWXis -x4 -z-4'
 
 # Have less highlight source code
 # shellcheck disable=SC2034
-LESSOPEN='|-"$HOME/bin/highlight-less-wrapper" %s'
+export LESSOPEN='|-"$HOME/bin/highlight-less-wrapper" %s'
 
 # Set $LS_COLORS
 [ -x /usr/bin/dircolors ] && eval "$(/usr/bin/dircolors)"
