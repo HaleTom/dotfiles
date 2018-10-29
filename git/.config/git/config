@@ -227,9 +227,22 @@
   changes = log --follow --stat --patch
 
   #
-  # Branches
+  # Branches / remotes
   #
-  branch-name = "symbolic-ref --short HEAD"  # https://stackoverflow.com/a/19585361/5353461
+
+  # Mine: https://stackoverflow.com/a/52906108/5353461, https://stackoverflow.com/a/52913537/5353461
+  branch-current = "symbolic-ref --short HEAD"  # https://stackoverflow.com/a/19585361/5353461
+  branch-names = !"[ -z \"$1\" ] && git branch-current 2>/dev/null || git branch --format='%(refname:short)' --contains \"${1:-HEAD}\" #"  # https://stackoverflow.com/a/19585361/5353461
+  branch-name = !"br=$(git branch-names \"$1\") && case \"$br\" in *$'\\n'*) printf \"Multiple branches:\\n%s\" \"$br\">&2; exit 1;; esac; echo \"$br\" #"
+  # Mine: https://stackoverflow.com/a/52896538/5353461
+  branch-remote-fetch = !"branch=$(git branch-name \"$1\") && git config branch.\"$branch\".remote || echo origin #"
+  branch-remote-push  = !"branch=$(git branch-name \"$1\") && git config branch.\"$branch\".pushRemote || git config remote.pushDefault || git branch-remote-fetch #"
+  branch-url-fetch = !"remote=$(git branch-remote-fetch \"$1\") && git remote get-url        \"$remote\" #"  # cognizant of insteadOf
+  branch-url-push  = !"remote=$(git branch-remote-push  \"$1\") && git remote get-url --push \"$remote\" #"  # cognizant of pushInsteadOf
+
+  branch-upstream = !"br=$(git branch-name \"$1\") && git rev-parse --abbrev-ref --symbolic-full-name \"$br\"@{u} 2>/dev/null"
+  branch-push     = !"br=$(git branch-name \"$1\") && git rev-parse --abbrev-ref --symbolic-full-name \"$br\"@{push} 2>/dev/null"
+
   # Pull a different branch without affecting the current one
   plbr = !"current=$(git symbolic-ref --short HEAD) && git stash save --all && git checkout \"${1:-master}\" && git pull-autostash && git checkout \"$current\" && git stash pop #"
 
