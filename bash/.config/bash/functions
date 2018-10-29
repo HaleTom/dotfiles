@@ -73,6 +73,18 @@ function bin_path () {
 }
 
 
+# Copy / rename a function
+# https://stackoverflow.com/a/18839557/5353461
+func_copy() {
+  test -n "$(declare -f "$1")" || return
+  eval "${_/$1/$2}"
+}
+func_rename() {
+  func_copy "$@" || return
+  unset -f "$1"
+}
+
+
 function ostype () {
   case "$OSTYPE" in
     solaris*) echo "SOLARIS" ;;
