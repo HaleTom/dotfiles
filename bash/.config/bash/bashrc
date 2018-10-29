@@ -173,9 +173,6 @@ _source_files <<DOTFILES
     /usr/share/chruby/chruby.sh
     /usr/share/chruby/auto.sh
 
-    # Node.js
-    $NVM_DIR/nvm.sh
-
     # Python
     # /usr/bin/virtualenvwrapper_lazy.sh
 
@@ -194,9 +191,18 @@ _source_files <<DOTFILES
 DOTFILES
 unset tmuxinator_source
 
-# Wrap nvm function
-func_rename nvm nvm_wrapped
-nvm() { nvm_wrapped "$@"; source prompt-update; }
+
+# Only source nvm when needed as it's slow...
+nvm() {
+  source "$NVM_DIR/nvm.sh" || return
+  func_rename nvm nvm_wrapped
+  local completion=$NVM_DIR/bash_completion
+  [[ -n $BASH_VERSION && -r $completion ]] && source "$completion"
+  # Define replacment nvm function
+  nvm() { nvm_wrapped "$@"; source prompt-update; }
+  nvm "$@"  # Call the new version
+}
+
 
 # $PATH must be set after sourcing chruby
 add_to_path_var PATH before "$HOME/bin:$XDG_DATA_HOME/npm/bin:$HOME/.local/bin:$XDG_DATA_HOME/go/bin"
@@ -250,7 +256,6 @@ shopt -s extglob failglob globstar
 _source_files <<DOTFILES
     # Completion
     /usr/share/git/completion/git-completion.bash
-    $NVM_DIR/bash_completion
     $XDG_CONFIG_HOME/bash/completion
 
     # fzf
