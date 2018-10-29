@@ -248,11 +248,15 @@ shopt -s extglob failglob globstar
 # export RUBIES+=( $(which --all --skip-alias --skip-functions ruby | sed -n 's/\/bin\/ruby//gp' |sort -u) )
 
 _source_files <<DOTFILES
+    # Completion
     /usr/share/git/completion/git-completion.bash
+    $NVM_DIR/bash_completion
+    $XDG_CONFIG_HOME/bash/completion
+
+    # fzf
     # $XDG_DATA_HOME/fzf/.fzf.bash
     /usr/share/fzf/key-bindings.bash
     /usr/share/fzf/completion.bash
-    $XDG_CONFIG_HOME/bash/completion
 
     # Source my personal files last so they're not overridden
     $XDG_CONFIG_HOME/bash/aliases
