@@ -563,7 +563,7 @@
   # diff = diff-hi | less -FLRX --tabs=4 --pattern '^(\\@\\@.*,.*,.*\\@\\@|diff --git .* .*)$' # Allow hunk movement with n/p keys
 
 [pull]
-  rebase = true
+  rebase = preserve  # pass --preserve-merges to rebase so locally committed merges aren't flattened
   autostash = false  # See script: git-pull-autostash
 
 [push]
