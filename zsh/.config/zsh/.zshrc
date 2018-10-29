@@ -102,9 +102,15 @@ _prompt_update_zsh () {
     local environment
     [[ -n ${VIRTUAL_ENV##*/} ]] && environment+="%F{blue}(venv: ${VIRTUAL_ENV##*/})%f "
 
+    setopt local_options BASH_REMATCH
+    [[ $NVM_BIN =~ ([^/]+)/bin$ ]] && environment+="%B%F{white}(node: ${BASH_REMATCH[2]})%f%b "
+
     # Called by $XDG_DATA_HOME/miniconda3/etc/conda/{de,}activate.d/prompt-update.sh
     # shellcheck disable=2016  # Allow literal variable
     [[ -n $CONDA_DEFAULT_ENV ]] && environment+='%F{green}(conda: $CONDA_DEFAULT_ENV)%f '
+
+    # Add separator if environment is non-null
+    [[ -n $environment ]] && environment+='%B%F{white}| %f%b'
 
     # shellcheck disable=2016  # Keep variables literal
     RPS1='${MODE_INDICATOR_PROMPT} '"${environment}"'${_timer_show} | %F{white}%D %*'
