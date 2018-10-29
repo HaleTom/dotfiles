@@ -118,11 +118,11 @@ zplugin ice wait'0' pick'k.sh'
 zplugin light supercrabtree/k
 
 
-# # Adds numbered shortcuts to the output git status, and much more
-# # https://madebynathan.com/2011/10/19/git-shortcuts-like-youve-never-seen-before/
-# # https://github.com/scmbreeze/scm_breeze
-# zplugin ice wait'0'
-# zplugin light 'scmbreeze/scm_breeze'
+# Adds numbered shortcuts to the output git status, and much more
+# https://madebynathan.com/2011/10/19/git-shortcuts-like-youve-never-seen-before/
+# https://github.com/scmbreeze/scm_breeze
+zplugin ice wait'0'
+zplugin light 'scmbreeze/scm_breeze'
 
 
 # Run commands in __zplg_async_run asynchronously
