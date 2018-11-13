@@ -1,0 +1,11 @@
+changeps1: false
+report_errors: true
+
+channels:
+  - intel
+  - conda-forge
+  - defaults
+
+pinned_packages:
+  - conda-forge::pip
+  - conda-forge::python
