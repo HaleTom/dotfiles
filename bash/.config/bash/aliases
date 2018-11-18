@@ -140,8 +140,8 @@ alias cdgr='builtin cd "$(git rev-parse --show-toplevel)"'  # cd '' does nothing
 
 # Hooks don't run with named environment
 # https://github.com/conda/conda/issues/7862
-alias activate='f(){source $XDG_DATA_HOME/miniconda3/bin/activate "$@"; source prompt-update;}; f'
-alias deactivate='f(){source $XDG_DATA_HOME/miniconda3/bin/deactivate "$@"; source prompt-update;}; f'
+alias activate='f(){ source $XDG_DATA_HOME/miniconda3/bin/activate "$@"; source prompt-update; }; f'
+alias deactivate='f(){ source $XDG_DATA_HOME/miniconda3/bin/deactivate "$@"; source prompt-update; }; f'
 
 ##
 ## Begin bash only
