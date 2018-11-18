@@ -161,6 +161,7 @@
   rbi    = !"git rebase --interactive --autostash --autosquash --root \"$(git rpc \"${1:-$(git parent 20)}\")\" \"${@:2}\" #"
   rbia   = !"GIT_SEQUENCE_EDITOR=true git rbi \"$@\" #"
   rbo    = rebase --onto
+  rbs    = rebase --skip
   ro     = remote
   roa    = remote add
   rog    = remote get-url
