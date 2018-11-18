@@ -112,9 +112,8 @@ alias pakku='  pacman_program="sudo -u #$UID /usr/bin/pakku"  pacmatic'
 alias yay='    pacman_program="sudo -u #$UID /usr/bin/yay"    pacmatic'
 
 # tmux / tmuxinator
-alias tmux='TERM=xterm-256color tmux -f "$XDG_CONFIG_HOME"/tmux/tmux.conf'
-alias tmuxinator='TERM=xterm-256color tmuxinator'
-alias mux='TERM=xterm-256color tmuxinator'
+alias tmux='tmux -f "$XDG_CONFIG_HOME"/tmux/tmux.conf'
+alias mux='tmuxinator'
 
 # head & tail
 alias head='head -n $((${LINES:-12}-2))' # as many as possible without scrolling
