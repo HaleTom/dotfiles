@@ -158,7 +158,7 @@
   rba    = rebase --abort
   rbb    = !"git rebase -i $(git merge-base $1 HEAD) #" # Rebase to branch-name # http://stackoverflow.com/a/31036518/5353461
   rbc    = rebase --continue
-  rbi    = !"git rebase --interactive --autostash --autosquash --root \"$(git rpc \"${1:-$(git parent 20)}\")\" \"${@:2}\" #"
+  rbi    = !"c=${1:+$(git rpc \"$1\")~}; shift; git rebase --interactive --autostash --autosquash \"$(git rpc \"${c:-$(git parent 20)}\")\" \"$@\" #"
   rbia   = !"GIT_SEQUENCE_EDITOR=true git rbi \"$@\" #"
   rbo    = rebase --onto
   rbs    = rebase --skip
@@ -337,10 +337,10 @@
   # fetchall = !bash -c 'source /etc/bash_completion.d/git && __git_remotes | xargs --no-run-if-empty -t -n1 git fetch $*' -
 
   # Generate fixup/squash for HEAD or specified commit
-  fixup  = !"git commit -m \"fixup! $(git log -1 --format='%h %s' \"$(git rpc \"$1\")\")\" \"${@:2}\" #"
+  fixup  = !"git commit -m \"fixup! $(c=$1; shift; git log -1 --format='%h %s' \"$(git rpc \"$c\")\")\" \"$@\" #"
 
   # Automatically fix commit $1 based on index.  $2... are git commit options. # https://blog.filippo.io/git-fixup-amending-an-older-commit/
-  fixup-auto = "!f() { commit=$(git rpc \"$1\") && git commit --fixup=\"$commit\" \"${@:2}\" && GIT_SEQUENCE_EDITOR=true git rbi \"$commit\"; }; f"
+  fixup-auto = "!f() { commit=$(git rpc \"$1\") || return; shift; git commit --fixup=\"$commit\" \"$@\" && git rbia \"$commit\"; }; f"
 
   #
   # Boolean tests
