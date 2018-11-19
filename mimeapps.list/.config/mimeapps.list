@@ -42,7 +42,7 @@ audio/x-ms-wma=vlc.desktop
 
 [Added Associations]
 application/octet-stream=uget-gtk.desktop;deluge.desktop;qpdfview.desktop;mousepad.desktop;
-application/pdf=zathura-pdf-mupdf.desktop;
+application/pdf=org.pwmt.zathura-pdf-mupdf.desktop;zathura-pdf-mupdf.desktop;
 application/x-gettext-translation=mousepad.desktop;
 application/x-wine-extension-ini=mousepad.desktop;
 
