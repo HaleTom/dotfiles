@@ -526,6 +526,8 @@
 
   # The default seems to be "diff-highlight"
   diffFilter = "diff-hi | less -FLRX --tabs=4"
+  # Remove the need to press enter after an interactive prompt.  Arch pkg: perl-term-readkey
+  singleKey = true
 
 [log]
   mailmap = true
