@@ -122,13 +122,12 @@
   elc    = !"git edit-config"
   elx    = !"git edit-local-excludes"
   egc    = !"git edit-global-config"
-  head   = !"c=$(git rpc \"$1\") && p=$(git log -n1 --oneline --decorate) && git update-ref --no-deref -m \"Move from $p\" HEAD \"$c\" #" # Move HEAD to specified commit-ish
   egx    = !"git edit-global-excludes"
   f      = fetch
   fu     = fixup
   fua    = fixup-auto
-  head   = "!c=\"`git rpc \"$1\"`\" && p=\"$(git log -n1 --oneline --decorate)\" && git update-ref --no-deref -m \"Move from $p\" HEAD \"$c\" #" # Move HEAD to specified commit-ish
   g      = !"git \"@\" #"  # Allows laziness: g top g a <paste>
+  head   = !"c=$(git rpc \"$1\") && p=$(git log -n1 --oneline --decorate) && git update-ref --no-deref -m \"Move from $p\" HEAD \"$c\" #" # Move HEAD to specified commit-ish
   icdiff = difftool --no-prompt --extcmd icdiff # \"$@\"
   l      = log --compact-summary --dirstat
   l1     = print-commit-1
