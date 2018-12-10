@@ -1,3 +1,5 @@
+# COMMENTS ARE NOT PERMITTED AFTER CONFIG VALUES:  https://unix.stackexchange.com/q/487037/143394
+
 # .inputrc starts in emacs mode by default
 
 # Get default keymappings
@@ -18,22 +20,36 @@
 # RUBOUT, DEL, ESC, LFD, NEWLINE, RET, RETURN, SPC, SPACE, and TAB.
 
 
+#
 # Variables
+#
 # See https://www.gnu.org/software/bash/manual/html_node/Readline-Init-File-Syntax.html#Readline-Init-File-Syntax
-set editing-mode vi  # emacs defaults have the best starting set of commands
+
+# Emacs defaults have the best starting set of commands
+set editing-mode vi
+
 set bell-style visible
 set completion-ignore-case on
-set history-preserve-point on # preserve cursor coloumn position in history
 set keyseq-timeout 400
 set blink-matching-paren on
-set colored-completion-prefix on
+
+# Insert paste as a string rather than possibly running it
+set enable-bracketed-paste on
+
+# Preserve cursor column position in history
+set history-preserve-point on
 
 # Set readline mode strings
 # Colours: https://en.wikipedia.org/wiki/ANSI_escape_code#CSI_codes
 set show-mode-in-prompt on
-set emacs-mode-string  "\1\e[0;1;32m\2@\1\e[0m\2" # green
-set vi-cmd-mode-string "\1\e[0;1;31m\2:\1\e[0m\2" # red
-set vi-ins-mode-string "\1\e[0;1;37m\2 \1\e[0m\2" # blue
+
+# Mode strings:
+# emacs: Green '@'
+set emacs-mode-string  "\1\e[0;1;32m\2@\1\e[0m\2"
+# vi command: Red ':'
+set vi-cmd-mode-string "\1\e[0;1;31m\2:\1\e[0m\2"
+# vi insert: White ' '
+set vi-ins-mode-string "\1\e[0;1;37m\2>\1\e[0m\2"
 
 # Cursors: https://askubuntu.com/a/620306/478705
 # Cursors disabled for Octave and text terminals:
@@ -51,8 +67,13 @@ set completion-prefix-display-length 8
 # Treat hyphens (‘-’) and underscores (‘_’) as equivalent in matching
 set completion-map-case on
 
+# If set to On, when listing completions, readline displays the common prefix
+# of the set of possible completions using a different color.  The color
+# definitions are taken from the value of the LS_COLORS environment variable.
+set colored-completion-prefix on
+
 # Displays completions using colors indicating file type.
-# Definitions taken from the value of the LS_COLORS environment 
+# Definitions taken from the value of the LS_COLORS environment
 set colored-stats on
 
 # Make Tab autocomplete regardless of filename case
@@ -147,7 +168,8 @@ set convert-meta off
 # EMACS mode
 ######################################################################
 set keymap emacs
-"\C-x\C-r": re-read-init-file  # This the default binding for emacs mode
+# This the default binding for emacs mode
+"\C-x\C-r": re-read-init-file
 
 # switch to block cursor before executing a command
 RETURN: "\e\n"
@@ -156,9 +178,12 @@ RETURN: "\e\n"
 # http://unix.stackexchange.com/questions/303637/readline-how-do-i-change-from-emacs-to-vi-command-with-a-binding
 # http://unix.stackexchange.com/questions/303631/how-can-i-setup-a-hybrid-readline-with-emacs-insert-mode-and-vi-command-mode/303632#303632
 "\ee": vi-editing-mode
-"jk": "\eejk" # swap to vi-insert mode, then run "jk" in that context
+# swap to vi-insert mode, then run "jk" in that context
+"jk": "\eejk"
 "kj": "\eejk"
-"\e": "kj" # needs to be below "kj" mapping
+# needs to be below "kj" mapping
+"\e": "kj"
+
 # There are only 4 bindings unique to vi-insert mode, which can be easily added to emacs mode:
 # "\C-d": vi-eof-maybe
 # "\C-n": menu-complete
@@ -169,12 +194,15 @@ RETURN: "\e\n"
 # "\C-p": previous-history
 # I resolve these thus:
 set keymap emacs
-"\C-d": delete-char # eof-maybe: ^D does nothing if there is text on the line
+# eof-maybe: ^D does nothing if there is text on the line
+"\C-d": delete-char
 "\C-n": menu-complete
 "\C-p": menu-complete-backward
-"\C-y": previous-history # historY
+# historY
+"\C-y": previous-history
 "\e\C-y": previous-history
-"\e": "kj" # see http://unix.stackexchange.com/questions/303631/how-can-i-setup-a-hybrid-readline-with-emacs-insert-mode-and-vi-command-mode
+# see http://unix.stackexchange.com/questions/303631/how-can-i-setup-a-hybrid-readline-with-emacs-insert-mode-and-vi-command-mode
+"\e": "kj"
 
 # Edit options before rerunning previous command, eg: ls a b c -> ls *-al a b c
 # where * is cursor position in command mode
@@ -182,8 +210,8 @@ set keymap emacs
 
 # upper case word before cursor
 "\eu": "\e-1\eU"
-# upper case word (default after cursor). alt-(number) for N words
-"\eU": upcase-word # default is "\eu"
+# upper case word (default after cursor). alt-(number) for N words. Default is "\eu"
+"\eU": upcase-word
 
 # Ctl-][ for bigwords (whitespace separated)
 "\e]": vi-forward-bigword
@@ -199,7 +227,8 @@ set keymap emacs
 "\eg": glob-expand-word
 "\eG": insert-completions
 
-"\e\C-i": dynamic-complete-history # default - reminder
+# This is actually the default anyway:
+"\e\C-i": dynamic-complete-history
 
 ######################################################################
 # vi COMMAND mode
@@ -209,8 +238,10 @@ set keymap vi-command
 "z": emacs-editing-mode
 "\ee": emacs-editing-mode
 
-"G": end-of-history    # go to the last command entered
-"gg": vi-fetch-history # go to the beginning of time
+# go to the last command entered
+"G": end-of-history
+# go to the beginning of time
+"gg": vi-fetch-history
 
 # Easily bounce between tokens eg quoted strings
 ">": shell-forward-word
