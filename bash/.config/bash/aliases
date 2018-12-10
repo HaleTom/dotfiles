@@ -70,6 +70,7 @@ alias s='git s'
 alias ft='faketty '  # space at end allows next word to be alias-expanded
 alias gh='git logda' # Git History
 alias jc='journalctl'
+alias jn='jupyter-notebook'
 alias sc='sudo systemctl'
 
 alias scu='systemctl --user'
