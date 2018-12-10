@@ -51,6 +51,9 @@ MODE_CURSOR_SEARCH="#ff00ff steady underline"
 zplugin ice wait'0'
 zplugin light 'softmoth/zsh-vim-mode'
 
+# Edit multi-line pastes before running them (https://cirw.in/blog/bracketed-paste)
+zplugin ice wait'0'
+zplugin snippet OMZ::plugins/safe-paste/safe-paste.plugin.zsh
 
 # Additional completion definitions for Zsh
 # https://github.com/zsh-users/zsh-completions
