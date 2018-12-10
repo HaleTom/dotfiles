@@ -70,8 +70,9 @@
   chc    = cherry-pick --continue
   cinit  = commit --allow-empty -m 'Initialise repository'
   cl     = clone
-  cls    = clone --depth 5 --shallow-submodules
-  clss   = "!git clone --depth 5 --shallow-submodules --single-branch --branch \"$@\" #  eg git clss maint git://github.com/user/repo"
+  cls    = clone --depth 20 --shallow-submodules
+  clss   = clone --depth 20 --shallow-submodules --single-branch --branch  # eg git clss maint git://github.com/user/repo"
+  clrsm  = clone --recurse-submodules
   # Note git clean operates from the current directory, same behaviour:
   clear  = !"cd ${GIT_PREFIX:-.} && bash -c 'git clean -nd \"$@\" | sed \"s/^Would remove //\"; \
     read -rn1 -p \"Delete all the above? [y/N] \" r; echo; \
@@ -123,9 +124,11 @@
   egc    = !"git edit-global-config"
   head   = !"c=$(git rpc \"$1\") && p=$(git log -n1 --oneline --decorate) && git update-ref --no-deref -m \"Move from $p\" HEAD \"$c\" #" # Move HEAD to specified commit-ish
   egx    = !"git edit-global-excludes"
+  f      = fetch
   fu     = fixup
   fua    = fixup-auto
   head   = "!c=\"`git rpc \"$1\"`\" && p=\"$(git log -n1 --oneline --decorate)\" && git update-ref --no-deref -m \"Move from $p\" HEAD \"$c\" #" # Move HEAD to specified commit-ish
+  g      = !"git \"@\" #"  # Allows laziness: g top g a <paste>
   icdiff = difftool --no-prompt --extcmd icdiff # \"$@\"
   l      = log --compact-summary --dirstat
   l1     = print-commit-1
@@ -193,6 +196,7 @@
   s      = !"cd \"${GIT_PREFIX:-.}\" && git print-commit-1 HEAD; git status --short" # allow for git s .
   si     = !"git print-commit-1 HEAD; git status --short --ignored"
   sm     = submodule
+  sma    = submodule add
   sms    = submodule status
   sa     = stash apply
   sai    = stash apply --index
