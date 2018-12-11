@@ -365,6 +365,7 @@
   # Run a command in the root of the working tree
   sh   = !bash -c '\"$@\"' - # default to bash
   bsh = !\"$@\" - # BOURNE shell, save some typing in default case :)
+  zsh  = !zsh -c '\"$@\"' -
 
   # Aliases
   la = !git config --list | grep ^alias\\. | cut -c 7- | grep -Ei --color -e \"$@\" "#" # List aliases
