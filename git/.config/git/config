@@ -432,7 +432,7 @@
   [color "diff"]
     commit = bold yellow
     context = normal
-    frag = yellow
+    frag = bold yellow
     func = white bold
     meta = yellow bold
     new = green bold
@@ -585,6 +585,10 @@
 [rerere] # .git/rr-cache
   enabled = true
   autoupdate = true  # Auto-stage resolved conflicts
+
+[status]
+  submoduleSummary = true
+  showStash = true
 
 [tag]
   sort = -version:refname  # Reverse sort versions numerically. See also [versionsort]
