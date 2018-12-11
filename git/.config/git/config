@@ -126,7 +126,7 @@
   f      = fetch
   fu     = fixup
   fua    = fixup-auto
-  g      = !"git \"@\" #"  # Allows laziness: g top g a <paste>
+  g      = !"git \"$@\" #"  # Run git command in top level: git g <command>
   head   = !"c=$(git rpc \"$1\") && p=$(git log -n1 --oneline --decorate) && git update-ref --no-deref -m \"Move from $p\" HEAD \"$c\" #" # Move HEAD to specified commit-ish
   icdiff = difftool --no-prompt --extcmd icdiff # \"$@\"
   l      = log --compact-summary --dirstat
@@ -224,8 +224,8 @@
   td     = tag -d
 
   # Top level directory of repository
-  top       = !"git " # run command in repository top directory
-  top-print = rev-parse --show-toplevel
+  top = !"\"$@\" #"  # run command in repository top directory
+  root = rev-parse --show-toplevel  # Show git top-level
 
   # Show changes in a file, following renames
   changes = log --follow --stat --patch
