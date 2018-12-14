@@ -9,3 +9,5 @@
 
 # Personal alllowed .envrc files
 /misc/.config/direnv/allow/
+
+ipython/.ipython/profile_default/history.sqlite
