@@ -73,6 +73,18 @@ function bin_path () {
 }
 
 
+# True if $1 is an executable in $PATH
+# Works in both {ba,z}sh
+# https://stackoverflow.com/a/53798785/5353461
+function is_bin_in_path {
+  if [[ -n $ZSH_VERSION ]]; then
+    builtin whence -p "$1" &> /dev/null
+  else  # bash:
+    builtin type -P "$1" &> /dev/null
+  fi
+}
+
+
 # Copy / rename a function
 # https://stackoverflow.com/a/18839557/5353461
 func_copy() {
