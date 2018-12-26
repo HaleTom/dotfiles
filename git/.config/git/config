@@ -209,6 +209,7 @@
   spi    = stash pop --index
   sps    = stash push
   spsp   = stash push --patch
+  sb     = stash branch
   ss     = stash save
   ssa    = stash save --all # includes ignored
   ssk    = stash save --keep-index # Changes to index are left intact
