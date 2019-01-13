@@ -124,6 +124,7 @@
   egc    = !"git edit-global-config"
   egx    = !"git edit-global-excludes"
   f      = fetch
+  ff     = merge --ff-only @{u}  # But try just 'git rebase' if HEAD is behind upstream
   fu     = fixup
   fua    = fixup-auto
   g      = !"git \"$@\" #"  # Run git command in top level: git g <command>
