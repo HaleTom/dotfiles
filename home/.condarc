@@ -2,6 +2,8 @@ changeps1: false
 report_errors: true
 
 channels:
+  - fastai
+  - pytorch
   - intel
   - conda-forge
   - defaults
