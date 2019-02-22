@@ -5,15 +5,17 @@
 # Issue: SC2142 occurs when parameters are used in a function #1263
 # https://github.com/koalaman/shellcheck/issues/1263
 
-# Alias colourify to '' if grc doesn't exist
-command -v grc > /dev/null || alias colourify=''
+# Alias colourify to '' if /etc/profile.d/grc.bashrc sourced
+if ! alias colourify &> /dev/null; then
+  alias colourify=''
+fi
 
 # ls aliases
 # LS_BLOCK_SIZE = Separate thousands with ','
 # https://www.gnu.org/software/coreutils/manual/html_node/Block-size.html
 # -C = list entries by columns
 # -F, --classify = append indicator (one of */=>@|) to entries
-alias ls="colourify ls -CF --block-size=\\'1 --color=always --quoting-style=shell-escape"  #'"
+alias ls="colourify ls -CF --block-size=\\'1 --color=always --quoting-style=shell-escape"
 # exa:  https://github.com/ogham/exa/issues/407
 # exa: https://github.com/ogham/exa/issues/211#issuecomment-412268723
 # EXA_GRID_ROWS=15 exa -la --header --group --grid --bytes --color-scale --git
