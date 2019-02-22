@@ -408,7 +408,7 @@ export_function mkcd
 #   alias agi='apt-get install'
 #   make-completion-wrapper _apt_get _apt_get_install apt-get install
 #     # defines a function called _apt_get_install (that's $2) that will
-#     # complete the 'agi' alias. 
+#     # complete the 'agi' alias.
 #   complete -F _apt_get_install agi
 function make_completion_wrapper {
   local function_name="$2"
@@ -429,7 +429,7 @@ export_function make_completion_wrapper
 # Print the absolute path of the containing directory
 function abs_dirname {
   if [[ $# = 0 ]]; then set .; fi # current directory if no arguments
-  for path in "$@"; do 
+  for path in "$@"; do
     (cd "${dir:="$(dirname "$path")"}" && pwd || exit 1 )
     [[ ! $? ]] && return 1
   done
@@ -536,7 +536,7 @@ export_function confirm_yes
 
 # Print the name of the git repository's working tree's root directory
 # Search for 'Tom Hale' in http://stackoverflow.com/questions/957928/is-there-a-way-to-get-the-git-root-directory-in-one-command
-# Or, shorter: 
+# Or, shorter:
 # (root=$(git rev-parse --git-dir)/ && cd ${root%%/.git/*} && git rev-parse && pwd)
 # but this doesn't cover external $GIT_DIRs which are named other than .git
 function git_root {
@@ -579,11 +579,11 @@ function cd_git_root {
 export_function cd_git_root
 
 
-# apt: Update only given sources 
+# apt: Update only given sources
 function apt_update_repo() {
   for source in "$@"; do
     sudo apt-get update -o Dir::Etc::sourcelist="sources.list.d/${source}" \
-    -o Dir::Etc::sourceparts="-" -o APT::Get::List-Cleanup="0"    
+    -o Dir::Etc::sourceparts="-" -o APT::Get::List-Cleanup="0"
   done
 }
 export_function apt_update_repo
