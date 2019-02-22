@@ -68,7 +68,7 @@
   ch     = cherry-pick
   cha    = cherry-pick --abort
   chc    = cherry-pick --continue
-  cinit  = commit --allow-empty -m 'Initialise repository'
+  cinit  = !"git init; git is-empty-repo && git commit --allow-empty -m 'Initialise repository'" # init on existing repo is safe
   cl     = clone
   cls    = clone --depth 20 --shallow-submodules
   clss   = clone --depth 20 --shallow-submodules --single-branch --branch  # eg git clss maint git://github.com/user/repo"
@@ -358,6 +358,10 @@
   is-branch = !"git show-ref -q --verify refs/heads/\"$1\" #"
   is-tag    = !"git show-ref -q --verify refs/tags/\"$1\" #"
   is-remote = !"git show-ref -q --verify refs/remotes/\"$1\" #"
+
+  # True if is a repository and is empty
+  # https://stackoverflow.com/a/5492347/5353461
+  is-empty-repo = !"c=$(git count-objects 2>/dev/null) && set $c x && [[ $1 -eq 0 ]]"
 
   # ---------------
 
