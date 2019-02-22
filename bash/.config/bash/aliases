@@ -22,6 +22,7 @@ alias lal='ls -la'
 alias lsd='ls -dla * --color=always | grep "^d" --color=never'   # non-hidden directories
 alias lsdd='ls -Al --color=always | grep --color=never ^d'   # directories including hidden
 alias lal='ls -la'
+alias ll='ls -l'
 alias l.='ls -d .[^.]?*' # Hidden files except . and .. (current directory only)
 
 alias source='builtin source source-file source "$#" "$@"'
@@ -140,23 +141,18 @@ if command -v hub > /dev/null; then
 else
   alias g='git'
 fi
+
+# TODO check difference in aliases after sourcing scmb
 # shellcheck disable=2034  # exec_scmb_expand_args appears unused, verify or export
 # shellcheck disable=2139  # Expand at definition time
 if typeset -f exec_scmb_expand_args > /dev/null; then
   alias g="exec_scmb_expand_args $(alias_expand g)"
   alias git > /dev/null && alias git="exec_scmb_expand_args $(alias_expand git)"
-else  # scmbreeze not sourced
-  alias ll='ls -l'
-  # TODO check difference in aliases after sourcing scmb
+  # Colourise ll alias output if grc is installed
+  if command -v grcat > /dev/null; then
+    alias ll='f() { exec_scmb_expand_args ls_with_file_shortcuts "$@" | grcat conf.ls; }; f'
+  fi
 fi
-
-
-# Colourise ll alias output if grc is installed
-if command -v grcat > /dev/null; then
-  # shellcheck disable=2139  # expand at definition
-  alias ll="$(alias_expand ll) | grcat conf.ls"
-fi
-
 
 
 ##
