@@ -143,6 +143,17 @@ alias cdgr='builtin cd "$(git rev-parse --show-toplevel)"'  # cd '' does nothing
 alias activate='f(){ source $XDG_DATA_HOME/miniconda3/bin/activate "$@"; source prompt-update; }; f'
 alias deactivate='f(){ source $XDG_DATA_HOME/miniconda3/bin/deactivate "$@"; source prompt-update; }; f'
 
+
+# Expand an alias as text - https://unix.stackexchange.com/q/463327/143394
+function alias_expand {
+  if [[ $ZSH_VERSION ]]; then
+    # shellcheck disable=2154  # aliases referenced but not assigned
+    printf '%s\n' "${aliases[$1]}"
+  else  # bash
+    printf '%s\n' "${BASH_ALIASES[$1]}"
+  fi
+}
+
 ##
 ## Begin bash only
 ##
