@@ -34,7 +34,8 @@ alias ...='builtin cd ../..'
 alias ....='builtin cd ../../..'
 alias .....='builtin cd ../../../..'
 
-
+# Allow sudo with expansion of aliases
+alias asudo='sudo '
 
 # One letter aliases
 alias h='history'
@@ -62,7 +63,7 @@ alias ag='ag --color'
 alias aga='ag --all-types --hidden'
 alias cal='cal -3' # show 3 months by default
 alias cp='cp -i --reflink=auto --sparse=always'
-alias Cp='command cp --reflink=auto --sparse=always'  # Allow overwrite
+alias Cp='command cp --reflink=auto --sparse=always'  # Allow overwrite without interactive prompt
 alias cuc='cucumber'
 alias ccze='ccze -Ao nolookups'  # Don't look up {user,service}names, etc.
 alias df="colourify df --block-size=\\'1K"  #'"
