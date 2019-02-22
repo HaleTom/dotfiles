@@ -35,28 +35,6 @@ alias ....='builtin cd ../../..'
 alias .....='builtin cd ../../../..'
 
 
-# Git aliases - don't assume hub or scmb are installed
-if command -v hub > /dev/null; then
-  alias g='hub' git='hub'
-else
-  alias g='git'
-fi
-# shellcheck disable=2034  # exec_scmb_expand_args appears unused, verify or export
-# shellcheck disable=2139  # Expand at definition time
-if typeset -f exec_scmb_expand_args > /dev/null; then
-  alias g="exec_scmb_expand_args $(alias_expand g)"
-  alias git > /dev/null && alias git="exec_scmb_expand_args $(alias_expand git)"
-else  # scmbreeze not sourced
-  alias ll='ls -l'
-  # TODO check difference in aliases after sourcing scmb
-fi
-
-# Colourise ll alias output if grc is installed
-if command -v grcat > /dev/null; then
-  # shellcheck disable=2139  # expand at definition
-  alias ll="$(alias_expand ll) | grcat conf.ls"
-fi
-
 
 # One letter aliases
 alias h='history'
@@ -153,6 +131,32 @@ function alias_expand {
     printf '%s\n' "${BASH_ALIASES[$1]}"
   fi
 }
+
+
+# Git aliases - don't assume hub or scmb are installed
+if command -v hub > /dev/null; then
+  alias g='hub' git='hub'
+else
+  alias g='git'
+fi
+# shellcheck disable=2034  # exec_scmb_expand_args appears unused, verify or export
+# shellcheck disable=2139  # Expand at definition time
+if typeset -f exec_scmb_expand_args > /dev/null; then
+  alias g="exec_scmb_expand_args $(alias_expand g)"
+  alias git > /dev/null && alias git="exec_scmb_expand_args $(alias_expand git)"
+else  # scmbreeze not sourced
+  alias ll='ls -l'
+  # TODO check difference in aliases after sourcing scmb
+fi
+
+
+# Colourise ll alias output if grc is installed
+if command -v grcat > /dev/null; then
+  # shellcheck disable=2139  # expand at definition
+  alias ll="$(alias_expand ll) | grcat conf.ls"
+fi
+
+
 
 ##
 ## Begin bash only
