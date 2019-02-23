@@ -226,7 +226,7 @@
   td     = tag -d
 
   # Top level directory of repository
-  top = !"\"$@\" #"  # run command in repository top directory
+  top = !"git \"$@\" #"  # re-run git command in repository toplevel directory
   root = rev-parse --show-toplevel  # Show git top-level
 
   # Show changes in a file, following renames
