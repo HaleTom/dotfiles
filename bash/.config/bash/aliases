@@ -1,7 +1,9 @@
 #!/bin/bash #for-shellcheck
-# This file gets sourced from .bashrc
 
-# shellcheck disable=SC2142  # Allow fancy pants aliases with positional parameters
+# This file gets sourced from .bashrc and ~/bin/alia to allow for: $ nice alia <alias>
+
+# shellcheck disable=SC2142  # Allow positional parameters to aliases (via function call)
+# shellcheck disable=2139    # Allow variable expansion at definition time
 # Issue: SC2142 occurs when parameters are used in a function #1263
 # https://github.com/koalaman/shellcheck/issues/1263
 
@@ -37,7 +39,7 @@ alias ...='builtin cd ../..'
 alias ....='builtin cd ../../..'
 alias .....='builtin cd ../../../..'
 
-# Allow sudo with expansion of aliases
+# Allow sudo to expand aliases
 alias asudo='sudo '
 
 # One letter aliases
@@ -127,6 +129,7 @@ alias deactivate='f(){ source $XDG_DATA_HOME/miniconda3/bin/deactivate "$@"; sou
 
 
 # Expand an alias as text - https://unix.stackexchange.com/q/463327/143394
+# Doesn't expand recursively
 function alias_expand {
   if [[ $ZSH_VERSION ]]; then
     # shellcheck disable=2154  # aliases referenced but not assigned
@@ -137,9 +140,16 @@ function alias_expand {
 }
 
 
-# Git aliases - don't assume hub or scmb are installed
-if command -v hub > /dev/null; then
-  alias g='hub' git='hub'
+# Git / Hub aliases
+
+# Import my user config when run as root
+# See https://serverfault.com/a/334730/322507 for exporting GIT_* variables via ssh
+alias gsudo='sudo git -c "include.path='"${XDG_CONFIG_DIR:-$HOME/.config}/git/config\" -c \"include.path=$HOME/.gitconfig\""
+
+if command -v hub > /dev/null; then  # hub wraps git
+  for i in g git; do
+      alias $i='hub'
+  done
 else
   alias g='git'
 fi
