@@ -1,7 +1,7 @@
 [include]
   # Put personal details (eg name, email) in another file
   # This file is excluded by .gitignore
-  path = ~/.config/git/config-ravi
+  path = ./config-ravi
 
 [core]
   editor = nvim
