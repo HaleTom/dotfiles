@@ -178,7 +178,9 @@ if [[ $BASH_VERSION ]]; then
   # https://brbsix.github.io/2015/11/23/perform-tab-completion-for-aliases-in-bash/
   # https://unix.stackexchange.com/questions/4219/how-do-i-get-bash-completion-for-command-aliases
   # General format: complete -o bashdefault -o default -o nospace -F _git g
-  _completion_loader systemctl; complete -o bashdefault -o default -o nospace -F _systemctl sc
+  if typeset -f _completion_loader > /dev/null; then
+    _completion_loader systemctl; complete -o bashdefault -o default -o nospace -F _systemctl sc
+  fi
 
   # Allow completion for git aliases defined above
   # See https://github.com/cykerway/complete-alias for a generic solution
