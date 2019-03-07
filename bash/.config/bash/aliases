@@ -39,9 +39,6 @@ alias ...='builtin cd ../..'
 alias ....='builtin cd ../../..'
 alias .....='builtin cd ../../../..'
 
-# Allow sudo to expand aliases
-alias asudo='sudo '
-
 # One letter aliases
 alias h='history'
 alias j='jobs'
@@ -83,6 +80,16 @@ alias rm='rm -I'  # Prompt on -r or >3 files
 alias Rm='command rm'
 alias setvars='(set -o posix; set)'
 alias vimpager='$XDG_DATA_HOME/vim/bundle/vimpager/vimpager'
+
+# Allow sudo to expand aliases
+alias asudo='sudo '
+# sudo, nicest, idle and alia
+alias ia=' idle alia'
+alias ias='idle alia asudo'
+alias na=' nicest alia'
+alias nas='nicest alia asudo'
+alias is=' idle sudo'
+alias ns=' nicest sudo'
 
 # Have pacmatic wrap aurman/pakku wrap powerpill wrap pacman
 # https://unix.stackexchange.com/a/384102/143394
