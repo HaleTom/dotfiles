@@ -41,35 +41,44 @@ audio/x-ms-wma=vlc.desktop
 ##
 
 [Added Associations]
+
+text/plain=mousepad.desktop;
+text/csv=wps-office-et.desktop;
+text/html=google-chrome.desktop;
+
+
 application/octet-stream=uget-gtk.desktop;deluge.desktop;qpdfview.desktop;mousepad.desktop;
 application/pdf=org.pwmt.zathura-pdf-mupdf.desktop;zathura-pdf-mupdf.desktop;
 application/x-gettext-translation=mousepad.desktop;
 application/x-wine-extension-ini=mousepad.desktop;
+application/epub+zip=engrampa.desktop;
+application/x-mobipocket-ebook=libreoffice-writer.desktop;
+application/x-shellscript=gvim.desktop;nvim.desktop;
+application/x-xpinstall=thunderbird.desktop;firefox.desktop;
+
+# Office
+application/wps-office.doc=wps-office-wps.desktop;
+application/wps-office.docx=wps-office-wps.desktop;
+application/wps-office.xls=wps-office-et.desktop;
+application/wps-office.xlsx=wps-office-et.desktop;
 
 image/gif=viewnior.desktop;gimp.desktop;
 image/jpeg=viewnior.desktop;
+image/vnd.microsoft.icon=viewnior.desktop;
+
 inode/directory=exo-file-manager.desktop
+
 x-scheme-handler/trash=exo-file-manager.desktop
 x-scheme-handler/http=exo-web-browser.desktop
 x-scheme-handler/https=exo-web-browser.desktop
-application/wps-office.xlsx=wps-office-et.desktop;
-text/plain=mousepad.desktop;
-image/vnd.microsoft.icon=viewnior.desktop;
-application/epub+zip=engrampa.desktop;
-application/x-mobipocket-ebook=libreoffice-writer.desktop;
 
 # VLC
 audio/mpeg=vlc.desktop;
 audio/mp4=vlc.desktop;
 video/mp4=vlc.desktop;
 video/x-matroska=vlc.desktop;
-video/x-msvideo=vlc.desktop;
-
-application/x-xpinstall=thunderbird.desktop;firefox.desktop;
 audio/x-ms-wma=picard.desktop;vlc.desktop;
-application/wps-office.docx=wps-office-wps.desktop;
-application/wps-office.doc=wps-office-wps.desktop;
-
+video/x-msvideo=vlc.desktop;
 
 ##
 ## The [Removed Associations] group removes associations of applications with mimetypes, as if the .desktop file was NOT listing this mimetype in the first place.
