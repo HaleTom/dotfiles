@@ -1,0 +1,8 @@
+# --user-install forces install to $HOME/.gem/
+# Unset this to allow $GEM_HOME to set install location
+#
+# It is enabled by Manjaro in /etc/gemrc:
+# > # --user-install is used to install to $HOME/.gem/ by default since we want to separate
+# > #                pacman installed gems and gem installed gems
+
+gem: --no-user-install
