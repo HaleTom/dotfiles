@@ -94,15 +94,19 @@ alias na='nicest alia'
 
 # Have pacmatic wrap aurman/pakku wrap powerpill wrap pacman
 # https://unix.stackexchange.com/a/384102/143394
-alias pac=yay
+alias pac=yay  # For convenience
+
 # pacmatic needs to be run as root: https://github.com/keenerd/pacmatic/issues/35
-# alias pacmatic='export PYTHONPATH=/usr/lib/python3.6/site-packages; sudo --preserve-env=pacman_program,PYTHON_PATH /usr/bin/pacmatic'
-alias pacmatic='PYTHONPATH=/usr/lib/python3.6/site-packages sudo --preserve-env=pacman_program,PYTHON_PATH /usr/bin/pacmatic'
+# Seems that PYTHONPATH is not longer needed
+# alias pacmatic='PYTHONPATH=/usr/lib/python3.6/site-packages sudo --preserve-env=pacman_program,PYTHON_PATH /usr/bin/pacmatic'
+# alias pacmatic='sudo --preserve-env=pacman_program,PYTHON_PATH /usr/bin/pacmatic'
+alias pacmatic='sudo --preserve-env=pacman_program /usr/bin/pacmatic'
+
 # Downgrade permissions as AUR helpers expect to be run as a non-root user. $UID is read-only in {ba,z}sh.
 alias aurman=' pacman_program="sudo -u #$UID /usr/bin/aurman" pacmatic'
 alias aurmano='pacman_program="sudo -u #$UID /usr/bin/aurman --optimistic_versioning" pacmatic'
 alias pakku='  pacman_program="sudo -u #$UID /usr/bin/pakku"  pacmatic'
-alias yay='    pacman_program="sudo -u #$UID /usr/bin/yay"    pacmatic'
+alias yay='    pacman_program="sudo -u #$UID /usr/bin/yay --pacman powerpill" pacmatic'
 
 # tmux / tmuxinator
 alias tmux='tmux -f "$XDG_CONFIG_HOME"/tmux/tmux.conf'
