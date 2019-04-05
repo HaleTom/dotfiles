@@ -79,6 +79,7 @@ alias rsync='rsync --sparse'
 alias rm='rm -I'  # Prompt on -r or >3 files
 alias Rm='command rm'
 alias setvars='(set -o posix; set)'
+alias trunc='cut -c -${COLUMNS:-80}'
 alias vimpager='$XDG_DATA_HOME/vim/bundle/vimpager/vimpager'
 
 # Allow sudo to expand aliases
@@ -235,6 +236,7 @@ fi
   alias -g SU='| sort -u'
   alias -g T='| tail'
   alias -g U='| uniq'
+  alias -g W='| trunc'  # mnemonic: width
   alias -g X='| xargs'
 
 # From zsh-lovers not yet checked
