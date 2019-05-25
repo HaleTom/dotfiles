@@ -4,6 +4,6 @@
 # Ie, not .* and Z-retired
 
 cd "$(dirname "$0")" || exit 1
-find . -maxdepth 1 -type d ! \( -name '.*' -o -name Z-archive \) -printf '%P\0' | xargs -0r stow -v
+find -L . -maxdepth 1 -type d ! \( -name '.*' -o -name Z-archive \) -printf '%P\0' | xargs -0r stow -v
 
 # xargs -r: don't run if empty
