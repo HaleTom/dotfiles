@@ -51,7 +51,6 @@ function yelp () {
     # $funcfiletrace has format:  file:line
     local file=${funcfiletrace[1]%:*} line=${funcfiletrace[1]##*:}
     local func=${funcstack[2]}
-    [[ $func =~ / ]] && func=source  # $func may be filename. Use bash behaviour
   fi
   local quoter
   # Use shell-quote if it exists (nicer output in bash)
@@ -61,6 +60,17 @@ function yelp () {
   echo "${file##*/}:$func:$line $("$quoter" "$@")" >&2
 }
 export_function yelp
+
+
+# Print the name of the function calling me
+function func_name () {
+  if [[ -n $BASH_VERSION ]]; then
+    printf "%s\n" "${FUNCNAME[1]}"
+  else  # zsh
+    printf "%s\n" "${funcstack[@]:1:1}"  # Use offset:length as array indexing may start at 1 or 0
+  fi
+}
+export_function func_name
 
 
 # Return the first pathname in $PATH for name in $1
@@ -380,12 +390,12 @@ export_function pause
 # Make a directory and move the working directory
 function mkcd {
   if [ "$#" -ne 1 ]; then
-    echo "${FUNCNAME[0]}: Make and change into a directory" >&2
-    echo "Usage: ${FUNCNAME[0]} DIRECTORY" >&2
+    echo "$(func_name): Make and change into a directory" >&2
+    echo "Usage: $(func_name) DIRECTORY" >&2
     return 69
   fi
 
-  [[ -d "$1" ]] && exit=2 && echo "${FUNCNAME[0]}: Warning: $1 already exists." >&2
+  [[ -d "$1" ]] && exit=2 && echo "$(func_name): Warning: $1 already exists." >&2
   mkdir -p "$1" || return 1
   cd "$1" || return 1
   return ${exit:-0}
