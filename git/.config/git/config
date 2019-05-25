@@ -31,6 +31,7 @@
   a      = add
   aa     = add -A  # deletions and new files
   ar     = "!git add \"$(rev-parse --show-toplevel)\" \"$@\" #"  # Repo level: New and changed, no deletions
+  av     = add -v
   ax     = git add .  # Current directory: New and changed, no deletions
   aacm   = "!f() { git add -A && git commit -m \"$@\"; }; f"
   an     = add --intent-to-add # add -N
@@ -51,7 +52,7 @@
   brl    = branch --list
   brm    = branch --move # rename
   brt    = branch --track
-  brsut  = branch --set-upstream-to
+  bru    = branch --set-upstream-to  # branch -u is equivalent
   c      = commit
   # Pick chunks to include of changed files, include all untracked files.
   ca     = commit -a -v
@@ -126,6 +127,7 @@
   f      = fetch
   ff     = merge --ff-only @{u}  # But try just 'git rebase' if HEAD is behind upstream
   fu     = fixup
+  fum    = fetch upstream master:upstream
   fua    = fixup-auto
   g      = !"git \"$@\" #"  # Run git command in top level: git g <command>
   head   = !"c=$(git rpc \"$1\") && p=$(git log -n1 --oneline --decorate) && git update-ref --no-deref -m \"Move from $p\" HEAD \"$c\" #" # Move HEAD to specified commit-ish
@@ -161,7 +163,7 @@
   rba    = rebase --abort
   rbb    = !"git rebase -i $(git merge-base $1 HEAD) #" # Rebase to branch-name # http://stackoverflow.com/a/31036518/5353461
   rbc    = rebase --continue
-  rbi    = !"c=${1:+$(git rpc \"$1\")~}; shift; git rebase --interactive --autostash --autosquash \"$(git rpc \"${c:-$(git parent 20)}\")\" \"$@\" #"
+  rbi    = !"c=${1:+$(git rpc \"$1\")~}; shift; git rebase --interactive --autostash --autosquash --keep-empty \"$(git rpc \"${c:-$(git parent 20)}\")\" \"$@\" #"
   rbia   = !"GIT_SEQUENCE_EDITOR=true git rbi \"$@\" #"
   rbo    = rebase --onto
   rbs    = rebase --skip
@@ -221,6 +223,7 @@
   sskua  = stash save --keep-index --include-untracked --all
   si     = status --short --ignored
   t      = tag
+  tf     = tag -f
   tl     = "!git tag -n1 --list | sort -V"
   tm     = tag -m
   td     = tag -d
