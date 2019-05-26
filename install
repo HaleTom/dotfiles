@@ -59,10 +59,5 @@ echo "Install/update all plugins..."
 neobundle_update
 
 echo
-echo "YouCompleteMe vim plugin fetch and build:"
-echo
-# shellcheck disable=SC2016
-echo '(cd $XDG_DATA_HOME/vim/bundle/YouCompleteMe &&'
-echo 'git submodule update --init --recursive --depth 1 &&'
-echo './install.py --clang-completer)'
+echo "Run ~/bin/local-update for YouCompleteMe and more"
 echo
