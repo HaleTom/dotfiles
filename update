@@ -1,0 +1,15 @@
+#!/bin/bash
+
+# Pull and push on .dotfiles and PERSONAL
+# Run restow
+
+cd "$(dirname "$0")" || exit 1
+
+if [[ -d PERSONAL ]]; then
+  echo "Update PERSONAL repo..." >&2
+  (cd PERSONAL && git pp && ./install)
+fi
+
+echo "Update .dotfiles repo..." >&2
+git pp
+./restow
