@@ -10,7 +10,7 @@ if [[ $# -gt 1 || ! -d $dir ]]; then
   printf "Stow directories to $HOME\n"
   printf "Run stow on all directories under given directory\n"
   printf "Else, run stow on all directories which are siblings to this file\n"
-  printf "\nDirectories named Z-* and .* are excluded.\n"
+  printf "\nDirectories named PERSONAL Z-* .* are excluded.\n"
   exit 1
 fi
 
@@ -21,4 +21,4 @@ if [[ -f PERSONAL/install ]]; then
   PERSONAL/install
 fi
 
-find -L . -maxdepth 1 -type d ! \( -name '.*' -o -name 'Z-*' \) -printf '%P\0' | xargs -t0 --max-args=1 --no-run-if-empty -- stow -v --target="$HOME"
+find -L . -maxdepth 1 -type d ! \( -name PERSONAL -o -name '.*' -o -name 'Z-*' \) -printf '%P\0' | xargs -t0 --max-args=1 --no-run-if-empty -- stow -v --target="$HOME"
