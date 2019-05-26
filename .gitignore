@@ -7,7 +7,11 @@
 /zsh/.config/zsh/history
 /zsh/.config/zsh/.zcompdump
 
-# Personal alllowed .envrc files
+# Personal allowed .envrc files
 /misc/.config/direnv/allow/
 
 ipython/.ipython/profile_default/history.sqlite
+
+# These get dynamically updated by bashrc
+tmux/.config/tmuxinator/tmuxinator.bash
+tmux/.config/tmuxinator/tmuxinator.zsh
