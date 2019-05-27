@@ -57,6 +57,11 @@ zle -N down-line-or-beginning-search
 [[ -n "${key[Left]}"    ]]  && bindkey  "${key[Left]}"    backward-char
 [[ -n "${key[Right]}"   ]]  && bindkey  "${key[Right]}"   forward-char
 
+
+###
+###  Keep at end of file due to `return` if no terminfo entry for smkx or rmkx
+###
+
 # Make sure the terminal is in application mode, when zle is active. Only then
 # are the values from $terminfo valid.
 
@@ -66,19 +71,16 @@ zle -N down-line-or-beginning-search
 
 # Linux consoles don't have capability 'smkx'
 # shellcheck disable=2154
-if ! [[ ${terminfo[smkx]} && ${terminfo[rmkx]} ]]; then
-    return
+if [[ ! ${terminfo[smkx]} || ! ${terminfo[rmkx]} ]]; then
+    return  #### <--- Remainder of file may not be executed
 fi
 
-# keypad_xmit / application / transmit mode
-function zle-keypad-xmit () {
-    echoti smkx
-}
+# If we get to here, we have terminfo entries...
 
+# keypad_xmit / application / transmit mode
+function zle-keypad-xmit () { echoti smkx; }
 # keypad_local / normal / raw / non-transmit mode
-function zle-keypad-local () {
-    echoti rmkx
-}
+function zle-keypad-local () { echoti rmkx; }
 
 hooks-add-hook zle_line_init_hook   zle-keypad-xmit
 hooks-add-hook zle_line_finish_hook zle-keypad-local
