@@ -38,7 +38,13 @@ bindkey '\C-n' history-beginning-search-forward
 autoload -Uz select-word-style
 select-word-style shell # Eg with ^W  # XXX Test me
 
-bindkey -v # Selects keymap `viins' for any operations by the current command. Also link `viins' to `main' so that it is selected by default
+# Auto-quote URLs
+autoload -Uz url-quote-magic
+zle -N self-insert url-quote-magic
+
+# vi keymap - allow for cases where $VISUAL or $EDITOR doesn't contain 'vi'
+# Select keymap `viins' for operations. Also link `viins' to `main' so that it is selected by default
+bindkey -v
 
 # Why aren't these working?
 bindkey -a '^_' undo
