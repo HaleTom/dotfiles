@@ -51,10 +51,6 @@ MODE_CURSOR_SEARCH="#ff00ff steady underline"
 zplugin ice wait'0'
 zplugin light 'softmoth/zsh-vim-mode'
 
-# Edit multi-line pastes before running them (https://cirw.in/blog/bracketed-paste)
-zplugin ice wait'0'
-zplugin snippet OMZ::plugins/safe-paste/safe-paste.plugin.zsh
-
 # Additional completion definitions for Zsh
 # https://github.com/zsh-users/zsh-completions
 zplugin ice wait'0' blockf  # have zplg manage completions  # https://github.com/zdharma/zplugin#completion-management
@@ -67,6 +63,12 @@ zplugin light 'zsh-users/zsh-completions'
 zplugin ice pick"zsh-hooks.plugin.zsh"
 zplugin light willghatch/zsh-hooks
 
+# Setup Bracketed Paste mode (uses zsh-hooks)
+# My PR: https://github.com/robbyrussell/oh-my-zsh/pull/7887
+zplugin ice wait'0'
+zplugin snippet OMZ::plugins/safe-paste/safe-paste.plugin.zsh
+# zplugin snippet OMZ::plugins/safe-paste/safe-paste.plugin.zsh
+zplugin snippet 'https://github.com/HaleTom/oh-my-zsh/blob/bracketed-paste/plugins/safe-paste/safe-paste.plugin.zsh'
 
 # Auto-close and delete matching delimiters in zsh
 # https://github.com/hlissner/zsh-autopair
