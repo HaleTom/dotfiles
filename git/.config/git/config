@@ -192,6 +192,7 @@
   rpt    = !"git rev-parse --verify $(git rev-parse \"$1\")^{tag} #" # allow :/<regex> format
   rr     = rerere
   rrd    = rerere diff
+  rrf    = rerere forget
   rrr    = rerere remaining
   rrs    = rerere status
   rmc    = rm --cached
