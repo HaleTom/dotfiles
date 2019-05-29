@@ -21,10 +21,10 @@ export_function sh_is_bash sh_is_zsh
 #
 # These are to be run interactively, not by scripts
 
-# less - highlight occurences of first argument
+# less - highlight occurrences of first argument
 lessh() { e="$1"; shift; less -i -p "*$e" "$@"; }
 
-# grep - highlight occurences of expression
+# grep - highlight occurrences of expression
 greph() { e="$1"; shift; grep --col=always -Eih "$e|$" "$@"; }
 
 # Print the hex and decimal value of the first character given
