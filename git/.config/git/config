@@ -146,6 +146,8 @@
   logdaa = !"eval git log $(git fmt-commit-1line) --graph --all --remotes --color=always \"$@\" #"
   logdaai= !"eval git log $(git fmt-commit-1line-iso) --graph --all --remotes --color=always \"$@\" #"
   lp     = log --patch --compact-summary --dirstat
+  lsr    = ls-remote
+  lsrt   = ls-remote --tags --refs
   ls     = ls-files
   mnf    = merge --no-ff
   mom    = merge origin/master
