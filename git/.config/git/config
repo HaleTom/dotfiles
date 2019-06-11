@@ -232,7 +232,7 @@
   si     = status --short --ignored
   t      = tag
   tf     = tag -f
-  tl     = "!git tag -n1 --list | sort -V"
+  tl     = "!git tag -n1 | sort -V"  # -n1 prints one line from annotation and implies --list
   tm     = tag -m
   td     = tag -d
 
