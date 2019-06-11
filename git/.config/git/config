@@ -243,6 +243,8 @@
   # Show changes in a file, following renames
   changes = log --follow --stat --patch
 
+  tag-latest = !"git describe --tags $(git rev-list --tags --max-count=1) #"
+
   #
   # Branches / remotes
   #
