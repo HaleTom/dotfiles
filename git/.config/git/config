@@ -222,6 +222,7 @@
   sb     = stash branch
   ss     = stash save
   ssa    = stash save --all # includes ignored
+  spcosp = !"git stash push && git checkout \"$@\" && git stash pop #"
   ssk    = stash save --keep-index # Changes to index are left intact
   ssp    = stash save --patch
   ssu    = stash save --include-untracked
