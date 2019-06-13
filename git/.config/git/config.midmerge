@@ -199,9 +199,19 @@
   resc   = !"git reset --soft $(c=$(git child); [ \"$c\" ] && echo $c || git children)" # Move HEAD to the child
   resp   = reset --soft HEAD~ # Move HEAD to the first Ancestor
   rl     = reflog
+<<<<<<< HEAD
+  rp     = rev-parse --verify  # Without --verify, the argument is printed, then an error message
+  rpc    = !"git rev-parse --verify \"$1\"^{commit} #" # Allows :/<regex> format
+  rpt    = !"git rev-parse --verify \"$1\"^{tag} #"    # Only annotated tags
+||||||| merged common ancestors
+  rp     = rev-parse
+  rpc    = !"git rev-parse --verify $(git rev-parse \"$1\")^{commit} #" # allow :/<regex> format
+  rpt    = !"git rev-parse --verify $(git rev-parse \"$1\")^{tag} #" # allow :/<regex> format
+=======
   rp     = rev-parse --verify  # Without --verify, the argument is printed, then an error message
   rpc    = !"git rev-parse --verify $(git rev-parse \"$1\")^{commit} # allow :/<regex> format"
   rpt    = !"git rev-parse --verify $(git rev-parse \"$1\")^{tag}    # allow :/<regex> format"
+>>>>>>> git alias: use --verify with rp, simplify rpc and rpt
   rr     = rerere
   rrd    = rerere diff
   rrf    = rerere forget

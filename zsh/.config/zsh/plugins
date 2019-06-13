@@ -66,9 +66,10 @@ zplugin light willghatch/zsh-hooks
 # Setup Bracketed Paste mode (uses zsh-hooks)
 # My PR: https://github.com/robbyrussell/oh-my-zsh/pull/7887
 zplugin ice wait'0'
-zplugin snippet OMZ::plugins/safe-paste/safe-paste.plugin.zsh
 # zplugin snippet OMZ::plugins/safe-paste/safe-paste.plugin.zsh
 zplugin snippet 'https://github.com/HaleTom/oh-my-zsh/blob/bracketed-paste/plugins/safe-paste/safe-paste.plugin.zsh'
+# source /home/ravi/code/oh-my-zsh/plugins/safe-paste/safe-paste.plugin.zsh ####
+
 
 # Auto-close and delete matching delimiters in zsh
 # https://github.com/hlissner/zsh-autopair
@@ -134,6 +135,7 @@ zplugin light 'scmbreeze/scm_breeze'
 # Do this 2nd last to be able to override plugin settings
 zplugin ice wait'0' atload'__zplg_async_run'
 zplugin light _local/null
+
 
 # Syntax highlighting should be the last plugin
 # Optimized and extended zsh-syntax-highlighting
