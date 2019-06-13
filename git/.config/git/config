@@ -239,6 +239,7 @@
   tl     = "!git tag -n1 | sort -V"  # -n1 prints one line from annotation and implies --list
   tm     = tag -m
   td     = tag -d
+  ws     = wrapstash
 
   # Top level directory of repository
   top = !"git \"$@\" #"  # re-run git command in repository toplevel directory
