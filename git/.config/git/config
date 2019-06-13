@@ -394,9 +394,13 @@
   squash = !"c=\"$1\"; shift; git commit -m \"squash! $(git log -1 --format='%s' \"$c\")\" \"$@\" -e #" # -e to add message to squash in
 
   # Run a command in the root of the working tree
-  sh   = !bash -c '\"$@\"' - # default to bash
-  bsh = !\"$@\" - # BOURNE shell, save some typing in default case :)
-  zsh  = !zsh -c '\"$@\"' -
+  bsh     = !"\"$@\" #" # BOURNE shell, save some typing in default case :)
+  sh      = !"bash -c '\"$@\"' -" # default to bash
+  zsh     = !"zsh  -c '\"$@\"' -"
+  sheval  = !"bash -c 'eval \"$@\"' -"
+  shevalq = !"bash -c 'shell-quote eval \"$@\"' -"
+  bsheval = !"sh   -c 'eval \"$@\"' -"
+  zsheval = !"zsh  -c 'eval \"$@\"' -"
 
   # Aliases
   la = !git config --list | grep ^alias\\. | cut -c 7- | grep -Ei --color -e \"$@\" "#" # List aliases
