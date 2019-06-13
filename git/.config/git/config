@@ -175,6 +175,9 @@
   rbi    = !"c=${1:+$(git rpc \"$1\")~} && set -- "${@:2}" && git rebase --interactive --autostash --autosquash --keep-empty \"$(git rpc \"${c:-$(git parent 20)}\")\" \"$@\" #"
   rbia   = !"GIT_SEQUENCE_EDITOR=true git rbi \"$@\" #"
   rbo    = rebase --onto
+  rboq   = wrapstash git rboqws
+  rboqws = !"x=$(git branch-or-commit HEAD) && git rbo \"$1\" \"${@:2:$#-2}\" \"$(git branch-name \"${@:$#}\")\" && git co \"$x\" # Rebase onto <dest> <pre-start> <last> then return to previous HEAD"
+  rboxq  = rboq HEAD  # Takes args: [git-args] <pre-start> <end>
   rbs    = rebase --skip
   ro     = remote
   roa    = remote add
