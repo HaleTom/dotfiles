@@ -221,8 +221,8 @@
   sl     = stash list
   sls    = stash list --compact-summary --dirstat
   slp    = stash list --patch --compact-summary --dirstat
-  sp     = stash pop
-  spi    = stash pop --index
+  sp     = stash pop --index
+  spni   = stash pop  # no index
   sps    = stash push
   spsp   = stash push --patch
   sb     = stash branch
