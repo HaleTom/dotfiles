@@ -308,7 +308,7 @@
   # TODO: warn if there is more than one parent
 
   # Print the $1-th first-parent of commit $2, or the earliest existing commit if the beginning of history is reached
-  # Defaults: $1=1 %$2=HEAD. If 0th parent is requested, the commit itself is returned.
+  # Defaults: $1=1 %$2=HEAD. If 0th parent is requested, the commit itself is returned. Test for -eq ensures numeric.
   parent = !"[ \"${1:-1}\" -eq \"${1:-1}\" ] && c=$(git rev-parse \"${2:-@}\") && git log -n\"$(expr \"${1:-1}\" + 1)\" --first-parent --pretty=\"%H\" --reverse \"$c\" | head -n1 #"
 
 
