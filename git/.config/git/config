@@ -172,7 +172,7 @@
   rba    = rebase --abort
   rbb    = !"git rebase -i $(git merge-base $1 HEAD) #" # Rebase to branch-name # http://stackoverflow.com/a/31036518/5353461
   rbc    = rebase --continue
-  rbi    = !"c=${1:+$(git rpc \"$1\")~}; shift; git rebase --interactive --autostash --autosquash --keep-empty \"$(git rpc \"${c:-$(git parent 20)}\")\" \"$@\" #"
+  rbi    = !"c=${1:+$(git rpc \"$1\")~} && set -- "${@:2}" && git rebase --interactive --autostash --autosquash --keep-empty \"$(git rpc \"${c:-$(git parent 20)}\")\" \"$@\" #"
   rbia   = !"GIT_SEQUENCE_EDITOR=true git rbi \"$@\" #"
   rbo    = rebase --onto
   rbs    = rebase --skip
