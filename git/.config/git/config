@@ -27,6 +27,9 @@
 # A literal '#' or ';' must be inside "-quotes
 ; this is also a comment
 
+# Gotchas:
+# rev-parse without --verify prints its argument, then returns false
+
 [alias]  # these are case INsensitive
   a      = add
   aa     = add -A  # deletions and new files
