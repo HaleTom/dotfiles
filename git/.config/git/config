@@ -225,7 +225,6 @@
   spni   = stash pop  # no index
   sps    = stash push
   spsp   = stash push --patch
-  sb     = stash branch
   ss     = stash save
   ssa    = stash save --all # includes ignored
   spcosp = !"git stash push && git checkout \"$@\" && git stash pop #"
@@ -235,7 +234,6 @@
   sska   = stash save --keep-index --all # includes ignored
   ssku   = stash save --keep-index --include-untracked
   sskua  = stash save --keep-index --include-untracked --all
-  si     = status --short --ignored
   t      = tag
   tf     = tag -f
   tl     = "!git tag -n1 | sort -V"  # -n1 prints one line from annotation and implies --list
