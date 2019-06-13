@@ -196,20 +196,23 @@
   resc   = !"git reset --soft $(c=$(git child); [ \"$c\" ] && echo $c || git children)" # Move HEAD to the child
   resp   = reset --soft HEAD~ # Move HEAD to the first Ancestor
   rl     = reflog
-  rp     = rev-parse
-  rpc    = !"git rev-parse --verify $(git rev-parse \"$1\")^{commit} #" # allow :/<regex> format
-  rpt    = !"git rev-parse --verify $(git rev-parse \"$1\")^{tag} #" # allow :/<regex> format
+  rp     = rev-parse --verify  # Without --verify, the argument is printed, then an error message
+  rpc    = !"git rev-parse --verify \"$1\"^{commit} #" # Allows :/<regex> format
+  rpt    = !"git rev-parse --verify \"$1\"^{tag} #"    # Only annotated tags
   rr     = rerere
   rrd    = rerere diff
   rrf    = rerere forget
   rrr    = rerere remaining
   rrs    = rerere status
   rmc    = rm --cached
+  # Status
   s      = !"cd \"${GIT_PREFIX:-.}\" && git print-commit-1 HEAD; git status --short" # allow for git s .
   si     = !"git print-commit-1 HEAD; git status --short --ignored"
+  # Submodule
   sm     = submodule
   sma    = submodule add
   sms    = submodule status
+  # Stash
   sa     = stash apply
   sai    = stash apply --index
   sb     = stash branch
