@@ -140,6 +140,8 @@
   head   = !"c=$(git rpc \"$1\") && p=$(git log -n1 --oneline --decorate) && git update-ref --no-deref -m \"Move from $p\" HEAD \"$c\" #" # Move HEAD to specified commit-ish
   icdiff = difftool --no-prompt --extcmd icdiff # \"$@\"
   l      = log --compact-summary --dirstat
+  la     = !"git config --list | grep '^alias\\.' | cut -c 7- | grep -Ei --color -e \"$@\"  # List aliases. -e allows multiple patterns beginning with -"
+  lao    = !"git config --list --show-origin | sed -n 's/\\t\\(alias.\\)/\\t/p' | grep -Ei --color -e \"$@\"  # List aliases, show config pathname"
   l1     = print-commit-1
   logd   = log --oneline --graph --decorate --remotes --max-count=20
   logd   = !"eval git log $(git fmt-commit-1line) --graph --remotes --max-count=20 #"
@@ -402,8 +404,6 @@
   bsheval = !"sh   -c 'eval \"$@\"' -"
   zsheval = !"zsh  -c 'eval \"$@\"' -"
 
-  # Aliases
-  la = !git config --list | grep ^alias\\. | cut -c 7- | grep -Ei --color -e \"$@\" "#" # List aliases
   # Quote / unquote a sh command, converting it to / from a git alias string
   quote-string = !"read -r l; printf !\\\"; printf %s \"$l\" | sed 's/\\([\\\"]\\)/\\\\\\1/g'; printf \" #\\\"\\n\" #"
   quote-string-undo = !"read -r l; printf %s \"$l\" | sed 's/\\\\\\([\\\"]\\)/\\1/g'; printf \"\\n\" #"
