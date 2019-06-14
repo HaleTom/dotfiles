@@ -128,9 +128,9 @@
   dxp    = "!case \"$1\" in -*|'') ;; *) x=$(git rpc \"${1:-HEAD}\");shift;esac; git d \"$@\" \"${x:=HEAD}~\" \"$x\" #" # Diff given with its first parent
   ec     = !"git status -sz  | sed -rnz 's/^(U.|.U) (.*)/\\2/p' | xargs -0 $EDITOR #"
   elc    = !"git edit-config"
-  elx    = !"git edit-local-excludes"
-  egc    = !"git edit-global-config"
+  egc    = !"git edit-global-config"  # ~/.gitconfig will be read after and override ~/.config/git/config
   egx    = !"git edit-global-excludes"
+  elx    = !"git edit-local-excludes"
   f      = fetch
   ff     = merge --ff-only @{u}  # But try just 'git rebase' if HEAD is behind upstream
   fu     = fixup
@@ -429,7 +429,8 @@
   edit-config = !"$EDITOR $(git rev-parse --git-dir)/config #"
 
   # Manage this config file
-  edit-global-config = "![ -f ~/.gitconfig -a -f ~/.config/git/config ] && ! confirm \"Two config files exist. Proceed?\" && exit || git config -e --global #"
+  # ~/.gitconfig will be read after and override ~/.config/git/config
+  edit-global-config = "![ -f ~/.gitconfig -a -f ~/.config/git/config ] && ! confirm \"Two config files exist. Edit ~/.gitconfig?\" && exit || git config -e --global #"
   backup-config = "!c=~/.config/git/config;g=~/.gitconfig; [ -e \"$g\" -a x$1 != x-f ] && echo \"$g exists. Not modified\" || cp -vp \"$c\" \"$g\" #"
   rmbackup-config = "!rm -v ~/.gitconfig"
 
