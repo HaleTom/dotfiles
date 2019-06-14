@@ -159,8 +159,7 @@ function alias_expand {
 alias gsudo='sudo git -c "include.path='"${XDG_CONFIG_DIR:-$HOME/.config}/git/config\" -c \"include.path=$HOME/.gitconfig\""
 
 if command -v hub > /dev/null; then  # hub wraps git
-  for i in g git; do
-      alias $i='hub'
+  alias g='hub' git='hub'
   done
 else
   alias g='git'
