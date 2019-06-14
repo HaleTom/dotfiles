@@ -96,10 +96,8 @@ return
 
 # For shell-check to see variables used
 # shellcheck disable=SC2128  # Arrays without indexing
-cat <<END > /dev/null 
+cat <<END > /dev/null
 
 $KEYTIMEOUT $CURSOR
 
 END
-
-
