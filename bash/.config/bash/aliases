@@ -158,19 +158,21 @@ function alias_expand {
 # See https://serverfault.com/a/334730/322507 for exporting GIT_* variables via ssh
 alias gsudo='sudo git -c "include.path='"${XDG_CONFIG_DIR:-$HOME/.config}/git/config\" -c \"include.path=$HOME/.gitconfig\""
 
-if command -v hub > /dev/null; then  # hub wraps git
-  alias g='hub' git='hub'
-  done
-else
-  alias g='git'
-fi
+# if command -v lab > /dev/null; then  # lab wraps either hub or git
+#   alias g='lab' git='lab'
+# elif command -v hub > /dev/null; then  # hub wraps git
+#   alias g='hub' git='hub'
+# else
+#   alias g='git'
+# fi
 
 # TODO check difference in aliases after sourcing scmb
 # shellcheck disable=2034  # exec_scmb_expand_args appears unused, verify or export
 # shellcheck disable=2139  # Expand at definition time
 if typeset -f exec_scmb_expand_args > /dev/null; then
-  alias g="exec_scmb_expand_args $(alias_expand g)"
-  alias git > /dev/null && alias git="exec_scmb_expand_args $(alias_expand git)"
+  # alias g="exec_scmb_expand_args $(alias_expand g)"
+  # alias git > /dev/null && alias git="exec_scmb_expand_args $(alias_expand git)"
+
   # Colourise ll alias output if grc is installed
   if command -v grcat > /dev/null; then
     alias ll='f() { exec_scmb_expand_args ls_with_file_shortcuts "$@" | grcat conf.ls; }; f'
