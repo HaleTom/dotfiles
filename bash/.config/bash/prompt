@@ -283,39 +283,13 @@ _prompt_bash_set() {
   host="$(candify "$HOSTNAME" | readline_ANSI_escape || echo "$HOSTNAME")"
   lhs+="${host}${None}:"
 
-  # Working directory
-  local prefix=''  # Used to contain '~' if $PWD directory is under $HOME
-  local dir=$PWD
-
-  # Replace leading $HOME with ~ if at beginning of string
-  case "$PWD"/ in # Extra slash at end prevents substring match
-    "$HOME"/)  # $PWD == $HOME itself
-      prefix=\~  # no trailing /
-      dir='' ;;
-    "$HOME"/?*)  # $PWD is a subdir of $HOME
-      prefix=\~/  # Add trailing / so that possibly quoted string goes after ~/ for path validity
-      dir=${PWD#$HOME/} ;;   # Remove $HOME and / as this is now in $prefix
-  esac
-
-  if [[ $PWD != $HOME ]]; then  # $PWD != $HOME
-    # Avoid ${PWD@Q} as it produced a literal \n inside $''
-    printf -v dir '%q' "$dir"  # Quote directory minus $HOME
-
-    # Replace a single slash with 4!?! slashes
-    # https://unix.stackexchange.com/q/543473/143394
-    dir=${dir//\\/\\\\\\\\}
-
-    # Prevent command and variable substitution:
-    dir=${dir//\`/\\\`}  # escape ` as \`
-    dir=${dir//\$/\\\$}  # escape $ as \$
-  fi
-
   # Colour slashes in the directory  https://superuser.com/q/49092/365890
   local dir_colour=$BCya  # colour of non-/ characters
   local slash_colour=$BYel
   local root_colour=$Red
 
-  dir=${dir_colour}${prefix}${dir}  # Initially coloured quoted $PWD
+  dir=$(_prompt_pwd_generate) || dir='\w'
+  dir=${dir_colour}${dir}  # Initially coloured quoted $PWD
 
   [[ $EUID = 0 ]] && slash_colour=$root_colour
   dir=${dir//\//${slash_colour}/${dir_colour}}  # Replace / with coloured /
@@ -412,6 +386,36 @@ _prompt_bash_set() {
   [[ $set_x ]] && set -x
 
   # echo "\$PS1=$PS1" # Debug
+}
+
+_prompt_pwd_generate() {
+  local prefix=''  # Used to contain '~' if $PWD directory is under $HOME
+  local dir=$PWD
+
+  # Replace leading $HOME with ~ if at beginning of string
+  case "$PWD"/ in # Extra slash at end prevents substring match
+    "$HOME"/)  # $PWD == $HOME itself
+      prefix=\~  # no trailing /
+      dir='' ;;
+    "$HOME"/?*)  # $PWD is a subdir of $HOME
+      prefix=\~/  # Add trailing / so that possibly quoted string goes after ~/ for path validity
+      dir=${PWD#$HOME/} ;;   # Remove $HOME and / as this is now in $prefix
+  esac
+
+  if [[ $PWD != $HOME ]]; then  # $PWD != $HOME
+    # Avoid ${PWD@Q} as it may have a literal \n inside $'', and it's not POSIX
+    printf -v dir '%q' "$dir"  # Quote directory minus $HOME
+
+    # Replace a single slash with 4!?! slashes
+    # https://unix.stackexchange.com/q/543473/143394
+    dir=${dir//\\/\\\\\\\\}
+
+    # Prevent command and variable substitution:
+    dir=${dir//\`/\\\`}  # escape ` as \`
+    dir=${dir//\$/\\\$}  # escape $ as \$
+  fi
+
+  echo "${prefix}${dir}"
 }
 
 # eval "$_options"; unset _options # Restore previous shell options from line 2
