@@ -240,6 +240,7 @@ _prompt_bash_set() {
   _prompt_timer_stop
 
   # Allow for a simple prompt for copy / paste examples
+  # shellcheck disable=2154,2236  # Safe check for set variable
   [[ ! -z ${ps1+x} ]] && { _simple_prompt_bash; return 0; }
 
   # Have we changed directory?
@@ -283,16 +284,50 @@ _prompt_bash_set() {
   lhs+="${host}${None}:"
 
   # Working directory
+  local prefix=''  # Used to contain '~' if $PWD directory is under $HOME
+  local dir=$PWD
+
+  # Replace leading $HOME with ~ if at beginning of string
+  case "$PWD"/ in # Extra slash at end prevents substring match
+    "$HOME"/)  # $PWD == $HOME itself
+      prefix=\~  # no trailing /
+      dir='' ;;
+    "$HOME"/?*)  # $PWD is a subdir of $HOME
+      prefix=\~/  # Add trailing / so that possibly quoted string goes after ~/ for path validity
+      dir=${PWD#$HOME/} ;;   # Remove $HOME and / as this is now in $prefix
+  esac
+
+  if [[ $PWD != $HOME ]]; then  # $PWD != $HOME
+    # Avoid ${PWD@Q} as it produced a literal \n inside $''
+    printf -v dir '%q' "$dir"  # Quote directory minus $HOME
+
+    # Replace a single slash with 4!?! slashes
+    # https://unix.stackexchange.com/q/543473/143394
+    dir=${dir//\\/\\\\\\\\}
+
+    # Prevent command and variable substitution:
+    dir=${dir//\`/\\\`}  # escape ` as \`
+    dir=${dir//\$/\\\$}  # escape $ as \$
+  fi
+
   # Colour slashes in the directory  https://superuser.com/q/49092/365890
   local dir_colour=$BCya  # colour of non-/ characters
   local slash_colour=$BYel
   local root_colour=$Red
-  local dir=${PWD/#$HOME/'~'}  # Working directory
-  dir=${dir_colour}${dir}  # Initially colour expansion of '\w'
+
+  dir=${dir_colour}${prefix}${dir}  # Initially coloured quoted $PWD
 
   [[ $EUID = 0 ]] && slash_colour=$root_colour
   dir=${dir//\//${slash_colour}/${dir_colour}}  # Replace / with coloured /
+
   lhs+=${dir}
+
+  # Allow disabling the above directory quoting by setting the following variable
+  # shellcheck disable=2154,2236  # Safe check for set variable
+  if [ ! -z "${_bash_prompt_simple+x}" ]; then
+    # PS1='\u@\h:'$dir'\$ '; return
+    lhs='\u@\h:\w'
+  fi
 
   # Git status
   _git_status_gen LHS  # Generate git status for a LHS prompt string
