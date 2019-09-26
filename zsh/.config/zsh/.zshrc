@@ -52,7 +52,7 @@ _prompt_timer_start  # Have initial prompt show startup time from this point on
 _prompt_update_zsh () {
     # Colour slashes in the directory  https://superuser.com/q/49092/365890
     local dir_colour='%B%F{cyan}'      # Colour of non-/ characters
-    local slash_colour='%B%F{white}'   # '/' colour
+    local slash_colour='%B%F{yellow}'   # '/' colour
     local root_colour='%b%F{red}'      # Colour of slashes if EUID==0
     local reset='%f%k%b%u%s'  # reset fg, bg, bold, underline and standout to defaults
     local dir=${dir_colour}${(%):-%~}  # Initially colour prompt %~ directory
@@ -60,7 +60,6 @@ _prompt_update_zsh () {
     [[ $EUID = 0 ]] && slash_colour=$root_colour
     dir=${dir//\//${slash_colour}/${dir_colour}}  # Replace / with coloured /
     dir=${dir}${reset}
-
 
     # # Allow user to set $ps1_debug to have "set -xe" continue through the prompt
     # # shellcheck disable=SC2154
@@ -92,7 +91,7 @@ _prompt_update_zsh () {
     local colon_dir='%b%F{white}:'${dir}
     local jobs='%(1j.%f(%B%F{green}%j%f%b%).)'
     local exit_status='%(?.. %F{white}[%F{red}%?%F{white}])'
-    local percent_or_hash='%(#.'${root_colour}'.%F{yellow})%#'${reset}" "
+    local percent_or_hash='%(#.'${root_colour}'.%B%F{yellow})%#'${reset}" "
 
     # '${_git_status}' is literal and replaced when option prompt_subst is set.
     # shellcheck disable=SC2154  # $_git_status not defined here
