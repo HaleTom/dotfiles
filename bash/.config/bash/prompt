@@ -183,6 +183,54 @@ _prompt_timer_stop() {
   unset -v _prompt_timer_start
 }
 
+_prompt_pwd_generate() {
+  local prefix=''  # Used to contain '~' if $PWD directory is under $HOME
+  local dir=$PWD
+
+  # Replace leading $HOME with ~ if at beginning of string
+  case "$PWD"/ in # Extra slash at end prevents substring match
+    "$HOME"/)  # $PWD == $HOME itself
+      echo '~'
+      return ;;
+    "$HOME"/?*)  # $PWD is a subdir of $HOME
+      prefix=\~/  # Trailing / ensures possibly quoted string goes after ~/ for validity
+      dir=${PWD#$HOME/} ;;   # Remove $HOME and / as this is now in $prefix
+  esac
+
+  # Quote directory minus $HOME
+  if [[ -n $ZSH_VERSION ]]; then
+    # Use printable characters from ${(q+)variable} as (q-) gives literal whitespace
+    # Fall back to printf '%q' if ${(q+)variable} is not supported
+    eval 'dir="${(q+)dir}"' 2> /dev/null || printf -v dir '%q' "$dir"
+    dir=${dir//'%'/'%%'}  # Replace % with %%
+  else  # $BASH_VERSION
+    eval 'dir=${dir@Q}' 2> /dev/null || printf -v dir '%q' "$dir"  # Quote directory minus $HOME
+    # if [[ -z $dir_Q ]]; then  # Pick shorter of the two output strings
+    #   dir=$dir_printf
+    # else
+    #   dir_Q=${dir_Q//$'\n'/\\n}  # replace literal \n with quoted version
+    #   if [[ ${#dir_Q} -le ${#dir_printf} ]]; then
+    #     echo using '${var@Q}' >&2
+    #     dir=$dir_Q
+    #     echo using 'printf "%q"' >&2
+    #     dir=$dir_printf
+    #   else
+    #     echo using 'printf "%q"' >&2
+    #     dir=$dir_printf
+    #   fi
+    # fi
+  fi
+
+  # Replace a single slash with 4!?! slashes
+  # https://unix.stackexchange.com/q/543473/143394
+  dir=${dir//\\/\\\\\\\\}
+
+  # Prevent command and variable substitution:
+  dir=${dir//\`/\\\`}  # escape ` as \`
+  dir=${dir//\$/\\\$}  # escape $ as \$
+
+  echo "${prefix}${dir}"
+}
 
 ##
 ## End zsh-only functions
@@ -388,34 +436,5 @@ _prompt_bash_set() {
   # echo "\$PS1=$PS1" # Debug
 }
 
-_prompt_pwd_generate() {
-  local prefix=''  # Used to contain '~' if $PWD directory is under $HOME
-  local dir=$PWD
-
-  # Replace leading $HOME with ~ if at beginning of string
-  case "$PWD"/ in # Extra slash at end prevents substring match
-    "$HOME"/)  # $PWD == $HOME itself
-      prefix=\~  # no trailing /
-      dir='' ;;
-    "$HOME"/?*)  # $PWD is a subdir of $HOME
-      prefix=\~/  # Add trailing / so that possibly quoted string goes after ~/ for path validity
-      dir=${PWD#$HOME/} ;;   # Remove $HOME and / as this is now in $prefix
-  esac
-
-  if [[ $PWD != $HOME ]]; then  # $PWD != $HOME
-    # Avoid ${PWD@Q} as it may have a literal \n inside $'', and it's not POSIX
-    printf -v dir '%q' "$dir"  # Quote directory minus $HOME
-
-    # Replace a single slash with 4!?! slashes
-    # https://unix.stackexchange.com/q/543473/143394
-    dir=${dir//\\/\\\\\\\\}
-
-    # Prevent command and variable substitution:
-    dir=${dir//\`/\\\`}  # escape ` as \`
-    dir=${dir//\$/\\\$}  # escape $ as \$
-  fi
-
-  echo "${prefix}${dir}"
-}
 
 # eval "$_options"; unset _options # Restore previous shell options from line 2
