@@ -97,6 +97,17 @@ function is_bin_in_path {
 export_function is_bin_in_path
 
 
+# Run a command only if it exists
+function if_cmd {
+  if command -v "$1" &> /dev/null; then
+    "$@"
+  else
+    return 1
+  fi
+}
+export_function if_cmd
+
+
 # Copy / rename a function
 # https://stackoverflow.com/a/18839557/5353461
 func_copy() {
