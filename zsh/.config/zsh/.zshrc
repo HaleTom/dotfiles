@@ -55,7 +55,7 @@ _prompt_update_zsh () {
     local slash_colour='%B%F{yellow}'   # '/' colour
     local root_colour='%b%F{red}'      # Colour of slashes if EUID==0
     local reset='%f%k%b%u%s'  # reset fg, bg, bold, underline and standout to defaults
-    local dir=${dir_colour}${(%):-%~}  # Initially colour prompt %~ directory
+    local dir=${dir_colour}$(_prompt_pwd_generate)  # Initially colour quoted $PWD
 
     [[ $EUID = 0 ]] && slash_colour=$root_colour
     dir=${dir//\//${slash_colour}/${dir_colour}}  # Replace / with coloured /
