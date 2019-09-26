@@ -326,7 +326,7 @@ function cdup {
 
   until [[ $try == . ]]; do
       if [[ -d $try && -x $try ]]; then
-          cd "$try" && return $?
+          cd "$try" && return "$?"
       fi
       try=$(dirname "$try")
   done
@@ -415,7 +415,7 @@ function mkcd {
   [[ -d "$1" ]] && exit=2 && echo "$(func_name): Warning: $1 already exists." >&2
   mkdir -p "$1" || return 1
   cd "$1" || return 1
-  return ${exit:-0}
+  return "${exit:-0}"
 }
 export_function mkcd
 
@@ -562,7 +562,8 @@ export_function confirm_yes
 
 
 # Print the name of the git repository's working tree's root directory
-# Search for 'Tom Hale' in http://stackoverflow.com/questions/957928/is-there-a-way-to-get-the-git-root-directory-in-one-command
+# https://stackoverflow.com/a/38843585/5353461
+# https://stackoverflow.com/a/38852055/5353461
 # Or, shorter:
 # (root=$(git rev-parse --git-dir)/ && cd ${root%%/.git/*} && git rev-parse && pwd)
 # but this doesn't cover external $GIT_DIRs which are named other than .git
