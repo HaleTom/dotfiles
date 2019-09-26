@@ -247,6 +247,9 @@ add_to_path_var () {
 # Quote the contents of "$@"
 # See also ~/bin/token-quote for prettier, user-facing quoting
 function token_quote {
+  if_cmd ~/bin/token-quote "$@" && return
+
+  # Else, do it manually
   local quoted=()
   for token; do
     quoted+=( "$(printf '%q' "$token")" )
