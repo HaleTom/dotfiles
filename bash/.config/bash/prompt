@@ -106,7 +106,7 @@ _simple_prompt_bash() {
     fi
   fi
 
-  # shellcheck disable=2154  # $ps1 unset
+  # shellcheck disable=2154  # $ps1 is only set by user
   case $ps1 in
     [Xx]) # Cancel simple prompt behaviour
       (( _restore_mode_in_prompt )) && bind "set show-mode-in-prompt on"
@@ -114,6 +114,7 @@ _simple_prompt_bash() {
       _prompt_bash_set # Print the full prompt
       ;; # Don't fall through 'here
     "") # Set default simple prompt allowing for user laziness of `ps1=`
+      bind "set show-mode-in-prompt off"
       PS1='\$ ' ;;
     *) # User has set explicit prompt string
       bind "set show-mode-in-prompt off"
@@ -233,7 +234,7 @@ _prompt_pwd_generate() {
 }
 
 ##
-## End zsh-only functions
+## Only bash code below here
 ##
 [[ $ZSH_VERSION ]] && return
 
@@ -289,7 +290,10 @@ _prompt_bash_set() {
 
   # Allow for a simple prompt for copy / paste examples
   # shellcheck disable=2154,2236  # Safe check for set variable
-  [[ ! -z ${ps1+x} ]] && { _simple_prompt_bash; return 0; }
+  if [[ ! -z ${ps1+x} ]]; then
+    _simple_prompt_bash
+    return 0
+  fi
 
   # Have we changed directory?
   _cd_hook_bash
