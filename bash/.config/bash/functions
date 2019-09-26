@@ -81,6 +81,7 @@ function bin_path () {
      builtin type -P "$1"  # No output if not in $PATH
   fi
 }
+export_function bin_path
 
 
 # True if $1 is an executable in $PATH
@@ -93,6 +94,7 @@ function is_bin_in_path {
     builtin type -P "$1" &> /dev/null
   fi
 }
+export_function is_bin_in_path
 
 
 # Copy / rename a function
@@ -105,6 +107,7 @@ func_rename() {
   func_copy "$@" || return
   unset -f "$1"
 }
+export_function func_copy func_rename
 
 
 function ostype () {
