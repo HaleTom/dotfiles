@@ -350,24 +350,31 @@ function nbin {
 }
 
 
-function man {
-  local vman=${XDG_DATA_HOME-$HOME/.local/share}/vim/bundle/vim-superman/bin/vman
-  # shellcheck disable=2034
-  local EDITOR=vim  # https://github.com/jez/vim-superman/issues/19
-  if [[ -t 1 && -x $vman ]]; then
-    # STDOUT is a tty, $vman is executable
-    for arg; do # Loop over "$@"
-      case "$arg" in
-        --) break;; # end of options
-        -[sS]*|--section=*) continue ;; #These work with vim's :Man
-        -*) vman=$(command -v man) # unknown option. Use usual man instead.
-      esac
-    done
-    "$vman" "$@"
-  else
-    command man "$@"
-  fi
-}
+# function man {
+#   if command -v man &>/dev/null; then
+#     export MANPAGER='nvim +Man!'
+#     command man "$@"
+#     return
+#   fi
+#
+#   # Vim from here down:
+#   local vman=${XDG_DATA_HOME-$HOME/.local/share}/vim/bundle/vim-superman/bin/vman
+#   # shellcheck disable=2034
+#   local EDITOR=vim  # https://github.com/jez/vim-superman/issues/19
+#   if [[ -t 1 && -x $vman ]]; then
+#     # STDOUT is a tty, $vman is executable
+#     for arg; do # Loop over "$@"
+#       case "$arg" in
+#         --) break;; # end of options
+#         -[sS]*|--section=*) continue ;; #These work with vim's :Man
+#         -*) vman=$(command -v man) # unknown option. Use usual man instead.
+#       esac
+#     done
+#     "$vman" "$@"
+#   else
+#     command man "$@"
+#   fi
+# }
 
 ######### End non-exported functions ##########
 
