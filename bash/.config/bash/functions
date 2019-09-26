@@ -111,11 +111,11 @@ export_function if_cmd
 # Copy / rename a function
 # https://stackoverflow.com/a/18839557/5353461
 func_copy() {
-  test -n "$(declare -f "$1")" || return
+  test -n "$(declare -f "$1")" || return 1
   eval "${_/$1/$2}"
 }
 func_rename() {
-  func_copy "$@" || return
+  func_copy "$@" || return 1
   unset -f "$1"
 }
 export_function func_copy func_rename
