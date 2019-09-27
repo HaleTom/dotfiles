@@ -100,8 +100,6 @@ export PYTHONUSERBASE=$XDG_DATA_HOME/python
 # # export VIRTUALENVWRAPPER_PYTHON=$WORKON_HOME/default/bin/python
 # export PROJECT_HOME=$HOME/code # Used by mkproject
 
-export GITHUB_USER=HaleTom
-
 # Easier to read colours on Linux TTYs
 # https://raw.githubusercontent.com/xero/dotfiles/master/zsh/.zsh/sourcerer.zsh
 if [[ $TERM = linux ]]; then
@@ -241,7 +239,9 @@ if [[ ${_disable_welcome_message:=0} -eq 0 ]] || \
 fi
 export _disable_welcome_message=$(( SHLVL + 1 ))  # Don't print at this $SHLVL again
 
-[[ $ZSH_VERSION ]] && return
+# Source API keys etc that I don't want to publish to GitHub
+[[ -f $XDG_CONFIG_HOME/bash/personal ]] && source "$XDG_CONFIG_HOME/bash/personal"
+
 ##
 ## Only bash below this point
 ##
