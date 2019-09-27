@@ -75,12 +75,14 @@ alias lesc='less-compressed-wrapper'
 alias mv='mv -i'
 alias Mv='command mv'  # Allow overwrite
 alias nixnote2='LD_PRELOAD=libcurl.so.3 nixnote2 &'
-alias rsync='rsync --sparse'
+alias restix="restic -x --exclude-caches --exclude-file=$HOME/etc/restic/exclude"
+alias rga='rg --hidden --no-ignore'
 alias rm='rm -I'  # Prompt on -r or >3 files
 alias Rm='command rm'
 alias setvars='(set -o posix; set)'
 alias trunc='cut -c -${COLUMNS:-80}'
 alias vimpager='$XDG_DATA_HOME/vim/bundle/vimpager/vimpager'
+alias btrbk_prune_wipe_preserve_backups='sudo btrbk prune --wipe --preserve-backups'
 
 # sudo, nicest, idle and alia
 # Allow sudo to expand aliases
@@ -121,11 +123,12 @@ alias pbcopy='xclip -selection clipboard -in'
 alias pbpaste='xclip -selection clipboard -out'
 
 # rsync
+alias rscp='rsync -ax --partial --sparse --no-whole-file --inplace'
+alias rsmv='rscp --remove-source-files'
 alias droidsync='f(){ rsync "$@" --no-p --no-o --no-g --rsync-path="su root rsync";};f'
 # FAT stores to two-second accuracy, NTFS 100 nanoseconds
 # https://corengen.wordpress.com/2010/03/22/comparing-file-timestamps-on-ntfs-and-fat32/
-alias fatrsync='f(){ rsync "$@" --modify-window=2 --no-p --no-o --no-g;};f'
-alias rsyncmv='rsync -a --remove-source-files'
+alias fatrsync='f(){ rsync "$@" --modify-window=2 --no-p --no-o --no-g;};f'  # Allow for -a or other options
 
 # pygmentize
 alias pcat='pygmentize -f terminal256 -O style=monokai -g'
@@ -181,7 +184,7 @@ fi
 
 
 ##
-## Begin bash only
+## Begin bash only  (zsh-only follows)
 ##
 if [[ $BASH_VERSION ]]; then
 
@@ -257,10 +260,13 @@ fi
   alias -g LS='| less -S'
   alias -g MM='| most'
   alias -g NE="2> /dev/null"
-  alias -g NS='| sort -n'
-  alias -g RNS='| sort -nr'
+  alias -g S='| sort'
+  alias -g SN='| sort -n'
+  alias -g SRN='| sort -nr'
+  alias -g SZ='| sort -z'
   alias -g VM='/var/log/messages'
-  alias -g X0G='| xargs -0 egrep'
   alias -g X0='| xargs -0'
+  alias -g X0E='| xargs -0n1 echo'
+  alias -g X0G='| xargs -0 egrep'
   alias -g XG='| xargs egrep'
 }
