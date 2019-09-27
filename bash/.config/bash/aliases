@@ -119,7 +119,7 @@ alias head='head -n $((${LINES:-12}-2))' # as many as possible without scrolling
 alias tail='tail -n $((${LINES:-12}-2)) --sleep-interval=0.2' # 200ms
 
 # Clipboard
-alias pbcopy='xclip -selection clipboard -in'
+alias pbcopy="sed -Ez '$ s/\\n+\$//' | xclip -selection clipboard -in"
 alias pbpaste='xclip -selection clipboard -out'
 
 # rsync
