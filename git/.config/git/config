@@ -40,6 +40,7 @@
   an     = add --intent-to-add # add -N
   ap     = add --patch
   au     = add --update  # deletions of tracked files but no new ones
+  aucnn  = !"git au && git cnn #"
   aut    = "!git ls-files -z -o --exclude-standard | xargs -0 git add; #" # Add only untracked files
   aw     = !git diff -U0 -w --no-color -- \"$@\" | git apply --cached --ignore-whitespace --unidiff-zero "#" # Add only non-whitespace changes
   aow    = !git add -- \"$@\" && git diff --cached -w | git apply --cached -R "#" # Add only whitespace changes
@@ -87,7 +88,10 @@
     [[ x$r =~ ^x[yY] ]] && git clean -df \"$@\" || echo Untouched.' removed \"$@\" #"
   cm     = commit -m
   cmf    = "! [ $# -ge 2 ] || { echo 'Give arguments: <commit msg> <files>' >&2; exit 1; }; cd ${GIT_PREFIX:-.} && git add \"${@:2}\" && git commit -m \"$@\" #"
+  cmi    = "! [ $# -ge 2 ] || { echo 'Give arguments: <commit msg> <files>' >&2; exit 1; }; cd ${GIT_PREFIX:-.} && git commit -m \"${@:1:1}\" -i \"${@:2}\" #"
   cn     = commit --amend
+  # cn0    = commit --amend --allow-empty
+  cne    = commit --no-edit
   cnn    = commit --amend --no-edit
   cnnra  = commit --amend --no-edit --reset-author
   cnrbc  = !"git cn  && git rbc #"
@@ -103,6 +107,7 @@
   cobt   = !sh -c 'git checkout -b "$1" && git branch --track origin/"$1"' -
   coo    = checkout --ours
   cop    = checkout --patch
+  cos    = !"git spcosp \"$@\" # move uncommitted changes to new branch via stash"
   cot    = checkout --theirs
   cp     = commit --patch
   cvp    = "!f() { git commit -v --patch \"$@\"; git st; }; f"
@@ -113,6 +118,7 @@
     git commit -a --amend --no-edit && \
     git status -s; }; f"
   d      = diff
+  dr     = diff -R
   db     = "!export GIT_TRACE=1; git" # Use to debug an alias, Eg: git db <aliasname>
   debug  = "!set -x; export GIT_TRACE=2 GIT_CURL_VERBOSE=2 GIT_TRACE_PERFORMANCE=2 GIT_TRACE_PACK_ACCESS=2 GIT_TRACE_PACKET=2 GIT_TRACE_PACKFILE=2 GIT_TRACE_SETUP=2 GIT_TRACE_SHALLOW=2; git"
   dc     = diff --cached
@@ -162,24 +168,34 @@
   psuo   = push --set-upstream origin
   psurb  = "![ $# -ne 1 ] && { echo 'Give argument: <remote-for-upstream>' >&2; exit 1; }; b=\"$(git rev-parse --abbrev-ref HEAD)\" && git push --set-upstream \"${1?}\" \"$b\" #"
   psuob  = "!b=\"$(git rev-parse --abbrev-ref HEAD)\" && git push --set-upstream origin \"$b\" #"
-  pl     = !"git pull-autostash --progress"
-  plrf   = pull-autostash --rebase=false
-  plri   = pull-autostash --rebase=interactive
-  plrbm  = "!git pull-autostash && git rebase --autosquash --autostash \"${1:-master}\" \"${@:2}\" #"
-  pp     = "!echo Pull:; git wrapstash git pull --no-autostash --rebase "$@" && echo Push: && git push #"
+  plws   = wrapstash git pull --no-autostash
+  pl     = plws --progress
+  plr    = plws --rebase
+  plrf   = plws --rebase=false  # Merge
+  plrm   = plws --rebase=merges  # Transplant the whole topology of commit graph elsewhere. https://stackoverflow.com/a/50555740/5353461
+  # plrp   = plws --rebase=preserve  # Deprecated in favour of merges
+  plri   = plws --rebase=interactive
+  plrbm  = "!git plws && git rebase --autosquash --autostash \"${1:-master}\" \"${@:2}\" #"
+  pp     = "!echo Pull:; git plws --rebase "$@" && echo Push: && git push #"
   ps     = push
   prq    = !"hub pull-request \"$@\" #"
-  pum    = pull-autostash upstream master
+  # XXX TODO merge thest into master branch not currently checked out branch
+  # pom    = pl origin master
+  # pum    = pl upstream master
   rb     = rebase
   rba    = rebase --abort
   rbb    = !"git rebase -i $(git merge-base $1 HEAD) #" # Rebase to branch-name # http://stackoverflow.com/a/31036518/5353461
   rbc    = rebase --continue
   rbi    = !"c=${1:+$(git rpc \"$1\")~} && set -- "${@:2}" && git rebase --interactive --autostash --autosquash --keep-empty \"$(git rpc \"${c:-$(git parent 20)}\")\" \"$@\" #"
   rbia   = !"GIT_SEQUENCE_EDITOR=true git rbi \"$@\" #"
+  rbm    = rebase master
+  rbmg   = rebase --rebase-merges  # incompatible with interactive
   rbo    = rebase --onto
   rboq   = wrapstash git rboqws
   rboqws = !"x=$(git branch-or-commit HEAD) && git rbo \"$1\" \"${@:2:$#-2}\" \"$(git branch-name \"${@:$#}\")\" && git co \"$x\" # Rebase onto <dest> <pre-start> <last> then return to previous HEAD"
+  rbox   = !"git branch-name ${@:$#} >/dev/null && git rbo HEAD \"$@\" # Requires branch else nothing happens??  # Takes args: [git-args] <pre-start> <end>"
   rboxq  = rboq HEAD  # Takes args: [git-args] <pre-start> <end>
+  rbroot = rebase --root # Allows changing root commit(s)
   rbs    = rebase --skip
   ro     = remote
   roa    = remote add
@@ -229,11 +245,13 @@
   sp     = stash pop --index
   spni   = stash pop  # no index
   sps    = stash push
-  spsp   = stash push --patch
-  ss     = stash save
-  ssa    = stash save --all # includes ignored
   spcosp = !"git stash push && git checkout \"$@\" && git stash pop #"
-  ssk    = stash save --keep-index # Changes to index are left intact
+  spsp   = stash push --patch
+  ss     = stash push
+  ssa    = stash push --all # includes ignored
+  ssk    = stash push --keep-index # Changes to index are left intact
+  sskm   = stash push --keep-index --message
+  ssm    = stash push --message
   ssp    = stash save --patch
   ssu    = stash save --include-untracked
   sska   = stash save --keep-index --all # includes ignored
