@@ -6,8 +6,8 @@
 set -o noclobber  # Use >|file to clobber
 
 # Allow shell-specific code
-function sh_is_zsh { [[ $ZSH_VERSION ]]; }
-function sh_is_bash { [[ $BASH_VERSION ]]; }
+function sh_is_zsh { [ -n "$ZSH_VERSION" ]; }
+function sh_is_bash { [ -n "$BASH_VERSION" ]; }
 
 # Setup functions (required for XDG background checks)
 source "$HOME/.config/bash/functions"
@@ -145,7 +145,7 @@ fi
 # shellcheck disable=SC1087,SC2154  # zsh in a bash file
 function _source_file {
   # zsh global aliases can cause syntax errors
-  [[ $ZSH_VERSION ]] && setopt local_options no_aliases
+  sh_is_zsh && setopt local_options no_aliases
 
   file=$1
   if [[ -f $file ]]; then
@@ -244,6 +244,8 @@ export _disable_welcome_message=$(( SHLVL + 1 ))  # Don't print at this $SHLVL a
 
 ##
 ## Only bash below this point
+sh_is_zsh && return
+##
 ##
 
 export HISTFILE=$XDG_DATA_HOME/bash/history
@@ -293,7 +295,6 @@ trap -- "$trap_str _pre_command" DEBUG; unset trap_str
 # Setup direnv
 # Required after setting the prompt says: https://github.com/direnv/direnv
 command -v direnv &> /dev/null && eval "$(direnv hook bash)"
-
 
 ############################
 # Comments only below here #
