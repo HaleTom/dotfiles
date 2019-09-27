@@ -205,7 +205,12 @@ _prompt_pwd_generate() {
     eval 'dir="${(q+)dir}"' 2> /dev/null || printf -v dir '%q' "$dir"
     dir=${dir//'%'/'%%'}  # Replace % with %%
   else  # $BASH_VERSION
-    eval 'dir=${dir@Q}' 2> /dev/null || printf -v dir '%q' "$dir"  # Quote directory minus $HOME
+    fallback=''  # Set non-zero if ${var@Q} is not supported
+    # Prefer ${var@Q} as 'a b c' becomes a\ b\ c with printf "%q"
+    eval 'quoted=${dir@Q}' 2> /dev/null || printf -v dir '%q' "$dir"  # Quote directory minus $HOME
+    # Prevent unnecessary quotes eg /tmp becoming '/tmp' or $'/tmp'
+    [[ ! "$quoted" =~ ^\$?"'$dir'"$ || $dir =~ ' ' ]] && dir=$quoted
+
     # if [[ -z $dir_Q ]]; then  # Pick shorter of the two output strings
     #   dir=$dir_printf
     # else
