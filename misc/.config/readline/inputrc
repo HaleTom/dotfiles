@@ -34,7 +34,12 @@ set keyseq-timeout 400
 set blink-matching-paren on
 
 # Insert paste as a string rather than possibly running it
+# set enable-bracketed-paste on  # Octave prompt whinges on escapes
+$if Octave
+set enable-bracketed-paste off
+$else
 set enable-bracketed-paste on
+$endif
 
 # Preserve cursor column position in history
 set history-preserve-point on
