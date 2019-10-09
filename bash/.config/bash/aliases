@@ -96,7 +96,7 @@ alias na='nicest alia'
 
 # Have pacmatic wrap aurman/pakku wrap powerpill wrap pacman
 # https://unix.stackexchange.com/a/384102/143394
-alias pac=yay  # For convenience
+alias pac='LESS=${LESS/F/} yay'  # For convenience. Remove -F == --quit-if-one-screen.
 
 # pacmatic needs to be run as root: https://github.com/keenerd/pacmatic/issues/35
 # Seems that PYTHONPATH is not longer needed
