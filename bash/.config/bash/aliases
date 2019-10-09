@@ -123,7 +123,7 @@ alias pbcopy="sed -Ez '$ s/\\n+\$//' | xclip -selection clipboard -in"
 alias pbpaste='xclip -selection clipboard -out'
 
 # rsync
-alias rscp='rsync -ax --partial --sparse --no-whole-file --inplace'
+alias rscp='rsync -ax --partial --sparse --xattrs --no-whole-file --inplace --protect-args'
 alias rsmv='rscp --remove-source-files'
 alias droidsync='f(){ rsync "$@" --no-p --no-o --no-g --rsync-path="su root rsync";};f'
 # FAT stores to two-second accuracy, NTFS 100 nanoseconds
