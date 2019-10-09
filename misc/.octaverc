@@ -1,0 +1,11 @@
+% Specify inputrc (eg if bracketed paste escapes break the prompt)
+% Not needed after removing ~/.config/octave.
+% http://octave.1599824.n4.nabble.com/inputrc-issue-td1601582.html
+% read_readline_init_file ("/dev/null")
+
+graphics_toolkit('gnuplot');
+
+% PS1('\w >> ')
+PS1("\\[\\033[01;31m\\]\\W:\\#> \\[\\033[0m\\]");
+
+% vim: ft=matlab
