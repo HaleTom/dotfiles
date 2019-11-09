@@ -61,6 +61,7 @@ alias scu='systemctl --user'
 # alias sbin='export PATH=$(npm bin):$PATH'
 
 # Configuration of base command
+alias adbfs='adbfs -o auto_cache,attr_timeout=0.01,big_writes,max_write=999999,auto_unmount'
 alias ag='ag --color'
 alias aga='ag --all-types --hidden'
 alias cal='cal -3' # show 3 months by default
