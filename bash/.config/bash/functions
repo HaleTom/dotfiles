@@ -404,8 +404,11 @@ export_function get_keypress
 # Prompt for a keypress to continue. Customise prompt with $*
 function pause {
   >/dev/tty printf '%s' "${*:-Press any key to continue... }"
-  [[ $ZSH_VERSION ]] && read -krs  # Use -u0 to read from STDIN
-  [[ $BASH_VERSION ]] && </dev/tty read -rsn1
+  if [[ ${BASH_VERSION:-} ]]; then
+    </dev/tty read -rsn1
+  else  # zsh
+    read -krs  # Use -u0 to read from STDIN
+  fi
   printf '\n'
 }
 export_function pause
