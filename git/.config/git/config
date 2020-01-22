@@ -186,6 +186,7 @@
   rba    = rebase --abort
   rbb    = !"git rebase -i $(git merge-base $1 HEAD) #" # Rebase to branch-name # http://stackoverflow.com/a/31036518/5353461
   rbc    = rebase --continue
+  rbce   = !"git commit -t \"$(git rev-parse --git-dir)\"/rebase-apply/final-commit && git rebase --skip # commit editing message"  # https://stackoverflow.com/a/30224412/5353461
   rbi    = !"c=${1:+$(git rpc \"$1\")~} && set -- "${@:2}" && git rebase --interactive --autostash --autosquash --keep-empty \"$(git rpc \"${c:-$(git parent 20)}\")\" \"$@\" #"
   rbia   = !"GIT_SEQUENCE_EDITOR=true git rbi \"$@\" #"
   rbm    = rebase master
@@ -267,6 +268,7 @@
   # Top level directory of repository
   top = !"git \"$@\" #"  # re-run git command in repository toplevel directory
   root = rev-parse --show-toplevel  # Show git top-level
+  git-dir = rev-parse --git-dir  # Show .git directory
 
   # Show changes in a file, following renames
   changes = log --follow --stat --patch
