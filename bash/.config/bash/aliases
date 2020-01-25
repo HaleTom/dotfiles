@@ -87,13 +87,14 @@ alias btrbk_prune_wipe_preserve_backups='sudo btrbk prune --wipe --preserve-back
 
 # sudo, nicest, idle and alia
 # Allow sudo to expand aliases
+# alias alia='source $HOME/bin/alia'
 alias asudo='sudo '
-alias iasudo='idle alia asudo'
-alias nasudo='nicest alia asudo'
+alias iasudo='idle alia "$SHELL" asudo'
+alias nasudo='nicest alia "$SHELL" asudo'
 alias isudo='idle sudo'
 alias nsudo='nicest sudo'
-alias ia='idle alia'
-alias na='nicest alia'
+alias ia='idle alia "$SHELL"'
+alias na='nicest alia "$SHELL"'
 
 # Have pacmatic wrap aurman/pakku wrap powerpill wrap pacman
 # https://unix.stackexchange.com/a/384102/143394
