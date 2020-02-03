@@ -52,9 +52,22 @@ alias ft='faketty '  # space at end allows next word to be alias-expanded
 alias gh='git logda' # Git History
 alias jc='journalctl'
 alias jn='jupyter-notebook'
-alias sc='sudo SYSTEMD_EDITOR=/bin/vi /usr/bin/systemctl'
 
-alias scu='systemctl --user'
+# systemctl
+alias sc='sudo SYSTEMD_EDITOR=/bin/vi /usr/bin/systemctl'
+alias sc_u='systemctl --user'
+
+alias sc_d='sc disable'
+alias sc_dn='sc disable --now'
+alias sc_dr='sc daemon-reload'
+alias sc_e='sc enable'
+alias sc_en='sc enable --now'
+alias sc_lu='sc list-units'
+alias sc_luf='sc list-unit-files'
+alias sc_r='sc restart'
+alias sc_s='sc status'
+alias sc_t='sc start'
+alias sc_p='sc stop'
 
 # Currently done as function
 # https://stackoverflow.com/a/34071958/5353461
