@@ -17,9 +17,7 @@ if [ -z "$XDG_RUNTIME_DIR" ]; then  # It's not already set
   if [ ! -d "$XDG_RUNTIME_DIR" ]; then
     # systemd-created directory doesn't exist
     XDG_RUNTIME_DIR=/tmp/$USER-runtime
-    if [ ! -d "$XDG_RUNTIME_DIR" ]; then  # Doesn't already exist
-      mkdir -m 0700 "$XDG_RUNTIME_DIR"
-    fi
+    [ ! -d "$XDG_RUNTIME_DIR" ] && mkdir -m 0700 "$XDG_RUNTIME_DIR"
   fi
 fi
 # Check dir has got the correct type, ownership, and permissions
