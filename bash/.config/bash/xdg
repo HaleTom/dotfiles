@@ -4,19 +4,31 @@
 # ^ keep shell-check happy
 
 # XDG - set defaults as they may not be set (eg Ubuntu 14.04 LTS)
-# See https://standards.freedesktop.org/basedir-spec/basedir-spec-latest.html
+# See https://specifications.freedesktop.org/basedir-spec/basedir-spec-latest.html#variables
 # and https://wiki.archlinux.org/index.php/XDG_Base_Directory_support
 export XDG_CONFIG_HOME=${XDG_CONFIG_HOME:=$HOME/.config}
 export XDG_DATA_HOME=${XDG_DATA_HOME:=$HOME/.local/share}
 export XDG_CACHE_HOME=${XDG_CACHE_HOME:=$HOME/.cache}
 
-# See http://pubs.opengroup.org/onlinepubs/9699919799/utilities/V3_chap02.html#tag_18_06_02 for this "+x" syntax
-# Note that quotes are needed should IFS=x and not in [[
-if [[ -z ${XDG_RUNTIME_DIR+x} ]]; then
-   if [[ ! -w ${XDG_RUNTIME_DIR:=/run/user/$UID} ]]; then
-      echo "\$XDG_RUNTIME_DIR ($XDG_RUNTIME_DIR) not writeable. Setting to /tmp." >&2
-      XDG_RUNTIME_DIR=/tmp
-   fi
+# $XDG_RUNTIME_DIR
+# https://unix.stackexchange.com/a/580757/143394  # My Q&A
+if [ -z "$XDG_RUNTIME_DIR" ]; then  # It's not already set
+  XDG_RUNTIME_DIR=/run/user/$UID  # Try systemd created path
+  if [ ! -d "$XDG_RUNTIME_DIR" ]; then
+    # systemd-created directory doesn't exist
+    XDG_RUNTIME_DIR=/tmp/$USER-runtime
+    if [ ! -d "$XDG_RUNTIME_DIR" ]; then  # Doesn't already exist
+      mkdir -m 0700 "$XDG_RUNTIME_DIR"
+    fi
+  fi
+fi
+# Check dir has got the correct type, ownership, and permissions
+if ! [[ -d "$XDG_RUNTIME_DIR" && -O "$XDG_RUNTIME_DIR" &&
+    "$(stat -c '%a' "$XDG_RUNTIME_DIR")" = 700 ]]; then
+  echo "\$XDG_RUNTIME_DIR: permissions problem with $XDG_RUNTIME_DIR:" >&2
+  ls -ld "$XDG_RUNTIME_DIR" >&2
+  XDG_RUNTIME_DIR=$(mktemp -d /tmp/"$USER"-runtime-XXXXXX)
+  echo "Set \$XDG_RUNTIME_DIR=$XDG_RUNTIME_DIR" >&2
 fi
 export XDG_RUNTIME_DIR
 
