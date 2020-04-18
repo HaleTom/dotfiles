@@ -12,15 +12,15 @@ autoload -Uz _zinit
 (( ${+_comps} )) && _comps[zinit]=_zinit
 
 
-# Use null plugin to run commands asynchronously. Work-around for https://github.com/zdharma/zplugin/issues/68
-# Faster and non-interactive version of `zplugin create null`
-_null_plug_dir=${ZINIT[PLUGINS_DIR]}/_local---null
-echo _null_plug_dir=$_null_plug_dir >&2
-if [[ ! -d $_null_plug_dir ]]; then
-  echo "Creating zplugin 'null' plugin directory at: $_null_plug_dir"
-  mkdir -p -- "$_null_plug_dir"
-fi
-unset _null_plug_dir
+# # Use null plugin to run commands asynchronously. Work-around for https://github.com/zdharma/zplugin/issues/68
+# # Faster and non-interactive version of `zplugin create null`
+# _null_plug_dir=${ZINIT[PLUGINS_DIR]}/_local---null
+# # echo _null_plug_dir=$_null_plug_dir >&2
+# if [[ ! -d $_null_plug_dir ]]; then
+#   echo "Creating zplugin 'null' plugin directory at: $_null_plug_dir"
+#   mkdir -p -- "$_null_plug_dir"
+# fi
+# unset _null_plug_dir
 
 
 # Run these commands asynchronously via null plugin
@@ -28,16 +28,16 @@ __zplg_async_run () {
   # Load pip completions if pip installed
   # Alternatively, as suggested in https://github.com/zdharma/zplugin/issues/68#issuecomment-410531439
   # shellcheck disable=2154  # $commands not assigned
-  [[ ${commands[pip]} ]] && eval "$(pip completion --zsh)"
+  [[ ${commands[pip]} ]] && zsh-defer eval "$(pip completion --zsh)"
 
   # Source fzf files
   # Needs to be sourced after zsh-vim-mode to have ^R work
   if [[ ${commands[fzf]} ]]; then  # fzf is installed
-    _source_file /usr/share/fzf/key-bindings.zsh
-    _source_file /usr/share/fzf/completion.zsh
+    zsh-defer _source_file /usr/share/fzf/key-bindings.zsh
+    zsh-defer _source_file /usr/share/fzf/completion.zsh
   fi
   # Setup my aliases after any turbo-loaded plugins
-  _source_file "$XDG_CONFIG_HOME/bash/aliases"
+  zsh-defer _source_file "$XDG_CONFIG_HOME/bash/aliases"
 }
 
 MODE_CURSOR_VICMD="green block"
@@ -130,8 +130,8 @@ zplugin light 'scmbreeze/scm_breeze'
 
 # Run commands in __zplg_async_run asynchronously
 # Do this 2nd last to be able to override plugin settings
-zplugin ice wait'0' atload'__zplg_async_run'
-zplugin light _local/null
+zinit light romkatv/zsh-defer
+__zplg_async_run
 
 
 # Syntax highlighting should be the last plugin
