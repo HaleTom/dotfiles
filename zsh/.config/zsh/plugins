@@ -6,19 +6,16 @@
 
 
 # Zplugin
-# https://github.com/zdharma/zplugin/issues/80
-# declare -A ZPLGM
-# ZPLGM[HOME_DIR]=$XDG_DATA_HOME/zplugin
-# rm ~/.config/zsh/.zplugin
-source "$XDG_DATA_HOME/zplugin/bin/zplugin.zsh"
-autoload -Uz _zplugin
+source "$XDG_DATA_HOME/zinit/bin/zinit.zsh"
+autoload -Uz _zinit
 # shellcheck disable=SC2154,2034,2004
-(( ${+_comps} )) && _comps[zplugin]=_zplugin
+(( ${+_comps} )) && _comps[zinit]=_zinit
 
 
 # Use null plugin to run commands asynchronously. Work-around for https://github.com/zdharma/zplugin/issues/68
 # Faster and non-interactive version of `zplugin create null`
-_null_plug_dir=${ZPLGM[PLUGINS_DIR]}/_local---null
+_null_plug_dir=${ZINIT[PLUGINS_DIR]}/_local---null
+echo _null_plug_dir=$_null_plug_dir >&2
 if [[ ! -d $_null_plug_dir ]]; then
   echo "Creating zplugin 'null' plugin directory at: $_null_plug_dir"
   mkdir -p -- "$_null_plug_dir"
