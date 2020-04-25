@@ -151,13 +151,19 @@ setopt append_history auto_cd beep extended_glob no_clobber no_match notify prom
 # zsh environment variables
 READNULLCMD=less  # have "< file" be piped to less
 
+
+# Source plugins
+# Avoid _source_file as it sets `noalias` which seems to be restored by a zinit wait / turbo load after startup
+# if setopt | grep -q noaliases ; then printf "Aliases DISabled at: "; yelp; else printf "Aliases ENabled at: "; yelp; fi
+# Diagnose:  is it zsh-defer or zinit not checking then resetting the current state of option aliases?
+source $ZDOTDIR/plugins
+
 _source_files <<DOTFILES
     # $XDG_DATA_HOME/fzf/.fzf.zsh  # It magically just works !??!
-    $ZDOTDIR/plugins
+    # $ZDOTDIR/plugins  # See above for aliases
     $ZDOTDIR/zle
 DOTFILES
 # $XDG_CONFIG_HOME/bash/aliases is sourced after plugins load to overwrite if necessary
-
 
 # Allow user to set a simple prompt for capturing sample output
 # by setting variable $ps1 (not $PS1)
@@ -236,7 +242,7 @@ return
 
 # For shell-check to see variables used
 # shellcheck disable=SC2128  # Arrays without indexing
-cat <<END > /dev/null 
+cat <<END > /dev/null
 $RPS1 $READNULLCMD $ZSH_AUTOSUGGEST_BUFFER_MAX_SIZE $ZSH_AUTOSUGGEST_USE_ASYNC
 $ZSH_HIGHLIGHT_HIGHLIGHTERS $ZSH_HIGHLIGHT_STYLES $ZSH_HIGHLIGHT_PATTERNS
 $ZSH_HIGHLIGHT_REGEXP $ZSH_AUTOSUGGEST_HIGHLIGHT_STYLE $FAST_HIGHLIGHT_STYLES
