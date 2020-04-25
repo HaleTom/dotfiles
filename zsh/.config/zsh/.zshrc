@@ -226,7 +226,10 @@ autoload -Uz compinit  # zplugin will do compinit later
 # Required at end of zshrc says: https://github.com/direnv/direnv
 command -v direnv &> /dev/null && eval "$(direnv hook zsh)"
 
+
 return
+
+
 ##
 ## Null code and comments only beyond here
 ##

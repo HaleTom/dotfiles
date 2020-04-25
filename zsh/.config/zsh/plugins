@@ -6,6 +6,9 @@
 
 
 # Zplugin
+#
+# Wiki:    https://zdharma.org/zinit/wiki/INTRODUCTION/
+# Github:  https://github.com/zdharma/zinit
 source "$XDG_DATA_HOME/zinit/bin/zinit.zsh"
 autoload -Uz _zinit
 # shellcheck disable=SC2154,2034,2004
@@ -24,29 +27,34 @@ autoload -Uz _zinit
 
 
 # Run these commands asynchronously via null plugin
-__zplg_async_run () {
+__zinit_deferred () {
   # Load pip completions if pip installed
   # Alternatively, as suggested in https://github.com/zdharma/zplugin/issues/68#issuecomment-410531439
   # shellcheck disable=2154  # $commands not assigned
-  [[ ${commands[pip]} ]] && zsh-defer eval "$(pip completion --zsh)"
+  [[ ${commands[pip]} ]] && eval "$(pip completion --zsh)"
 
   # Source fzf files
   # Needs to be sourced after zsh-vim-mode to have ^R work
   if [[ ${commands[fzf]} ]]; then  # fzf is installed
-    zsh-defer _source_file /usr/share/fzf/key-bindings.zsh
-    zsh-defer _source_file /usr/share/fzf/completion.zsh
+    _source_file /usr/share/fzf/key-bindings.zsh
+    _source_file /usr/share/fzf/completion.zsh
   fi
   # Setup my aliases after any turbo-loaded plugins
-  zsh-defer _source_file "$XDG_CONFIG_HOME/bash/aliases"
+  _source_file "$XDG_CONFIG_HOME/bash/aliases"
+  # echo finished running deferred function
 }
 
+
+# Friendly bindings for ZSH's vi mode
+# https://github.com/softmoth/zsh-vim-mode
 MODE_CURSOR_VICMD="green block"
 MODE_CURSOR_VIINS="#20d08a blinking bar"
 MODE_CURSOR_SEARCH="#ff00ff steady underline"
-# Friendly bindings for ZSH's vi mode
-# https://github.com/softmoth/zsh-vim-mode
-zplugin ice wait'0'
-zplugin light 'softmoth/zsh-vim-mode'
+# How to manage bindkeys in plugins - eg withold the ^R binding
+# https://github.com/zdharma/zinit/issues/69
+zinit ice wait trackbinds bindmap'^R -> hold'  # ^R conflicts with fzf
+zinit light 'softmoth/zsh-vim-mode'
+
 
 # Additional completion definitions for Zsh
 # https://github.com/zsh-users/zsh-completions
@@ -60,7 +68,8 @@ zplugin light 'zsh-users/zsh-completions'
 zplugin ice pick"zsh-hooks.plugin.zsh"
 zplugin light willghatch/zsh-hooks
 
-# Setup Bracketed Paste mode (uses zsh-hooks)
+
+# Bracketed Paste mode (uses zsh-hooks)
 # My PR: https://github.com/robbyrussell/oh-my-zsh/pull/7887
 zplugin ice wait'0'
 # zplugin snippet OMZ::plugins/safe-paste/safe-paste.plugin.zsh
@@ -77,7 +86,7 @@ unset 'AUTOPAIR_PAIRS[ ]'  # Make typing '[ x ]' consume the auto-inserted ']' a
 
 # Auto suggestions
 # https://github.com/zsh-users/zsh-autosuggestions
-zplugin ice wait'0' atload'_zsh_autosuggest_start'
+zplugin ice wait lucid atload'_zsh_autosuggest_start'
 zplugin light zsh-users/zsh-autosuggestions
 ZSH_AUTOSUGGEST_STRATEGY=match_prev_cmd  # Match on previous history command also
 ZSH_AUTOSUGGEST_BUFFER_MAX_SIZE=20  # Recommended
@@ -110,8 +119,11 @@ zplugin load 'MichaelAquilina/zsh-you-should-use'
 
 # A collection of LS_COLORS definitions; needs your contribution!
 # https://github.com/trapd00r/LS_COLORS
-zplugin ice wait'0' atclone"dircolors -b LS_COLORS >| ls_colors.zsh" atpull'%atclone' pick"ls_colors.zsh"
-zplugin light trapd00r/LS_COLORS
+# http://zdharma.org/zinit/wiki/LS_COLORS-explanation/
+zinit ice wait'0' atclone"dircolors -b LS_COLORS > clrs.zsh" \
+    atpull'%atclone' pick"clrs.zsh" nocompile'!' \
+    atload'zstyle ":completion:*" list-colors “${(s.:.)LS_COLORS}”'
+zinit light trapd00r/LS_COLORS
 
 
 # k is the new l, yo
@@ -121,17 +133,20 @@ zplugin ice wait'0' pick'k.sh'
 zplugin light supercrabtree/k
 
 
+# zsh-defer - allow running commands after shell loads
+# https://github.com/romkatv/zsh-defer
+zinit light romkatv/zsh-defer
+
+
 # Adds numbered shortcuts to the output git status, and much more
 # https://madebynathan.com/2011/10/19/git-shortcuts-like-youve-never-seen-before/
 # https://github.com/scmbreeze/scm_breeze
-zplugin ice wait'0'
-zplugin light 'scmbreeze/scm_breeze'
+# zinit ice wait'0'  # Hangs for about 11 SECONDS if this is uncommented ???
+zsh-defer -12 zinit light 'scmbreeze/scm_breeze'  # -12 enables STDOUT, STDERR output
 
 
-# Run commands in __zplg_async_run asynchronously
-# Do this 2nd last to be able to override plugin settings
-zinit light romkatv/zsh-defer
-__zplg_async_run
+# Run some commands asynchronously for faster startup
+zsh-defer -12 __zinit_deferred
 
 
 # Syntax highlighting should be the last plugin
@@ -140,7 +155,7 @@ __zplg_async_run
 FAST_THEME_NAME=free  # From `fast-theme -l`. `fast-theme -t <theme>` to test
 zplugin ice wait'0' atinit'zpcompinit; zpcdreplay'
 zplugin ice atload"[[ current_theme.zsh -nt themes/$FAST_THEME_NAME.ini ]] || fast-theme $FAST_THEME_NAME > /dev/null"
-zplugin light 'zdharma/fast-syntax-highlighting'
+zplugin load 'zdharma/fast-syntax-highlighting'
 typeset -gA FAST_HIGHLIGHT_STYLES FAST_HIGHLIGHT
 # Customise colours of theme set via fast-theme  https://github.com/zdharma/fast-syntax-highlighting/issues/42
 # Available options in $XDG_CONFIG_HOME/zsh/.zplugin/plugins/zdharma---fast-syntax-highlighting/current_theme.zsh
@@ -174,6 +189,8 @@ FAST_HIGHLIGHT_STYLES[${FAST_THEME_NAME}bracket-level-3]='fg=red,bold'
 
 
 return
+
+
 ##
 ## Null code and comments only beyond here
 ##
