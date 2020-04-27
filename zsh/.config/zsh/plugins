@@ -9,7 +9,16 @@
 #
 # Wiki:    https://zdharma.org/zinit/wiki/INTRODUCTION/
 # Github:  https://github.com/zdharma/zinit
-source "$XDG_DATA_HOME/zinit/bin/zinit.zsh"
+# Source Zinit
+() {
+  zinit=$XDG_DATA_HOME/zinit/bin/zinit.zsh
+  if [ ! -r "$zinit" ]; then
+    zinit_dir=${zinit%/*}
+    echo mkdir -pm 700 "$zinitdir"
+    git clone --depth 1 https://github.com/zdharma/zinit.git "$zinit_dir"
+  fi
+  source "$zinit"
+}
 autoload -Uz _zinit
 # shellcheck disable=SC2154,2034,2004
 (( ${+_comps} )) && _comps[zinit]=_zinit
