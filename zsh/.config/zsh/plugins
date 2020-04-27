@@ -5,7 +5,7 @@
 # shellcheck disable=SC1090 # sourced files with variables
 
 
-# Zplugin
+# zinit
 #
 # Wiki:    https://zdharma.org/zinit/wiki/INTRODUCTION/
 # Github:  https://github.com/zdharma/zinit
@@ -28,12 +28,12 @@ autoload -Uz _zinit
 (( ${+_comps} )) && _comps[zinit]=_zinit
 
 
-# # Use null plugin to run commands asynchronously. Work-around for https://github.com/zdharma/zplugin/issues/68
-# # Faster and non-interactive version of `zplugin create null`
+# # Use null plugin to run commands asynchronously. Work-around for https://github.com/zdharma/zinit/issues/68
+# # Faster and non-interactive version of `zinit create null`
 # _null_plug_dir=${ZINIT[PLUGINS_DIR]}/_local---null
 # # echo _null_plug_dir=$_null_plug_dir >&2
 # if [[ ! -d $_null_plug_dir ]]; then
-#   echo "Creating zplugin 'null' plugin directory at: $_null_plug_dir"
+#   echo "Creating zinit 'null' plugin directory at: $_null_plug_dir"
 #   mkdir -p -- "$_null_plug_dir"
 # fi
 # unset _null_plug_dir
@@ -42,7 +42,7 @@ autoload -Uz _zinit
 # Run these commands asynchronously via null plugin
 __zinit_deferred () {
   # Load pip completions if pip installed
-  # Alternatively, as suggested in https://github.com/zdharma/zplugin/issues/68#issuecomment-410531439
+  # Alternatively, as suggested in https://github.com/zdharma/zinit/issues/68#issuecomment-410531439
   # shellcheck disable=2154  # $commands not assigned
   [[ ${commands[pip]} ]] && eval "$(pip completion --zsh)"
 
@@ -71,36 +71,36 @@ zinit light 'softmoth/zsh-vim-mode'
 
 # Additional completion definitions for Zsh
 # https://github.com/zsh-users/zsh-completions
-zplugin ice wait depth=1 blockf  # have zplg manage completions  # https://github.com/zdharma/zplugin#completion-management
-zplugin light 'zsh-users/zsh-completions'
+zinit ice wait depth=1 blockf  # have zplg manage completions  # https://github.com/zdharma/zinit#completion-management
+zinit light 'zsh-users/zsh-completions'
 
 
 # Add zsh's missing hooks, and support for user-defined hooks
 # eg zle-line-init of the Special Wigets in `man zshzle`
 # https://github.com/willghatch/zsh-hooks
-zplugin ice depth=1 pick"zsh-hooks.plugin.zsh"
-zplugin light willghatch/zsh-hooks
+zinit ice depth=1 pick"zsh-hooks.plugin.zsh"
+zinit light willghatch/zsh-hooks
 
 
 # Bracketed Paste mode (uses zsh-hooks)
 # My PR: https://github.com/robbyrussell/oh-my-zsh/pull/7887
-zplugin ice wait depth=1
-# zplugin snippet OMZ::plugins/safe-paste/safe-paste.plugin.zsh
-zplugin snippet 'https://github.com/HaleTom/oh-my-zsh/blob/bracketed-paste/plugins/safe-paste/safe-paste.plugin.zsh'
+zinit ice wait depth=1
+# zinit snippet OMZ::plugins/safe-paste/safe-paste.plugin.zsh
+zinit snippet 'https://github.com/HaleTom/oh-my-zsh/blob/bracketed-paste/plugins/safe-paste/safe-paste.plugin.zsh'
 # source /home/ravi/code/oh-my-zsh/plugins/safe-paste/safe-paste.plugin.zsh ####
 
 
 # Auto-close and delete matching delimiters in zsh
 # https://github.com/hlissner/zsh-autopair
-zplugin ice wait depth=1
-zplugin light hlissner/zsh-autopair
+zinit ice wait depth=1
+zinit light hlissner/zsh-autopair
 unset 'AUTOPAIR_PAIRS[ ]'  # Make typing '[ x ]' consume the auto-inserted ']' and be compatible with Midnight Commander
 
 
 # Auto suggestions
 # https://github.com/zsh-users/zsh-autosuggestions
-zplugin ice wait depth=1 lucid atload'_zsh_autosuggest_start'
-zplugin light zsh-users/zsh-autosuggestions
+zinit ice wait depth=1 lucid atload'_zsh_autosuggest_start'
+zinit light zsh-users/zsh-autosuggestions
 ZSH_AUTOSUGGEST_STRATEGY=match_prev_cmd  # Match on previous history command also
 ZSH_AUTOSUGGEST_BUFFER_MAX_SIZE=20  # Recommended
 ZSH_AUTOSUGGEST_HIGHLIGHT_STYLE='fg=238'
@@ -110,24 +110,24 @@ ZSH_AUTOSUGGEST_USE_ASYNC=1
 # Awaiting: https://github.com/b4b4r07/enhancd/issues/77
 # # enhancd: A next-generation cd command with an interactive filter
 # # https://github.com/b4b4r07/enhancd
-# zplugin ice wait depth=1
-# zplugin light 'b4b4r07/enhancd'
+# zinit ice wait depth=1
+# zinit light 'b4b4r07/enhancd'
 # export ENHANCD_DIR=$XDG_CONFIG_HOME/enhancd ENHANCD_DOT_SHOW_FULLPATH=1 # ENHANCD_FILTER=fzy:fzf:peco:percol
 
 
 # Reminds you to use existing aliases for commands you just typed
 # https://github.com/MichaelAquilina/zsh-you-should-use
-# zplugin ice wait'0' load'[[ ! -v ps1 ]]' unload'[[ -v ps1 ]]'  # Doesn't work
-zplugin ice wait depth=1
-zplugin load 'MichaelAquilina/zsh-you-should-use'
+# zinit ice wait'0' load'[[ ! -v ps1 ]]' unload'[[ -v ps1 ]]'  # Doesn't work
+zinit ice wait depth=1
+zinit load 'MichaelAquilina/zsh-you-should-use'
 
 
 # # Find a emoji.json and setup a key to trigger the search as ^s doesn't seem to work
 # # https://github.com/b4b4r07/emoji-cli/issues/15
 # # Emoji completion on the command line
 # # https://github.com/b4b4r07/emoji-cli
-# zplugin ice wait depth=1
-# zplugin light 'b4b4r07/emoji-cli'
+# zinit ice wait depth=1
+# zinit light 'b4b4r07/emoji-cli'
 
 
 # A collection of LS_COLORS definitions; needs your contribution!
@@ -141,9 +141,9 @@ zinit light trapd00r/LS_COLORS
 
 # k is the new l, yo
 # https://github.com/supercrabtree/k
-# zplugin ice wait'[[ -n ${ZLAST_COMMANDS[(r)k*]} ]]' pick'k.sh'
-zplugin ice wait depth=1 pick'k.sh'
-zplugin light supercrabtree/k
+# zinit ice wait'[[ -n ${ZLAST_COMMANDS[(r)k*]} ]]' pick'k.sh'
+zinit ice wait depth=1 pick'k.sh'
+zinit light supercrabtree/k
 
 
 # zsh-defer - allow running commands after shell loads
@@ -168,12 +168,12 @@ zsh-defer -12 __zinit_deferred
 # Optimized and extended zsh-syntax-highlighting
 # https://github.com/zdharma/fast-syntax-highlighting
 FAST_THEME_NAME=free  # From `fast-theme -l`. `fast-theme -t <theme>` to test
-zplugin ice wait depth=1 atinit'zpcompinit; zpcdreplay'
-zplugin ice atload"[[ current_theme.zsh -nt themes/$FAST_THEME_NAME.ini ]] || fast-theme $FAST_THEME_NAME > /dev/null"
-zplugin load 'zdharma/fast-syntax-highlighting'
+zinit ice wait depth=1 atinit'zpcompinit; zpcdreplay'
+zinit ice atload"[[ current_theme.zsh -nt themes/$FAST_THEME_NAME.ini ]] || fast-theme $FAST_THEME_NAME > /dev/null"
+zinit load 'zdharma/fast-syntax-highlighting'
 typeset -gA FAST_HIGHLIGHT_STYLES FAST_HIGHLIGHT
 # Customise colours of theme set via fast-theme  https://github.com/zdharma/fast-syntax-highlighting/issues/42
-# Available options in $XDG_CONFIG_HOME/zsh/.zplugin/plugins/zdharma---fast-syntax-highlighting/current_theme.zsh
+# Available options in $XDG_CONFIG_HOME/zsh/.zinit/plugins/zdharma---fast-syntax-highlighting/current_theme.zsh
 FAST_HIGHLIGHT[use_brackets]=1
 FAST_HIGHLIGHT_STYLES[${FAST_THEME_NAME}unknown-token]="fg=196"  # bright red
 FAST_HIGHLIGHT_STYLES[${FAST_THEME_NAME}alias]='fg=177'  # lavender
@@ -213,7 +213,7 @@ return
 # # zsh syntax highlighting
 # # https://github.com/zsh-users/zsh-syntax-highlighting
 # # Must be at end, after any widgets, any 'zle -N', and compinit
-# zplugin light 'zsh-users/zsh-syntax-highlighting'
+# zinit light 'zsh-users/zsh-syntax-highlighting'
 # ZSH_HIGHLIGHT_HIGHLIGHTERS=(main brackets pattern regexp root)
 # typeset -A ZSH_HIGHLIGHT_STYLES
 # ZSH_HIGHLIGHT_STYLES[alias]='fg=magenta,bold'
