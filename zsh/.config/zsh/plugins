@@ -5,12 +5,13 @@
 # shellcheck disable=SC1090 # sourced files with variables
 
 
-# zinit
-#
+# Zinit
 # Wiki:    https://zdharma.org/zinit/wiki/INTRODUCTION/
 # Github:  https://github.com/zdharma/zinit
+
 # Source Zinit
-() {
+# shellcheck disable=SC1072,1073  # https://github.com/koalaman/shellcheck/issues/1931
+() {  # Anonymous function for local variables
   zinit=$XDG_DATA_HOME/zinit/bin/zinit.zsh
   if [ ! -r "$zinit" ]; then
     zinit_bin=${zinit%/*}
