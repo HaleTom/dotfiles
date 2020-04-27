@@ -13,10 +13,14 @@
 () {
   zinit=$XDG_DATA_HOME/zinit/bin/zinit.zsh
   if [ ! -r "$zinit" ]; then
-    zinit_dir=${zinit%/*}
-    echo mkdir -pm 700 "$zinitdir"
-    git clone --depth 1 https://github.com/zdharma/zinit.git "$zinit_dir"
+    zinit_bin=${zinit%/*}
+    echo Cloning Zinit...
+    mkdir -pm 700 "$zinit_bin"
+    git clone --depth 1 https://github.com/zdharma/zinit.git "$zinit_bin"
   fi
+  zinit_home=${zinit%/*/*}  # Set zinit home to be parent of zinit bin dir
+  typeset -gA ZINIT  # Global associative array
+  ZINIT[HOME_DIR]=${zinit_home}
   source "$zinit"
 }
 autoload -Uz _zinit
