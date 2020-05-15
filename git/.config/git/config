@@ -273,6 +273,7 @@
   # Top level directory of repository
   top = !"git \"$@\" #"  # re-run git command in repository toplevel directory
   root = rev-parse --show-toplevel  # Show git top-level
+  # For superproject and submodules toplevel see https://stackoverflow.com/a/52047313/5353461
   git-dir = rev-parse --git-dir  # Show .git directory
 
   # Show changes in a file, following renames
