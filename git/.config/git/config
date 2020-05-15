@@ -151,7 +151,7 @@
   head   = !"c=$(git rpc \"$1\") && p=$(git log -n1 --oneline --decorate) && git update-ref --no-deref -m \"Move from $p\" HEAD \"$c\" #" # Move HEAD to specified commit-ish
   icdiff = difftool --no-prompt --extcmd icdiff # \"$@\"
   l      = log --compact-summary --dirstat
-  la     = !"git config --list | grep '^alias\\.' | cut -c 7- | grep -Ei --color -e \"$@\"  # List aliases. -e allows multiple patterns beginning with -"
+  la     = !"git config --list | grep '^alias\\.' | cut -c 7- | awk '!seen[$0]++' | grep -Ei --color -e \"$@\"  # List unsorted unique aliases. -e allows multiple patterns beginning with -"
   lao    = !"git config --list --show-origin | sed -n 's/\\t\\(alias.\\)/\\t/p' | grep -Ei --color -e \"$@\"  # List aliases, show config pathname"
   l1     = print-commit-1
   logd   = log --oneline --graph --decorate --remotes --max-count=20
