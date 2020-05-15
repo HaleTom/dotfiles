@@ -217,7 +217,7 @@
   # XXX test with $(:) resc
   resc   = !"git reset --soft $(c=$(git child); [ \"$c\" ] && echo $c || git children)" # Move HEAD to the child
   resp   = reset --soft HEAD~ # Move HEAD to the first Ancestor
-  rl     = reflog
+  rl     = reflog --pretty=reflog
   rp     = rev-parse --verify  # Without --verify, the argument is printed, then an error message
   rpc    = !"git rev-parse --verify $(git rev-parse \"$1\")^{commit} # allow :/<regex> format"
   rpt    = !"git rev-parse --verify $(git rev-parse \"$1\")^{tag}    # allow :/<regex> format"
@@ -624,6 +624,9 @@
 
   # Allow hunk movement with n/p keys
   # diff = diff-hi | less -FLRX --tabs=4 --pattern '^(\\@\\@.*,.*,.*\\@\\@|diff --git .* .*)$' # Allow hunk movement with n/p keys
+
+[pretty]
+  reflog = %C(auto)%h %>|(18)%gd %C(blue)%ci%C(reset) %s  # Make HEAD{N} end at col 18, left pad.
 
 [pull]
   rebase = merges  # pass --rebase-merges . The deprecated =preserve passes --preserve-merges to rebase so locally committed merges aren't flattened
