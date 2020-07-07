@@ -92,7 +92,7 @@
   # The alternative to --only is --include.  --only = intersect,  --include = union.
   cmf    = "! [ $# -ge 2 ] || { echo 'Give arguments: <commit msg> <files>' >&2; exit 1; }; cd ${GIT_PREFIX:-.} && git add \"${@:2}\" && git commit -m \"$@\" #"
   cmi    = "! [ $# -ge 2 ] || { echo 'Give arguments: <commit msg> <files>' >&2; exit 1; }; cd ${GIT_PREFIX:-.} && git commit -m \"${@:1:1}\" -i \"${@:2}\" # Include named files in index, then commit"
-  cmu    = "! cd ${GIT_PREFIX:-.} && git add --update \"${@:2}\" && git commit -m \"$@\" # Update add, then commit with message"
+  cmu    = "! cd \"${GIT_PREFIX:-.}\" && git add --update \"${@:2}\" && git commit -m \"$@\" # Update add, then commit with message"
   au     = add --update  # deletions of tracked files but no new ones
   cn     = commit --amend
   # cn0    = commit --amend --allow-empty
