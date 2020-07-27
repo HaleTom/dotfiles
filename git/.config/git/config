@@ -140,7 +140,7 @@
   ds     = diff --compact-summary --dirstat  # implies --stat
   dt     = difftool -y
   dxc    = "!case \"$1\" in -*|'') ;; *) x=$(git rpc \"${1:-HEAD}\");shift;esac; git d \"$@\" \"$x\" \"$(git child-hash \"$x\")\" #" # Diff given with its first child
-  dxp    = "!case \"$1\" in -*|'') ;; *) x=$(git rpc \"${1:-HEAD}\");shift;esac; git d \"$@\" \"${x:=HEAD}~\" \"$x\" #" # Diff given with its first parent
+  dxp    = "!case \"$1\" in -*|'') ;; *) x=$(git rpc \"${1:-HEAD}\") && shift; esac && git d \"$@\" \"${x:=HEAD}~\" \"$x\" #" # Diff given with its first parent
   ec     = !"git status -sz  | sed -rnz 's/^(U.|.U) (.*)/\\2/p' | xargs -0 $EDITOR #"
   elc    = !"git edit-config"
   egc    = !"git edit-global-config"  # ~/.gitconfig will be read after and override ~/.config/git/config
@@ -228,8 +228,8 @@
   resp   = reset --soft HEAD~ # Move HEAD to the first Ancestor
   rl     = reflog --pretty=reflog
   rp     = rev-parse --verify  # Without --verify, the argument is printed, then an error message
-  rpc    = !"git rev-parse --verify $(git rev-parse \"$1\")^{commit} # allow :/<regex> format"
-  rpt    = !"git rev-parse --verify $(git rev-parse \"$1\")^{tag}    # allow :/<regex> format"
+  rpc    = !"x=$(git rev-parse \"$1\") && git rev-parse --verify \"$x\"^{commit} # allow :/<regex> format"
+  rpt    = !"x=$(git rev-parse \"$1\") && git rev-parse --verify \"$x\"^{tag}    # allow :/<regex> format"
   rr     = rerere
   rrd    = rerere diff
   rrf    = rerere forget
