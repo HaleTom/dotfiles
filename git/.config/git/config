@@ -86,6 +86,10 @@
   clear  = !"cd ${GIT_PREFIX:-.} && bash -c 'git clean -nd \"$@\" | sed \"s/^Would remove //\"; \
     read -rn1 -p \"Delete all the above? [y/N] \" r; echo; \
     [[ x$r =~ ^x[yY] ]] && git clean -df \"$@\" || echo Untouched.' removed \"$@\" #"
+  # Same as above, but relative to root directory
+  clearr  = !"bash -c 'git clean -nd \"$@\" | sed \"s/^Would remove //\"; \
+    read -rn1 -p \"Delete all the above? [y/N] \" r; echo; \
+    [[ x$r =~ ^x[yY] ]] && git clean -df \"$@\" || echo Untouched.' removed \"$@\" #"
   cm     = commit -m
   # Default commit mode if files are given is --only, which only commits the named paths.
   # https://stackoverflow.com/a/51587932/5353461
