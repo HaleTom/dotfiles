@@ -169,6 +169,8 @@
   lsr    = ls-remote
   lsrt   = ls-remote --tags --refs
   ls     = ls-files
+  ma     = merge --abort
+  mc     = merge --continue
   mnf    = merge --no-ff
   mom    = merge origin/master
   mt     = mergetool -y
