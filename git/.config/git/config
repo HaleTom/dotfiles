@@ -188,7 +188,7 @@
   # plrp   = plws --rebase=preserve  # Deprecated in favour of merges
   plri   = plws --rebase=interactive
   plrbm  = "!git plws && git rebase --autosquash --autostash \"${1:-master}\" \"${@:2}\" #"
-  pp     = "!echo Pull:; git plws --rebase "$@" && echo Push: && git push #"
+  pp     = "!echo Pull:; git plws --rebase \"$@\" && echo Push: && git push #"
   ps     = push
   prq    = !"hub pull-request \"$@\" #"
   # XXX TODO merge thest into master branch not currently checked out branch
