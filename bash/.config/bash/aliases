@@ -105,16 +105,31 @@ alias trunc='cut -c -${COLUMNS:-80}'
 alias vimpager='$XDG_DATA_HOME/vim/bundle/vimpager/vimpager'
 alias btrbk_prune_wipe_preserve_backups='sudo btrbk prune --wipe --preserve-backups'
 
-# sudo, nicest, idle and alia
-# Allow sudo to expand aliases
-# alias alia='source $HOME/bin/alia'
-alias asudo='sudo '
-alias iasudo='idle alia "$SHELL" asudo'
-alias nasudo='nicest alia "$SHELL" asudo'
+# sudo, nicest, idle with and without aliases
+
+# Allow both aliases and functions to be run
+# TODO: rename this to fn?  have separate versions for just fns, aliases and both?
+alias alia='"$SHELL" "$HOME"/bin/alia'
+
+alias asudo='sudo '  # Shell will do alias expansion with trailing space. No aliases or functions.
+
 alias isudo='idle sudo'
+alias iasudo='idle sudo '
+
 alias nsudo='nicest sudo'
-alias ia='idle alia "$SHELL"'
-alias na='nicest alia "$SHELL"'
+alias nasudo='nicest sudo '
+
+alias n='nicest'
+alias na='nicest alia'
+
+alias i='idle'
+alias ia='idle alia'
+
+# TODO: Allow functions to be run like:  nasudo shell_quote a 'b c' d
+# Below aliasudo null a 'b c' d   works ok, but not    aliasudo token_quote a 'b c' d
+# alias aliasudo='alia asudo'
+# alias nasudo='nicest alia aliasudo '
+
 
 # Have pacmatic wrap aurman/pakku wrap powerpill wrap pacman
 # https://unix.stackexchange.com/a/384102/143394
