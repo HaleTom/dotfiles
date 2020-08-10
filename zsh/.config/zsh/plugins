@@ -11,7 +11,7 @@
 
 # Source Zinit
 # shellcheck disable=SC1072,1073  # https://github.com/koalaman/shellcheck/issues/1931
-() {  # Anonymous function for local variables
+_source_zinit() {  # Discarded function for local variables
   zinit=$XDG_DATA_HOME/zinit/bin/zinit.zsh
   if [ ! -r "$zinit" ]; then
     zinit_bin=${zinit%/*}
@@ -25,6 +25,7 @@
   source "$zinit"
 }
 autoload -Uz _zinit
+_source_zinit && unfunction _source_zinit
 # shellcheck disable=SC2154,2034,2004
 (( ${+_comps} )) && _comps[zinit]=_zinit
 
