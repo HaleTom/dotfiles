@@ -1,5 +1,7 @@
 #!/bin/bash #for-shellcheck
 
+alias alia_debug='shell-quote null alias: '   # For debugging ~/bin/alia
+
 # This file gets sourced from .bashrc and ~/bin/alia to allow for: $ nice alia <alias>
 
 # shellcheck disable=SC2142  # Allow positional parameters to aliases (via function call)
