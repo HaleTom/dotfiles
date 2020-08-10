@@ -218,6 +218,7 @@
   rorn   = remote rename
   ros    = remote set-url
   rosp   = remote set-url --push
+  rou    = remote update
   rov    = remote --verbose
   re     = reset
   reco   = !"cd \"${GIT_PREFIX:-.}\" && git reset -- \"$@\" && git checkout -- \"$@\" # File version"  # Use the current commit
