@@ -72,6 +72,8 @@ alias sc_rf='sc reset-failed'
 alias sc_s='sc status'
 alias sc_p='sc stop'
 alias sc_t='sc start'
+# shellcheck disable=SC2142  # Allow positional parameters to aliases (via function call)
+alias sc_u='f(){ x="$(alias_expand sc_"$1" | sed -En "s/^sc /systemctl --user /p")" && eval shell-quote "$x" "$(shell-quote "${@:2}")"; };f'
 
 # Currently done as function
 # https://stackoverflow.com/a/34071958/5353461
