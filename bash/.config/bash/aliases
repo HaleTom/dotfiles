@@ -55,19 +55,23 @@ alias jn='jupyter-notebook'
 
 # systemctl
 alias sc='sudo SYSTEMD_EDITOR=/bin/vi /usr/bin/systemctl'
-alias sc_u='systemctl --user'
-
+alias sc_c='sc cat'
 alias sc_d='sc disable'
 alias sc_dn='sc disable --now'
 alias sc_dr='sc daemon-reload'
 alias sc_e='sc enable'
+alias sc_ed='sc edit'
+alias sc_edf='sc edit --full'
 alias sc_en='sc enable --now'
+alias sc_ld='sc list-dependencies'
+alias sc_ldr='sc list-dependencies --reverse'
 alias sc_lu='sc list-units'
 alias sc_luf='sc list-unit-files'
 alias sc_r='sc restart'
+alias sc_rf='sc reset-failed'
 alias sc_s='sc status'
-alias sc_t='sc start'
 alias sc_p='sc stop'
+alias sc_t='sc start'
 
 # Currently done as function
 # https://stackoverflow.com/a/34071958/5353461
