@@ -90,6 +90,7 @@ alias df="colourify df --block-size=\\'1K"  #'"
 alias df,='colourify df'
 alias home='git --git-dir=$HOME/.githome --work-tree=$HOME'
 alias lesc='less-compressed-wrapper'
+alias mosh='mosh --predict=experimental'  # https://github.com/mobile-shell/mosh/issues/878
 alias mv='mv -i'
 alias Mv='command mv'  # Allow overwrite
 alias nixnote2='LD_PRELOAD=libcurl.so.3 nixnote2 &'
