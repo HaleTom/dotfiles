@@ -180,6 +180,16 @@
   psuo   = push --set-upstream origin
   psurb  = "![ $# -ne 1 ] && { echo 'Give argument: <remote-for-upstream>' >&2; exit 1; }; b=\"$(git rev-parse --abbrev-ref HEAD)\" && git push --set-upstream \"${1?}\" \"$b\" #"
   psuob  = "!b=\"$(git rev-parse --abbrev-ref HEAD)\" && git push --set-upstream origin \"$b\" #"
+
+# ff-only pull into another branch (must change branches for generic merge or pull)
+# https://stackoverflow.com/a/17722977/5353461
+#
+# Check this works on current branch. May need to checkout HEAD:
+# https://stackoverflow.com/questions/3216360/merge-update-and-pull-git-branches-without-using-checkouts
+# git update-ref -m  # https://stackoverflow.com/a/3217376/5353461
+# But use pull instead for current branch case.
+  plff   = !"x=$(git rev-parse --symbolic-full-name \"${1:-master}\") && { [ $# -ge 1 ] && shift; :; } && eval git db fetch $(git for-each-ref --shell --format='%(upstream:remotename) %(upstream:lstrip=3):%(refname:short)' \"$x\") \"$@\" #"
+
   plws   = wrapstash git pull --no-autostash
   pl     = plws --progress
   plr    = plws --rebase
