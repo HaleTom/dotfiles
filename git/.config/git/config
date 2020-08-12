@@ -293,6 +293,8 @@
   # ignore = !"bash -c 'diff --color=always --new-line-format=\"+%L\" --old-line-format=\"-%L\" --unchanged-line-format=\" %L\"  <(git check-ignore --verbose --non-matching --no-index \"$@\") <(git check-ignore --verbose --non-matching \"$@\")' - \"$@\" # Files included by index are tagged with prepended '+'"
   ignore = !"bash -c 'diff --unified=999999999 --color=always <(git check-ignore --verbose --non-matching --no-index \"$@\") <(git check-ignore --verbose --non-matching \"$@\")' - \"$@\" | tail -n+4 # Print ignore status of arguments. Files included by index are tagged with prepended '+'"
 
+  ignored = !"find . -print0 | xargs -0 git check-ignore $@ # Show ignored paths. Pass -v for why."  # Can't quote $@ - git baulks at empty pathspec.
+
   # Top level directory of repository
   top = !"git \"$@\" #"  # re-run git command in repository toplevel directory
   root = rev-parse --show-toplevel  # Show git top-level
