@@ -141,7 +141,7 @@
   ds     = diff --compact-summary --dirstat  # implies --stat
   dt     = difftool -y
   dxc    = "!case \"$1\" in -*|'') ;; *) x=$(git rpc \"${1:-HEAD}\");shift;esac; git d \"$@\" \"$x\" \"$(git child-hash \"$x\")\" #" # Diff given with its first child
-  dxp    = "!case \"$1\" in -*|'') ;; *) x=$(git rpc \"${1:-HEAD}\") && shift; esac && git d \"$@\" \"${x:=HEAD}~\" \"$x\" #" # Diff given with its first parent
+  dxp    = "!case \"$1\" in -*|'') ;; *) x=$(git rpc \"${1:-HEAD}\") && shift; esac && git d \"${x:=HEAD}~\" \"$x\" \"$@\" # Diff given with its first parent, allow for files at end"
   ec     = !"git status -sz  | sed -rnz 's/^(U.|.U) (.*)/\\2/p' | xargs -0 $EDITOR #"
   elc    = !"git edit-config"
   egc    = !"git edit-global-config"  # ~/.gitconfig will be read after and override ~/.config/git/config
