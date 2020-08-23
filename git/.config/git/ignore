@@ -5,7 +5,7 @@
 *~
 # vim swap files:
 *.sw?
- 
+
 # Lock files #
 ##############
 # Gemfile.lock should be included unless I'm writing a Gem.
@@ -18,6 +18,11 @@
 # Jupyter checkpoints #
 #######################
 .ipynb_checkpoints/
+
+# Temporary files #
+##################
+tmp/
+temp/
 
 # Caches #
 ##########
