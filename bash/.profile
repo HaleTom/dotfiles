@@ -18,13 +18,14 @@
 #     setxkbmap -option 'caps:ctrl_modifier'
 # fi
 
-# These work even if Caps Lock is mapped to Control in Windows VM Host
-if [ -x `xcape` ]; then
-    # wait -t milliseconds before actioning the non-tap version
-    xcape -t 300 -e 'Caps_Lock=Escape'
-    # Win VM Host does this
-    # xcape -t 300 -e 'Alt_R=Caps_Lock'
-fi
+## Undo Caps Lock => Escape
+# # These work even if Caps Lock is mapped to Control in Windows VM Host
+# if [ -x `xcape` ]; then
+#     # wait -t milliseconds before actioning the non-tap version
+#     xcape -t 300 -e 'Caps_Lock=Escape'
+#     # Win VM Host does this
+#     # xcape -t 300 -e 'Alt_R=Caps_Lock'
+# fi
 
 # if running bash
 if [ -n "$BASH_VERSION" ]; then
