@@ -20,6 +20,13 @@ function neobundle_update {
    -U NONE -i NONE -e -s -V1 # -V1 prints X error messages
 }
 
+# Install stow (if not already installed)
+distro=$(lsb_release -si)
+case $distro in
+  *Ubuntu*)
+    dpkg -s sstow &> /dev/null && sudo apt-get -y install stow ;;
+esac
+
 cd -P -- "$(dirname "$0")"
 
 echo "Updating submodules... (eg vim.  Wait - no output)"

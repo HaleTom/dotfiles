@@ -1,9 +1,9 @@
-# Tom Hale's dotfiles
+# Tom Hale's .dotfiles
 
 
 ## Features
 
-* Uses `stow` to manage the dotfiles which are split into modular packages.
+* Uses `stow` to manage the dotfiles which are split into modular packages.  Attempts install if not installed.
 * Follows the [XDG Base Directory Specification](https://standards.freedesktop.org/basedir-spec/basedir-spec-latest.html) where feasible (credit to Arch's [XDG Base Directory support](https://wiki.archlinux.org/index.php/XDG_Base_Directory_support) page).
 * Coloured `bash` prompt with right-aligned part
 * Works with both `{ba,z}sh`
