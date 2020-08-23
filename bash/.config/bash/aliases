@@ -275,6 +275,8 @@ fi
   alias -g G=' | grep -E'  # egrep is deprecated
   alias -g GA='|& grep -E'
   alias -g GI=' | grep -Ei'
+  alias -g GIV=' | grep -Eiv'
+  alias -g GV=' | grep -Ev'
   alias -g L="  | less"
   alias -g LA=" |& less"
   alias -g LS=" | less -S"  # -S or --chop-long-lines
