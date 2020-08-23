@@ -289,12 +289,12 @@
   ws     = wrapstash
 
   # Ignored files, including those included by index
-  # If avoiding passing a context, then no colour :(   https://stackoverflow.com/questions/63371544/diff-color-always-no-colour-when-line-format-specified
-  # ignore = !"bash -c 'diff --color=always --new-line-format=\"+%L\" --old-line-format=\"-%L\" --unchanged-line-format=\" %L\"  <(git check-ignore --verbose --non-matching --no-index \"$@\") <(git check-ignore --verbose --non-matching \"$@\")' - \"$@\" # Files included by index are tagged with prepended '+'"
-  # My answer: https://stackoverflow.com/a/63392085/5353461
-  ignore = !"bash -c 'diff --unified=999999999 --color=always <(git check-ignore --verbose --non-matching --no-index \"$@\") <(git check-ignore --verbose --non-matching \"$@\")' - \"$@\" | tail -n+4; git ls-files -v \"$@\"| grep -E '^(S|[[:lower:]])' # Print ignore status of arguments. Files included by index are tagged with prepended '+'. ls-files S means update-index --skip-worktree, and lower first letter means --assume-unchanged."
-
-  ignored = !"find . -print0 | xargs -0 git check-ignore $@ # Show ignored paths. Pass -v for why."  # Can't quote $@ - git baulks at empty pathspec.
+  # If avoiding passing context number of lines, then no colour :(   https://stackoverflow.com/questions/63371544/diff-color-always-no-colour-when-line-format-specified
+  # My answers: https://stackoverflow.com/a/63392085/5353461   https://stackoverflow.com/a/63392564/5353461
+  ignore = !"bash -c 'diff --unified=999999999 --color=always <(echo a; git check-ignore --verbose --non-matching --no-index . \"$@\") <(echo b; git check-ignore --verbose --non-matching . \"$@\")' - \"$@\" | tail -n+7; git hidden \"$@\" # Show ignore status of arguments. Files included by index are tagged with prepended '+'."
+  ignore-q = !"bash -c 'diff --unified=999999999 --color=always <(echo a; git check-ignore --no-index . \"$@\") <(echo b; git check-ignore . \"$@\")' - \"$@\" | tail -n+7; git hidden \"$@\" # quieter version -- only ignored paths"
+  hidden = !"git ls-files -v -- \"$@\"| grep -E '^(S|[[:lower:]])' # S means update-index --skip-worktree, and lower first letter means --assume-unchanged."
+  ignored = !"{ git ls-files -oz; git ls-files -z; } | xargs -0 git ignore-q \"$@\" # Show all ignored and hidden paths. Pass -v for why."
 
   # Top level directory of repository
   top = !"git \"$@\" #"  # re-run git command in repository toplevel directory
