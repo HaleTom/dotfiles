@@ -97,6 +97,17 @@ function is_bin_in_path {
 export_function is_bin_in_path
 
 
+# Usage: fallback_to cat <pretty-cat> <arg(s)>
+function fallback_to {
+  if is_bin_in_path "$2"; then
+    "$2" "${@:3}"
+  else
+    "$1" "${@:3}"
+  fi
+}
+export_function fallback_to
+
+
 # Run a command only if it exists
 function if_cmd {
   if command -v "$1" &> /dev/null; then
