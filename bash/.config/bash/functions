@@ -123,6 +123,12 @@ function if_cmd {
 }
 export_function if_cmd
 
+# Run a binary only if it exists in $PATH
+function if_bin {
+  is_bin_in_path "$1" && "$@"
+}
+export_function if_bin
+
 
 # Copy / rename a function
 # https://stackoverflow.com/a/18839557/5353461
