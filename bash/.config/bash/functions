@@ -84,7 +84,7 @@ function bin_path () {
 export_function bin_path
 
 
-# True if $1 is an executable in $PATH
+# True iff all arguments are executable in $PATH
 # Works in both {ba,z}sh
 # https://stackoverflow.com/a/53798785/5353461
 function is_bin_in_path {
@@ -92,6 +92,11 @@ function is_bin_in_path {
     builtin whence -p "$1" &> /dev/null
   else  # bash:
     builtin type -P "$1" &> /dev/null
+  fi
+  [[ $? -ne 0 ]] && return 1
+  if [[ $# -gt 1 ]]; then
+    shift  # We've just checked the first one
+    is_bin_in_path "$@"
   fi
 }
 export_function is_bin_in_path
