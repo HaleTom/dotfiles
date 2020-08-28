@@ -180,9 +180,6 @@ alias cdgr='builtin cd "$(git rev-parse --show-toplevel)"'  # cd '' does nothing
 alias activate='f(){ source $XDG_DATA_HOME/miniconda3/bin/activate "$@"; source prompt-update; }; f'
 alias deactivate='f(){ source $XDG_DATA_HOME/miniconda3/bin/deactivate "$@"; source prompt-update; }; f'
 
-# keychain (ssh)
-alias keychain_load='eval $(keychain --eval --quiet --agents ssh --inherit local-once --dir "$XDG_CONFIG_HOME"/keychain)'
-
 
 # Expand an alias as text - https://unix.stackexchange.com/q/463327/143394
 # Doesn't expand recursively

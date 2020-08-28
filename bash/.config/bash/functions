@@ -587,6 +587,12 @@ function confirm_yes {
 export_function confirm_yes
 
 
+function keychain_load {
+  eval $(keychain --eval --quiet --agents ssh --inherit local-once --dir "$XDG_CACHE_HOME"/keychain)
+}
+export_function keychain_load
+
+
 # Print the name of the git repository's working tree's root directory
 # https://stackoverflow.com/a/38843585/5353461
 # https://stackoverflow.com/a/38852055/5353461
