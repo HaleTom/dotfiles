@@ -14,4 +14,12 @@
 
 ## Installation
 
-Run `./install`
+```
+git clone git@github.com:HaleTom/dotfiles.git ~/.dotfiles
+git clone git@bitbucket.org:HaleTom/scripts.git ~/bin  # Optional - lots of useful scripts
+
+# Private configuration - ignore if you're not me.
+git clone git@bitbucket.org:HaleTom/ravi-personal.git ~/code/ravi-personal && ~/code/ravi-personal/install
+
+~/.dotfiles/install
+```
