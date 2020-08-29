@@ -36,6 +36,7 @@ fi
 #   GIT_PAGER="diff-so-fancy | less -FLRX --tabs=4"
 # fi
 
+export BAT_PAGER=less
 export GNULIB_SRCDIR="$HOME"/repo/gnulib
 export GCC_COLORS=1 # Enable gcc colours, available since gcc 4.9.0
 export RSYNC_PARTIAL_DIR=.rsync-tmp-partial # Automatically set --partial-dir with --partial
