@@ -248,6 +248,15 @@ export _disable_welcome_message=$(( SHLVL + 1 ))  # Don't print at this $SHLVL a
 # Source API keys etc that I don't want to publish to GitHub
 [[ -f $XDG_CONFIG_HOME/bash/personal ]] && source "$XDG_CONFIG_HOME/bash/personal"
 
+# Setup ssh-agent
+if is_bin_in_path keychain; then
+  keychain_load
+elif is_bin_in_path ssh-agent ssh-add; then
+  ssh_agent_setup
+else
+  [[ "$-" == *i* ]] && printf "Can't find keychain or ssh-agent/ssh-add in path\n" >&2
+fi
+
 ##
 ## Only bash below this point
 sh_is_zsh && return
