@@ -10,6 +10,14 @@ export XDG_CONFIG_HOME=${XDG_CONFIG_HOME:=$HOME/.config}
 export XDG_DATA_HOME=${XDG_DATA_HOME:=$HOME/.local/share}
 export XDG_CACHE_HOME=${XDG_CACHE_HOME:=$HOME/.cache}
 
+# Create directories if needed
+for dir in XDG_CONFIG_HOME XDG_DATA_HOME XDG_CACHE_HOME; do
+  if [ ! -d "${!dir}" ]; then
+    printf "Creating $%s directory: %s\n" "$dir" "${!dir}"
+    mkdir -p "${!dir}"
+  fi
+done
+
 # $XDG_RUNTIME_DIR
 # https://unix.stackexchange.com/a/580757/143394  # My Q&A
 if [ -z "$XDG_RUNTIME_DIR" ]; then  # It's not already set
