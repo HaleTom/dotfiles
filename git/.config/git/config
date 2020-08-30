@@ -94,6 +94,7 @@
   # Default commit mode if files are given is --only, which only commits the named paths.
   # https://stackoverflow.com/a/51587932/5353461
   # The alternative to --only is --include.  --only = intersect,  --include = union.
+  cmaf = !"git cmf \"Add $*\" \"$@\" # Add files with comment like: Add f1 f2 f3"
   cmf    = "! [ $# -ge 2 ] || { echo 'Give arguments: <commit msg> <files>' >&2; exit 1; }; cd ${GIT_PREFIX:-.} && git add \"${@:2}\" && git commit -m \"$@\" #"
   cmi    = "! [ $# -ge 2 ] || { echo 'Give arguments: <commit msg> <files>' >&2; exit 1; }; cd ${GIT_PREFIX:-.} && git commit -m \"${@:1:1}\" -i \"${@:2}\" # Include named files in index, then commit"
   cmu    = "! cd \"${GIT_PREFIX:-.}\" && git add --update \"${@:2}\" && git commit -m \"$@\" # Update add, then commit with message"
