@@ -143,7 +143,7 @@
   dt     = difftool -y
   dxc    = "!case \"$1\" in -*|'') ;; *) x=$(git rpc \"${1:-HEAD}\");shift;esac; git d \"$@\" \"$x\" \"$(git child-hash \"$x\")\" #" # Diff given with its first child
   dxp    = "!case \"$1\" in -*|'') ;; *) x=$(git rpc \"${1:-HEAD}\") && shift; esac && git d \"${x:=HEAD}~\" \"$x\" \"$@\" # Diff given with its first parent, allow for files at end"
-  ec     = !"git status -sz  | sed -rnz 's/^(U.|.U) (.*)/\\2/p' | xargs -0 $EDITOR #"
+  ec     = !"git status -sz  | sed -rnz 's/^(U.|.U) (.*)/\\2/p' | xargs -0 $VISUAL #"
   elc    = !"git edit-config"
   egc    = !"git edit-global-config"  # ~/.gitconfig will be read after and override ~/.config/git/config
   egx    = !"git edit-global-excludes"
@@ -479,7 +479,7 @@
   sortdiff = !"git diff \"$@\" | grep \"^[+-]\" | sort --key=1.2 | uniq -u -s1 #"
 
   # Edit this module's config file
-  edit-config = !"$EDITOR $(git rev-parse --git-dir)/config #"
+  edit-config = !"$VISUAL $(git rev-parse --git-dir)/config #"
 
   # Manage this config file
   # ~/.gitconfig will be read after and override ~/.config/git/config
@@ -488,8 +488,8 @@
   rmbackup-config = "!rm -v ~/.gitconfig"
 
   # Edit excludes files
-  edit-global-excludes = !"bash -c 'f=$(git config core.excludesFile); \"$EDITOR\" \"${f/#\\~/$HOME}\"' #"
-  edit-local-excludes = !"\"$EDITOR\" \"$(git rev-parse --show-toplevel)/.gitignore\" #"
+  edit-global-excludes = !"bash -c 'f=$(git config core.excludesFile); \"$VISUAL\" \"${f/#\\~/$HOME}\"' #"
+  edit-local-excludes = !"\"$VISUAL\" \"$(git rev-parse --show-toplevel)/.gitignore\" #"
 
 [branch]
   # tell git-branch and git-checkout to setup new branches so that git-pull(1)
