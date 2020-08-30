@@ -608,6 +608,27 @@ function keychain_load {
 export_function keychain_load
 
 
+# Setup ssh-agent (used if no keychain)
+# From: http://rabexc.org/posts/pitfalls-of-ssh-agents
+function ssh_agent_setup() {
+  local agent_info=$XDG_CACHE_HOME/ssh-agent
+  # yelp Setting up ssh agent...
+  ssh-add -l &>/dev/null
+  if [ "$?" == 2 ]; then  # Unable to contact ssh-agent
+    [ -r "$agent_info" ] && eval "$(<"$agent_info")" >/dev/null
+    # yelp Read "$agent_info"
+
+    ssh-add -l &>/dev/null  # Check loaded agent details are valid
+    if [ "$?" == 2 ]; then
+      (umask 066; ssh-agent >| "$agent_info")
+      eval "$(<"$agent_info")" >/dev/null
+      # yelp Wrote new "$agent_info"
+    fi
+  fi
+}
+export_function ssh_agent_setup
+
+
 # Print the name of the git repository's working tree's root directory
 # https://stackoverflow.com/a/38843585/5353461
 # https://stackoverflow.com/a/38852055/5353461
