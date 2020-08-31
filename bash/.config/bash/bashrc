@@ -241,7 +241,7 @@ if [[ ${_disable_welcome_message:=0} -eq 0 ]] || \
    { sh_is_bash && shopt -q login_shell; } || { sh_is_zsh && [[ -o login ]]; } || \
    [[ -n ${TMUX=} && _disable_welcome_message -lt $SHLVL ]] && \
    [[ -z $DISABLE_WELCOME ]]; then
-  ~/bin/welcome-message
+  if_cmd ~/bin/welcome-message || if_cmd fortune
 fi
 export _disable_welcome_message=$(( SHLVL + 1 ))  # Don't print at this $SHLVL again
 
