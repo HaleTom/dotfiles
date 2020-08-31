@@ -333,7 +333,7 @@ _prompt_bash_set() {
   if [[ ${EUID} = 0 ]]; then
     lhs+="${BRed}\\u@"
   else
-    lhs+="${BWhi}\\u${BBla}@"
+    lhs+="${BWhi}\\u${BBla}@${BRed}"
   fi
 
   # Hostname:

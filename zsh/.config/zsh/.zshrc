@@ -87,7 +87,7 @@ _prompt_update_zsh () {
     #  default       exactly eatching tag
 
     local user_at='%(#.'$root_colour'.%B)%n%B%F{black}@'
-    local host=${(%)${:-%m}}; host="%{$(candify "$host" || echo "$host")%${#host}G%}"
+    local host=${(%)${:-%m}}; host="%B%F{red}%{$(fallback_to echo candify "$host")%${#host}G%}"
     local colon_dir='%b%F{white}:'${dir}
     local jobs='%(1j.%f(%B%F{green}%j%f%b%).)'
     local exit_status='%(?.. %F{white}[%F{red}%?%F{white}])'
