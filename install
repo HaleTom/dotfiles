@@ -52,6 +52,7 @@ else
 fi
 
 # Install neobundle to bootstrap vim plugin installation
+# Dein is installed via load-plugins.vim
 neobundle_dir="$XDG_DATA_HOME/vim/bundle/neobundle.vim"
 if [[ ! -d $neobundle_dir ]]; then
   git clone --single-branch --depth 1 --shallow-submodules https://github.com/Shougo/neobundle.vim.git "$neobundle_dir"
