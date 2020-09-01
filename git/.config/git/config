@@ -4,9 +4,9 @@
   path = ./config-ravi
 
 [core]
-  editor = nvim
-  # pager = less -FLRX --tabs=4
-  pager = "diff-so-fancy | less -FLRX --tabs=4"
+  # editor = nvim  # Order: $GIT_EDITOR, core.editor, $VISUAL, $EDITOR, compile-time default (vi)
+  # pager order: $GIT_PAGER, core.pager, $PAGER, compile-time default (less)
+  pager = "command -v pager &>/dev/null && pager || less -FLRX --tabs=4"
   excludesFile = ~/.config/git/ignore
 
 [mailmap]
