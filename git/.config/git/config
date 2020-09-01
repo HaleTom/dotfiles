@@ -69,7 +69,7 @@
   can    = commit -a --amend
   cann   = commit -a --amend --no-edit
   canm   = commit -a --amend -m
-  cfu    = !"git commit --fixup=\"$1\" \"${@:2}\" #"
+  cfu    = !"bash -c 'git commit --fixup=\"$1\" \"${@:2}\"' _ \"$@\" #"
   ch     = cherry-pick
   cha    = cherry-pick --abort
   chc    = cherry-pick --continue
@@ -95,8 +95,8 @@
   # https://stackoverflow.com/a/51587932/5353461
   # The alternative to --only is --include.  --only = intersect,  --include = union.
   cmaf = !"git cmf \"Add $*\" \"$@\" # Add files with comment like: Add f1 f2 f3"
-  cmf    = "! [ $# -ge 2 ] || { echo 'Give arguments: <commit msg> <files>' >&2; exit 1; }; cd ${GIT_PREFIX:-.} && git add \"${@:2}\" && git commit -m \"$@\" #"
-  cmi    = "! [ $# -ge 2 ] || { echo 'Give arguments: <commit msg> <files>' >&2; exit 1; }; cd ${GIT_PREFIX:-.} && git commit -m \"${@:1:1}\" -i \"${@:2}\" # Include named files in index, then commit"
+  cmf    = !"bash -c '[ $# -ge 2 ] || { echo \"Give arguments: <commit msg> <files>\" >&2; exit 1; }; cd ${GIT_PREFIX:-.} && git add \"${@:2}\" && git commit -m \"$@\"' _ \"$@\" #"
+  cmi    = !"bash -c '[ $# -ge 2 ] || { echo \"Give arguments: <commit msg> <files>\" >&2; exit 1; }; cd ${GIT_PREFIX:-.} && git commit -m \"${@:1:1}\" -i \"${@:2}\"' - \"$@\" # Include named files in index, then commit"
   cmu    = "! cd \"${GIT_PREFIX:-.}\" && git add --update \"${@:2}\" && git commit -m \"$@\" # Update add, then commit with message"
   au     = add --update  # deletions of tracked files but no new ones
   cn     = commit --amend
@@ -210,14 +210,14 @@
   rbb    = !"git rebase -i $(git merge-base $1 HEAD) #" # Rebase to branch-name # http://stackoverflow.com/a/31036518/5353461
   rbc    = rebase --continue
   rbce   = !"git commit -t \"$(git rev-parse --git-dir)\"/rebase-apply/final-commit && git rebase --skip # commit editing message"  # https://stackoverflow.com/a/30224412/5353461
-  rbi    = !"c=${1:+$(git rpc \"$1\")~} && set -- "${@:2}" && git rebase --interactive --autostash --autosquash --keep-empty \"$(git rpc \"${c:-$(git parent 20)}\")\" \"$@\" #"
+  rbi    = !"bash -c 'c=${1:+$(git rpc \"$1\")~} && set -- ${@:2} && git rebase --interactive --autostash --autosquash --keep-empty \"$(git rpc \"${c:-$(git parent 20)}\")\" \"$@\"' - \"$@\" # Interactive rebase"
   rbia   = !"GIT_SEQUENCE_EDITOR=true git rbi \"$@\" #"
   rbm    = rebase master
   rbmg   = rebase --rebase-merges  # incompatible with interactive
   rbo    = rebase --onto
   rboq   = wrapstash git rboqws
-  rboqws = !"x=$(git branch-or-commit HEAD) && git rbo \"$1\" \"${@:2:$#-2}\" \"$(git branch-name \"${@:$#}\")\" && git co \"$x\" # Rebase onto <dest> <pre-start> <last> then return to previous HEAD"
-  rbox   = !"git branch-name ${@:$#} >/dev/null && git rbo HEAD \"$@\" # Requires branch else nothing happens??  # Takes args: [git-args] <pre-start> <end>"
+  rboqws = !"bash -c 'x=$(git branch-or-commit HEAD) && git rbo \"$1\" \"${@:2:$# -2}\" \"$(git branch-name \"${@:$#}\")\" && git co \"$x\"' - \"$@\" # Rebase onto <dest> <pre-start> <last> then return to previous HEAD"
+  rbox   = !"bash -c 'git branch-name ${@:$#} >/dev/null && git rbo HEAD \"$@\"' - \"$@\" # Requires branch else nothing happens??  # Takes args: [git-args] <pre-start> <end>"
   rboxq  = rboq HEAD  # Takes args: [git-args] <pre-start> <end>
   rbroot = rebase --root # Allows changing root commit(s)
   rbs    = rebase --skip
