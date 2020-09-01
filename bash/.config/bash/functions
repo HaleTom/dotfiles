@@ -102,6 +102,16 @@ function is_bin_in_path {
 export_function is_bin_in_path
 
 
+function is_cmd {
+  declare -v "$1" >&/dev/null
+  if [[ $# -gt 1 ]]; then
+    shift  # We've just checked the first one
+    is_cmd "$@"
+  fi
+}
+export_function is_cmd
+
+
 # Usage: fallback_to cat <pretty-cat> <arg(s)>
 function fallback_to {
   if is_bin_in_path "$2"; then
