@@ -219,7 +219,7 @@ nvm() {
 
 
 # $PATH must be set after sourcing chruby
-add_to_path_var PATH before "$HOME/bin:$XDG_DATA_HOME/python/bin:$XDG_DATA_HOME/gem/bin:$XDG_DATA_HOME/npm/bin:$HOME/.local/bin:$XDG_DATA_HOME/go/bin"
+add_to_path_var PATH before "$HOME/bin:$XDG_DATA_HOME/python/bin:$XDG_DATA_HOME/gem/bin:$XDG_DATA_HOME/npm/bin:$HOME/.local/bin:$XDG_DATA_HOME/go/bin:$XDG_DATA_HOME/cargo/bin"
 
 # Handled by chruby
 # if ruby_gems=$(ruby -e 'print Gem.user_dir')/bin; then
