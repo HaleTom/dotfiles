@@ -42,6 +42,7 @@ alias ....='builtin cd ../../..'
 alias .....='builtin cd ../../../..'
 
 # One letter aliases
+alias g='git'
 alias h='history'
 alias j='jobs'
 alias l='ll'  # l^J for ultimate laziness
