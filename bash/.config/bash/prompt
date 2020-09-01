@@ -337,7 +337,7 @@ _prompt_bash_set() {
   fi
 
   # Hostname:
-  host="$(candify "$HOSTNAME" | readline_ANSI_escape || echo "$HOSTNAME")"
+  host="$(set -o pipefail; candify "$HOSTNAME" 2>/dev/null | readline_ANSI_escape || echo "$HOSTNAME")"
   lhs+="${host}${None}:"
 
   # Colour slashes in the directory  https://superuser.com/q/49092/365890
