@@ -153,7 +153,7 @@ function _source_file {
   # zsh global aliases can cause syntax errors
   sh_is_zsh && setopt local_options no_aliases
 
-  file=$1
+  local file=$1
   if [[ -f $file ]]; then
       source "$file"
   else
