@@ -610,17 +610,14 @@
     cmd = git-nbdifftool diff \"$LOCAL\" \"$REMOTE\" \"$BASE\"
 
 [interactive]
-  # diff-so-fancy not working with --patch:
+  # diff-so-fancy doesn't work with --patch because it produces 4- rather than the expecte 5-line headers:
   # https://github.com/so-fancy/diff-so-fancy/issues/35
   # https://github.com/so-fancy/diff-so-fancy/pull/172
   # https://github.com/so-fancy/diff-so-fancy/issues/296
-  #
-  # diffFilter = "diff-so-fancy | less -FLRX --tabs=4" # My original
-  # diffFilter = "diff-so-fancy --patch-mode| less -FLRX --tabs=4" # Suggested by above issue
+  # diffFilter = "diff-so-fancy"
 
-  # The default seems to be "diff-highlight"
-  diffFilter = "diff-hi | less -FLRX --tabs=4"
-  # Remove the need to press enter after an interactive prompt.  Arch pkg: perl-term-readkey
+  # diffFilter filters output for later paging, so don't pass through a pager.
+  # The default (or when set to 'cat') seems to be "diff-highlight"
   singleKey = true
 
 [log]
