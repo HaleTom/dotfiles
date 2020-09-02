@@ -571,6 +571,23 @@
 [commit]
   verbose = true # include diff output for easy review
 
+[delta]
+    features = line-numbers decorations
+    inspect-raw-lines = true  # default: true which support git's --color-moved
+    plus-color = "#012800"
+    minus-color = "#340001"
+    # plus-style = syntax "#003800"
+    plus-style = syntax bold auto
+    # minus-style = syntax "#3f0001"
+    minus-style = syntax bold auto
+    syntax-theme = Monokai Extended
+    whitespace-error-style = 22 reverse
+
+[delta "decorations"]
+    commit-decoration-style = bold yellow box
+    file-style = bold yellow ul
+    file-decoration-style = none
+
 [diff]
   # https://git-scm.com/docs/git-diff
   algorithm = patience # Take longer for a smaller diff
