@@ -618,6 +618,7 @@
 
   # diffFilter filters output for later paging, so don't pass through a pager.
   # The default (or when set to 'cat') seems to be "diff-highlight"
+  diffFilter = "{ command -v diff-hi &>/dev/null && diff-hi || cat; }"  # Braces keep STDIN consistent
   singleKey = true
 
 [log]
