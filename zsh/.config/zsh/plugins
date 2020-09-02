@@ -73,13 +73,14 @@ zinit light 'softmoth/zsh-vim-mode'
 
 # Additional completion definitions for Zsh
 # https://github.com/zsh-users/zsh-completions
-zinit ice wait depth=1 blockf  # have zplg manage completions  # https://github.com/zdharma/zinit#completion-management
+zinit ice wait depth=1 blockf  # have zinit manage completions  # https://github.com/zdharma/zinit#completion-management
 zinit light 'zsh-users/zsh-completions'
 
 
 # Add zsh's missing hooks, and support for user-defined hooks
 # eg zle-line-init of the Special Wigets in `man zshzle`
 # https://github.com/willghatch/zsh-hooks
+# No 'wait' ice as it's used immediately in keyboard setup
 zinit ice depth=1 pick"zsh-hooks.plugin.zsh"
 zinit light willghatch/zsh-hooks
 
@@ -109,7 +110,9 @@ ZSH_AUTOSUGGEST_HIGHLIGHT_STYLE='fg=238'
 ZSH_AUTOSUGGEST_USE_ASYNC=1
 
 
-# Awaiting: https://github.com/b4b4r07/enhancd/issues/77
+# Disabled due to:
+# https://github.com/b4b4r07/enhancd/issues/77
+# https://github.com/b4b4r07/enhancd/issues/85 (has workaround)
 # # enhancd: A next-generation cd command with an interactive filter
 # # https://github.com/b4b4r07/enhancd
 # zinit ice wait depth=1
@@ -150,6 +153,7 @@ zinit light supercrabtree/k
 
 # zsh-defer - allow running commands after shell loads
 # https://github.com/romkatv/zsh-defer
+# No "wait" ice as it's used immediately below
 zinit ice depth=1
 zinit light romkatv/zsh-defer
 
@@ -157,13 +161,13 @@ zinit light romkatv/zsh-defer
 # Adds numbered shortcuts to the output git status, and much more
 # https://madebynathan.com/2011/10/19/git-shortcuts-like-youve-never-seen-before/
 # https://github.com/scmbreeze/scm_breeze
-# zinit ice wait  # Hangs for about 11 SECONDS if this is uncommented ???
-zinit ice depth=1
-zsh-defer -12 zinit light 'scmbreeze/scm_breeze'  # -12 enables STDOUT, STDERR output
-
+# Historical note, 2020-09-02: adding 'wait' causes 10 second hang after prompt printed
+# zinit ice wait depth=1
+# zinit light 'scmbreeze/scm_breeze'
+zsh-defer -12 zinit light 'scmbreeze/scm_breeze'
 
 # Run some commands asynchronously for faster startup
-zsh-defer -12 __zinit_deferred
+zsh-defer -12 __zinit_deferred  # -12 enables STDOUT, STDERR output
 
 
 # Syntax highlighting should be the last plugin
