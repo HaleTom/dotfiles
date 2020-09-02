@@ -32,6 +32,7 @@ setopt correct  # prompt to correct spelling mistakes
 setopt pipe_fail  # return right-most command's non-zero return value
 setopt interactive_comments  # Allow #comment in an interactive shell
 setopt posix_aliases  # Don't expand aliases overloading reserved words
+setopt ksh_glob  # Allow for matching one or more with +(x) for bash compatibility
 # complete_in_word: If unset, the cursor is set to the end of the word if completion is started. Otherwise it stays there and completion is done from both ends.
 # setopt complete_in_word # XXX how to test this?
 
