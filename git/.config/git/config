@@ -662,20 +662,17 @@
 
 [pager]
   # Bypass pager: git --no-pager ...
-  # "X = true" means use pager defined in [core]
-  # add      = /usr/bin/less -FLRX --tabs=4
-  # add      = true # disabled currently due to bug - doesn't prompt with git add --patch # TODO raise issue
-  # diff     = "diff-hi | less -FLRX --tabs=4"
-  # diff     = "diff-so-fancy | less -FLRX --tabs=4"
+  # "<command> = true" means use core.pager
+  blame    = true
   diff     = true
   difftool = true
-  log      = true
+  log      = less
   show     = true
-  # Consider https://github.com/so-fancy/diff-so-fancy - removes +/- leaders
-  # but ugly when less than one screen's worth of output - blank lines are all '~'
+  status   = less
 
   # Allow hunk movement with n/p keys
   # diff = diff-hi | less -FLRX --tabs=4 --pattern '^(\\@\\@.*,.*,.*\\@\\@|diff --git .* .*)$' # Allow hunk movement with n/p keys
+  # See also delta --navigate
 
 [pretty]
   reflog = %C(auto)%h %>|(18)%gd %C(blue)%ci%C(reset) %s  # Make HEAD{N} end at col 18, left pad.
