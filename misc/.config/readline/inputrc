@@ -29,7 +29,6 @@
 set editing-mode vi
 
 set bell-style visible
-set completion-ignore-case on
 set keyseq-timeout 400
 set blink-matching-paren on
 
@@ -62,51 +61,6 @@ set vi-ins-mode-string "\1\e[0;1;37m\2>\1\e[0m\2"
 # set vi-cmd-mode-string "\1\e[0;1;31m\2:\1\e[0m\e[2 q\2" # red ':', block cursor
 # set vi-ins-mode-string "\1\e[0;1;37m\2 \1\e[0m\e[6 q\2" # blue ' ', steady I-beam cursor
 
-
-# The length in characters of the common prefix of a list of possible
-# completions that is displayed without modification. When set to a value
-# greater than zero, common prefixes longer than this value are replaced with an
-# ellipsis when displaying possible completions.
-set completion-prefix-display-length 8
-
-# Treat hyphens (‘-’) and underscores (‘_’) as equivalent in matching
-set completion-map-case on
-
-# If set to On, when listing completions, readline displays the common prefix
-# of the set of possible completions using a different color.  The color
-# definitions are taken from the value of the LS_COLORS environment variable.
-set colored-completion-prefix on
-
-# Displays completions using colors indicating file type.
-# Definitions taken from the value of the LS_COLORS environment
-set colored-stats on
-
-# Make Tab autocomplete regardless of filename case
-set completion-ignore-case on
-
-# List all matches in case multiple possible completions are possible
-set show-all-if-ambiguous on
-
-# Immediately add a trailing slash when autocompleting symlinks to directories
-# Turned off as it hides information
-# set mark-symlinked-directories on
-
-# Show all autocomplete results at once
-set page-completions off
-
-# If there are more than X possible completions for a word, ask to show them all
-set completion-query-items 100
-
-# Show extra file information when completing, like `ls -F / --classify` does
-set visible-stats on
-
-# Be more intelligent when autocompleting by also looking at the text after
-# the cursor. For example, when the current line is "cd ~/src/mozil", and
-# the cursor is on the "z", pressing Tab will not autocomplete it to "cd
-# ~/src/mozillail", but to "cd ~/src/mozilla". (This is supported by the
-# Readline used by Bash 4.)
-set skip-completed-text on
-
 # Allow UTF-8 input and output, instead of showing stuff like $'\0123\0456'
 set input-meta on
 set output-meta on
@@ -118,15 +72,11 @@ set convert-meta off
 # To allow the use of 8bit-characters like the german umlauts, uncomment
 # the line below. However this makes the meta key not work as a meta key,
 # which is annoying to those which don't need to type in 8-bit characters.
+## set convert-meta off
 
-# set convert-meta off
-
-# try to enable the application keypad when it is called.  Some systems
+# Try to enable the application keypad when it is called.  Some systems
 # need this to enable the arrow keys.
 # set enable-keypad on
-
-# see /usr/share/doc/bash/inputrc.arrows for other codes of arrow keys
-
 
 # No quotes needed if it's a single keystroke:
 # Control-u: universal-argument
@@ -157,17 +107,73 @@ set convert-meta off
 "\e\e[C": forward-word
 "\e\e[D": backward-word
 
-
-# Flip through autocompletion matches with Shift-Tab.
-"\e[Z": menu-complete
-
 # Filtered history search
 "\e[A": history-search-backward
 "\e[B": history-search-forward
 
-# on menu-complete, first display the common prefix, then cycle through the 
-# options when hitting TAB
-# menu-complete-display-prefix off
+# See /usr/share/doc/bash/inputrc.arrows for other codes of arrow keys
+
+
+########################
+# Completion
+########################
+# If there are multiple matches for completion, Tab should cycle through them
+TAB: menu-complete
+
+# Reverse order with Shift-Tab.
+"\e[Z": menu-complete-backward
+
+# If set to On, when listing completions, readline displays the common prefix
+# of the set of possible completions using a different color.  The color
+# definitions are taken from the value of the LS_COLORS environment variable.
+set colored-completion-prefix on
+
+# Displays completions using colors indicating file type.
+# Definitions taken from the value of the LS_COLORS environment
+set colored-stats on
+
+# The length in characters of the common prefix of a list of possible
+# completions that is displayed without modification. When set to a value
+# greater than zero, common prefixes longer than this value are replaced with an
+# ellipsis when displaying possible completions.
+set completion-prefix-display-length 20
+
+# Treat hyphens (‘-’) and underscores (‘_’) as equivalent in matching
+set completion-map-case on
+
+# Make Tab autocomplete regardless of filename case
+set completion-ignore-case on
+
+# List all matches in case multiple possible completions are possible
+set show-all-if-ambiguous on
+
+# Show more than one possible completion when they don't have a common prefix
+set show-all-if-unmodified on
+
+# Immediately add a trailing slash when autocompleting symlinks to directories
+# Turned off as it hides information
+# set mark-symlinked-directories on
+
+# Page completions if more than one screen
+# set page-completions on
+
+# If there are more than X possible completions for a word, ask to show them all
+set completion-query-items 200
+
+# Show extra file information when completing, like `ls -F / --classify` does
+set visible-stats on
+
+# Perform partial completion on the first Tab press,
+# only start cycling full results on the second Tab press
+set menu-complete-display-prefix on
+#
+# Be more intelligent when autocompleting by also looking at the text after
+# the cursor. For example, when the current line is "cd ~/src/mozil", and
+# the cursor is on the "z", pressing Tab will not autocomplete it to "cd
+# ~/src/mozillail", but to "cd ~/src/mozilla". (This is supported by the
+# Readline used by Bash 4.)
+set skip-completed-text on
+
 
 ######################################################################
 # EMACS mode
