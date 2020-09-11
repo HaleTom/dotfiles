@@ -1,0 +1,7 @@
+{
+    "sync.gist": "6f5e4af72ba18e77e05aeffb98b34e52",
+    "vscode-neovim.mouseSelectionStartVisualMode": true,
+    "vscode-neovim.neovimPath": "/usr/bin/nvim",
+    "todo-tree.tree.showScanModeButton": false,
+    "workbench.iconTheme": "material-icon-theme"
+}
