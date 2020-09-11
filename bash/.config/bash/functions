@@ -63,7 +63,7 @@ export_function yelp
 
 
 # Print the name of the function calling me
-function func_name () {
+function func_name() {
   if [[ -n $BASH_VERSION ]]; then
     printf "%s\n" "${FUNCNAME[1]}"
   else  # zsh
@@ -356,8 +356,8 @@ function cdup {
   # $ pwd
   # ~/a/b/c
 
-  [[ $# -ne 1  ]] && { echo "${FUNCNAME[0]}: Must specify one directory" 2>&1; return 1; }
   try="$1"
+  [[ $# -ne 1  ]] && { echo "$(func_name): Must specify one directory" 2>&1; return 1; }
 
   until [[ $try == . ]]; do
       if [[ -d $try && -x $try ]]; then
