@@ -92,8 +92,8 @@ function is_bin_in_path {
     builtin whence -p "$1" &> /dev/null
   else  # bash:
     builtin type -P "$1" &> /dev/null
-  fi
-  [[ $? -ne 0 ]] && return 1
+  fi || return 1  # Nope
+
   if [[ $# -gt 1 ]]; then
     shift  # We've just checked the first one
     is_bin_in_path "$@"
