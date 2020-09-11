@@ -649,31 +649,33 @@ export_function ssh_agent_setup
 # (root=$(git rev-parse --git-dir)/ && cd ${root%%/.git/*} && git rev-parse && pwd)
 # but this doesn't cover external $GIT_DIRs which are named other than .git
 function git_root {
-  local root first_commit
+  local root signature
   # git displays its own error if not in a repository
-  root=$(git rev-parse --show-toplevel) || return
+  root=$(git rev-parse --show-toplevel 2>/dev/null)
   if [[ -n $root ]]; then
     echo "$root"
     return
-  elif [[ $(git rev-parse --is-inside-git-dir) = true ]]; then
+  elif [[ $(git rev-parse --is-inside-git-dir 2>/dev/null) = true ]]; then
     # We're inside the .git directory
-    # Store the commit id of the first commit to compare later
+    # Store the root (can be more than 1) and latest branch commits, then compare to what's obtained from the parent directory
     # It's possible that $GIT_DIR points somewhere not inside the repo
-    first_commit=$(git rev-list --parents HEAD | tail -1) || # --reverse with head -1?
-      echo "${FUNCNAME[0]}: Can't get initial commit" 2>&1 && false && return
-    root=$(git rev-parse --git-dir)/.. &&
+    if ! signature=$({ git rev-list --max-parents=0 @; git for-each-ref refs/heads --format='%(objectname)'; } 2>/dev/null); then
+      echo "$(func_name): Can't get initial commit" >&2
+      return 1
+    fi
+    root=$(git rev-parse --git-dir 2>/dev/null)/.. &&
       # subshell so we don't change the user's working directory
     ( cd "$root" &&
-      if [[ $(git rev-list --parents HEAD | tail -1) = "$first_commit" ]]; then
-        pwd
+      if [[ $({ git rev-list --max-parents=0 @; git for-each-ref refs/heads --format='%(objectname)'; } 2>/dev/null) = "$signature" ]]; then
+        pwd && return
       else
-        echo "${FUNCNAME[0]}: git directory is not inside its repository" 2>&1
-        false
+        echo "$(func_name): git directory is not inside its repository" >&2
+        return 1
       fi
     )
   else
-    echo "${FUNCNAME[0]}: Can't determine repository root" 2>&1
-    false
+    echo "$(func_name): Can't determine repository root" >&2
+    return 1
   fi
 }
 export_function git_root
