@@ -15,3 +15,14 @@ ipython/.ipython/profile_default/history.sqlite
 # These get dynamically updated by bashrc
 tmux/.config/tmuxinator/tmuxinator.bash
 tmux/.config/tmuxinator/tmuxinator.zsh
+
+# VS Code
+vscode/.config/Code/*
+!vscode/.config/Code/languagepacks.json
+
+!vscode/.config/Code/User/
+vscode/.config/Code/User/*
+!vscode/.config/Code/User/keybindings.json
+!vscode/.config/Code/User/settings.json
+# Changes with each sync timestamp:
+# !vscode/.config/Code/User/syncLocalSettings.json
