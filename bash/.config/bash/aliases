@@ -98,7 +98,6 @@ alias lesc='less-compressed-wrapper'
 alias mosh='mosh --predict=experimental'  # https://github.com/mobile-shell/mosh/issues/878
 alias mv='mv -i'
 alias Mv='command mv'  # Allow overwrite
-alias nixnote2='LD_PRELOAD=libcurl.so.3 nixnote2 &'
 alias restix="restic -x --exclude-caches --exclude-file=$HOME/etc/restic/exclude"
 alias rga='rg --hidden --no-ignore'
 alias rm='rm -I'  # Prompt on -r or >3 files
