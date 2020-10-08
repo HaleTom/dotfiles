@@ -184,8 +184,9 @@ function _source_files {
     /usr/share/git/completion/git-prompt.sh
 
     # Ruby
-    /usr/share/chruby/chruby.sh
-    /usr/share/chruby/auto.sh
+    # Using rbenv instead of chruby for increased functionality
+    # /usr/share/chruby/chruby.sh
+    # Don't hook cd by default /usr/share/chruby/auto.sh
 
     # Python
     # /usr/bin/virtualenvwrapper_lazy.sh
@@ -228,11 +229,18 @@ add_to_path_var PATH before "$HOME/bin:$XDG_DATA_HOME/python/bin:$XDG_DATA_HOME/
 add_to_path_var PATH after "/usr/lib/systemd:/usr/local/heroku/bin:$XDG_DATA_HOME/miniconda3/bin:$HOME/.cabal/bin"
 
 # Ruby
+# Load rbenv - https://github.com/rbenv/rbenv
+if is_bin_in_path rbenv; then
+  eval "$(command rbenv init -)"
+  # I'm currently not using any plugins
+  # export PATH="$HOME/.rbenv/bin:$HOME/.rbenv/plugins/ruby-build/bin:$PATH"
+fi
+
 add_to_path_var RUBYLIB before "$HOME"/lib
-for _entry in /usr/lib/ruby/gems/*; do
-  add_to_path_var GEM_PATH before "$_entry"
+for _gem_version in /usr/lib/ruby/gems/*; do
+  add_to_path_var GEM_PATH before "$_gem_version"
 done
-unset _entry
+unset _gem_version
 export GEM_PATH RUBYLIB
 
 # Print a fortune message if login shell or in TMUX
@@ -320,7 +328,3 @@ command -v direnv &> /dev/null && eval "$(direnv hook bash)"
 # See http://stackoverflow.com/a/39507158/5353461
 ## Not needed in Manjaro with bash-completion
 #_xfunc git __git_complete g _git
-
-# # rbenv setup
-# eval "$(rbenv init -)"
-# export PATH="$HOME/.rbenv/bin:$HOME/.rbenv/plugins/ruby-build/bin:$PATH"
