@@ -159,6 +159,7 @@
   fom    = fetch origin master:master
   fu     = fetch upstream
   fum    = fetch upstream master:master
+  ff     = merge --ff-only @{u}  # But try just 'git rebase' if HEAD is behind upstream
   fx     = fixup
   fxa    = fixup-auto
   g      = !"cd \"${GIT_PREFIX:-.}\" && git \"$@\" #"  # Idempotent. Allow for `gsudo !!` to run previous command as root.
