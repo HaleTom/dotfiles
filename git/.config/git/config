@@ -155,7 +155,9 @@
   egx    = !"git edit-global-excludes"
   elx    = !"git edit-local-excludes"
   f      = fetch
-  ff     = merge --ff-only @{u}  # But try just 'git rebase' if HEAD is behind upstream
+  fo     = fetch origin
+  fom    = fetch origin master:master
+  fu     = fetch upstream
   fum    = fetch upstream master:master
   fx     = fixup
   fxa    = fixup-auto
