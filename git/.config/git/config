@@ -156,9 +156,9 @@
   elx    = !"git edit-local-excludes"
   f      = fetch
   ff     = merge --ff-only @{u}  # But try just 'git rebase' if HEAD is behind upstream
-  fu     = fixup
   fum    = fetch upstream master:master
-  fua    = fixup-auto
+  fx     = fixup
+  fxa    = fixup-auto
   g      = !"cd \"${GIT_PREFIX:-.}\" && git \"$@\" #"  # Idempotent. Allow for `gsudo !!` to run previous command as root.
   head   = !"c=$(git rpc \"$1\") && p=$(git log -n1 --oneline --decorate) && git update-ref --no-deref -m \"Move from $p\" HEAD \"$c\" #" # Move HEAD to specified commit-ish
   icdiff = difftool --no-prompt --extcmd icdiff # \"$@\"
