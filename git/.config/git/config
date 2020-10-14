@@ -78,11 +78,12 @@
   cinit  = !"git init; git is-empty-repo && git commit --allow-empty -m 'Initialise repository'" # init on existing repo is safe
   cl     = clone
   # clone --depth flag implies --single-branch
-  # To deepen: git fetch --deepen 50
+  # To incrementally deepen: git fetch --deepen 50
   # More: https://stackoverflow.com/questions/6802145/how-to-convert-a-git-shallow-clone-to-a-full-clone
-  cls    = clone --depth 20 --shallow-submodules --recurse-submodules
-  clsa    = clone --depth 5 --shallow-submodules --recurse-submodules -–no-single-branch  # Clone all branches
-  clsb   = clone --depth 20 --shallow-submodules --recurse-submodules --branch  # eg git clsb maint git://github.com/user/repo"
+  # cls    = clone --shallow-since='3 years' --shallow-submodules --recurse-submodules
+  cls    = clone --depth=30 --no-single-branch --shallow-submodules --recurse-submodules
+  clsb   = cls --branch  # eg git clsb maint git://github.com/user/repo"
+  clss   = cls --single-branch  # Clone only one branch
   clrsm  = clone --recurse-submodules
   # Note git clean operates from the current directory, same behaviour:
   clear  = !"cd ${GIT_PREFIX:-.} && bash -c 'git clean -nd \"$@\" | sed \"s/^Would remove //\"; \
