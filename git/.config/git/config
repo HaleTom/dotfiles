@@ -232,8 +232,11 @@
   rbs    = rebase --skip
   ro     = remote
   roa    = remote add
+  roao   = remote add origin
+  roau   = remote add upstream
   rog    = remote get-url
   rogp   = remote get-url --push
+  rom    = remote rename  # remote move
   rorm   = remote remove
   rorn   = remote rename
   ros    = remote set-url
