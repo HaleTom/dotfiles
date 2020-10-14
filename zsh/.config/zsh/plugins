@@ -79,10 +79,10 @@ zinit light 'zsh-users/zsh-completions'
 
 # Add zsh's missing hooks, and support for user-defined hooks
 # eg zle-line-init of the Special Wigets in `man zshzle`
-# https://github.com/willghatch/zsh-hooks
+# https://github.com/zsh-hooks/zsh-hooks'
 # No 'wait' ice as it's used immediately in keyboard setup
-zinit ice depth=1 pick"zsh-hooks.plugin.zsh"
-zinit light willghatch/zsh-hooks
+zinit ice depth=1 # pick"zsh-hooks.plugin.zsh"
+zinit light 'zsh-hooks/zsh-hooks'
 
 
 # Bracketed Paste mode (uses zsh-hooks)
