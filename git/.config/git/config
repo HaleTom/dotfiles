@@ -114,10 +114,13 @@
   co-    = !"git checkout @{-1}; git print-commit-1 @ #"
   cob    = checkout -b
   cobb   = checkout -B
-  cof    = checkout --force
   # Create a branch tracking the same branch on origin.
   # '-' makes argument list start at $1
   cobt   = !sh -c 'git checkout -b "$1" && git branch --track origin/"$1"' -
+  cof    = checkout --force
+  coi    = checkout-index
+  coif   = checkout-index --force  # update existing files
+  coiaf  = checkout-index --all --force  # update all existing files
   coo    = checkout --ours
   cop    = checkout --patch
   cos    = !"git spcosp \"$@\" # move uncommitted changes to new branch via stash"
