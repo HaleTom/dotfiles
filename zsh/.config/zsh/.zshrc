@@ -28,13 +28,13 @@
 # https://stackoverflow.com/a/24237590/5353461
 zstyle ':completion:*' matcher-list '' '+m:{[:lower:]}={[:upper:]}' 'r:|[._-]=* r:|=*' 'l:|=* r:|=*'
 
+setopt append_history auto_cd beep extended_glob no_clobber no_match notify prompt_subst
+setopt append_create  # Allow files to be created with >> redirection
 setopt correct  # prompt to correct spelling mistakes
 setopt pipe_fail  # return right-most command's non-zero return value
 setopt interactive_comments  # Allow #comment in an interactive shell
 setopt posix_aliases  # Don't expand aliases overloading reserved words
 setopt ksh_glob  # Allow for matching one or more with +(x) for bash compatibility
-# complete_in_word: If unset, the cursor is set to the end of the word if completion is started. Otherwise it stays there and completion is done from both ends.
-# setopt complete_in_word # XXX how to test this?
 
 # Run a command with bash emulation.
 # For safety, alias file has bash-only:  alias as_bash=''
@@ -144,7 +144,6 @@ autoload -Uz run-help-svn
 export HISTFILE=$XDG_DATA_HOME/zsh/history
 export HISTSIZE=10000
 export SAVEHIST=10000
-setopt append_history auto_cd beep extended_glob no_clobber no_match notify prompt_subst
 # notify: Report the status of background jobs immediately, rather than waiting until just before printing a prompt.
 
 # End of lines configured by zsh-newuser-install
