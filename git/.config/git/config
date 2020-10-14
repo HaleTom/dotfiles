@@ -54,7 +54,7 @@
   brd    = branch -d
   brdd   = branch -D # Same as branch --force. Allow deletion if branch is not merged.
   brf    = branch -f
-  brl    = branch --list
+  brl    = branch --list --all --verbose --verbose  # Can have $1 be a glob for filtering
   brm    = branch --move # rename
   brt    = branch --track
   bru    = branch --set-upstream-to  # branch -u is equivalent
