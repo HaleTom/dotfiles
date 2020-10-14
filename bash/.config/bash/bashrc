@@ -85,8 +85,9 @@ export S_COLORS=auto
 # Use powerpill as pacman wrapper if installed
 [[ -x /usr/bin/powerpill ]] && export PACMAN=/usr/bin/powerpill
 
-# Remove bash's command not found handler
-unset -f command_not_found_handle 2>/dev/null # https://superuser.com/a/1252874/365890
+# ccache
+export CCACHE_CONFIGPATH="$XDG_CONFIG_HOME"/ccache.config
+export CCACHE_DIR="$XDG_CACHE_HOME"/ccache
 
 # ssh-ident
 export BINARY_SSH=/usr/bin/ssh
@@ -218,9 +219,8 @@ nvm() {
   nvm "$@"  # Call the new version
 }
 
-
 # $PATH must be set after sourcing chruby
-add_to_path_var PATH before "$HOME/bin:$XDG_DATA_HOME/python/bin:$XDG_DATA_HOME/gem/bin:$XDG_DATA_HOME/npm/bin:$HOME/.local/bin:$XDG_DATA_HOME/go/bin:$XDG_DATA_HOME/cargo/bin"
+add_to_path_var PATH before "$HOME/bin:$XDG_DATA_HOME/python/bin:$XDG_DATA_HOME/gem/bin:$XDG_DATA_HOME/npm/bin:$HOME/.local/bin:$XDG_DATA_HOME/go/bin:$XDG_DATA_HOME/cargo/bin:/usr/lib/ccache/bin"
 
 # Handled by chruby
 # if ruby_gems=$(ruby -e 'print Gem.user_dir')/bin; then
