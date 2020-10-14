@@ -312,14 +312,14 @@
   repo = !"bash -c 'r=$(realpath \"${@:$#}\") && cd \"$(dirname \"$r\")\" && git \"${@:1:$# -1}\" \"$r\"' _ \"$@\" # Run command in directory of realpath of last argument, convert it to realpath"
   # Top level directory of repository
   top = !"git \"$@\" #"  # re-run git command in repository toplevel directory
-  root = rev-parse --show-toplevel  # Show git top-level
+  root = rev-parse --show-toplevel  # Show git top-level.  Also see bash function git_root for something more robust.
   # For superproject and submodules toplevel see https://stackoverflow.com/a/52047313/5353461
   git-dir = rev-parse --git-dir  # Show .git directory
 
   # Show changes in a file, following renames
   changes = log --follow --stat --patch
 
-  tag-latest = !"git describe --tags $(git rev-list --tags --max-count=1) #"
+  tag-latest = !"git describe --tags $(git rev-list --tags --max-count=1) # Describe the most recent (in time) tag"
 
   #
   # Branches / remotes
@@ -328,7 +328,8 @@
   # Mine: https://stackoverflow.com/a/52906108/5353461, https://stackoverflow.com/a/52913537/5353461
   branch-current = "symbolic-ref --short HEAD"  # https://stackoverflow.com/a/19585361/5353461, at bottom.
   # branch-name: Mine: https://stackoverflow.com/a/56564366/5353461  # Given commitish, print branch head(s) or error
-  branch-name = !"git for-each-ref --format=\"%(refname:short) %(objectname)\" 'refs/heads/' | sed -En 's/^(\\S+)\\s+'\"$(git rev-parse \"$1\" 2>/dev/null)\"'$/\\1/p' | grep . || { echo \"$1: not a branch-name\" >&2; false;} # Print commit's branch heads"
+  # This may print more than one, so perhaps rename to branch-names.  Also, if refs/heads/$1 exists, then just print that?
+  branch-name = !"git for-each-ref --format=\"%(refname:short) %(objectname)\" 'refs/heads/' | sed -En 's/^(\\S+)\\s+'\"$(git rev-parse \"${1:-@}\" 2>/dev/null)\"'$/\\1/p' | grep . || { echo \"$1 is not a branch tip\" >&2; false;} # Print commit's branch heads"
   branch-or-commit = !"x=$(git branch-name \"$1\"); [ -n \"$x\" -a \"$(echo -n \"$x\" | wc -l)\" -eq 0 ] ||{ x=$(git rev-parse --verify \"$1\");}; echo \"$x\"; [ -n \"$x\" ] #"
   branch-tips = !"[ -z \"$1\" ] && git branch-current 2>/dev/null || git branch --format='%(refname:short)' --contains \"${1:-HEAD}\" #"  # https://stackoverflow.com/a/19585361/5353461
   branch-tip = !"br=$(git branch-tips \"$1\") && case \"$br\" in *$'\\n'*) printf \"Multiple branches:\\n%s\" \"$br\">&2; exit 1;; esac; echo \"$br\" #"
@@ -509,7 +510,7 @@
   # will appropriately merge from that remote branch.  Recommended.  Without this,
   # you will have to add --track to your branch command or manually merge remote
   # tracking branches with "fetch" and then "merge".
-  autosetupmerge = true
+  autoSetupMerge = true
 
 [color]
 # Colours: black, red, green, yellow, blue, magenta, cyan, white, reset
