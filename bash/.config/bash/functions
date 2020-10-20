@@ -54,10 +54,12 @@ function yelp () {
   fi
   local quoter
   # Use shell-quote if it exists (nicer output in bash)
-  if ! quoter=$(command -v shell-quote); then
-    quoter=token_quote  # use function from this file
+  if is_cmd shell-quote; then
+    quoter=(shell-quote  --)
+  else
+    quoter=(token_quote)
   fi
-  echo "${file##*/}:$func:$line $("$quoter" "$@")" >&2
+  echo "${file##*/}:$func:$line $("${quoter[@]}" "$@")" >&2
 }
 export_function yelp
 
