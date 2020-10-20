@@ -107,7 +107,7 @@ export_function is_bin_in_path
 # Are all args a command?
 # Note: fails on shell reserved words
 function is_cmd {
-  command -v "$1" >&/dev/null
+  command -v "$1" >&/dev/null || return 1
   if [[ $# -gt 1 ]]; then
     shift  # We've just checked the first one
     is_cmd "$@"
