@@ -236,6 +236,9 @@ if is_bin_in_path rbenv; then
   # export PATH="$HOME/.rbenv/bin:$HOME/.rbenv/plugins/ruby-build/bin:$PATH"
 fi
 
+# scmpuff  https://github.com/mroth/scmpuff/
+is_cmd scmpuff && eval "$(command scmpuff init -s --aliases=false)"
+
 add_to_path_var RUBYLIB before "$HOME"/lib
 for _gem_version in /usr/lib/ruby/gems/*; do
   add_to_path_var GEM_PATH before "$_gem_version"
