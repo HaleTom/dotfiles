@@ -35,7 +35,7 @@ alias source='builtin source source-file source "$#" "$@"'
 alias      .='builtin source source-file .      "$#" "$@"'
 
 alias cdh='cd $HOME'  # for enhancd https://github.com/b4b4r07/enhancd/issues/72
-alias -- -='builtin cd -' # go to previous dir
+alias -- -='builtin cd -- -' # go to previous dir
 alias ..='builtin cd ..'
 alias ...='builtin cd ../..'
 alias ....='builtin cd ../../..'
