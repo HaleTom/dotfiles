@@ -25,8 +25,8 @@ alias ls="colourify ls -CF --block-size=\\'1 --color=always --quoting-style=shel
 # EXA_GRID_ROWS=15 exa -la --header --group --grid --bytes --color-scale --git
 alias la='ls -A'       # Almost all - no . and ..
 alias lal='ls -la'
-alias lsd='ls -dla * --color=always | grep "^d" --color=never'   # non-hidden directories
-alias lsdd='ls -Al --color=always | grep --color=never ^d'   # directories including hidden
+alias lsdir='ls -dla * --color=always | grep "^d" --color=never'   # non-hidden directories
+alias lsDir='ls -Al --color=always | grep --color=never ^d'   # directories including hidden
 alias lal='ls -la'
 alias ll='ls -l'
 alias l.='ls -d .[^.]?*' # Hidden files except . and .. (current directory only)
