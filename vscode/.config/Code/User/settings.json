@@ -1,7 +1,105 @@
 {
-    "sync.gist": "6f5e4af72ba18e77e05aeffb98b34e52",
-    "vscode-neovim.mouseSelectionStartVisualMode": true,
-    "vscode-neovim.neovimPath": "/usr/bin/nvim",
-    "todo-tree.tree.showScanModeButton": false,
-    "workbench.iconTheme": "material-icon-theme"
+  "sync.gist": "6f5e4af72ba18e77e05aeffb98b34e52",
+  "vscode-neovim.mouseSelectionStartVisualMode": true,
+  "vscode-neovim.neovimPath": "/usr/bin/nvim",
+  "todo-tree.tree.showScanModeButton": false,
+  "workbench.iconTheme": "material-icon-theme",
+
+  // An array of language ids which should be validated by ESLint. If not installed ESLint will show an error.
+  "eslint.validate": ["javascript", "typescript"],
+
+  "vim.leader": "<space>",
+  "vim.handleKeys": {
+    "<C-a>": false,
+    "<C-f>": false
+  },
+  "vim.easymotion": true,
+  "vim.incsearch": true,
+  "vim.useSystemClipboard": true,
+  "vim.useCtrlKeys": true,
+  "vim.hlsearch": true,
+  "vim.insertModeKeyBindings": [
+    {
+      "before": ["k", "j"],
+      "after": ["<Esc>"]
+    },
+    {
+      "before": ["j", "k"],
+      "after": ["<Esc>"]
+    }
+  ],
+  "vim.normalModeKeyBindingsNonRecursive": [
+    {
+      "before": ["<leader>", "d"],
+      "after": ["d", "d"]
+    },
+    {
+      "before": ["<C-n>"],
+      "commands": [":nohl"]
+    }
+  ],
+  "editor.defaultFormatter": "esbenp.prettier-vscode",
+  "[json]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
+  },
+  "[javascript]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
+  },
+  "[typescript]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
+  },
+  "editor.codeActionsOnSave": {
+    "source.fixAll.eslint": false
+  },
+  "editor.formatOnType": true,
+  "[jsonc]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
+  },
+  "eslint.codeAction.disableRuleComment": {
+    "enable": false
+  },
+  "jest.coverageFormatter": "GutterFormatter",
+  "editor.formatOnSaveMode": "modifications",
+  "eslint.codeActionsOnSave.mode": "problems",
+  "tslint.packageManager": "yarn",
+  "prettier.eslintIntegration": false,
+  "npm.packageManager": "yarn",
+  "eslint.packageManager": "yarn",
+  "prettier.packageManager": "yarn",
+  "prettier.singleQuote": true,
+  "diffEditor.renderSideBySide": false,
+  "window.zoomLevel": 0,
+  "node_require.exclude": [
+    "*.ts",
+    "node_modules",
+    "typings",
+    "dist",
+    "bin",
+    "build",
+    "tmp"
+  ],
+  "vim.autoindent": false,
+  "python.languageServer": "Pylance",
+  "workbench.editorAssociations": [
+    {
+      "viewType": "jupyter.notebook.ipynb",
+      "filenamePattern": "*.ipynb"
+    }
+  ],
+  "python.analysis.typeCheckingMode": "basic",
+  "jupyter.askForKernelRestart": false,
+  "python.pythonPath": "/home/ravi/.local/share/miniconda3/envs/rl/bin/python",
+  "python.analysis.completeFunctionParens": true,
+  "editor.suggestSelection": "first",
+  "vsintellicode.modify.editor.suggestSelection": "automaticallyOverrodeDefaultValue",
+  "editor.tabCompletion": "on",
+  "editor.find.autoFindInSelection": "multiline",
+  "editor.quickSuggestions": null,
+
+  "[elixir]": {
+    "editor.quickSuggestions": true
+  },
+  "diffEditor.codeLens": true,
+  "elixirLS.enableTestLenses": true,
+  "elixirLS.mixEnv": "dev",
 }
