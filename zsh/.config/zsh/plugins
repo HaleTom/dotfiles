@@ -6,8 +6,8 @@
 
 
 # Zinit
-# Wiki:    https://zdharma.org/zinit/wiki/INTRODUCTION/
-# Github:  https://github.com/zdharma/zinit
+# Wiki:    https://zdharma-continuum.github.io/zinit/wiki/
+# Github:  https://github.com/zdharma-continuum/zinit
 
 # Source Zinit
 # shellcheck disable=SC1072,1073  # https://github.com/koalaman/shellcheck/issues/1931
@@ -17,7 +17,7 @@ _source_zinit() {  # Discarded function for local variables
     zinit_bin=${zinit%/*}
     echo Cloning Zinit...
     mkdir -pm 700 "$zinit_bin"
-    git clone --depth 1 https://github.com/zdharma/zinit.git "$zinit_bin"
+    git clone --depth 1 https://github.com/zdharma-continuum/zinit.git "$zinit_bin"
   fi
   zinit_home=${zinit%/*/*}  # Set zinit home to be parent of zinit bin dir
   typeset -gA ZINIT  # Global associative array
@@ -29,8 +29,7 @@ _source_zinit && unfunction _source_zinit
 # shellcheck disable=SC2154,2034,2004
 (( ${+_comps} )) && _comps[zinit]=_zinit
 
-
-# # Use null plugin to run commands asynchronously. Work-around for https://github.com/zdharma/zinit/issues/68
+# # Use null plugin to run commands asynchronously. Work-around for https://web.archive.org/web/20201008014818/https://github.com/zdharma/zinit/issues/68
 # # Faster and non-interactive version of `zinit create null`
 # _null_plug_dir=${ZINIT[PLUGINS_DIR]}/_local---null
 # # echo _null_plug_dir=$_null_plug_dir >&2
@@ -44,7 +43,7 @@ _source_zinit && unfunction _source_zinit
 # Run these commands asynchronously via null plugin
 __zinit_deferred () {
   # Load pip completions if pip installed
-  # Alternatively, as suggested in https://github.com/zdharma/zinit/issues/68#issuecomment-410531439
+  # Alternatively, as suggested in https://web.archive.org/web/20201008014818/https://github.com/zdharma/zinit/issues/68#issuecomment-410531439
   # shellcheck disable=2154  # $commands not assigned
   [[ ${commands[pip]} ]] && eval "$(pip completion --zsh)"
 
@@ -66,14 +65,14 @@ MODE_CURSOR_VICMD="green block"
 MODE_CURSOR_VIINS="#20d08a blinking bar"
 MODE_CURSOR_SEARCH="#ff00ff steady underline"
 # How to manage bindkeys in plugins - eg withold the ^R binding
-# https://github.com/zdharma/zinit/issues/69
+# https://web.archive.org/web/20201008014818/https://github.com/zdharma/zinit/issues/69
 zinit ice wait depth=1 trackbinds bindmap'^R -> hold'  # ^R conflicts with fzf
 zinit light 'softmoth/zsh-vim-mode'
 
 
 # Additional completion definitions for Zsh
 # https://github.com/zsh-users/zsh-completions
-zinit ice wait depth=1 blockf  # have zinit manage completions  # https://github.com/zdharma/zinit#completion-management
+zinit ice wait blockf depth=1  # have zinit manage completions  # https://github.com/zdharma-continuum/zinit#completions
 zinit light 'zsh-users/zsh-completions'
 
 
@@ -137,7 +136,7 @@ zinit load 'MichaelAquilina/zsh-you-should-use'
 
 # A collection of LS_COLORS definitions; needs your contribution!
 # https://github.com/trapd00r/LS_COLORS
-# http://zdharma.org/zinit/wiki/LS_COLORS-explanation/
+# https://zdharma-continuum.github.io/zinit/wiki/LS_COLORS-explanation/
 zinit ice wait depth=1 atclone"dircolors -b LS_COLORS > clrs.zsh" \
     atpull'%atclone' pick"clrs.zsh" nocompile'!' \
     atload'zstyle ":completion:*" list-colors “${(s.:.)LS_COLORS}”'
@@ -172,11 +171,11 @@ zsh-defer -12 __zinit_deferred  # -12 enables STDOUT, STDERR output
 
 # Syntax highlighting should be the last plugin
 # Optimized and extended zsh-syntax-highlighting
-# https://github.com/zdharma/fast-syntax-highlighting
+# https://github.com/zdharma-continuum/fast-syntax-highlighting
 FAST_THEME_NAME=free  # From `fast-theme -l`. `fast-theme -t <theme>` to test
 zinit ice wait depth=1 atinit'zpcompinit; zpcdreplay'
 zinit ice atload"[[ current_theme.zsh -nt themes/$FAST_THEME_NAME.ini ]] || fast-theme $FAST_THEME_NAME > /dev/null"
-zinit load 'zdharma/fast-syntax-highlighting'
+zinit load 'zdharma-continuum/fast-syntax-highlighting'
 typeset -gA FAST_HIGHLIGHT_STYLES FAST_HIGHLIGHT
 # Customise colours of theme set via fast-theme  https://github.com/zdharma/fast-syntax-highlighting/issues/42
 # Available options in $XDG_CONFIG_HOME/zsh/.zinit/plugins/zdharma---fast-syntax-highlighting/current_theme.zsh
