@@ -16,7 +16,7 @@ _source_zinit() {  # Discarded function for local variables
   if [ ! -r "$zinit" ]; then
     zinit_bin=${zinit%/*}
     echo Cloning Zinit...
-    mkdir -pm 700 "$zinit_bin"
+    mkdir -pm 700 "$zinit_bin"  # shellcheck disable=SC2174 : When used with -p, -m only applies to the deepest directory.
     git clone --depth 1 https://github.com/zdharma-continuum/zinit.git "$zinit_bin"
   fi
   zinit_home=${zinit%/*/*}  # Set zinit home to be parent of zinit bin dir
