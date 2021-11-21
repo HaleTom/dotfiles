@@ -125,6 +125,12 @@ ZSH_AUTOSUGGEST_USE_ASYNC=1
 # export ENHANCD_DIR=$XDG_CONFIG_HOME/enhancd ENHANCD_DOT_SHOW_FULLPATH=1 # ENHANCD_FILTER=fzy:fzf:peco:percol
 
 
+# z: jump around based on frecency
+# https://github.com/agkozak/zsh-z
+zinit ice wait depth=1
+zinit light 'agkozak/zsh-z'
+
+
 # Reminds you to use existing aliases for commands you just typed
 # https://github.com/MichaelAquilina/zsh-you-should-use
 # zinit ice wait'0' load'[[ ! -v ps1 ]]' unload'[[ -v ps1 ]]'  # Doesn't work
