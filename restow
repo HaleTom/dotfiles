@@ -22,4 +22,4 @@ if [[ -f PERSONAL/install ]]; then
 fi
 
 # Assume that there are no newlines in directory names
-find -L . -maxdepth 1 -type d ! \( -name PERSONAL -o -name '.*' -o -name 'Z-*' \) -print | sed 's/^.\///' | xargs -t --max-args=1 --no-run-if-empty -- stow -v --target="$HOME"
+find -L . -maxdepth 1 -type d ! \( -name PERSONAL -o -name '.*' -o -name 'Z-*' \) -print | sed 's/^.\///' | xargs -t -n1 -- stow -v --target="$HOME"
