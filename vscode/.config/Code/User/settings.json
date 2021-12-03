@@ -80,12 +80,9 @@
   ],
   "vim.autoindent": false,
   "python.languageServer": "Pylance",
-  "workbench.editorAssociations": [
-    {
-      "viewType": "jupyter.notebook.ipynb",
-      "filenamePattern": "*.ipynb"
-    }
-  ],
+  "workbench.editorAssociations": {
+    "*.ipynb": "jupyter.notebook.ipynb"
+  },
   "python.analysis.typeCheckingMode": "basic",
   "jupyter.askForKernelRestart": false,
   "python.pythonPath": "/home/ravi/.local/share/miniconda3/envs/rl/bin/python",
