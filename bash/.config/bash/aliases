@@ -31,7 +31,9 @@ alias lal='ls -la'
 alias ll='ls -l'
 alias l.='ls -d .[^.]?*' # Hidden files except . and .. (current directory only)
 
+# shellcheck disable=SC2142  # Allow positional parameters to aliases (via function call)
 alias source='builtin source source-file source "$#" "$@"'
+# shellcheck disable=SC2142  # Allow positional parameters to aliases (via function call)
 alias      .='builtin source source-file .      "$#" "$@"'
 
 alias cdh='cd $HOME'  # for enhancd https://github.com/b4b4r07/enhancd/issues/72
@@ -166,13 +168,16 @@ alias pbpaste='xclip -selection clipboard -out'
 # rsync
 alias rscp='rsync -ax --partial --sparse --xattrs --no-whole-file --inplace --protect-args'
 alias rsmv='rscp --remove-source-files'
+# shellcheck disable=SC2142  # Allow positional parameters to aliases (via function call)
 alias droidsync='f(){ rsync "$@" --no-p --no-o --no-g --rsync-path="su root rsync";};f'
 # FAT stores to two-second accuracy, NTFS 100 nanoseconds
 # https://corengen.wordpress.com/2010/03/22/comparing-file-timestamps-on-ntfs-and-fat32/
+# shellcheck disable=SC2142  # Allow positional parameters to aliases (via function call)
 alias fatrsync='f(){ rsync "$@" --modify-window=2 --no-p --no-o --no-g;};f'  # Allow for -a or other options
 
 # pygmentize
 alias pcat='pygmentize -f terminal256 -O style=monokai -g'
+# shellcheck disable=SC2142  # Allow positional parameters to aliases (via function call)
 alias pless='f(){ pygmentize -f terminal256 -O style=monokai -g "$@" | less -L; };f'
 
 # Change to git root directory
@@ -180,7 +185,9 @@ alias cdgr='builtin cd "$(git rev-parse --show-toplevel)"'  # cd '' does nothing
 
 # Hooks don't run with named environment
 # https://github.com/conda/conda/issues/7862
+# shellcheck disable=SC2142  # Allow positional parameters to aliases (via function call)
 alias activate='f(){ source $XDG_DATA_HOME/miniconda3/bin/activate "$@"; source prompt-update; }; f'
+# shellcheck disable=SC2142  # Allow positional parameters to aliases (via function call)
 alias deactivate='f(){ source $XDG_DATA_HOME/miniconda3/bin/deactivate "$@"; source prompt-update; }; f'
 
 
@@ -220,6 +227,7 @@ if typeset -f exec_scmb_expand_args > /dev/null; then
 
   # Colourise ll alias output if grc is installed
   if command -v grcat > /dev/null; then
+    # shellcheck disable=SC2142  # Allow positional parameters to aliases (via function call)
     alias ll='f() { exec_scmb_expand_args ls_with_file_shortcuts "$@" | grcat conf.ls; }; f'
   fi
 fi
