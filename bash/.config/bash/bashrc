@@ -182,7 +182,7 @@ function _source_files {
 # TODO: check if base command installed before trying to configure it.
 
 # Both zsh and bash
->> $XDG_RUNTIME_DIR/$(date -Iseconds)-PID:$$ _source_files <<DOTFILES
+>> $XDG_RUNTIME_DIR/$(date '+%s')-PID:$$ _source_files <<DOTFILES
     # Git
     /usr/share/git/completion/git-prompt.sh
 
