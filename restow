@@ -7,7 +7,7 @@ dir=${1:-$(dirname "$0")}
 if [[ $# -gt 1 || ! -d $dir ]]; then
   printf "Usage: %s [directory]\n" "${0##*/}"
   printf "Run install under PERSONAL directory if it exists.\n"
-  printf "Stow directories to $HOME\n"
+  printf "Stow directories to %s\n" "$HOME"
   printf "Run stow on all directories under given directory\n"
   printf "Else, run stow on all directories which are siblings to this file\n"
   printf "\nDirectories named PERSONAL Z-* .* are excluded.\n"
