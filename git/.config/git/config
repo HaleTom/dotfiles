@@ -294,11 +294,11 @@
   ssk    = stash push --keep-index # Changes to index are left intact
   sskm   = stash push --keep-index --message
   ssm    = stash push --message
-  ssp    = stash save --patch
-  ssu    = stash save --include-untracked
-  sska   = stash save --keep-index --all # includes ignored
-  ssku   = stash save --keep-index --include-untracked
-  sskua  = stash save --keep-index --include-untracked --all
+  ssp    = stash push --patch
+  ssu    = stash push --include-untracked
+  sska   = stash push --keep-index --all # includes ignored
+  ssku   = stash push --keep-index --include-untracked
+  sskua  = stash push --keep-index --include-untracked --all
   t      = tag
   tf     = tag -f
   tl     = "!git tag -n1 | sort -V"  # -n1 prints one line from annotation and implies --list
