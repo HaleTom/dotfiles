@@ -39,7 +39,7 @@ MiscSearchDialogOpacity=100
 MiscShowUnsafePasteDialog=FALSE
 TitleMode=TERMINAL_TITLE_HIDE
 ColorForeground=#fdc8ff24ee22
-ColorBackground=#147a147a147a
+ColorBackground=#3d3d38384646
 ColorBoldIsBright=FALSE
 ColorCursorUseDefault=FALSE
 
