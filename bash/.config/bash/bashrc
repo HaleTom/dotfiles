@@ -211,11 +211,12 @@ unset tmuxinator_source
 
 # Add default nvm to $PATH if setup
 if [[ -d $NVM_DIR ]]; then
-  local _default_node_dir=$NVM_DIR/versions/node/default
+  _default_node_dir=$NVM_DIR/versions/node/default
   if [[ -d $_default_node_dir ]]; then
     add_to_path_var PATH before "$_default_node_dir"/bin
   fi
 fi
+unset _default_node_dir
 
 # Only source nvm when needed as it's slow...
 nvm() {
