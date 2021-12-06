@@ -148,10 +148,21 @@ _cd_hook() {
 
 # Functions to get the time since last prompt
 _timer_now() {
-  # See https://github.com/jichu4n/bash-command-timer/blob/master/bash_command_timer.sh#L77
-  # for a OSX compatible way to do this
-  date +%s%N
-  # TODO zsh without subprocess: https://unix.stackexchange.com/a/204807/143394
+  # For zsh no sub-processs, float-type zsh $SECONDS or $EPOCHREALTIME:
+  # https://unix.stackexchange.com/a/204807/143394
+
+  if [[ $OSTYPE == darwin* ]]; then
+    if command -v gdate >& /dev/null; then
+      gdate +%s%N
+    elif command -v perl >& /dev/null; then
+      # https://github.com/jichu4n/bash-command-timer/blob/master/bash_command_timer.sh#L77
+      perl -MTime::HiRes -e 'printf(\"%d\",Time::HiRes::time()*1000000000)'
+    else
+      date +%s
+    fi
+  else  # non-macOS
+    date +%s%N
+  fi
 }
 
 
