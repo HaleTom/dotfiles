@@ -30,9 +30,18 @@ if [ -z "$XDG_RUNTIME_DIR" ]; then  # It's not already set
     [ ! -d "$XDG_RUNTIME_DIR" ] && mkdir -m 0700 "$XDG_RUNTIME_DIR"
   fi
 fi
+
+_get_octal_perms() {
+  if [[ $OSTYPE == darwin* ]]; then
+    stat -f %A "$@"
+  else
+    stat -c %a "$@"
+  fi
+}
+
 # Check dir has got the correct type, ownership, and permissions
 if ! [[ -d "$XDG_RUNTIME_DIR" && -O "$XDG_RUNTIME_DIR" &&
-    "$(stat -c '%a' "$XDG_RUNTIME_DIR")" = 700 ]]; then
+  $(_get_octal_perms "$XDG_RUNTIME_DIR") == 700 ]]; then
   echo "\$XDG_RUNTIME_DIR: permissions problem with $XDG_RUNTIME_DIR:" >&2
   ls -ld "$XDG_RUNTIME_DIR" >&2
   XDG_RUNTIME_DIR=$(mktemp -d /tmp/"$USER"-runtime-XXXXXX)
