@@ -19,7 +19,11 @@ fi
 # https://www.gnu.org/software/coreutils/manual/html_node/Block-size.html
 # -C = list entries by columns
 # -F, --classify = append indicator (one of */=>@|) to entries
-alias ls="colourify ls -CF --block-size=\\'1 --color=always --quoting-style=shell-escape"
+if is_linux; then
+  alias ls="colourify ls -CF --block-size=\\'1 --color=always --quoting-style=shell-escape"
+else
+  alias ls="colourify ls -CF"
+fi
 # exa:  https://github.com/ogham/exa/issues/407
 # exa: https://github.com/ogham/exa/issues/211#issuecomment-412268723
 # EXA_GRID_ROWS=15 exa -la --header --group --grid --bytes --color-scale --git
@@ -105,7 +109,7 @@ alias mv='mv -i'
 alias Mv='command mv'  # Allow overwrite
 alias restix="restic -x --exclude-caches --exclude-file=$HOME/etc/restic/exclude"
 alias rga='rg --hidden --no-ignore'
-alias rm='rm -I'  # Prompt on -r or >3 files
+islinux && alias rm='rm -I'  # Prompt on -r or >3 files
 alias Rm='command rm'
 alias setvars='(set -o posix; set)'
 alias trunc='cut -c -${COLUMNS:-80}'
