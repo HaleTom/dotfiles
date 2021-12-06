@@ -48,6 +48,7 @@ if ! [[ -d "$XDG_RUNTIME_DIR" && -O "$XDG_RUNTIME_DIR" &&
   echo "Set \$XDG_RUNTIME_DIR=$XDG_RUNTIME_DIR" >&2
 fi
 export XDG_RUNTIME_DIR
+unset -f _get_octal_perms
 
 # Export the XDG user directories
 if [[ -f $XDG_CONFIG_HOME/user-dirs.dirs ]]; then
