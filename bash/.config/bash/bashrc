@@ -193,7 +193,7 @@ fi
 
 # Both zsh and bash
 GRC_ALIASES=true  # Required for grc.sh to not return early
->> $XDG_RUNTIME_DIR/$(date '+%s')-PID:$$ _source_files <<DOTFILES
+_source_files >> $XDG_RUNTIME_DIR/source_files-$(date '+%s')-PID:$$ <<DOTFILES
     # Git
     $_git_prompt_file
 
