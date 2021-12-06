@@ -180,16 +180,22 @@ function _source_files {
     done
 }
 
-
-# TODO: Change this to be an array instead. Comments and blanks allowed.
+# TODO: Change following heredoc to be an array instead. Comments and blanks allowed.
 # https://stackoverflow.com/a/12814475/5353461
 # TODO: check if base command installed before trying to configure it.
 
-GRC_ALIASES=true  # Required for grc.sh to not return early
+# Set location of git-prompt.sh
+if [[ -r /Library/Developer/CommandLineTools/usr/share/git-core/git-prompt.sh ]]; then
+  _git_prompt_file=/Library/Developer/CommandLineTools/usr/share/git-core/git-prompt.sh
+elif [[ -r /usr/share/git/completion/git-prompt.sh ]]; then
+  _git_prompt_file=/usr/share/git/completion/git-prompt.sh
+fi
+
 # Both zsh and bash
+GRC_ALIASES=true  # Required for grc.sh to not return early
 >> $XDG_RUNTIME_DIR/$(date '+%s')-PID:$$ _source_files <<DOTFILES
     # Git
-    /usr/share/git/completion/git-prompt.sh
+    $_git_prompt_file
 
     # Ruby
     # Using rbenv instead of chruby for increased functionality
@@ -212,7 +218,7 @@ GRC_ALIASES=true  # Required for grc.sh to not return early
 
     $XDG_CONFIG_HOME/bash/prompt
 DOTFILES
-unset tmuxinator_source GRC_ALIASES
+unset tmuxinator_source GRC_ALIASES _git_prompt_file
 
 # Add default nvm to $PATH if setup
 if [[ -d $NVM_DIR ]]; then
