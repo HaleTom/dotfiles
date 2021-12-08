@@ -80,6 +80,7 @@ alias sc_luf='sc list-unit-files'
 alias sc_r='sc restart'
 alias sc_rf='sc reset-failed'
 alias sc_s='sc status'
+alias sc_sf='sc status --full --lines 99999'
 alias sc_p='sc stop'
 alias sc_t='sc start'
 # shellcheck disable=SC2142  # Allow positional parameters to aliases (via function call)
