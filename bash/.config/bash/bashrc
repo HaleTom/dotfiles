@@ -181,6 +181,7 @@ function _source_files {
 # https://stackoverflow.com/a/12814475/5353461
 # TODO: check if base command installed before trying to configure it.
 
+GRC_ALIASES=true  # Required for grc.sh to not return early
 # Both zsh and bash
 >> $XDG_RUNTIME_DIR/$(date '+%s')-PID:$$ _source_files <<DOTFILES
     # Git
@@ -195,7 +196,7 @@ function _source_files {
     # /usr/bin/virtualenvwrapper_lazy.sh
 
     # grc - Generic coloriser
-    /etc/profile.d/grc.bashrc
+    /etc/profile.d/grc.sh
 
     # Must use $HOME as ~ not expanded in double quotes
 
@@ -207,7 +208,7 @@ function _source_files {
 
     $XDG_CONFIG_HOME/bash/prompt
 DOTFILES
-unset tmuxinator_source
+unset tmuxinator_source GRC_ALIASES
 
 # Add default nvm to $PATH if setup
 if [[ -d $NVM_DIR ]]; then
