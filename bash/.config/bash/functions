@@ -381,7 +381,7 @@ function nbin {
   local dir;
   dir=$(npm bin)
   if [ -d "$dir" ]; then
-    (  # subshell to not change this shell's $PATH   #' Grr, vim syntax-highlight
+    (  # subshell to not change this shell's $PATH
       PATH=$dir:$PATH
       eval "$(token_quote "$@")"
     )
