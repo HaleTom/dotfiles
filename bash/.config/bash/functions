@@ -758,7 +758,7 @@ ansi_colours() {
 
                         seq0="${vals:+\e[${vals}m}"
                         printf "  %-9s" "${seq0:-(default)}"
-                        printf " ${seq0}TEXT\\e[m"
+                        printf " %sTEXT\\e[m" "${seq0}"
                         printf ' \e[%s1mBOLD\e[m' "${vals:+${vals+$vals;}}"
                 done
                 echo; echo
