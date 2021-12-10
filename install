@@ -24,7 +24,7 @@ function neobundle_update {
 distro=$(lsb_release -si)
 case $distro in
   *Ubuntu*)
-    dpkg -s sstow &> /dev/null && sudo apt-get -y install stow ;;
+    dpkg -s stow &> /dev/null && sudo apt-get -y install stow ;;
 esac
 
 cd -P -- "$(dirname "$0")"
