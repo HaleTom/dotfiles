@@ -643,6 +643,7 @@ export_function confirm_yes
 
 
 function keychain_load {
+  local noask cmd keys
   noask=''; [[ ! -t 0 || ! -t 1 ]] && noask='--noask'  # Don't ask for password if either STDIN or STDOUT is !isatty
   # [[ ! -t 0 || ! -t 1 ]] && echo Setting keychain noask='--noask'  # Don't ask for password if either STDIN or STDOUT is !isatty
 
