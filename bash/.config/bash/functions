@@ -383,7 +383,7 @@ function nbin {
   if [ -d "$dir" ]; then
     (  # subshell to not change this shell's $PATH   #' Grr, vim syntax-highlight
       PATH=$dir:$PATH
-      eval $(token_quote "$@")
+      eval "$(token_quote "$@")"
     )
   else
     echo "\"$dir\" is not an npm binary directory." >&1
@@ -652,7 +652,8 @@ function keychain_load {
   # I'm using both --confhost and $keys as because:
   # --confhost doesn't open any IdentityFile(s)  https://github.com/funtoo/keychain/issues/121
   keys='' && [[ -r ~/.ssh/keychain-keys ]] && keys=$(cat ~/.ssh/keychain-keys)
-  eval $(keychain --eval --quiet --agents ssh --inherit local-once --absolute --dir "$XDG_CACHE_HOME"/keychain --confhost --quick "$keys" "$noask")
+  cmd=$(keychain --eval --quiet --agents ssh --inherit local-once --absolute --dir "$XDG_CACHE_HOME"/keychain --confhost --quick "$keys" "$noask")
+  eval "$cmd"
 }
 export_function keychain_load
 
