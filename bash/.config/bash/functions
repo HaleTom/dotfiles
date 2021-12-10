@@ -471,6 +471,35 @@ function mkcd {
 }
 export_function mkcd
 
+# Run a command and create the destination directory tree if required
+# The last argument is considered the destination and  checked for possible creation
+# If it ends in / it is assumed to be a directory
+# Else, it is assumed to be a destination file
+function md {
+  if [ "$#" -lt 2 ]; then
+    echo "$(func_name): Run command, creating destination directory if needed" >&2
+    echo "Usage: $(func_name) <command> [options] <dest>" >&2
+    echo "If <dest> ends with a '/', it is created, else its parent" >&2
+    return 69
+  fi
+
+  local dest dir
+  dest=${*:$#}
+  if [[ $dest = */ ]]; then
+    dir=$dest
+  else
+    dir=$(dirname "$dest")
+  fi
+
+  if [[ ! -d $dir ]]; then
+    mkdir -p "$dir"
+    printf "%s: created directory %s\n" "$(func_name)" "$dir" >&2
+  fi
+
+  "${@:1}"
+}
+export_function md
+
 
 #------ function make_completion_wrapper
 
