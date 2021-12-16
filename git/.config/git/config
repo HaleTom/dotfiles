@@ -371,6 +371,12 @@
   # 8d048fa (HEAD -> master) local-update: add cabal and npm 2016-10-03 12:29:38 +0700 Tom Hale
   print-commit-1-long = !"for c in \"$@\"; do c=\"$(git rpc \"$c\")\" && eval \"git log -n1 $(git fmt-commit-1line) --date=iso $c\"; done #"
 
+  # Print the commit message of the 1st argument
+  commit-msg = !"[ $# -eq 1 ] || { echo \"Expected single commit-ish\" >&2; exit 1; }; git log --max-count=1 --pretty=format:'%s' \"$(git rpc \"$1\")\" #"
+
+  # List all hashes matching grep string
+  hashes-grep-msg = !"git log --all --pretty=format:'%H' --grep=\"$1\" \"${@:2}\" #"
+
   # Print the --decorations of `git log` without the ( ) eg "HEAD -> master, tag: head, origin/master"
   # TODO: for HEAD (or commit-ish if given)
   # With -n1, only last argument is used (strangely). Verify one argument is a commit-ish.
