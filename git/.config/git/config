@@ -452,7 +452,7 @@
   fixup  = !"git commit -m \"fixup! $(c=$1; shift; git log -1 --format='%h %s' \"$(git rpc \"$c\")\")\" \"$@\" #"
 
   # Automatically fix commit $1 based on index.  $2... are git commit options. # https://blog.filippo.io/git-fixup-amending-an-older-commit/
-  fixup-auto = "!f() { commit=$(git rpc \"$1\") && msg=$(git commit-msg \"$1\") || return; shift; echo git commit --fixup=\"$commit\" \"$@\" && git rbia \"$commit\" && git print-commit-1 \"$(git hashes-grep-msg \"$msg\")\"; }; f"
+  fixup-auto = "!f() { commit=$(git rpc \"$1\") && msg=$(git commit-msg \"$1\") || return; shift; git commit --fixup=\"$commit\" \"$@\" && git rbia \"$commit\" && git print-commit-1 \"$(git hashes-grep-msg \"$msg\" | sed '1q')\"; }; f"
 
   #
   # Boolean tests
