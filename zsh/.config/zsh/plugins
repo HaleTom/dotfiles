@@ -139,12 +139,14 @@ zinit ice wait depth=1
 zinit load 'MichaelAquilina/zsh-you-should-use'
 
 
-# # Find a emoji.json and setup a key to trigger the search as ^s doesn't seem to work
-# # https://github.com/b4b4r07/emoji-cli/issues/15
-# # Emoji completion on the command line
-# # https://github.com/b4b4r07/emoji-cli
-# zinit ice wait depth=1
-# zinit light 'b4b4r07/emoji-cli'
+# Emoji completion on the command line
+# https://github.com/b4b4r07/emoji-cli
+# If ever emoji.js needs to be updated:  https://github.com/b4b4r07/emoji-cli/issues/15
+EMOJI_CLI_KEYBIND='^o'  # Default is ^S
+EMOJI_CLI_USE_EMOJI=1   # Insert the emoji itself, not the :explanation:
+EMOJI_CLI_FILTER='fzf-tmux -d 30%:fzf:peco:percol'  # fzf --min-height default is 10
+zinit ice wait depth=1
+zinit light 'b4b4r07/emoji-cli'
 
 
 # A collection of LS_COLORS definitions; needs your contribution!
@@ -253,12 +255,10 @@ return
 # For shell-check to see variables used
 # shellcheck disable=SC2128  # Arrays without indexing
 cat <<END > /dev/null
-
 $ZSH_AUTOSUGGEST_BUFFER_MAX_SIZE $ZSH_AUTOSUGGEST_USE_ASYNC
 $ZSH_AUTOSUGGEST_STRATEGY $ZSH_HIGHLIGHT_HIGHLIGHTERS $ZSH_HIGHLIGHT_STYLES
 $ZSH_HIGHLIGHT_PATTERNS $ZSH_HIGHLIGHT_REGEXP $ZSH_AUTOSUGGEST_HIGHLIGHT_STYLE
 $FAST_HIGHLIGHT_STYLES $MODE_CURSOR_VICMD $MODE_CURSOR_VIINS
 $MODE_CURSOR_SEARCH $ENHANCD_DIR $ENHANCD_FILTER $ENHANCD_DOT_SHOW_FULLPATH
-$FAST_HIGHLIGHT
-
+$FAST_HIGHLIGHT $ZINIT $EMOJI_CLI_KEYBIND $EMOJI_CLI_USE_EMOJI $EMOJI_CLI_FILTER
 END
