@@ -16,7 +16,8 @@ _source_zinit() {  # Discarded function for local variables
   if [ ! -r "$zinit" ]; then
     zinit_bin=${zinit%/*}
     echo Cloning Zinit...
-    mkdir -pm 700 "$zinit_bin"  # shellcheck disable=SC2174 : When used with -p, -m only applies to the deepest directory.
+    # shellcheck disable=SC2174  # When used with -p, -m only applies to the deepest directory.
+    mkdir -pm 700 "$zinit_bin"
     git clone --depth 1 https://github.com/zdharma-continuum/zinit.git "$zinit_bin"
   fi
   zinit_home=${zinit%/*/*}  # Set zinit home to be parent of zinit bin dir
@@ -149,6 +150,7 @@ zinit load 'MichaelAquilina/zsh-you-should-use'
 # A collection of LS_COLORS definitions; needs your contribution!
 # https://github.com/trapd00r/LS_COLORS
 # https://zdharma-continuum.github.io/zinit/wiki/LS_COLORS-explanation/
+# shellcheck disable=2016 # Expressions don't expand in single quotes, use double quotes for that.
 zinit ice wait depth=1 atclone"dircolors -b LS_COLORS > clrs.zsh" \
     atpull'%atclone' pick"clrs.zsh" nocompile'!' \
     atload'zstyle ":completion:*" list-colors “${(s.:.)LS_COLORS}”'
