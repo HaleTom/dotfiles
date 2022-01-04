@@ -125,6 +125,10 @@ ZSH_AUTOSUGGEST_USE_ASYNC=1
 # zinit light 'b4b4r07/enhancd'
 # export ENHANCD_DIR=$XDG_CONFIG_HOME/enhancd ENHANCD_DOT_SHOW_FULLPATH=1 # ENHANCD_FILTER=fzy:fzf:peco:percol
 
+# SmartCd
+# https://github.com/CodesOfRishi/smartcd
+zinit ice wait # depth doesn't apply to snippets
+zinit snippet 'https://raw.githubusercontent.com/CodesOfRishi/smartcd/main/smartcd.sh'
 
 # z: jump around based on frecency
 # https://github.com/agkozak/zsh-z
