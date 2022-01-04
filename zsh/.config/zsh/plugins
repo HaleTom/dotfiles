@@ -117,7 +117,7 @@ ZSH_AUTOSUGGEST_USE_ASYNC=1
 
 
 # Disabled due to:
-# https://github.com/b4b4r07/enhancd/issues/77
+# https://github.com/b4b4r07/enhancd/issues/77 hangs on automounts.  Workaround exists in issue.
 # https://github.com/b4b4r07/enhancd/issues/85 (has workaround)
 # # enhancd: A next-generation cd command with an interactive filter
 # # https://github.com/b4b4r07/enhancd
