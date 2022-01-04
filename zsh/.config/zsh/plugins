@@ -69,13 +69,13 @@ MODE_CURSOR_VIINS="#20d08a blinking bar"
 MODE_CURSOR_SEARCH="#ff00ff steady underline"
 # How to manage bindkeys in plugins - eg withold the ^R binding
 # https://web.archive.org/web/20201008014818/https://github.com/zdharma/zinit/issues/69
-zinit ice wait depth=1 trackbinds bindmap'^R -> hold'  # ^R conflicts with fzf
+zinit ice wait depth"1" trackbinds bindmap'^R -> hold'  # ^R conflicts with fzf
 zinit light 'softmoth/zsh-vim-mode'
 
 
 # Additional completion definitions for Zsh
 # https://github.com/zsh-users/zsh-completions
-zinit ice wait blockf depth=1  # have zinit manage completions  # https://github.com/zdharma-continuum/zinit#completions
+zinit ice wait blockf depth"1"  # have zinit manage completions  # https://github.com/zdharma-continuum/zinit#completions
 zinit light 'zsh-users/zsh-completions'
 
 
@@ -83,19 +83,19 @@ zinit light 'zsh-users/zsh-completions'
 # eg zle-line-init of the Special Wigets in `man zshzle`
 # https://github.com/zsh-hooks/zsh-hooks'
 # No 'wait' ice as it's used immediately in keyboard setup
-zinit ice depth=1 # pick"zsh-hooks.plugin.zsh"
+zinit ice depth"1" # pick"zsh-hooks.plugin.zsh"
 zinit light 'zsh-hooks/zsh-hooks'
 
 
 # Print zsh's hooks
 # https://github.com/agkozak/zhooks
-zinit ice wait depth=1
+zinit ice wait depth"1"
 zinit light 'agkozak/zhooks'
 
 
 # Bracketed Paste mode (uses zsh-hooks)
 # My PR: https://github.com/robbyrussell/oh-my-zsh/pull/7887
-zinit ice wait depth=1
+zinit ice wait depth"1"
 # zinit snippet OMZ::plugins/safe-paste/safe-paste.plugin.zsh
 zinit snippet 'https://github.com/HaleTom/oh-my-zsh/blob/bracketed-paste/plugins/safe-paste/safe-paste.plugin.zsh'
 # source /home/ravi/code/oh-my-zsh/plugins/safe-paste/safe-paste.plugin.zsh ####
@@ -103,14 +103,14 @@ zinit snippet 'https://github.com/HaleTom/oh-my-zsh/blob/bracketed-paste/plugins
 
 # Auto-close and delete matching delimiters in zsh
 # https://github.com/hlissner/zsh-autopair
-zinit ice wait depth=1
+zinit ice wait depth"1"
 zinit light hlissner/zsh-autopair
 unset 'AUTOPAIR_PAIRS[ ]'  # Make typing '[ x ]' consume the auto-inserted ']' and be compatible with Midnight Commander
 
 
 # Auto suggestions
 # https://github.com/zsh-users/zsh-autosuggestions
-zinit ice wait depth=1 lucid atload'_zsh_autosuggest_start'
+zinit ice wait depth"1" lucid atload'_zsh_autosuggest_start'
 zinit light zsh-users/zsh-autosuggestions
 ZSH_AUTOSUGGEST_STRATEGY=match_prev_cmd  # Match on previous history command also
 ZSH_AUTOSUGGEST_BUFFER_MAX_SIZE=20  # Recommended
@@ -123,7 +123,7 @@ ZSH_AUTOSUGGEST_USE_ASYNC=1
 # https://github.com/b4b4r07/enhancd/issues/85 (has workaround)
 # # enhancd: A next-generation cd command with an interactive filter
 # # https://github.com/b4b4r07/enhancd
-# zinit ice wait depth=1
+# zinit ice wait depth"1"
 # zinit light 'b4b4r07/enhancd'
 # export ENHANCD_DIR=$XDG_CONFIG_HOME/enhancd ENHANCD_DOT_SHOW_FULLPATH=1 # ENHANCD_FILTER=fzy:fzf:peco:percol
 
@@ -146,7 +146,7 @@ zinit light 'agkozak/zsh-z'
 # Reminds you to use existing aliases for commands you just typed
 # https://github.com/MichaelAquilina/zsh-you-should-use
 # zinit ice wait'0' load'[[ ! -v ps1 ]]' unload'[[ -v ps1 ]]'  # Doesn't work
-zinit ice wait depth=1
+zinit ice wait depth"1"
 zinit load 'MichaelAquilina/zsh-you-should-use'
 
 
@@ -156,7 +156,7 @@ zinit load 'MichaelAquilina/zsh-you-should-use'
 EMOJI_CLI_KEYBIND='^o'  # Default is ^S
 EMOJI_CLI_USE_EMOJI=1   # Insert the emoji itself, not the :explanation:
 EMOJI_CLI_FILTER='fzf-tmux -d 30%:fzf:peco:percol'  # fzf --min-height default is 10
-zinit ice wait depth=1
+zinit ice wait depth"1"
 zinit light 'b4b4r07/emoji-cli'
 
 
@@ -164,7 +164,7 @@ zinit light 'b4b4r07/emoji-cli'
 # https://github.com/trapd00r/LS_COLORS
 # https://zdharma-continuum.github.io/zinit/wiki/LS_COLORS-explanation/
 # shellcheck disable=2016 # Expressions don't expand in single quotes, use double quotes for that.
-zinit ice wait depth=1 atclone"dircolors -b LS_COLORS > clrs.zsh" \
+zinit ice wait depth"1" atclone"dircolors -b LS_COLORS > clrs.zsh" \
     atpull'%atclone' pick"clrs.zsh" nocompile'!' \
     atload'zstyle ":completion:*" list-colors “${(s.:.)LS_COLORS}”'
 zinit light trapd00r/LS_COLORS
@@ -173,14 +173,14 @@ zinit light trapd00r/LS_COLORS
 # k is the new l, yo
 # https://github.com/supercrabtree/k
 # zinit ice wait'[[ -n ${ZLAST_COMMANDS[(r)k*]} ]]' pick'k.sh'
-zinit ice wait depth=1 pick'k.sh'
+zinit ice wait depth"1" pick'k.sh'
 zinit light supercrabtree/k
 
 
 # zsh-defer - allow running commands after shell loads
 # https://github.com/romkatv/zsh-defer
 # No "wait" ice as it's used immediately below
-zinit ice depth=1
+zinit ice depth"1"
 zinit light romkatv/zsh-defer
 
 
@@ -188,7 +188,7 @@ zinit light romkatv/zsh-defer
 # https://madebynathan.com/2011/10/19/git-shortcuts-like-youve-never-seen-before/
 # https://github.com/scmbreeze/scm_breeze
 # Historical note, 2020-09-02: adding 'wait' causes 10 second hang after prompt printed
-# zinit ice wait depth=1
+# zinit ice wait depth"1"
 # zinit light 'scmbreeze/scm_breeze'
 zsh-defer -12 zinit light 'scmbreeze/scm_breeze'
 
@@ -200,7 +200,7 @@ zsh-defer -12 __zinit_deferred  # -12 enables STDOUT, STDERR output
 # Optimized and extended zsh-syntax-highlighting
 # https://github.com/zdharma-continuum/fast-syntax-highlighting
 FAST_THEME_NAME=free  # From `fast-theme -l`. `fast-theme -t <theme>` to test
-zinit ice wait depth=1 atinit'zpcompinit; zpcdreplay'
+zinit ice wait depth"1" atinit'zicompinit; zicdreplay'
 zinit ice atload"[[ current_theme.zsh -nt themes/$FAST_THEME_NAME.ini ]] || fast-theme $FAST_THEME_NAME > /dev/null"
 zinit load 'zdharma-continuum/fast-syntax-highlighting'
 typeset -gA FAST_HIGHLIGHT_STYLES FAST_HIGHLIGHT
