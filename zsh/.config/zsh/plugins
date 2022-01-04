@@ -8,6 +8,8 @@
 # Zinit
 # Wiki:    https://zdharma-continuum.github.io/zinit/wiki/
 # Github:  https://github.com/zdharma-continuum/zinit
+#
+# Debug:   https://github.com/zdharma-continuum/zinit#tracking-of-the-active-session
 
 # Source Zinit
 # shellcheck disable=SC1072,1073  # https://github.com/koalaman/shellcheck/issues/1931
