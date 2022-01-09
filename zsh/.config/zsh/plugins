@@ -234,7 +234,7 @@ FAST_HIGHLIGHT_STYLES[${FAST_THEME_NAME}bracket-level-3]='fg=red,bold'
 # : ${FAST_HIGHLIGHT_STYLES[freeback-or-dollar-double-quoted-argument]:=fg=110}
 # : ${FAST_HIGHLIGHT_STYLES[freeback-dollar-quoted-argument]:=fg=110}
 
-
+# Syntax highlighting should be the last plugin loaded
 return
 
 
