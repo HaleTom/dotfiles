@@ -129,9 +129,9 @@ ZSH_AUTOSUGGEST_USE_ASYNC=1
 
 # SmartCd
 # https://github.com/CodesOfRishi/smartcd
-zinit ice wait # depth doesn't apply to snippets
-# TODO: use pick to allow git if issues 8, 9, 10 are not fixed
-zinit snippet 'https://raw.githubusercontent.com/CodesOfRishi/smartcd/main/smartcd.sh'
+SMARTCD_HIST_OPT='--'
+zinit ice wait depth"1"
+zinit light 'CodesOfRishi/smartcd'
 
 # z: jump around based on frecency
 # https://github.com/agkozak/zsh-z
@@ -272,5 +272,5 @@ $ZSH_HIGHLIGHT_PATTERNS $ZSH_HIGHLIGHT_REGEXP $ZSH_AUTOSUGGEST_HIGHLIGHT_STYLE
 $FAST_HIGHLIGHT_STYLES $MODE_CURSOR_VICMD $MODE_CURSOR_VIINS
 $MODE_CURSOR_SEARCH $ENHANCD_DIR $ENHANCD_FILTER $ENHANCD_DOT_SHOW_FULLPATH
 $FAST_HIGHLIGHT $ZINIT $EMOJI_CLI_KEYBIND $EMOJI_CLI_USE_EMOJI $EMOJI_CLI_FILTER
-$ZSHZ_DATA $ZSHZ_TILDE $ZSHZ_TRAILING_SLASH $ZSHZ_UNCOMMON
+$ZSHZ_DATA $ZSHZ_TILDE $ZSHZ_TRAILING_SLASH $ZSHZ_UNCOMMON $SMARTCD_HIST_OPT
 END
