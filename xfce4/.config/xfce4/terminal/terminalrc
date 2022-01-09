@@ -27,7 +27,7 @@ MiscDefaultWorkingDir=
 MiscRewrapOnResize=TRUE
 MiscUseShiftArrowsToScroll=FALSE
 MiscSlimTabs=FALSE
-ColorPalette=rgb(28,27,25);rgb(255,49,40);rgb(81,159,80);rgb(251,184,41);rgb(85,115,163);rgb(224,44,109);rgb(10,174,179);rgb(167,167,167);rgb(94,94,94);rgb(247,83,65);rgb(152,188,55);rgb(255,240,59);rgb(142,178,247);rgb(227,86,130);rgb(83,253,233);rgb(255,255,255)
+ColorPalette=rgb(28,27,25);rgb(255,49,40);rgb(38,175,36);rgb(251,184,41);rgb(107,143,202);rgb(224,44,109);rgb(10,174,179);rgb(167,167,167);rgb(94,94,94);rgb(255,150,150);rgb(149,249,145);rgb(255,240,59);rgb(171,200,255);rgb(247,158,186);rgb(83,253,233);rgb(255,255,255)
 ColorCursor=#ebdbb2
 ShortcutsNoMnemonics=TRUE
 ShortcutsNoHelpkey=TRUE
@@ -39,7 +39,7 @@ MiscSearchDialogOpacity=100
 MiscShowUnsafePasteDialog=FALSE
 TitleMode=TERMINAL_TITLE_HIDE
 ColorForeground=#fdc8ff24ee22
-ColorBackground=#3d3d38384646
+ColorBackground=#000000000000
 ColorBoldIsBright=FALSE
 ColorCursorUseDefault=FALSE
 
