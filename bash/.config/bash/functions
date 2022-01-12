@@ -144,6 +144,21 @@ function if_bin {
 }
 export_function if_bin
 
+# Print the filename of the first of the arguments which is sourceable
+# Return 1 if none are sourceable
+function first_sourceable {
+  local arg
+  for arg; do
+    if [[ -f $arg && -r $arg ]]; then
+      printf "%s\n" "$arg"
+      return 0
+    fi
+  done
+  # Nothing matched
+  return 1
+}
+export_function first_sourceable
+
 
 # Copy / rename a function
 # https://stackoverflow.com/a/18839557/5353461
