@@ -129,9 +129,15 @@ ZSH_AUTOSUGGEST_USE_ASYNC=1
 
 # SmartCd
 # https://github.com/CodesOfRishi/smartcd
-SMARTCD_HIST_OPT='--'
-zinit ice wait depth"1"
-zinit light 'CodesOfRishi/smartcd'
+if [[ ! $OSTYPE == darwin* ]]; then
+  # TODO raise issue:
+  # whereis: illegal option -- b
+  # usage: whereis program [...]
+  # Can't use SmartCd: fzf not found !
+  SMARTCD_HIST_OPT='--'
+  zinit ice wait depth"1"
+  zinit light 'CodesOfRishi/smartcd'
+fi
 
 # z: jump around based on frecency
 # https://github.com/agkozak/zsh-z
