@@ -206,7 +206,8 @@ zsh-defer -12 __zinit_deferred  # -12 enables STDOUT, STDERR output
 # Optimized and extended zsh-syntax-highlighting
 # https://github.com/zdharma-continuum/fast-syntax-highlighting
 FAST_THEME_NAME=free  # From `fast-theme -l`. `fast-theme -t <theme>` to test
-zinit ice wait depth"1" atinit'zicompinit; zicdreplay'
+# FIXME: compinit isn't actually running here:
+zinit ice wait depth"1" atinit"zicompinit; zicdreplay"
 zinit ice atload"[[ current_theme.zsh -nt themes/$FAST_THEME_NAME.ini ]] || fast-theme $FAST_THEME_NAME > /dev/null"
 zinit load 'zdharma-continuum/fast-syntax-highlighting'
 typeset -gA FAST_HIGHLIGHT_STYLES FAST_HIGHLIGHT

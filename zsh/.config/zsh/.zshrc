@@ -226,6 +226,9 @@ add-zsh-hook precmd        precmd_zsh_hook     # Stop prompt timer, update promp
 # add-zsh-hook preexec       preexec_zsh_hook    #
 
 autoload -Uz compinit  # zplugin will do compinit later
+compinit  # this declares the compdef function
+# TODO fix zicompinit in plugins via debug
+zinit cdreplay  # replay all the compdefs that zinit queued up
 
 # Used in __zplg_async_run
 # Clear the namespace of bootstrap functions
