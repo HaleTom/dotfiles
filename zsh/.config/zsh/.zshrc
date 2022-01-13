@@ -7,23 +7,26 @@
 # The following lines were added by compinstall
 #
 # zstyle ':completion:*' auto-description 'specify %d'
-# zstyle ':completion:*' completer _list _expand _complete _ignored _match _correct _approximate _prefix
 # zstyle ':completion:*' expand prefix suffix
 # zstyle ':completion:*' file-sort name
 # zstyle ':completion:*' format 'Completing %d'
 # zstyle ':completion:*' group-name ''
 # zstyle ':completion:*' ignore-parents parent pwd .. directory
-# zstyle ':completion:*' insert-unambiguous true
 # zstyle ':completion:*' matcher-list 'r:|[._-]=* r:|=*' 'm:{[:lower:]}={[:upper:]}'
-# zstyle ':completion:*' menu select=4
 # zstyle ':completion:*' original true
 # zstyle ':completion:*' preserve-prefix '//[^/]##/'
 # # causes: /home/ravi/.config/zsh/.zshrc:15: no matches found: (%l)%s
 # # zstyle ':completion:*' select-prompt %SScrolling active: current selection at %p (%l)%s
-# zstyle ':completion:*' special-dirs true
-# zstyle ':completion:*' verbose true
 # zstyle :compinstall filename '/home/ravi/.config/zsh/.zshrc'
 # End of lines added by compinstall
+
+zstyle ':completion:*' completer _expand _complete _ignored _match _correct _approximate _prefix
+zstyle ':completion:*' insert-unambiguous true
+zstyle ':completion:*' menu select 2
+zstyle ':completion:*' special-dirs true
+zstyle ':completion:*' verbose true
+zstyle ':completion:*' cache-path "$XDG_CACHE_HOME/zsh/.zcompcache"
+zstyle ':completion:*' use-cache on
 
 # https://stackoverflow.com/a/24237590/5353461
 zstyle ':completion:*' matcher-list '' '+m:{[:lower:]}={[:upper:]}' 'r:|[._-]=* r:|=*' 'l:|=* r:|=*'
