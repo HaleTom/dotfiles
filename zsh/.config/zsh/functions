@@ -1,0 +1,4 @@
+# Start zsh with a particular configuration
+function zshfig {
+     ZDOTDIR="$HOME/.fig/zdotdirs/${1:-skel}" exec -l zsh
+}

@@ -167,6 +167,7 @@ export SAVEHIST=10000
 # zsh environment variables
 READNULLCMD=less  # have "< file" be piped to less
 
+source $ZDOTDIR/functions
 
 # Source plugins
 # Avoid _source_file as it sets `noalias` which seems to be restored by a zinit wait / turbo load after startup
