@@ -171,9 +171,9 @@ alias mux='tmuxinator'
 alias head='head -n $((${LINES:-12}-2))' # as many as possible without scrolling
 alias tail='tail -n $((${LINES:-12}-2)) --sleep-interval=0.2' # 200ms
 
-# Clipboard
-alias pbcopy="sed -Ez '$ s/\\n+\$//' | xclip -selection clipboard -in"
-alias pbpaste='xclip -selection clipboard -out'
+# Clipboard: pbcopy / pbpaste
+! is_mac && alias pbcopy="sed -Ez '$ s/\\n+\$//' | xclip -selection clipboard -in"
+! is_mac && alias pbpaste='xclip -selection clipboard -out'
 
 # rsync
 alias rscp='rsync -ax --partial --sparse --xattrs --no-whole-file --inplace --protect-args'
