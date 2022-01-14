@@ -192,7 +192,11 @@ elif [[ -r /usr/share/git/completion/git-prompt.sh ]]; then
 fi
 
 # Both zsh and bash
+
+# grc - Generic coloriser
 GRC_ALIASES=true  # Required for grc.sh to not return early
+source_first "/etc/profile.d/grc.sh" "/usr/local/etc/grc.sh"; unset GRC_ALIASES;
+
 _source_files >> $XDG_RUNTIME_DIR/source_files-$(date '+%s')-PID:$$ <<DOTFILES
     # Git
     $_git_prompt_file
@@ -204,9 +208,6 @@ _source_files >> $XDG_RUNTIME_DIR/source_files-$(date '+%s')-PID:$$ <<DOTFILES
 
     # Python
     # /usr/bin/virtualenvwrapper_lazy.sh
-
-    # grc - Generic coloriser
-    /etc/profile.d/grc.sh
 
     # Must use $HOME as ~ not expanded in double quotes
 
@@ -330,7 +331,6 @@ _source_files <<DOTFILES
     # Source my personal files last so they're not overridden
     $XDG_CONFIG_HOME/bash/aliases
 DOTFILES
-unset -f _source_file _source_files # clean up namespace
 
 # This tells bash to reinterpret PS1 after every command, which we
 # need because __git_ps1 will return colors.  See "prompt" sourced file.
