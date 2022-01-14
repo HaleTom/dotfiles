@@ -151,6 +151,8 @@ autoload -Uz run-help-svn
 
 # Lines configured by zsh-newuser-install
 export HISTFILE=$XDG_DATA_HOME/zsh/history
+# Create directory for $HISTFILE if necessary
+[[ ! -d ${HISTFILE%/*} ]] && mkdir -p "${HISTFILE%/*}"
 export HISTSIZE=10000
 export SAVEHIST=10000
 # notify: Report the status of background jobs immediately, rather than waiting until just before printing a prompt.
