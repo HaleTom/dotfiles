@@ -470,6 +470,19 @@ function nbin {
 }
 
 
+# Print out what's in column $1.  Assumes whitespace separation.
+# https://github.com/CodesOfRishi/smartcd/issues/21#issue-1103279179
+function col_n {
+    [[ -n $ZSH_VERSION ]] && setopt local_options sh_word_split
+    local col=$1
+    local IFS=$' \t'
+    while read -r line; do
+        set $line  # Spilt by IFS and set into $1, $2, ...
+        printf "%s\n" "${@:$col:1}"
+    done;
+}
+
+
 # function man {
 #   if command -v man &>/dev/null; then
 #     export MANPAGER='nvim +Man!'
