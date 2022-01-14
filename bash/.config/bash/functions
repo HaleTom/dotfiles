@@ -238,7 +238,7 @@ export_function func_copy func_rename
 function ostype () {
   case "$OSTYPE" in
     solaris)       echo "SOLARIS" ;;
-    darwin)        echo "OSX" ;;
+    darwin*)       echo "OSX" ;;
     linux*)        echo "LINUX" ;;
     bsd*)          echo "BSD" ;;
     msys|cygwin)   echo "WINDOWS" ;;
