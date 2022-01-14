@@ -30,6 +30,11 @@ zstyle ':completion:*' use-cache on
 
 # https://stackoverflow.com/a/24237590/5353461
 zstyle ':completion:*' matcher-list '' '+m:{[:lower:]}={[:upper:]}' 'r:|[._-]=* r:|=*' 'l:|=* r:|=*'
+# Include hidden (but not . ..) in file completions
+zstyle ':completion:*' file-patterns '%p(D):globbed-files *(D-/):directories' '*(D):all-files'
+
+# Include .hidden directories in completions (eg builtin cd)
+_comp_options+=(globdots)
 
 setopt append_history auto_cd beep extended_glob no_clobber no_match notify prompt_subst
 setopt append_create  # Allow files to be created with >> redirection
