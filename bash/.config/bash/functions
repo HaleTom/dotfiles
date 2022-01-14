@@ -187,6 +187,41 @@ function source_first {
   return 0
 }
 export_function source_first
+
+
+# TODO: Consider substitution of {} for the operand for greater utility
+# Apply tests against all operands
+# Only tests ending in a single (inserted) operand are supported
+function test_against {
+  declare -a tests
+  _usage () {
+    printf "Usage: %s <tests> -- operands\n" "$(func_name 2)" >&2
+    printf "Apply test(1) operators all of the operands. Return true IFF all are true.\n" >&2
+    printf "Example: %s -r -d -- dir1 dir2  # Are all dirs readable?\n" "$(func_name 2)" >&2
+  }
+
+  for arg; do
+    echo "at $arg"
+    shift;
+    [[ $arg == '--' ]] && break
+    # [[ ! "$arg" == -* ]] && usage && return 1
+    tests+=("$arg")
+  done
+
+  # echo operands: "$*"
+  # echo tests: "${tests[@]}"
+  [[ $# -lt 1 ]] && _usage && return 1
+  unfunction _usage
+
+  for operand; do
+    # echo test "${tests[@]}" "$operand"
+    test "${tests[@]}" "$operand" || return 1
+  done
+  return 0  # All tests passed
+}
+export_function test_against
+
+
 # Copy / rename a function
 # https://stackoverflow.com/a/18839557/5353461
 func_copy() {
