@@ -246,8 +246,8 @@ function ostype () {
   esac
 }
 
-function is_mac () { [[ $(ostype) == OSX ]]; }
-function is_linux () { [[ $(ostype) == LINUX ]]; }
+function is_mac () { [[ $OSTYPE == darwin* ]]; }
+function is_linux () { [[ $OSTYPE == linux* ]]; }
 export_function ostype is_mac is_linux
 
 # Execute statements in $@ if $DEBUG is set
