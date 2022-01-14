@@ -323,9 +323,11 @@ shopt -s extglob failglob globstar
 # Let chruby see ruby versions in the path. Needs to occur after sourcing chruby
 # export RUBIES+=( $(which --all --skip-alias --skip-functions ruby | sed -n 's/\/bin\/ruby//gp' |sort -u) )
 
+# Setup git completion
+source_first "/usr/share/git/completion/git-completion.bash" "/Library/Developer/CommandLineTools/usr/share/git-core/git-completion.bash"
+
 _source_files <<DOTFILES
     # Completion
-    /usr/share/git/completion/git-completion.bash
     $XDG_CONFIG_HOME/bash/completion
 
     # Source my personal files last so they're not overridden
