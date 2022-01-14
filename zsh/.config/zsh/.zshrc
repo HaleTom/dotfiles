@@ -239,8 +239,11 @@ add-zsh-hook precmd        precmd_zsh_hook     # Stop prompt timer, update promp
 
 autoload -Uz compinit  # zplugin will do compinit later
 compinit  # this declares the compdef function
+# If not included:  https://github.com/CodesOfRishi/smartcd/issues/11#issuecomment-1012844442
+compdef __smartcd__=cd
 # TODO fix zicompinit in plugins via debug
 zinit cdreplay  # replay all the compdefs that zinit queued up
+
 
 # Used in __zplg_async_run
 # Clear the namespace of bootstrap functions
