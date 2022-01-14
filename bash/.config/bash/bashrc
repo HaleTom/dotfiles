@@ -289,11 +289,21 @@ else
   [[ "$-" == *i* ]] && printf "Can't find keychain or ssh-agent/ssh-add in path\n" >&2
 fi
 
+# Install fzf shell files if required
+if [[ ! -d $XDG_CONFIG_HOME/fzf ]]; then
+  is_mac && is_cmd brew fzf && $(brew --prefix)/opt/fzf/install --xdg --no-update-rc --key-bindings --completion >/dev/null
+  is_linux && ! is_cmd fzf && printf "fzf not found\n" >&2
+fi
+
 ##
 ## Only bash below this point
 sh_is_zsh && return
 ##
 ##
+
+# fzf
+if_cmd fzf source_first "usr/share/fzf/completion.bash" "/usr/local/opt/fzf/shell/completion.bash"
+if_cmd fzf source_first "usr/share/fzf/key-bindings.bash" "/usr/local/opt/fzf/shell/key-bindings.bash"
 
 export HISTFILE=$XDG_DATA_HOME/bash/history
 # Exclude duplicates and commands starting with a <space> from history
@@ -316,11 +326,6 @@ _source_files <<DOTFILES
     # Completion
     /usr/share/git/completion/git-completion.bash
     $XDG_CONFIG_HOME/bash/completion
-
-    # fzf
-    # $XDG_DATA_HOME/fzf/.fzf.bash
-    /usr/share/fzf/key-bindings.bash
-    /usr/share/fzf/completion.bash
 
     # Source my personal files last so they're not overridden
     $XDG_CONFIG_HOME/bash/aliases
