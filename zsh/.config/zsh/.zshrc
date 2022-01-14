@@ -123,7 +123,13 @@ _prompt_update_zsh () {
 _git_status_gen
 _prompt_update_zsh
 
-zstyle ':completion:*:*:git:*' script /usr/share/git/completion/git-completion.zsh
+# Setup git completion
+_git_completion=$(first_sourceable \
+  "/usr/share/git/completion/git-completion.zsh" \
+  "/Library/Developer/CommandLineTools/usr/share/git-core/git-completion.zsh"
+)
+zstyle ':completion:*:*:git:*' script "$_git_completion"
+unset _git_completion
 
 # ssh: Use $USER's (and the system's) ssh known hosts file.
 # https://unix.stackexchange.com/a/377765/143394
