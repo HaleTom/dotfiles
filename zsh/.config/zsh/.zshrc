@@ -170,7 +170,6 @@ READNULLCMD=less  # have "< file" be piped to less
 source $ZDOTDIR/plugins
 
 _source_files <<DOTFILES
-    # $XDG_DATA_HOME/fzf/.fzf.zsh  # It magically just works !??!
     # $ZDOTDIR/plugins  # See above for aliases
     $ZDOTDIR/zle
 DOTFILES
