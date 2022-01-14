@@ -53,8 +53,8 @@ __zinit_deferred () {
   # Source fzf files
   # Needs to be sourced after zsh-vim-mode to have ^R work
   if [[ ${commands[fzf]} ]]; then  # fzf is installed
-    source_first "usr/share/fzf/completion.zsh" "/usr/local/opt/fzf/shell/completion.zsh"
-    source_first "usr/share/fzf/key-bindings.zsh" "/usr/local/opt/fzf/shell/key-bindings.zsh"
+    source_first "/usr/share/fzf/completion.zsh" "/usr/local/opt/fzf/shell/completion.zsh"
+    source_first "/usr/share/fzf/key-bindings.zsh" "/usr/local/opt/fzf/shell/key-bindings.zsh"
   fi
   # Setup my aliases after any turbo-loaded plugins
   _source_file "$XDG_CONFIG_HOME/bash/aliases"
