@@ -1,4 +1,9 @@
 # Start zsh with a particular configuration
-function zshfig {
-     ZDOTDIR="$HOME/.fig/zdotdirs/${1:-skel}" exec -l zsh
+function figzsh {
+    local zdotdir="$HOME/.fig/zdotdirs/${1:-skel}"
+    if [[ ! -d $ZDOTDIR ]]; then
+        printf "%s is not a directory.\n" $ZDOTDIR >&2
+        return 1
+    fi
+    ZDOTDIR=$zdotdir exec -l zsh
 }
