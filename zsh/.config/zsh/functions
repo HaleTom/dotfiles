@@ -1,9 +1,16 @@
 # Start zsh with a particular configuration
 function figzsh {
-    local zdotdir="$HOME/.fig/zdotdirs/${1:-skel}"
-    if [[ ! -d $ZDOTDIR ]]; then
-        printf "%s is not a directory.\n" $ZDOTDIR >&2
-        return 1
+    local zdotdir=$1
+    if [[ -d $zdotdir ]]; then
+        zdotdir=$ZDOTDIR
+    else
+        zdotdir="$HOME/code/zdotdirs/${1:-skel}"
+        if [[ ! -d $zdotdir ]]; then
+            printf "%s is not a directory.\n" $zdotdir >&2
+            return 1
+        fi
     fi
     ZDOTDIR=$zdotdir exec -l zsh
 }
+
+# vim: filetype=zsh
