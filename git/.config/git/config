@@ -652,6 +652,9 @@
   [difftool "nbdime"]
     cmd = git-nbdifftool diff \"$LOCAL\" \"$REMOTE\" \"$BASE\"
 
+[init]
+    defaultBranch = main
+
 [interactive]
   # diff-so-fancy doesn't work with --patch because it produces 4- rather than the expecte 5-line headers:
   # https://github.com/so-fancy/diff-so-fancy/issues/35
