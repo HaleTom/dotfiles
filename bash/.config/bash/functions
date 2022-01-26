@@ -16,7 +16,37 @@ function export_function {
 }
 export_function sh_is_bash sh_is_zsh
 
-#
+
+# List all function names
+function function_names {
+  if sh_is_bash; then
+    declare -F"$1" | sed -E 's/^declare -\w+ //'
+  else
+    print -l ${(ok)functions}
+  fi
+}
+export_function function_names
+
+
+# List all exported function names (bash) or all functions (zsh)
+function exported_function_names {
+  function_names x  # Pass 'x' to bash's declare for exported only
+}
+export_function exported_function_names
+
+
+# List all local function names (bash) or all functions (zsh)
+function local_function_names {
+  if sh_is_bash; then
+    comm -1 <(function_names) <(local_function_names)
+  else
+    function_names
+  fi
+  function_names +x  # Pass '+x' to bash's declare for exported only
+}
+export_function local_function_names
+
+
 ######### Start non-exported functions ##########
 #
 # These are to be run interactively, not by scripts
