@@ -84,7 +84,8 @@ alias sc_sf='sc status --full --lines 99999'
 alias sc_p='sc stop'
 alias sc_t='sc start'
 # shellcheck disable=SC2142  # Allow positional parameters to aliases (via function call)
-alias sc_u='f(){ x="$(alias_expand sc_"$1" | sed -En "s/^sc /systemctl --user /p")" && eval "$x" "$(shell-quote "${@:2}")"; };f'
+# shellcheck disable=SC2154  # x is referenced but not assigned.
+alias sc_u='f(){ x=$(alias_expand sc_"$1" | sed -En "s/^sc /systemctl --user /p") && eval "$x" "$(shell-quote "${@:2}")"; };f'
 
 # Currently done as function
 # https://stackoverflow.com/a/34071958/5353461
@@ -109,7 +110,7 @@ alias lesc='less-compressed-wrapper'
 alias mosh='mosh --predict=experimental'  # https://github.com/mobile-shell/mosh/issues/878
 alias mv='mv -i'
 alias Mv='command mv'  # Allow overwrite
-alias restix="restic -x --exclude-caches --exclude-file=$HOME/etc/restic/exclude"
+alias restix='restic -x --exclude-caches --exclude-file=$HOME/etc/restic/exclude'
 alias rga='rg --hidden --no-ignore'
 is_linux && alias rm='rm -I'  # Prompt on -r or >3 files
 alias Rm='command rm'
@@ -219,7 +220,7 @@ function alias_expand {
 
 # Import my user config when run as root
 # See https://serverfault.com/a/334730/322507 for exporting GIT_* variables via ssh
-alias gsu='sudo git -c "include.path='"${XDG_CONFIG_DIR:-$HOME/.config}/git/config\" -c \"include.path=$HOME/.gitconfig\""
+alias gsu='sudo git -c "include.path=${XDG_CONFIG_DIR:-$HOME/.config}/git/config" -c "include.path=$HOME/.gitconfig"'
 
 # if command -v lab > /dev/null; then  # lab wraps either hub or git
 #   alias g='lab' git='lab'
@@ -255,6 +256,7 @@ if [[ $BASH_VERSION ]]; then
   # https://brbsix.github.io/2015/11/23/perform-tab-completion-for-aliases-in-bash/
   # https://unix.stackexchange.com/questions/4219/how-do-i-get-bash-completion-for-command-aliases
   # General format: complete -o bashdefault -o default -o nospace -F _git g
+  # shellcheck disable=SC2034  # _completion_loader appears unused. Verify use (or export if used externally).
   if typeset -f _completion_loader > /dev/null; then
     _completion_loader systemctl; complete -o bashdefault -o default -o nospace -F _systemctl sc
   fi

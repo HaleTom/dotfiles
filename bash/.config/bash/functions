@@ -22,6 +22,7 @@ function function_names {
   if sh_is_bash; then
     declare -F"$1" | sed -E 's/^declare -\w+ //'
   else
+    # shellcheck disable=SC2086  # Double quote to prevent globbing and word splitting.
     print -l ${(ok)functions}
   fi
 }
@@ -209,8 +210,7 @@ export_function source_first_silent
 # Source the first sourceable argument via source_file
 # Warn and return 1 if none are sourceable
 function source_first {
-  source_first_silent "$@"
-  if [[ $? -ne 0 ]]; then
+  if ! source_first_silent "$@"; then
     printf "Couldn't source equivalent of %s\n" "$1" >&2
     return 1
   fi
@@ -507,9 +507,10 @@ function col_n {
     local col=$1
     local IFS=$' \t'
     while read -r line; do
+        # shellcheck disable=SC2086  # Double quote to prevent globbing and word splitting.
         set $line  # Spilt by IFS and set into $1, $2, ...
         printf "%s\n" "${@:$col:1}"
-    done;
+    done
 }
 
 
