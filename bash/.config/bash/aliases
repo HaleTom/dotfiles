@@ -113,7 +113,6 @@ alias Mv='command mv'  # Allow overwrite
 alias restix='restic -x --exclude-caches --exclude-file=$HOME/etc/restic/exclude'
 alias rga='rg --hidden --no-ignore'
 is_linux && alias rm='rm -I'  # Prompt on -r or >3 files
-alias Rm='command rm'
 alias setvars='(set -o posix; set)'
 alias trunc='cut -c -${COLUMNS:-80}'
 if is_cmd nvim; then

@@ -17,6 +17,15 @@ function export_function {
 export_function sh_is_bash sh_is_zsh
 
 
+# Remove files without asking
+# Allows for alias rm=rm -I
+function Rm {
+  sh_is_zsh && setopt localoptions rm_star_silent
+  command rm "$@"
+}
+export_function Rm
+
+
 # List all function names
 function function_names {
   if sh_is_bash; then
