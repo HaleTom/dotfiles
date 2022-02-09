@@ -1,0 +1,161 @@
+#!/bin/bash
+
+# Bootstrap login environment
+# Clone dotfiles repos, and stow as needed
+
+set -euo pipefail
+shopt -s failglob
+
+function mkdir_if_not_exist {
+  if [[ ! -d "${*:$#}" ]]; then
+    mkdir "$@"
+  fi
+}
+
+function clone_if_not_dir {
+  local dir known_hosts_quoted
+  known_hosts_quoted=$(printf "%q/known_hosts" "$files_dir")
+  dir=${*:$#}
+  echo pull into: "$dir"
+  if [[ ! -d "$dir" ]]; then
+    # printf "%q " GIT_SSH_COMMAND="ssh -i $ssh_pull_key" git clone "$@"
+    GIT_SSH_COMMAND="ssh -Ci $ssh_pull_key -o UserKnownHostsFile=$known_hosts_quoted" git clone -v "$@"
+  elif [[ ! -d "$dir/.git" ]]; then
+    printf "Warning: %s is a directory but %s/.git doesn't exist\n" "$dir" "$dir" >&2
+    return 1
+  fi
+}
+
+function symlink_if_not_exist {
+  local target=${*:$#}
+  if [[ -e $target && ! -h $target ]]; then
+    printf "Warning: %s exists but is not a symbolic link\n" "$target" >&2
+    return 1
+  fi
+  if [[ ! -h $target ]]; then
+    echo ln -sL "$@"
+    ln -sL "$@"
+  else
+    echo not linking $target
+  fi
+}
+
+function confirm_yes {
+  local reply
+  while IFS= read -rn1 -p "$* [Y/n]? " reply; do
+    [ ! "$reply" = '' ] && printf '\n'
+    case "$reply" in
+      # See https://unix.stackexchange.com/q/383197/143394 regarding '\n' -> ''
+      [Yy\ ]|'' ) return 0;;
+      N|n )       return 1;;
+    esac
+  done
+}
+
+function setup_ssh_pull_key {
+  # Store ssh key for repo pulling
+  mkdir_if_not_exist -m 0700 "$HOME/.ssh"
+  cp "$files_dir/id_ed25519_dotfiles_pull" "$HOME/.ssh"
+  ssh_pull_key=$HOME/.ssh/id_ed25519_dotfiles_pull
+}
+
+function clone_repos {
+  mkdir_if_not_exist "$code_dir"
+  (
+    cd "$code_dir"
+    clone_if_not_dir --depth 3 git@bitbucket.org:HaleTom/scripts.git bin
+    clone_if_not_dir --depth 3 git@bitbucket.org:HaleTom/ravi-personal.git ravi-personal
+    clone_if_not_dir --depth 3 --recursive -j8 git@github.com:HaleTom/dotfiles.git dotfiles
+  )
+}
+
+function link_repos {
+  echo symlink_if_not_exist "$code_dir/dotfiles" "$HOME/.dotfiles"
+  symlink_if_not_exist "$code_dir/dotfiles" "$HOME/.dotfiles"
+  echo "$code_dir/ravi-personal" "$HOME/.dotfiles/PERSONAL"
+  rm -v "$HOME/.dotfiles/PERSONAL"
+  symlink_if_not_exist "$code_dir/ravi-personal" "$HOME/.dotfiles/PERSONAL"
+  symlink_if_not_exist "$code_dir/bin" "$HOME/bin"
+}
+
+function has_stow {
+  command -v stow >& /dev/null
+}
+
+function maybe_install_stow {
+  if ! has_stow; then
+    if confirm_yes "stow is not installed.  Install"; then
+      install_cmds stow
+    fi
+  fi
+}
+
+function install_cmds {
+  if ! groups | grep -Eq '[^[:alpha:]]wheel[^[:alpha:]]'; then
+    echo "Not in wheel group, can't install anything :(" >&2
+    return 1
+  fi
+  os_type=$(lsb_release -is)
+  case "$os_type" in
+    Manjaro*|Arch*)
+      sudo pacman -Sy --noconfirm "$@" ;;
+    *)
+      printf "Don't know how to install packages on %s\n" "$os_type" >&2 ;;
+  esac
+}
+
+function stow_files {
+  # "$HOME/.dotfiles/PERSONAL/install"  # Stow into ~/.dotfiles
+  "$HOME/code/ravi-personal/install"  # Stow into ~/.dotfiles
+  "$HOME/.dotfiles/restow"           # Stow into $HOME
+}
+
+function maybe_exec_zsh {
+  # Change shell to zsh if possible
+  zsh=$(chsh -l | grep zsh | head -n 1)
+  if command -v "$zsh" >& /dev/null; then
+    passwd_shell=$(awk -F: -v u="$USER" '$1 == u {sub(/\/(.*\/)+/, "", $NF); print $NF}' /etc/passwd)
+    [[ $passwd_shell != zsh ]] && echo "Login shell not zsh. Suggested:  chsh -s $zsh"
+    echo "Exec login zsh."
+    exec "$zsh" -l
+  else
+    exec "$SHELL" -l
+  fi
+}
+
+function symlink_files {
+  local config_dir=$HOME/.config
+  mkdir_if_not_exist "$config_dir"
+  ln -s ../.dotfiles/zsh/.config/zsh/ "$config_dir/zsh"
+  ls -l "$config_dir/zsh/"
+  ln -s ../.dotfiles/bash/.config/bash/ "$config_dir/bash"
+  ls -l "$config_dir/bash/"
+  ln -s ../.dotfiles/tmux/.config/tmux/ "$config_dir/tmux"
+  ls -l "$config_dir/tmux/"
+  ln -s ../.dotfiles/vim/.config/vim/ "$config_dir/vim"
+  ls -l "$config_dir/vim/"
+}
+
+function stow_or_symlink {
+  maybe_install_stow
+  if has_stow; then
+    stow_files
+  else
+    symlink_files
+  fi
+}
+
+function main {
+  files_dir=$SSHHOME/sshrc.d
+  code_dir=$HOME/code
+  echo in main
+  setup_ssh_pull_key
+  clone_repos
+  link_repos
+  stow_or_symlink
+  maybe_exec_zsh
+  exit 0
+}
+
+main "$@"
+
