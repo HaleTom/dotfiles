@@ -465,12 +465,15 @@
   is-branch = !"git show-ref -q --verify refs/heads/\"$1\" #"
   is-tag    = !"git show-ref -q --verify refs/tags/\"$1\" #"
   is-remote = !"git show-ref -q --verify refs/remotes/\"$1\" #"
+  is-shallow = !"[ -f \"$(git rev-parse --git-dir)\"/shallow ] #"
 
   # True if is a repository and is empty
   # https://stackoverflow.com/a/5492347/5353461
   is-empty-repo = !"c=$(git count-objects 2>/dev/null) && set $c x && [[ $1 -eq 0 ]]"
 
   # ---------------
+  unshallow = !"git remote set-branches origin '*' && git fetch --unshallow #"
+
 
   # TODO use -e only if no additional -m given
   squash = !"c=\"$1\"; shift; git commit -m \"squash! $(git log -1 --format='%s' \"$c\")\" \"$@\" -e #" # -e to add message to squash in
