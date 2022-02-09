@@ -750,3 +750,5 @@
   # prereleaseSuffix is deprecated in favour of suffix, but used for compatibility.
   # https://git-scm.com/docs/git-config#git-config-versionsortprereleaseSuffixdeprecated
   prereleaseSuffix = "-"  # Have 2.0-rc1 be earlier than 2.0
+
+# vim: sw=2 ts=2
