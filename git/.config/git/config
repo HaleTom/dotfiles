@@ -528,6 +528,10 @@
   # tracking branches with "fetch" and then "merge".
   autoSetupMerge = true
 
+[checkout]
+  # https://git-scm.com/docs/git-config#Documentation/git-config.txt-checkoutdefaultRemote
+  workers=-1  # Use logical cores
+
 [color]
 # Colours: black, red, green, yellow, blue, magenta, cyan, white, reset
 # After the foreground color, you can optionally list a background color
@@ -655,6 +659,9 @@
   [difftool "nbdime"]
     cmd = git-nbdifftool diff \"$LOCAL\" \"$REMOTE\" \"$BASE\"
 
+[fetch]
+  parallel = 8  # Also sets default for submodule parallel fetches
+
 [init]
     defaultBranch = main
 
@@ -725,9 +732,6 @@
 [rerere] # .git/rr-cache
   enabled = true
   autoupdate = true  # Auto-stage resolved conflicts
-
-[submodule]
-  fetchJobs = 5  # Fetch max submodules fetched/cloned at the same time
 
 [status]
   submoduleSummary = true
