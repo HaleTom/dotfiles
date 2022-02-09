@@ -290,6 +290,7 @@ fi
   alias -g DNO=' > /dev/null'
   alias -g DNA='&> /dev/null'
   alias -g DNE='2> /dev/null'
+  alias -g EO='2>&1'
   alias -g H='  | head'  # Head
   alias -g HA='|& head'
   alias -g G=' | grep -E'  # egrep is deprecated
