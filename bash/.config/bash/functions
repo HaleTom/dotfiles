@@ -38,6 +38,14 @@ function function_names {
 }
 export_function function_names
 
+function pbcopy {
+  if is_mac; then
+   command pbcopy
+ else
+   sed -Ez '$ s/\\n+\$//' | xclip -selection clipboard -in
+  fi
+}
+export_function pbcopy
 
 # List all exported function names (bash) or all functions (zsh)
 function exported_function_names {
