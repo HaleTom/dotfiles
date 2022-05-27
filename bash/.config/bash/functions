@@ -31,8 +31,9 @@ function function_names {
   if sh_is_bash; then
     declare -F"$1" | sed -E 's/^declare -\w+ //'
   else
+    # shellcheck disable=SC2296  # Parameter expansions can't start with (. Double check syntax.
     # shellcheck disable=SC2086  # Double quote to prevent globbing and word splitting.
-    print -l ${(ok)functions}
+    print -l ${(ok)functions}  # When quoted, it prints all on one line
   fi
 }
 export_function function_names

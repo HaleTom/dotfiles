@@ -1,5 +1,6 @@
 #!/bin/bash
-# shellcheck disable=SC1090
+# shellcheck disable=SC1090  # ShellCheck can't follow non-constant source. Use a directive to specify location.
+# shellcheck disable=SC1091  # Not following: ./.config/bash/functions: openBinaryFile: does not exist (No such file or directory)
 # Above two lines are for shellcheck's happiness:
 # #1) Determine shell. #2) Silence when trying to source a filename in a variable
 
@@ -196,10 +197,10 @@ fi
 # Both zsh and bash
 
 # grc - Generic coloriser
-GRC_ALIASES=true  # Required for grc.sh to not return early
+export GRC_ALIASES=true  # Required for grc.sh to not return early
 source_first "/etc/profile.d/grc.sh" "/usr/local/etc/grc.sh"; unset GRC_ALIASES;
 
-_source_files >> $XDG_RUNTIME_DIR/source_files-$(date '+%s')-PID:$$ <<DOTFILES 2>&1
+_source_files >> "$XDG_RUNTIME_DIR/source_files-$(date '+%s')-PID:$$" <<DOTFILES 2>&1
     # Git
     $_git_prompt_file
 
@@ -294,7 +295,7 @@ fi
 
 # Install fzf shell files if required
 if [[ ! -d $XDG_CONFIG_HOME/fzf ]]; then
-  is_mac && is_cmd brew fzf && $(brew --prefix)/opt/fzf/install --xdg --no-update-rc --key-bindings --completion >/dev/null
+  is_mac && is_cmd brew fzf && "$(brew --prefix)"/opt/fzf/install --xdg --no-update-rc --key-bindings --completion >/dev/null
   is_linux && ! is_cmd fzf && printf "fzf not found\n" >&2
 fi
 
