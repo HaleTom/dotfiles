@@ -94,6 +94,10 @@ export S_COLORS=auto
 export CCACHE_CONFIGPATH="$XDG_CONFIG_HOME"/ccache.config
 export CCACHE_DIR="$XDG_CACHE_HOME"/ccache
 
+# sccache - Rust  https://github.com/mozilla/sccache
+# shellcheck disable=SC2155  # Declare and assign separately to avoid masking return values.
+is_bin_in_path sccache && export RUSTC_WRAPPER=$(bin_path sccache)
+
 # ssh-ident
 export BINARY_SSH=/usr/bin/ssh
 export BINARY_SCP=/usr/bin/scp
