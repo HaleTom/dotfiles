@@ -99,6 +99,7 @@ alias cal='cal -3' # show 3 months by default
 is_mac && alias cp='cp -ci'
 is_linux && alias cp='cp -i --reflink=auto --sparse=always'
 alias Cp='command cp --reflink=auto --sparse=always'  # Allow overwrite without interactive prompt
+alias cpg='cpg -g'  # graphical cp
 alias cuc='cucumber'
 alias ccze='ccze -Ao nolookups'  # Don't look up {user,service}names, etc.
 alias diff='diff-alias'
@@ -110,6 +111,7 @@ alias lesc='less-compressed-wrapper'
 alias mosh='mosh --predict=experimental'  # https://github.com/mobile-shell/mosh/issues/878
 alias mv='mv -i'
 alias Mv='command mv'  # Allow overwrite
+alias mvg='mvg -g'
 alias restix='restic -x --exclude-caches --exclude-file=$HOME/etc/restic/exclude'
 alias rga='rg --hidden --no-ignore'
 is_linux && alias rm='rm -I'  # Prompt on -r or >3 files
