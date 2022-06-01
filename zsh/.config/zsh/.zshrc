@@ -28,6 +28,7 @@ zstyle ':completion:*' verbose true
 zstyle ':completion:*' cache-path "$XDG_CACHE_HOME/zsh/.zcompcache"
 zstyle ':completion:*' use-cache on
 
+zstyle ':completion:*' list-colors ''
 # https://stackoverflow.com/a/24237590/5353461
 zstyle ':completion:*' matcher-list '' '+m:{[:lower:]}={[:upper:]}' 'r:|[._-]=* r:|=*' 'l:|=* r:|=*'
 # Include hidden (but not . ..) in file completions
