@@ -822,6 +822,12 @@ function ssh_agent_setup() {
 export_function ssh_agent_setup
 
 
+function ssh_forget () {
+  ssh -O exit "$@"
+}
+export_function ssh_forget
+
+
 # Print the name of the git repository's working tree's root directory
 # https://stackoverflow.com/a/38843585/5353461
 # https://stackoverflow.com/a/38852055/5353461
