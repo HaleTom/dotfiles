@@ -1,0 +1,9 @@
+# https://asdf-vm.com/manage/configuration.html
+
+# Read from (eg) `.ruby-version` if no asdf `.tool-versions` file
+# https://asdf-vm.com/manage/configuration.html#legacy-version-file
+legacy_version_file = yes
+
+Bhasf
+
+# vim: ft=none ft=bash
