@@ -87,8 +87,9 @@ fi
 # Colour iostat when on a terminal. This should be default, but needed to be set at 2018-05-21.
 export S_COLORS=auto
 
-# Use powerpill as pacman wrapper if installed
-[[ -x /usr/bin/powerpill ]] && export PACMAN=/usr/bin/powerpill
+# Use powerpill as pacman wrapper for makepkg if installed
+[[ -x /usr/bin/makepkg && -x /usr/bin/powerpill && -x "$HOME"/bin/powerpill ]] \
+  && export PACMAN="$HOME"/bin/powerpill
 
 # ccache
 export CCACHE_CONFIGPATH="$XDG_CONFIG_HOME"/ccache.config
