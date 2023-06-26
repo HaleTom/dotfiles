@@ -6,6 +6,7 @@
 [core]
   # editor = nvim  # Order: $GIT_EDITOR, core.editor, $VISUAL, $EDITOR, compile-time default (vi)
   # pager order: $GIT_PAGER, core.pager, $PAGER, compile-time default (less)
+  # diff.pager may be set differently
   pager = "command -v pager &>/dev/null && pager || less -FLRX --tabs=4"
   excludesFile = ~/.config/git/ignore
 
