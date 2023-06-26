@@ -274,6 +274,7 @@
   rmc    = rm --cached
   # Status
   s      = !"cd \"${GIT_PREFIX:-.}\" && git print-commit-1 HEAD; git status --short" # allow for git s .
+  sbs    = "!git -c delta.side-by-side=true"  # Set side-by-side viewing for delta diffs
   si     = !"git print-commit-1 HEAD; git status --short --ignored"
   # Submodule
   sm     = submodule
