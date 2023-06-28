@@ -10,6 +10,8 @@
   # pager order: $GIT_PAGER, core.pager, $PAGER, compile-time default (less)
   # diff.pager may be set differently
   pager = "command -v pager &>/dev/null && pager || less -FLRX --tabs=4"
+  # whitespace doco: https://git-scm.com/docs/git-config#Documentation/git-config.txt-corewhitespace
+  whitespace=space-before-tab,trailing-space,cr-at-eol
 
 [mailmap]
   file = ~/.config/git/mailmap
