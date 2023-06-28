@@ -353,6 +353,8 @@
   branch-upstream = !"br=$(git branch-tip \"$1\") && git rev-parse --abbrev-ref --symbolic-full-name \"$br\"@{u} 2>/dev/null"
   branch-push     = !"br=$(git branch-tip \"$1\") && git rev-parse --abbrev-ref --symbolic-full-name \"$br\"@{push} 2>/dev/null"
 
+  branch-warp = !"git symbolic-ref HEAD refs/heads/\"$1\" # Update only current branch, leave index and worktree"
+
   # Pull a different branch without affecting the current one
   plbr = !"current=$(git symbolic-ref --short HEAD) && git stash save --all && git checkout \"${1:-master}\" && git pull-autostash && git checkout \"$current\" && git stash pop #"
 
