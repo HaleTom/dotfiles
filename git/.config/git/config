@@ -642,14 +642,18 @@
 
 [diff]
   # https://git-scm.com/docs/git-diff
-  algorithm = patience # Take longer for a smaller diff
-  # colorMoved = zebra
-  colorMoved = dimmed_zebra
+  algorithm = minimal # Take longer for a smaller diff
+  # colorMoved https://git-scm.com/docs/git-diff#Documentation/git-diff.txt---color-movedltmodegt
+  # Dimmed Zebra in pictures:  https://stackoverflow.com/a/57829126/5353461
+  colorMoved = dimmed_zebra  # May need to turn off for delta diff viewer
+  # colorMovedWS https://git-scm.com/docs/git-diff#Documentation/git-diff.txt---color-moved-wsltmodesgt
+  colorMovedWS = ignore-space-change
   indentHeuristic = true # New default from v2.14, see https://github.com/blog/2188-git-2-9-has-been-released
   interHunkContext = 2
+  pager = "{ command -v diff-hi &>/dev/null && diff-hi || less -FLRX --tabs=4; }"  # Braces keep STDIN consistent
   renames = copies  # detect both copies and renames
   tool = vimdiff
-  wsErrorHighlight = old,new
+  wsErrorHighlight = old,new,context
 
   # https://git-scm.com/docs/gitattributes
   # Remove cachetextconv via : git update-ref -d refs/notes/textconv/<driver>
