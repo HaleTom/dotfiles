@@ -538,12 +538,12 @@
   workers=-1  # Use logical cores
 
 [color]
+# Doco: https://git-scm.com/docs/git-config#Documentation/git-config.txt-color
+#
 # Colours: black, red, green, yellow, blue, magenta, cyan, white, reset
 # After the foreground color, you can optionally list a background color
 # Modifiers: bold dim italic ul blink reverse strike.
-# Also: 24-bit colours: #ff69b4; Disable modifier: no-<modifier>
-# Get complete list of variables: https://stackoverflow.com/q/47176670/5353461
-# http://shallowsky.com/blog/programming/gitcolors.html
+# Also: 24-bit colours: "#ff69b4"; Disable modifier: no-<modifier>
   ui = auto
   [color "branch"]
     current = yellow reverse
