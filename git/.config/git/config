@@ -321,6 +321,7 @@
   hidden = !"git ls-files -v -- \"$@\"| grep -E '^(S|[[:lower:]])' # S means update-index --skip-worktree, and lower first letter means --assume-unchanged."
   ignored = !"{ git ls-files -oz; git ls-files -z; } | xargs -0 git ignore-q \"$@\" # Show all ignored and hidden paths. Pass -v for why."
 
+  # TODO: check if final parameter exists, if not die.  Check behaviour if dir and without trailing/
   repo = !"bash -c 'r=$(realpath \"${@:$#}\") && cd \"$(dirname \"$r\")\" && git \"${@:1:$# -1}\" \"$r\"' _ \"$@\" # Run command in directory of realpath of last argument, convert it to realpath"
   # Top level directory of repository
   top = !"git \"$@\" #"  # re-run git command in repository toplevel directory
