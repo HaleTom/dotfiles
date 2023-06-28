@@ -52,6 +52,7 @@ alias g='git'
 alias h='history'
 alias j='jobs'
 alias l='ll'  # l^J for ultimate laziness
+alias p='pbpaste |'
 alias q='ls'  # mnemonic: q = query
 alias r='rake'
 alias s='git s'
@@ -286,12 +287,13 @@ fi
   alias -g ....='../../..'
   alias -g .....='../../../..'
   alias -g B='  | bust'  # Head
+  alias -g C='| pbcopy'  # Copy
   alias -g BA='|& bust'
-  alias -g C='| wc -l'
   alias -g DN='    /dev/null'
   alias -g DNO=' > /dev/null'
   alias -g DNA='&> /dev/null'
   alias -g DNE='2> /dev/null'
+  alias -g E='| wc -l'  # Enumerate
   alias -g EO='2>&1'
   alias -g H='  | head'  # Head
   alias -g HA='|& head'
@@ -305,11 +307,13 @@ fi
   alias -g LS=" | less -S"  # -S or --chop-long-lines
   alias -g LSA="|& less -S"  # -S or --chop-long-lines
   alias -g M='| more'
-  # alias -g P='|'
+  alias -g PF='<(pbpaste)'
   alias -g R='| rear'
   alias -g S=' | sort'
   alias -g SU='| sort -u'
   alias -g T='| tail'
+  alias -g T1='| tail -n1'
+  alias -g TC='| tee >(pbcopy)'
   alias -g U='| uniq'
   alias -g W='| trunc'  # mnemonic: width
   alias -g X='| xargs'
