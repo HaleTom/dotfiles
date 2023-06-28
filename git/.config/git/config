@@ -689,15 +689,13 @@
     defaultBranch = main
 
 [interactive]
-  # diff-so-fancy doesn't work with --patch because it produces 4- rather than the expecte 5-line headers:
-  # https://github.com/so-fancy/diff-so-fancy/issues/35
-  # https://github.com/so-fancy/diff-so-fancy/pull/172
-  # https://github.com/so-fancy/diff-so-fancy/issues/296
-  # diffFilter = "diff-so-fancy"
-
   # diffFilter filters output for later paging, so don't pass through a pager.
-  # The default (or when set to 'cat') seems to be "diff-highlight"
-  diffFilter = "{ command -v diff-hi &>/dev/null && diff-hi || cat; }"  # Braces keep STDIN consistent
+  #
+  # delta (***diff-hi default***) is broken for --patch as of 2023-06-26
+  # https://github.com/dandavison/delta/issues/320
+  # diffFilter = "{ command -v diff-hi &>/dev/null && diff-hi || cat; }"  # Braces keep STDIN consistent
+  # Use dsf:
+  diffFilter = "{ command -v diff-so-fancy &>/dev/null && diff-so-fancy --patch || cat; }"
 
   # Remove the need to press enter after an interactive prompt.
   # Required packages: Arch: perl-term-readkey, Ubuntu: libterm-readkey-perl
