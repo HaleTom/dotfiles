@@ -557,6 +557,7 @@
     remoteBranch = bold cyan
     # stash =
     # tag =
+
   [color "diff"]
     commit = bold yellow
     context = normal
@@ -566,18 +567,27 @@
     new = green bold
     old = red bold
     whitespace = red reverse
+
+    # 2023-06-28 bold required else the fg colour changed to white on both {tmux,xterm}-256-color
+    # These should work, but don't:
+    # oldMoved = red brightblack
+    # newMoved = green brightblack
+
     # Zebra pair #1
-    oldMoved = blue dim strike
-    newMovedAlternative = blue italic
+    # oldMoved = red bold brightblack
+    # newMoved = green bold brightblack
+    oldMoved = bold red "#444466"  # Bold red on blue gray
+    newMoved = bold green "#444466"  # Bold green on blue gray
     # Zebra pair #2
-    newMoved = cyan dim strike
-    oldMovedAlternative = cyan strike
+    oldMovedAlternative = bold red "#443300"  # Bold red on brown
+    newMovedAlternative = bold green "#443300"  # Bold green on brown
     # Dimmed pair #1
-    oldMovedDimmed = dim blue strike
-    newMovedAlternativeDimmed = blue italic
+    oldMovedDimmed = "#FFAAAA" "#444466"  # Light red on blue gray
+    newMovedDimmed = "#BBEEBB" "#444466"  # Light green on blue gray
     # Dimmed pair #2
-    oldMovedAlternativeDimmed = dim cyan strike
-    newMovedDimmed = cyan italic
+    oldMovedAlternativeDimmed = "#FFAAAA" "#443300"  # Light red on brown
+    newMovedAlternativeDimmed = "#BBEEBB" "#443300"  # Light green on brown
+
   [color "diff-highlight"]
     oldNormal = red bold
     oldHighlight = red bold 52
