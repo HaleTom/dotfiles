@@ -99,6 +99,13 @@ export CCACHE_DIR="$XDG_CACHE_HOME"/ccache
 # shellcheck disable=SC2155  # Declare and assign separately to avoid masking return values.
 is_bin_in_path sccache && export RUSTC_WRAPPER=$(bin_path sccache)
 
+if [ -f /opt/asdf-vm/asdf.sh ]; then
+  export ASDF_DIR=/opt/asdf-vm
+  export ASDF_CONFIG_FILE=$XDG_CONFIG_HOME/asdf/asdfrc
+  export ASDF_DATA_DIR=$XDG_CACHE_HOME/asdf
+  source $ASDF_DIR/asdf.sh  # This sets up autocompletions also
+fi
+
 # ssh-ident
 export BINARY_SSH=/usr/bin/ssh
 export BINARY_SCP=/usr/bin/scp
