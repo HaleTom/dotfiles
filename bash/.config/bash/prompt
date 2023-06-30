@@ -206,7 +206,7 @@ _prompt_pwd_generate() {
       return ;;
     "$HOME"/?*)  # $PWD is a subdir of $HOME
       prefix=\~/  # Trailing / ensures possibly quoted string goes after ~/ for validity
-      dir=${PWD#$HOME/} ;;   # Remove $HOME and / as this is now in $prefix
+      dir=${PWD#"$HOME"/} ;;   # Remove $HOME and / as this is now in $prefix
   esac
 
   # Quote directory minus $HOME
@@ -216,10 +216,10 @@ _prompt_pwd_generate() {
     eval 'dir="${(q+)dir}"' 2> /dev/null || printf -v dir '%q' "$dir"
     dir=${dir//'%'/'%%'}  # Replace % with %%
   else  # $BASH_VERSION
-    fallback=''  # Set non-zero if ${var@Q} is not supported
     # Prefer ${var@Q} as 'a b c' becomes a\ b\ c with printf "%q"
     eval 'quoted=${dir@Q}' 2> /dev/null || printf -v dir '%q' "$dir"  # Quote directory minus $HOME
     # Prevent unnecessary quotes eg /tmp becoming '/tmp' or $'/tmp'
+    # shellcheck disable=SC2154  # SC2154: quoted is referenced but not assigned.
     [[ ! "$quoted" =~ ^\$?"'$dir'"$ || $dir =~ ' ' ]] && dir=$quoted
 
     # if [[ -z $dir_Q ]]; then  # Pick shorter of the two output strings
