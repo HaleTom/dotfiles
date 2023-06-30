@@ -354,6 +354,7 @@
   branch-tip = !"br=$(git branch-tips \"$1\") && case \"$br\" in *$'\\n'*) printf \"Multiple branches:\\n%s\" \"$br\">&2; exit 1;; esac; echo \"$br\" #"
 
   # Mine: https://stackoverflow.com/a/52896538/5353461
+  branch-remote-delete = !"usage='Give args <remote> <branch(s) to delete>'; echo git push --delete \"${1?$usage}\" \"${@:2}\" # Delete branch(s) from remote"
   branch-remote-fetch = !"branch=$(git branch-tip \"$1\") && git config branch.\"$branch\".remote || echo origin #"
   branch-remote-push  = !"branch=$(git branch-tip \"$1\") && git config branch.\"$branch\".pushRemote || git config remote.pushDefault || git branch-remote-fetch #"
   branch-url-fetch = !"remote=$(git branch-remote-fetch \"$1\") && git remote get-url        \"$remote\" #"  # cognizant of insteadOf
