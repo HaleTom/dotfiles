@@ -79,6 +79,9 @@
   canm   = commit -a --amend -m
   caum   = !"bash -c 'cd ${GIT_PREFIX:-.} && git add --update \"${@:2}\" && git commit -m \"$1\"' _ \"$@\" # Usage: caum "commit message" [files]"
   cfu    = !"bash -c 'git commit --fixup=\"$1\" \"${@:2}\"' _ \"$@\" #"
+  cfgl   = config --local
+  cfgll  = config --local --list
+  cfggl  = config --global --list
   ch     = cherry-pick
   cha    = cherry-pick --abort
   chc    = cherry-pick --continue
