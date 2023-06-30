@@ -397,9 +397,9 @@ _prompt_bash_set() {
   # whole RHS will be included in \[ and \], and these do not nest.
 
   local rhs="" # String to be printed on the right hand side of terminal
-  local date_time virtualenv
 
   # Create a string like: "25 Apr 13:15"
+  local date_time
   printf -v date_time "%(%e %b %H:%M)T" -1 # -1 is current time
 
   # Format the RHS prompt
