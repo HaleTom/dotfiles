@@ -692,6 +692,7 @@
     cmd = git-nbdifftool diff \"$LOCAL\" \"$REMOTE\" \"$BASE\"
 
 [fetch]
+  # https://git-scm.com/docs/git-fetch#_configuration
   parallel = 8  # Also sets default for submodule parallel fetches
 
 [init]
