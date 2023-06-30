@@ -198,8 +198,11 @@
   mum    = merge upstream/master
   psf    = push --force-with-lease
   psuo   = push --set-upstream origin
-  psurb  = "![ $# -ne 1 ] && { echo 'Give argument: <remote-for-upstream>' >&2; exit 1; }; b=\"$(git rev-parse --abbrev-ref HEAD)\" && git push --set-upstream \"${1?}\" \"$b\" #"
+  psob  = !"git push origin HEAD:\"${1?Missing origin destination branch}\" \"${@:2}\" # Push current branch to $1 on origin"
+  psoi  = !"git push origin HEAD:main \"${@}\" # Push current branch to 'main' on origin"
+  psos  = !"git push origin HEAD:master \"${@}\" # Push current branch to 'master' on origin"
   psuob  = "!b=\"$(git rev-parse --abbrev-ref HEAD)\" && git push --set-upstream origin \"$b\" #"
+  psurx  = "![ $# -ne 1 ] && { echo 'Give argument: <remote-for-upstream>' >&2; exit 1; }; b=\"$(git rev-parse --abbrev-ref HEAD)\" && git push --set-upstream \"${1?}\" \"$b\" #"
   rs     = restore
   rsp    = restore --patch
   rss    = restore --source
