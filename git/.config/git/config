@@ -697,7 +697,8 @@
   parallel = 8  # Also sets default for submodule parallel fetches
 
 [init]
-    defaultBranch = main
+  # https://git-scm.com/docs/git-init#_configuration
+  defaultBranch = main
 
 [interactive]
   # diffFilter filters output for later paging, so don't pass through a pager.
