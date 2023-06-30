@@ -7,8 +7,8 @@
 set -o noclobber  # Use >|file to clobber
 
 # Allow shell-specific code
-function sh_is_zsh { [ -n "$ZSH_VERSION" ]; }
-function sh_is_bash { [ -n "$BASH_VERSION" ]; }
+function sh_is_zsh { [ -n "${ZSH_VERSION:-}" ]; }
+function sh_is_bash { [ -n "${BASH_VERSION:-}" ]; }
 
 # Setup functions (required for XDG background checks)
 source "$HOME/.config/bash/functions"
@@ -250,7 +250,7 @@ nvm() {
   source "$NVM_DIR/nvm.sh" || return
   func_rename nvm nvm_wrapped
   local completion=$NVM_DIR/bash_completion
-  [[ -n $BASH_VERSION && -r $completion ]] && source "$completion"
+  sh_is_bash && [[ -r $completion ]] && source "$completion"
   # Define replacment nvm function
   nvm() { nvm_wrapped "$@"; source prompt-update; }
   nvm "$@"  # Call the new version

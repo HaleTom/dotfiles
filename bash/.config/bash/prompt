@@ -57,7 +57,7 @@ _git_status_gen() {
 
   # zsh: If $_git_status contains ${__git_ps1_branch_name} it will not be
   # recursively expanded. Force literal text to be produced by __git_ps1.
-  [[ -n $ZSH_VERSION ]] && setopt local_options no_prompt_subst
+  [[ -n ${ZSH_VERSION:-} ]] && setopt local_options no_prompt_subst
 
   # Allow disabling git status. Avoid error if __git_ps1 undefined.
   # $__git_printf_supports_v is set if git-prompt.sh is sourced
@@ -142,7 +142,7 @@ _cd_hook() {
   # printf '\e]1;%s\a' "$PWD" # set $PWD as tab title  # XXX doesn't seem to be working
   _maybe_disable_git_string
   # Change slash colour in prompt directory
-  if [[ $ZSH_VERSION ]]; then _prompt_update_zsh; fi
+  if [[ ${ZSH_VERSION:-} ]]; then _prompt_update_zsh; fi
 }
 
 
@@ -408,7 +408,8 @@ _prompt_bash_set() {
 
   # Prepend python virtualenv if applicable
   local virtualenv
-  virtualenv=${VIRTUAL_ENV##*/}  # basename of environment directory
+  virtualenv=${VIRTUAL_ENV:-}  # Don't die with set -u
+  virtualenv=${virtualenv##*/}  # basename of environment directory
   [[ -n  $virtualenv ]] && rhs="(venv=${virtualenv}) $rhs"
 
   # Strip ANSI CSI commands (eg colours) to enble counting the length of
