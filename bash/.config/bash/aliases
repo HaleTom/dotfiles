@@ -117,7 +117,7 @@ alias restix='restic -x --exclude-caches --exclude-file=$HOME/etc/restic/exclude
 alias rga='rg --hidden --no-ignore'
 is_linux && alias rm='rm -I'  # Prompt on -r or >3 files
 alias setvars='(set -o posix; set)'
-alias trunc='cut -c -${COLUMNS:-80}'
+alias nowrap='{ x=~/bin/nowrap; if [ -x "$x" ]; then "$x"; else cut -c 1-"${COLUMNS:-80}"; fi; }'
 if is_cmd nvim; then
   alias vi=nvim
 elif is_cmd vim; then
@@ -315,7 +315,7 @@ fi
   alias -g T1='| tail -n1'
   alias -g TC='| tee >(pbcopy)'
   alias -g U='| uniq'
-  alias -g W='| trunc'  # mnemonic: width
+  alias -g W='| nowrap'  # mnemonic: width / wrap
   alias -g X='| xargs'
 
 # From zsh-lovers not yet checked
