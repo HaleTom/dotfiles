@@ -752,7 +752,12 @@
   autostash = false  # See script: git-pull-autostash
 
 [push]
-  default = simple
+  # https://git-scm.com/docs/git-push#_configuration
+  autoSetupRemote
+  # To set branch upstream push on a per-branch basis:
+  # git config --local remote.origin.push main:master
+  # https://stackoverflow.com/a/76578202/5353461
+  default = upstream  # Push only current branch to the upstream branch used for 'pull'
 
 [rebase]
   autosquash = true
