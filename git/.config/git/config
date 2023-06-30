@@ -63,6 +63,8 @@
   brm    = branch --move # rename
   brt    = branch --track
   bru    = branch --set-upstream-to  # branch -u is equivalent
+  bruo   = !"git branch --set-upstream-to origin/\"$1\" \"${@:2}\"  # Set branch to track from origin/$1"
+  bruox  = !"git branch --set-upstream-to origin/\"$(git branch-name)\" \"${@}\"  # Set branch to track from origin/$1"
   c      = commit
   # Pick chunks to include of changed files, include all untracked files.
   ca     = commit -a -v
