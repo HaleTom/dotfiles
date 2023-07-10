@@ -126,7 +126,7 @@
   cobb   = checkout -B
   # Create a branch tracking the same branch on origin.
   # '-' makes argument list start at $1
-  cobt   = !sh -c 'git checkout -b "$1" && git branch --track origin/"$1"' -
+  cobto   = !"git checkout -b \"${1:?}" && git branch --track origin/\"$1\" \"${@:2}\" # Create tracked branch from origin/$1"
   cof    = checkout --force
   coi    = checkout-index
   coif   = checkout-index --force  # update existing files
