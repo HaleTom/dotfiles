@@ -347,12 +347,17 @@
   # Branches / remotes
   #
 
+
+
   # Mine: https://stackoverflow.com/a/52906108/5353461, https://stackoverflow.com/a/52913537/5353461
   branch-current = "symbolic-deref HEAD"  # https://stackoverflow.com/a/19585361/5353461, at bottom.
   # branch-name: Mine: https://stackoverflow.com/a/56564366/5353461  # Given commitish, print branch head(s) or error
   # This may print more than one, so perhaps rename to branch-names.  Also, if refs/heads/$1 exists, then just print that?
   branch-name = !"git for-each-ref --format=\"%(refname:short) %(objectname)\" 'refs/heads/' | sed -En 's/^(\\S+)\\s+'\"$(git rev-parse \"${1:-@}\" 2>/dev/null)\"'$/\\1/p' | grep . || { echo \"$1 is not a branch tip\" >&2; false;} # Print commit's branch heads"
   branch-or-commit = !"x=$(git branch-name \"$1\"); [ -n \"$x\" -a \"$(echo -n \"$x\" | wc -l)\" -eq 0 ] ||{ x=$(git rev-parse --verify \"$1\");}; echo \"$x\"; [ -n \"$x\" ] #"
+
+  branch-remote-print = !"git config branch.$(git name-rev --name-only \"${1:+HEAD}\").remote  # Print remote for given branch (or HEAD)"
+
   branch-tips = !"[ -z \"$1\" ] && git branch-current 2>/dev/null || git branch --format='%(refname:short)' --contains \"${1:-HEAD}\" #"  # https://stackoverflow.com/a/19585361/5353461
   branch-tip = !"br=$(git branch-tips \"$1\") && case \"$br\" in *$'\\n'*) printf \"Multiple branches:\\n%s\" \"$br\">&2; exit 1;; esac; echo \"$br\" #"
 
