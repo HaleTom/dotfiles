@@ -257,6 +257,8 @@
   rom    = remote rename  # remote move
   rorm   = remote remove
   rorn   = remote rename
+  rosb   = remote set-branches
+  rosbx  = ! "git remote set-branches \"${1:?Remote missing}\" HEAD  # Set's the current branch's remote"
   ros    = remote set-url
   rosp   = remote set-url --push
   rou    = remote update
