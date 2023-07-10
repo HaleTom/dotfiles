@@ -348,7 +348,7 @@
   #
 
   # Mine: https://stackoverflow.com/a/52906108/5353461, https://stackoverflow.com/a/52913537/5353461
-  branch-current = "symbolic-ref --short HEAD"  # https://stackoverflow.com/a/19585361/5353461, at bottom.
+  branch-current = "symbolic-deref HEAD"  # https://stackoverflow.com/a/19585361/5353461, at bottom.
   # branch-name: Mine: https://stackoverflow.com/a/56564366/5353461  # Given commitish, print branch head(s) or error
   # This may print more than one, so perhaps rename to branch-names.  Also, if refs/heads/$1 exists, then just print that?
   branch-name = !"git for-each-ref --format=\"%(refname:short) %(objectname)\" 'refs/heads/' | sed -En 's/^(\\S+)\\s+'\"$(git rev-parse \"${1:-@}\" 2>/dev/null)\"'$/\\1/p' | grep . || { echo \"$1 is not a branch tip\" >&2; false;} # Print commit's branch heads"
@@ -368,7 +368,13 @@
 
   branch-set-push = !"[[ $# -eq 2 ]] || { echo 'Arguments: <remote> <remote-branch>'; exit 1; }; git g config --local remote.\"$1\".push \"$(git branch-name)\":\"$2\" # Set current branch's remote (arg 1) push mapping to remote-branch (arg 2)"
 
+  #
+  # Refs / References
+  #
   branch-warp = !"git symbolic-ref HEAD refs/heads/\"$1\" # Update only current branch, leave index and worktree"
+
+  # A symbolic ref is a file that begins with text "ref: refs/",  eg .git/HEAD: "ref: refs/heads/main"
+  symbolic-deref = !"git symbolic-ref --short \"${1:?Single symbolic reference}\"  # Get short name of a symbolic ref, eg HEAD"
 
   # Pull a different branch without affecting the current one
   plbr = !"current=$(git symbolic-ref --short HEAD) && git stash save --all && git checkout \"${1:-master}\" && git pull-autostash && git checkout \"$current\" && git stash pop #"
