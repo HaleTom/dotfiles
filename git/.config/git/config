@@ -376,10 +376,23 @@
   # A symbolic ref is a file that begins with text "ref: refs/",  eg .git/HEAD: "ref: refs/heads/main"
   symbolic-deref = !"git symbolic-ref --short \"${1:?Single symbolic reference}\"  # Get short name of a symbolic ref, eg HEAD"
 
+  #
+  # Pull
+  #
+
   # Pull a different branch without affecting the current one
+  # TODO: automatically undo the stash if the pull fails
   plbr = !"current=$(git symbolic-ref --short HEAD) && git stash save --all && git checkout \"${1:-master}\" && git pull-autostash && git checkout \"$current\" && git stash pop #"
 
+  #
+  # Commits
+  #
+
   commit-undo = "!git reset @~ \"$(git branch-tip)\" && git commit --amend --no-edit --allow-empty #"
+
+  #
+  # Display data
+  #
 
   # Print only the first hash encountered
   grep-1hash = !"awk 'match($0, /[a-f0-9]{7,40}/) {print substr($0, RSTART, RLENGTH); exit}' #"
