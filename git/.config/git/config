@@ -373,10 +373,12 @@
 
   branch-set-push = !"[[ $# -eq 2 ]] || { echo 'Arguments: <remote> <remote-branch>'; exit 1; }; git g config --local remote.\"$1\".push \"$(git branch-name)\":\"$2\" # Set current branch's remote (arg 1) push mapping to remote-branch (arg 2)"
 
+  is-branch = !"git show-ref --quiet --heads \"${1:?Branch name required}\"  # Returns 0 iff $1 is a local branch"
+
   #
   # Refs / References
   #
-  branch-warp = !"git symbolic-ref HEAD refs/heads/\"$1\" # Update only current branch, leave index and worktree"
+  branch-warp = !"if git is-branch \"${1:?Give new branch name}\"; then git symbolic-ref HEAD refs/heads/\"${1}\"; else echo \"$1 is not a branch\" >&2; false; fi  # Update only HEAD symbolic ref, leave index and worktree"
 
   # A symbolic ref is a file that begins with text "ref: refs/",  eg .git/HEAD: "ref: refs/heads/main"
   symbolic-deref = !"git symbolic-ref --short \"${1:?Single symbolic reference}\"  # Get short name of a symbolic ref, eg HEAD"
