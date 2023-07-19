@@ -4,9 +4,6 @@
 # An assortment of useful bash functions. zsh sources this with 'emulate bash'.
 # This file is expected to be sourced, not run.
 
-function sh_is_zsh { [[ -n $ZSH_VERSION ]]; }
-function sh_is_bash { [[ -n $BASH_VERSION ]]; }
-
 # Allow functions to be accessed from bash sub-shells by:
 # 'export_function <func-name>'
 function export_function {
@@ -14,8 +11,14 @@ function export_function {
   if sh_is_bash; then export -f "$@"; fi
   # zsh can't export functions: https://stackoverflow.com/a/1896039/5353461
 }
+
+function sh_is_zsh { [[ -n $ZSH_VERSION ]]; }
+function sh_is_bash { [[ -n $BASH_VERSION ]]; }
 export_function sh_is_bash sh_is_zsh
 
+function is_mac () { [[ $OSTYPE == darwin* ]]; }
+function is_linux () { [[ $OSTYPE == linux* ]]; }
+export_function is_mac is_linux
 
 # Remove files without asking
 # Allows for alias rm=rm -I
@@ -293,10 +296,7 @@ function ostype () {
     *)             echo "unknown: $OSTYPE" ;;
   esac
 }
-
-function is_mac () { [[ $OSTYPE == darwin* ]]; }
-function is_linux () { [[ $OSTYPE == linux* ]]; }
-export_function ostype is_mac is_linux
+export_function ostype
 
 # Execute statements in $@ if $DEBUG is set
 function debug () {
