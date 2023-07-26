@@ -61,6 +61,8 @@ table.insert(config.hyperlink_rules, {
 
 config.enable_scroll_bar=true
 config.hide_tab_bar_if_only_one_tab = true
+config.initial_cols = 140
+config.initial_rows = 40
 config.exit_behavior = "CloseOnCleanExit"  -- Use 'Hold' to not close
 
 --
