@@ -17,12 +17,20 @@ wezterm.log_level = "debug"
   -- $HOME/.local/share/wezterm/logs/ (on Linux/macOS)
   -- %APPDATA%\wezterm\logs\ (on Windows)
 
+--- Config struct documentation
+-- https://wezfurlong.org/wezterm/config/lua/config/index.html
 local config = {}  -- This table will hold the configuration.
 -- In newer versions of wezterm, use the config_builder which will
 -- help provide clearer error messages
 if wezterm.config_builder then
   config = wezterm.config_builder()
 end
+
+--
+-- Key assignments
+--
+
+-- Defaults: https://wezfurlong.org/wezterm/config/default-keys.html
 
 --
 -- Hyperlinks
@@ -34,7 +42,7 @@ end
 -- https://gist.github.com/egmontkob/eb114294efbcd5adb1944c9f3cb5feda
 -- printf '\e]8;;http://example.com\e\\This is a link\e]8;;\e\\\n'
 
--- Use the defaults as a base
+-- Use the defaults as a base.  https://wezfurlong.org/wezterm/config/lua/config/hyperlink_rules.html
 config.hyperlink_rules = wezterm.default_hyperlink_rules()
 
 -- make username/project paths clickable. this implies paths like the following are for github.
@@ -44,7 +52,7 @@ config.hyperlink_rules = wezterm.default_hyperlink_rules()
 table.insert(config.hyperlink_rules, {
   regex = [[["]?([\w\d]{1}[-\w\d]+)(/){1}([-\w\d\.]+)["]?]],
   format = 'https://www.github.com/$1/$3',
-  underline = 0,
+  -- highlight = 0,  -- highlight this regex match group, use 0 for all
 })
 
 --
