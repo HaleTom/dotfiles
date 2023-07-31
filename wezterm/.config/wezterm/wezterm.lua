@@ -8,7 +8,7 @@ local mux = wezterm.mux  -- multiplexer layer: panes, tabs, windows, and workspa
 -- local scheme = wezterm.get_builtin_color_schemes()["nord"]
 -- local keybinds = require 'keybinds'
 -- local utils = require("utils")
--- require("on") 
+-- require("on")
 
 
 -- Debug
@@ -50,7 +50,7 @@ config.hyperlink_rules = wezterm.default_hyperlink_rules()
 -- as long as a full url hyperlink regex exists above this it should not match a full url to
 -- github or gitlab / bitbucket (i.e. https://gitlab.com/user/project.git is still a whole clickable url)
 table.insert(config.hyperlink_rules, {
-  regex = [[["]?([\w\d]{1}[-\w\d]+)(/){1}([-\w\d\.]+)["]?]],
+  regex = [[\s{1}["]?([\w\d]{1}[-\w\d]+)(/){1}([-\w\d\.]+)["]?\s{1}]],
   format = 'https://www.github.com/$1/$3',
   -- highlight = 0,  -- highlight this regex match group, use 0 for all
 })
