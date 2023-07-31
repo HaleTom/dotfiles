@@ -20,7 +20,12 @@ fi
 # -C = list entries by columns
 # -F, --classify = append indicator (one of */=>@|) to entries
 if is_linux; then
-  alias ls="colourify ls -CF --block-size=\\'1 --color=always --quoting-style=shell-escape"
+  # Check for hyperlink support
+  if ls -d / --hyperlink &>/dev/null; then
+    alias ls="colourify ls -CF --hyperlink --block-size=\\'1 --color=always --quoting-style=shell-escape"
+  else
+    alias ls="colourify ls -CF --block-size=\\'1 --color=always --quoting-style=shell-escape"
+  fi
 else
   alias ls="colourify ls -CF"
 fi
