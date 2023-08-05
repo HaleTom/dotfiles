@@ -50,13 +50,13 @@ config.hyperlink_rules = wezterm.default_hyperlink_rules()
 -- as long as a full url hyperlink regex exists above this it should not match a full url to
 -- github or gitlab / bitbucket (i.e. https://gitlab.com/user/project.git is still a whole clickable url)
 
--- Regex syntax:  https://docs.rs/regex/latest/regex/#syntax
+-- Regex syntax:  https://docs.rs/fancy-regex/latest/fancy_regex/#syntax
 -- Lua's [[ ]] literal strings prevent character [[:classes:]] :(
 -- To avoid "]]] at end, use "[a-z].{0}]]"
 -- https://www.lua.org/pil/2.4.html#:~:text=bracketed%20form%20may%20run%20for%20several%20lines%2C%20may%20nest
 
 table.insert(config.hyperlink_rules, {
-  regex = [[\s{1}["]?([\w\d]{1}[-\w\d]+)(/){1}([-\w\d\.]+)["]?\s{1}]],
+  regex = [[\b([\w\d]{1}[-\w\d]+)(/){1}([-\w\d\.]+)\b]],
   format = 'https://www.github.com/$1/$3',
   -- highlight = 0,  -- highlight this regex match group, use 0 for all
 })
