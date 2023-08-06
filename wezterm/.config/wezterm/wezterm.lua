@@ -50,14 +50,17 @@ config.hyperlink_rules = wezterm.default_hyperlink_rules()
 -- as long as a full url hyperlink regex exists above this it should not match a full url to
 -- github or gitlab / bitbucket (i.e. https://gitlab.com/user/project.git is still a whole clickable url)
 
--- Regex syntax:  https://docs.rs/fancy-regex/latest/fancy_regex/#syntax
+-- Regex syntax:  https://docs.rs/regex/latest/regex/#syntax and https://docs.rs/fancy-regex/latest/fancy_regex/#syntax
 -- Lua's [[ ]] literal strings prevent character [[:classes:]] :(
 -- To avoid "]]] at end, use "[a-z].{0}]]"
 -- https://www.lua.org/pil/2.4.html#:~:text=bracketed%20form%20may%20run%20for%20several%20lines%2C%20may%20nest
 
 table.insert(config.hyperlink_rules, {
-  regex = [[\b([\w\d]{1}[-\w\d]+)(/){1}([-\w\d\.]+)\b]],
-  format = 'https://www.github.com/$1/$3',
+  -- https://github.com/shinnn/github-username-regex  https://stackoverflow.com/a/64147124/5353461
+  regex = [[(^|(?<=[\[(\s'"]))([0-9A-Za-z][-0-9A-Za-z]{0,38})/([A-Za-z0-9_.-]{1,100})((?=[])\s'".!?])|$)]],
+  --  is/good  0valid0/-_.reponname  /bad/start  -bad/username  bad/end!  too/many/parts -bad/username
+  --  [wraped/name] (aa/bb) 'aa/bb' "aa/bb"  end/punct!  end/punct.
+  format = 'https://www.github.com/$2/$3/',
   -- highlight = 0,  -- highlight this regex match group, use 0 for all
 })
 
