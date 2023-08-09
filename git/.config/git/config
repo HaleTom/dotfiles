@@ -86,15 +86,18 @@
   cha    = cherry-pick --abort
   chc    = cherry-pick --continue
   cinit  = !"git init; git is-empty-repo && git commit --allow-empty -m 'Initialise repository'" # init on existing repo is safe
-  cl     = clone
+  # Treeless and blobless clones:  https://github.blog/2020-12-21-get-up-to-speed-with-partial-clone-and-shallow-clone/
+  cl     = !"echo 'Blobless clone:' >&2; git clone --filter=blob:none \"$@\" # Create a blobless clone"
+  clrsm  = cl --recurse-submodules  # Assumes clone.filterSubmodules is set below
+  clt    = clone --filter=tree:0  # Treeless clones are also blobless, but don't support `git log -- <path>`
+  cltrsm = clt --recurse-submodules
   # clone --depth flag implies --single-branch
-  # To incrementally deepen: git fetch --deepen 50
+  # To incrementally deepen: git fetch --deepen 50  -- see also alias `unshallow`
   # More: https://stackoverflow.com/questions/6802145/how-to-convert-a-git-shallow-clone-to-a-full-clone
   # cls    = clone --shallow-since='3 years' --shallow-submodules --recurse-submodules
   cls    = clone --depth=30 --no-single-branch --shallow-submodules --recurse-submodules
   clsb   = cls --branch  # eg git clsb maint git://github.com/user/repo"
   clss   = cls --single-branch  # Clone only one branch
-  clrsm  = clone --recurse-submodules
   # Note git clean operates from the current directory, same behaviour:
   clear  = !"cd ${GIT_PREFIX:-.} && bash -c 'git clean -nd \"$@\" | sed \"s/^Would remove //\"; \
     read -rn1 -p \"Delete all the above? [y/N] \" r; echo; \
@@ -577,6 +580,9 @@
 [checkout]
   # https://git-scm.com/docs/git-config#Documentation/git-config.txt-checkoutdefaultRemote
   workers=-1  # Use logical cores
+
+[clone]
+  filterSubmodules = true  # Apply --filter= to submodules if --recurse-submodules is used.  Assumed by alias clrsm
 
 [color]
 # Doco: https://git-scm.com/docs/git-config#Documentation/git-config.txt-color
