@@ -522,6 +522,9 @@
   # Boolean tests
   #
 
+  # Are there missing objects, eg if the repo was cloned with `--filter=blob:none`
+  has-missing-objs = "!git rev-list --objects --indexed-objects --no-object-names --missing=print --all | grep -Eq '^\\?' #"
+
   # Return true if index AND working directory are clean
   status-clean = !"[ -z \"$(git status --porcelain)\" ] #"
   status-clean-ignore-untracked = !"[ -z \"$(git status -uno --porcelain)\" ] #"
