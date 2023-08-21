@@ -831,6 +831,10 @@
 [tag]
   sort = -version:refname  # Reverse sort versions numerically. See also [versionsort]
 
+# https://git-scm.com/docs/git-config#Documentation/git-config.txt-uploadpackhideRefs
+[uploadpack]
+  allowFilter = true
+
 [url "ssh://aur@aur.archlinux.org"]
   pushInsteadOf = "https://aur.archlinux.org"
 
