@@ -389,6 +389,10 @@
   remote-set-default-branch = remote set-head
   remote-set-default-branch-auto = remote set-head --auto  # Automatically set remote/HEAD by querying remote
 
+  # Objects
+  fetch-obj = "!url=$(git branch-remote-print) && shell-quote git fetch-pack --refetch --thin \"$url\" \"${@:1}\"  # Usage fetch-obj remote <object(s)>"
+  fetch-remote-obj = "!url=$(git remote-url \"${1:?Remote name required}\") && shell-quote git fetch-pack --refetch --thin \"$url\" \"${@:2}\"  # Usage fetch-obj remote <object(s)>"
+
   #
   # Refs / References
   #
