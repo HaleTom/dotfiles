@@ -338,6 +338,8 @@
 
   # TODO: check if final parameter exists, if not die.  Check behaviour if dir and without trailing/
   repo = !"bash -c 'r=$(realpath \"${@:$#}\") && cd \"$(dirname \"$r\")\" && git \"${@:1:$# -1}\" \"$r\"' _ \"$@\" # Run command in directory of realpath of last argument, convert it to realpath"
+  repo = !"bash -c 'r=$(realpath \"${@:$#}\") && cd \"$(dirname \"$r\")\" &&pwd && shell-quote git \"${@:1:$# -1}\" \"$r\"' _ \"$@\" # Run command in directory of realpath of last argument, convert it to realpath"
+  repo = !"bash -c 'r=$(realpath \"${@:$#}\") && cd \"$(dirname \"$r\")\" &&pwd && git \"${@:1:$# -1}\" \"$r\"' _ \"$@\" # Run command in directory of realpath of last argument, convert it to realpath"
   # Top level directory of repository
   top = !"git \"$@\" #"  # re-run git command in repository toplevel directory
   root = rev-parse --show-toplevel  # Show git top-level.  Also see bash function git_root for something more robust.
