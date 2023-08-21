@@ -349,6 +349,8 @@
 
   tag-latest = !"git describe --tags $(git rev-list --tags --max-count=1) # Describe the most recent (in time) tag"
 
+  xdsf   = !"git -c interactive.diffFilter='diff-hi | less -FLRX --tabs=4' \"$@\" # Force diffFilter to diff-hi"
+
   #
   # Branches / remotes
   #
