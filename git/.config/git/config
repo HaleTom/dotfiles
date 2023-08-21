@@ -248,8 +248,8 @@
   rbmg   = rebase --rebase-merges  # incompatible with interactive
   rbo    = rebase --onto
   rboq   = wrapstash git rboqws
-  rboqws = !"bash -c 'x=$(git branch-or-commit HEAD) && git rbo \"$1\" \"${@:2:$# -2}\" \"$(git branch-name \"${@:$#}\")\" && git co \"$x\"' - \"$@\" # Rebase onto <dest> <pre-start> <last> then return to previous HEAD"
-  rbox   = !"bash -c 'git branch-name ${@:$#} >/dev/null && git rbo HEAD \"$@\"' - \"$@\" # Requires branch else nothing happens??  # Takes args: [git-args] <pre-start> <end>"
+  rboqws = !"bash -c 'x=$(git branch-or-commit HEAD) && git rbo \"$1\" \"${@:2:$# -2}\" \"$(git branch-current \"${@:$#}\")\" && git co \"$x\"' - \"$@\" # Rebase onto <dest> <pre-start> <last> then return to previous HEAD"
+  rbox   = !"bash -c 'git branch-current ${@:$#} >/dev/null && git rbo HEAD \"$@\"' - \"$@\" # Requires branch else nothing happens??  # Takes args: [git-args] <pre-start> <end>"
   rboxq  = rboq HEAD  # Takes args: [git-args] <pre-start> <end>
   rbroot = rebase --root # Allows changing root commit(s)
   rbs    = rebase --skip
@@ -382,7 +382,7 @@
   branch-upstream = !"br=$(git branch-tip \"${1:?Give commitish to print upstream}\") && git rev-parse --abbrev-ref --symbolic-full-name \"$br\"@{u} #"
   branch-push     = !"br=$(git branch-tip \"${1:?Give commitish to print push}\") && git rev-parse --abbrev-ref --symbolic-full-name \"$br\"@{push} #"
 
-  branch-set-push = !"[[ $# -eq 2 ]] || { echo 'Arguments: <remote> <remote-branch>'; exit 1; }; git g config --local remote.\"$1\".push \"$(git branch-name)\":\"$2\" # Set current branch's remote (arg 1) push mapping to remote-branch (arg 2)"
+  branch-set-push = !"[[ $# -eq 2 ]] || { echo 'Arguments: <remote> <remote-branch>'; exit 1; }; git g config --local remote.\"$1\".push \"$(git branch-current)\":\"$2\" # Set current branch's remote (arg 1) push mapping to remote-branch (arg 2)"
 
   is-branch = !"git show-ref --quiet --heads \"${1:?Branch name required}\"  # Returns 0 iff $1 is a local branch"
 
