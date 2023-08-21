@@ -386,6 +386,9 @@
 
   is-branch = !"git show-ref --quiet --heads \"${1:?Branch name required}\"  # Returns 0 iff $1 is a local branch"
 
+  remote-set-default-branch = remote set-head
+  remote-set-default-branch-auto = remote set-head --auto  # Automatically set remote/HEAD by querying remote
+
   #
   # Refs / References
   #
