@@ -357,7 +357,7 @@
   # Branches / remotes
   #
 
-
+  remote-url="!git config --get remote.\"${1:?Remote name required}\".url || { e=$?; echo \"Couldn't get remote URL for $1\"; exit $e; } >&2 # Get the fetch url for $1"
 
   # Mine: https://stackoverflow.com/a/52906108/5353461, https://stackoverflow.com/a/52913537/5353461
   branch-current = "symbolic-deref HEAD"  # https://stackoverflow.com/a/19585361/5353461, at bottom.
