@@ -253,6 +253,7 @@
   rboxq  = rboq HEAD  # Takes args: [git-args] <pre-start> <end>
   rbroot = rebase --root # Allows changing root commit(s)
   rbs    = rebase --skip
+  rbq    = !"git rebase --quit \"$@\"  # https://git-scm.com/docs/git-rebase#Documentation/git-rebase.txt---quit"
   ro     = remote
   roa    = remote add
   roao   = remote add origin
