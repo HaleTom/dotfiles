@@ -175,6 +175,7 @@
   fu     = fetch upstream
   fum    = fetch upstream master:master
   ff     = merge --ff-only @{u}  # But try just 'git rebase' if HEAD is behind upstream
+  fsk    = fsck --no-dangling  # Dangling objects are common, eg staged but not commited changes
   fx     = fixup
   fxa    = fixup-auto
   g      = !"cd \"${GIT_PREFIX:-.}\" && git \"$@\" #"  # Idempotent. Allow for `gsudo !!` to run previous command as root.
