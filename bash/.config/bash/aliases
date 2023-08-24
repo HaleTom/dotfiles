@@ -157,7 +157,8 @@ alias ia='idle alia'
 # alias nasudo='nicest alia aliasudo '
 
 
-alias pac='paru'  # For convenience.
+alias pac='paru '  # For convenience
+[ -e "$HOME/bin/makepkg" ] && alias paru='paru --makepkg "$HOME"/bin/makepkg'
 
 # tmux / tmuxinator
 alias tmux='tmux -f "$XDG_CONFIG_HOME"/tmux/tmux.conf'
