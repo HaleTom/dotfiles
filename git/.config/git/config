@@ -151,7 +151,7 @@
   dr     = diff -R
   db     = "!export GIT_TRACE=1; git" # Use to debug an alias, Eg: git db <aliasname>
   db-net = "!export GIT_TRACE=1 GIT_TRACE_PACKET=1; git" # Use to debug an alias, Eg: git db <aliasname>
-  db-ssh = "!GIT_SSH_COMMAND='ssh -vvv' git"
+  db-ssh = "!GIT_SSH_COMMAND='ssh -vvvT' git"
   debug  = "!set -x; export GIT_TRACE=2 GIT_CURL_VERBOSE=2 GIT_TRACE_PERFORMANCE=2 GIT_TRACE_PACK_ACCESS=2 GIT_TRACE_PACKET=2 GIT_TRACE_PACKFILE=2 GIT_TRACE_SETUP=2 GIT_TRACE_SHALLOW=2 GIT_TRACE_EXCLUDE=1; git"
   dc     = diff --cached
   dcs    = diff --cached --compact-summary --dirstat
