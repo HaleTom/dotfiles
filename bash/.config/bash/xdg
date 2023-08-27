@@ -111,10 +111,6 @@ export NVM_DIR=$XDG_DATA_HOME/nvm
 # export ICEAUTHORITY="$XDG_RUNTIME_DIR/X11/ICEauthority"
 # export XAUTHORITY="$XDG_RUNTIME_DIR/X11/Xauthority"
 
-# vim - Set vimrc and viminfo location before vim startup
-# shellcheck disable=2016
-export VIMINIT='let $MYVIMRC="'"$XDG_CONFIG_HOME"'/vim/vimrc"|source $MYVIMRC'
-
 # A function so that it can be run in the background immediately after declaration
 function check_shadowed_files {
   # Only warn that symlinks are shadowed on the odd occasion
