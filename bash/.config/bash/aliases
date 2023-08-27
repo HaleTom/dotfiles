@@ -123,12 +123,15 @@ alias rga='rg --hidden --no-ignore'
 is_linux && alias rm='rm -I'  # Prompt on -r or >3 files
 alias setvars='(set -o posix; set)'
 alias nowrap='{ x=~/bin/nowrap; if [ -x "$x" ]; then "$x"; else cut -c 1-"${COLUMNS:-80}"; fi; }'
+
+# vi / vim / neovim
 if is_cmd nvim; then
   alias vi=nvim
 elif is_cmd vim; then
   alias vi=vim
 fi
 alias vimpager='$XDG_DATA_HOME/vim/bundle/vimpager/vimpager'
+
 alias btrbk_prune_wipe_preserve_backups='sudo btrbk prune --wipe --preserve-backups'
 
 # sudo, nicest, idle with and without aliases
