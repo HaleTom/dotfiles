@@ -648,10 +648,10 @@
     newMovedAlternative = bold green "#443300"  # Bold green on brown
     # Dimmed pair #1
     oldMovedDimmed = "#FFAAAA" "#444466"  # Light red on blue gray
-    newMovedDimmed = "#BBEEBB" "#444466"  # Light green on blue gray
+    newMovedDimmed = "#88FF88" "#444466"  # Light green on blue gray
     # Dimmed pair #2
     oldMovedAlternativeDimmed = "#FFAAAA" "#443300"  # Light red on brown
-    newMovedAlternativeDimmed = "#BBEEBB" "#443300"  # Light green on brown
+    newMovedAlternativeDimmed = "#88FF88" "#443300"  # Light green on brown
 
   [color "diff-highlight"]
     oldNormal = red bold
