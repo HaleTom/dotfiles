@@ -14,6 +14,7 @@ export XDG_STATE_HOME=${XDG_STATE_HOME:=$HOME/.local/state}
 # Create directories if needed
 for var in XDG_CONFIG_HOME XDG_DATA_HOME XDG_STATE_HOME XDG_CACHE_HOME; do
   sh_is_bash && dir=${!var}
+  # shellcheck disable=2296  # zsh syntax ${(P)}
   sh_is_zsh  && dir=${(P)var}
   if [ ! -d "${dir}" ]; then
     printf "Creating $%s directory: %s\n" "$var" "${dir}"
@@ -56,6 +57,7 @@ unset -f _get_octal_perms
 
 # Export the XDG user directories
 if [[ -f $XDG_CONFIG_HOME/user-dirs.dirs ]]; then
+    # shellcheck disable=1091  # Can't follow - file doesn't exist
     . "$XDG_CONFIG_HOME/user-dirs.dirs"
     export XDG_DESKTOP_DIR XDG_DOWNLOAD_DIR XDG_TEMPLATES_DIR XDG_PUBLICSHARE_DIR XDG_DOCUMENTS_DIR XDG_MUSIC_DIR XDG_PICTURES_DIR XDG_VIDEOS_DIR
 fi
