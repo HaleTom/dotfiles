@@ -509,7 +509,7 @@ function cdrp {
 export_function cdrp
 
 function cduprp {
-  cdup "$1" && cd "$(realpath .)" || exit 1
+  cdup "$(realpath "$1")"
 }
 export_function cduprp
 
