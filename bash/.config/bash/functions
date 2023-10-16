@@ -504,12 +504,12 @@ export_function cdup
 function cdrp {
   try="$1"
   [[ $# -ne 1  ]] && { echo "$(func_name): Must specify one directory" 2>&1; return 1; }
-  cd $(realpath "$1")
+  cd "$(realpath "$1")" || exit 1
 }
 export_function cdrp
 
 function cduprp {
-  cdup "$1" && cd "$(realpath .)"
+  cdup "$1" && cd "$(realpath .)" || exit 1
 }
 export_function cduprp
 
