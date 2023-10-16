@@ -895,6 +895,36 @@ function apt_update_repo() {
 }
 export_function apt_update_repo
 
+# transfer.sh
+# Adapted from: https://transfer.sh/#samples
+# | tee /dev/null forces the progress bar to appear
+transfer() {
+        if [ $# -eq 0 ]; then
+                printf "No arguments specified.\nUsage:\n transfer <file|directory>\n ... | transfer <file_name>" >&2
+                return 1
+        fi
+        if tty -s; then
+                file="$1"
+                if [ ! -e "$file" ]; then
+                        echo "$file: No such file or directory" >&2
+                        return 1
+                fi
+                file_name=$(basename "$file")
+                if [ -d "$file" ]; then  # zip directories
+                        file_name="$file_name.zip"
+                        (cd "$file" && zip -r -q - .) | \
+                           curl --progress-bar --upload-file "-" "https://transfer.sh/$file_name" | tee /dev/null
+                else  # Regular file
+                  curl --progress-bar --upload-file "$file" "https://transfer.sh/$file_name" | tee /dev/null
+                fi
+        else  # Read from STDIN
+                file_name=$1
+                curl --progress-bar --upload-file "-" "https://transfer.sh/$file_name" | tee /dev/null
+        fi
+        echo  # Curl doesn't print a newline at the end of the URL to fetch from
+}
+export_function transfer
+
 
 ansi_colours() {
         local fgc bgc vals seq0
