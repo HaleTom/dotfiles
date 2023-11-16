@@ -77,15 +77,74 @@ config.exit_behavior = "CloseOnCleanExit"  -- Use 'Hold' to not close
 --
 -- Fonts
 --
-
+-- https://wezfurlong.org/wezterm/config/lua/wezterm/font.html
+-- https://wezfurlong.org/wezterm/config/lua/config/font_rules.html
+-- wezterm ls-fonts
+-- wezterm ls-fonts --list-system
+--
 -- config.font = wezterm.font 'JetBrains Mono'
 -- config.font = wezterm.font 'Iosevka Term SS06'
-config.font = wezterm.font 'Iosevka SS06'
+-- config.font = wezterm.font({ family = 'Iosevka Term SS06', stretch = 'UltraCondensed'})
+-- config.font = wezterm.font({ family = 'Iosevka SS06', stretch = 'UltraCondensed'})
 config.font_size = 13.8
 config.warn_about_missing_glyphs = true
+config.freetype_load_target = 'HorizontalLcd' -- https://wezfurlong.org/wezterm/config/lua/config/freetype_load_target.html
 
-  -- freetype_load_target = "HorizontalLcd",
-  -- freetype_load_flags = "FORCE_AUTOHINT",
+-- Monaspace:  https://monaspace.githubnext.com/
+-- Based upon, contributed to:  https://gist.github.com/ErebusBat/9744f25f3735c1e0491f6ef7f3a9ddc3
+config.font = wezterm.font(
+  { -- Normal text
+  family='Monaspace Neon',
+  harfbuzz_features={ 'calt', 'liga', 'dlig', 'ss01', 'ss02', 'ss03', 'ss04', 'ss05', 'ss06', 'ss07', 'ss08' },
+  stretch='UltraCondensed', -- This doesn't seem to do anything
+})
 
+config.font_rules = {
+  { -- Italic
+    intensity = 'Normal',
+    italic = true,
+    font = wezterm.font({
+      -- family="Monaspace Radon",  -- script style
+      family='Monaspace Xenon', -- courier-like
+      style = 'Italic',
+    })
+  },
+
+  { -- Bold
+    intensity = 'Bold',
+    italic = false,
+    font = wezterm.font( {
+      family='Monaspace Krypton',
+      family='Monaspace Krypton',
+      -- weight='ExtraBold',
+      weight='Bold',
+      })
+  },
+
+  { -- Bold Italic
+    intensity = 'Bold',
+    italic = true,
+    font = wezterm.font( {
+      family='Monaspace Xenon',
+      style='Italic',
+      weight='Bold',
+      }
+    )
+  },
+}
+
+
+-- From: https://stackoverflow.com/a/7470789/5353461
+function merge_tables(t1, t2)
+    for k, v in pairs(t2) do
+        if (type(v) == "table") and (type(t1[k] or false) == "table") then
+            merge_tables(t1[k], t2[k])
+        else
+            t1[k] = v
+        end
+    end
+    return t1
+end
+-- config = merge_tables(config, font_config)
 
 return config
