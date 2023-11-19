@@ -126,10 +126,12 @@ alias nowrap='{ x=~/bin/nowrap; if [ -x "$x" ]; then "$x"; else cut -c 1-"${COLU
 
 # vi / vim / neovim
 if is_cmd nvim; then
-  alias vi=nvim
+  alias vi='nvim '
 elif is_cmd vim; then
   alias vi=vim
 fi
+alias nvim='MYVIMRC=${XDG_CONFIG_HOME}/${NVIM_APPNAME:=nvim}/init.lua nvim'
+alias vim='vim(){rc=$XDG_CONFIG_HOME/vim/vimrc; MYVIMRC=$rc command vim -Nu "$rc" "$@" }; vim'
 alias vimpager='$XDG_DATA_HOME/vim/bundle/vimpager/vimpager'
 
 alias btrbk_prune_wipe_preserve_backups='sudo btrbk prune --wipe --preserve-backups'

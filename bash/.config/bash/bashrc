@@ -22,10 +22,6 @@ export EDITOR='vi -e' VISUAL=vi  # https://unix.stackexchange.com/q/4859/143394
 export PAGER=less; [ -x "$HOME"/bin/pager ] && PAGER="$HOME"/bin/pager
 export QUOTING_STYLE=shell-escape  # https://www.gnu.org/software/coreutils/manual/html_node/Formatting-the-file-names.html
 
-# vim / neovim startup
-# shellcheck disable=2016
-export VIMINIT='if has("nvim")|let f="init.lua"|else|let f="vimrc"|end|let $MYVIMRC="~/.config/vim/".f|source $MYVIMRC'
-
 # MANPAGER: nvim, vim, less
 if command -v nvim > /dev/null; then
   # Work around ^H showing instead of bold:
