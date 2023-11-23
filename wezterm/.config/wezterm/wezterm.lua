@@ -115,9 +115,8 @@ config.font_rules = {
     italic = false,
     font = wezterm.font( {
       family='Monaspace Krypton',
-      family='Monaspace Krypton',
       -- weight='ExtraBold',
-      weight='Bold',
+      weight='DemiBold',
       })
   },
 
@@ -127,7 +126,7 @@ config.font_rules = {
     font = wezterm.font( {
       family='Monaspace Xenon',
       style='Italic',
-      weight='Bold',
+      weight='DemiBold',
       }
     )
   },
