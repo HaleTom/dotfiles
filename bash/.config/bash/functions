@@ -284,6 +284,14 @@ func_rename() {
 }
 export_function func_copy func_rename
 
+# Use for checking arguments to bc / awk / ...
+function is_float {
+  local regex='^[+-]?([0-9]*\.[0-9]+|[0-9]+\.?[0-9]*)([eE][+-]?[0-9]+)?$'
+  # zsh baulks at the '(' if this is an unquoted RHS parameter
+  # bash requires the RHS to be quoted
+  [[ "$1" =~ $regex ]]
+}
+export_function is_float
 
 function ostype () {
   case "$OSTYPE" in
