@@ -26,6 +26,12 @@ if wezterm.config_builder then
   config = wezterm.config_builder()
 end
 
+-- Set $TERM=wezterm if the terminfo file is accessible
+-- https://wezfurlong.org/wezterm/config/lua/config/term.html
+if os.execute("infocmp wezterm") then
+  config.term = 'wezterm'
+end
+
 --
 -- Key assignments
 --
