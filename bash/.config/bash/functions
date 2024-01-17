@@ -895,6 +895,25 @@ function cd_git_root {
 export_function cd_git_root
 
 
+# Broot cd helper
+# More information can be found in https://github.com/Canop/broot
+# This function starts broot and executes the command it produces, if any.
+function br {
+    local cmd cmd_file code
+    cmd_file=$(mktemp)
+    if broot --outcmd "$cmd_file" "$@"; then
+        cmd=$(<"$cmd_file")
+        command rm -f "$cmd_file"
+        eval "$cmd"
+    else
+        code=$?
+        command rm -f "$cmd_file"
+        return "$code"
+    fi
+}
+export_function br
+
+
 # apt: Update only given sources
 function apt_update_repo() {
   for source in "$@"; do
