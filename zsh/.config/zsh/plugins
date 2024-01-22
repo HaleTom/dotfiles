@@ -271,6 +271,7 @@ return
 
 # For shell-check to see variables used
 # shellcheck disable=SC2128  # Arrays without indexing
+# shellcheck disable=SC2317  # Command appears to be unreachable
 cat <<END > /dev/null
 $ZSH_AUTOSUGGEST_BUFFER_MAX_SIZE $ZSH_AUTOSUGGEST_USE_ASYNC
 $ZSH_AUTOSUGGEST_STRATEGY $ZSH_HIGHLIGHT_HIGHLIGHTERS $ZSH_HIGHLIGHT_STYLES
