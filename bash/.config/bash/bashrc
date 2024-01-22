@@ -275,11 +275,11 @@ if [[ ! -d $XDG_CONFIG_HOME/fzf ]]; then
   is_linux && ! is_cmd fzf && printf "fzf not found\n" >&2
 fi
 
-##
-## Only bash below this point
+##############################################################
+##############  Only bash below this point  ##################
 sh_is_zsh && return
-##
-##
+##############################################################
+##############################################################
 
 # fzf
 is_cmd fzf && source_first "/usr/share/fzf/completion.bash" "/usr/local/opt/fzf/shell/completion.bash"
@@ -317,9 +317,10 @@ PROMPT_COMMAND='_prompt_bash_set'
 # Required after setting the prompt says: https://github.com/direnv/direnv
 command -v direnv &> /dev/null && eval "$(direnv hook bash)"
 
-############################
-# Comments only below here #
-############################
+
+##############################################################
+###############  Comments only below here  ###################
+##############################################################
 
 # alias g=git (done in .bash_aliases)
 # This needs to be here - doesn't work inside .bash_aliases for some reason
