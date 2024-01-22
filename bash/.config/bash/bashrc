@@ -99,13 +99,6 @@ export CCACHE_DIR="$XDG_CACHE_HOME"/ccache
 # shellcheck disable=SC2155  # Declare and assign separately to avoid masking return values.
 is_bin_in_path sccache && export RUSTC_WRAPPER=$(bin_path sccache)
 
-if [ -f /opt/asdf-vm/asdf.sh ]; then
-  export ASDF_DIR=/opt/asdf-vm
-  export ASDF_CONFIG_FILE=$XDG_CONFIG_HOME/asdf/asdfrc
-  export ASDF_DATA_DIR=$XDG_CACHE_HOME/asdf
-  source $ASDF_DIR/asdf.sh  # This sets up autocompletions also
-fi
-
 # ssh-ident
 export BINARY_SSH=/usr/bin/ssh
 export BINARY_SCP=/usr/bin/scp
@@ -216,11 +209,6 @@ _source_files >> "$XDG_RUNTIME_DIR/source_files-$(date '+%s')-PID:$$" <<DOTFILES
     # Git
     $_git_prompt_file
 
-    # Ruby
-    # Using rbenv instead of chruby for increased functionality
-    # /usr/share/chruby/chruby.sh
-    # Don't hook cd by default /usr/share/chruby/auto.sh
-
     # Python
     # /usr/bin/virtualenvwrapper_lazy.sh
 
@@ -236,42 +224,14 @@ _source_files >> "$XDG_RUNTIME_DIR/source_files-$(date '+%s')-PID:$$" <<DOTFILES
 DOTFILES
 unset tmuxinator_source GRC_ALIASES _git_prompt_file
 
-# Add default nvm to $PATH if setup
-if [[ -d $NVM_DIR ]]; then
-  _default_node_dir=$NVM_DIR/versions/node/default
-  if [[ -d $_default_node_dir ]]; then
-    add_to_path_var PATH before "$_default_node_dir"/bin
-  fi
-fi
-unset _default_node_dir
+# XDG Base Directory Specification says to include $HOME/.local/bin, but it doesn't get a $XDG_... variable
+add_to_path_var PATH before "$HOME/bin:$HOME/.local/bin:$XDG_DATA_HOME/python/bin:$XDG_DATA_HOME/gem/bin:$XDG_DATA_HOME/npm/bin:$XDG_DATA_HOME/go/bin:$XDG_DATA_HOME/cargo/bin:/usr/lib/ccache/bin"
 
-# Only source nvm when needed as it's slow...
-nvm() {
-  source "$NVM_DIR/nvm.sh" || return
-  func_rename nvm nvm_wrapped
-  local completion=$NVM_DIR/bash_completion
-  sh_is_bash && [[ -r $completion ]] && source "$completion"
-  # Define replacment nvm function
-  nvm() { nvm_wrapped "$@"; source prompt-update; }
-  nvm "$@"  # Call the new version
-}
-
-# $PATH must be set after sourcing chruby
-add_to_path_var PATH before "$HOME/bin:$HOME/.local/bin:$XDG_DATA_HOME/python/bin:$XDG_DATA_HOME/gem/bin:$XDG_DATA_HOME/npm/bin:$HOME/.local/bin:$XDG_DATA_HOME/go/bin:$XDG_DATA_HOME/cargo/bin:/usr/lib/ccache/bin"
-
-# Handled by chruby
+# Handled by bhruby
 # if ruby_gems=$(ruby -e 'print Gem.user_dir')/bin; then
 #     add_to_PATH before "$ruby_gems"
 # fi
 add_to_path_var PATH after "/usr/lib/systemd:/usr/local/heroku/bin:$XDG_DATA_HOME/miniconda3/bin:$HOME/.cabal/bin"
-
-# Ruby
-# Load rbenv - https://github.com/rbenv/rbenv
-if is_bin_in_path rbenv; then
-  eval "$(command rbenv init -)"
-  # I'm currently not using any plugins
-  # export PATH="$HOME/.rbenv/bin:$HOME/.rbenv/plugins/ruby-build/bin:$PATH"
-fi
 
 # scmpuff  https://github.com/mroth/scmpuff/
 is_cmd scmpuff && eval "$(command scmpuff init -s --aliases=false)"
@@ -305,6 +265,10 @@ else
   [[ "$-" == *i* ]] && printf "Can't find keychain or ssh-agent/ssh-add in path\n" >&2
 fi
 
+# Activate mise    https://mise.jdx.dev/getting-started.html
+# Some IDEs may need $XDG_DATA_HOME/mise/shims in $PATH.
+command -v /usr/bin/mise &> /dev/null && eval "$(mise activate "${SHELL##*/}")"
+
 # Install fzf shell files if required
 if [[ ! -d $XDG_CONFIG_HOME/fzf ]]; then
   is_mac && is_cmd brew fzf && "$(brew --prefix)"/opt/fzf/install --xdg --no-update-rc --key-bindings --completion >/dev/null
@@ -334,10 +298,6 @@ shopt -s extglob failglob globstar
 
 # shopt -s histverify  # Show output of !! - press enter twice
 
-
-# Let chruby see ruby versions in the path. Needs to occur after sourcing chruby
-# export RUBIES+=( $(which --all --skip-alias --skip-functions ruby | sed -n 's/\/bin\/ruby//gp' |sort -u) )
-
 # Setup git completion
 source_first "/usr/share/git/completion/git-completion.bash" "/Library/Developer/CommandLineTools/usr/share/git-core/git-completion.bash"
 
@@ -352,14 +312,6 @@ DOTFILES
 # This tells bash to reinterpret PS1 after every command, which we
 # need because __git_ps1 will return colors.  See "prompt" sourced file.
 PROMPT_COMMAND='_prompt_bash_set'
-
-# Resolve `trap DEBUG` contention of chruby_auto and _set_bash_prompt
-# shellcheck disable=SC2034,2016
-if typeset -f "chruby_auto" > /dev/null; then # chruby_auto function is defined
-  # Literal as evaluated at runtime
-  trap_str='[[ "$BASH_COMMAND" != "$PROMPT_COMMAND" ]] && chruby_auto;'
-fi
-trap -- "$trap_str _pre_command" DEBUG; unset trap_str
 
 # Setup direnv
 # Required after setting the prompt says: https://github.com/direnv/direnv
