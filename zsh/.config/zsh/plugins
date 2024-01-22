@@ -94,11 +94,10 @@ zinit light 'agkozak/zhooks'
 
 
 # Bracketed Paste mode (uses zsh-hooks)
-# My PR: https://github.com/robbyrussell/oh-my-zsh/pull/7887
+# My merged PR with small unaddressed comment: https://github.com/robbyrussell/oh-my-zsh/pull/7887
+# zinit snippet 'https://github.com/HaleTom/oh-my-zsh/blob/bracketed-paste/plugins/safe-paste/safe-paste.plugin.zsh'
 zinit ice wait depth"1"
-# zinit snippet OMZ::plugins/safe-paste/safe-paste.plugin.zsh
-zinit snippet 'https://github.com/HaleTom/oh-my-zsh/blob/bracketed-paste/plugins/safe-paste/safe-paste.plugin.zsh'
-# source /home/ravi/code/oh-my-zsh/plugins/safe-paste/safe-paste.plugin.zsh ####
+zinit snippet OMZ::plugins/safe-paste/safe-paste.plugin.zsh
 
 
 # Auto-close and delete matching delimiters in zsh
