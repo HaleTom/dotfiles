@@ -118,7 +118,7 @@ alias mosh='mosh --predict=experimental'  # https://github.com/mobile-shell/mosh
 alias mv='mv -i'
 alias Mv='command mv'  # Allow overwrite
 alias mvg='mvg -g'
-alias restix='restic -x --exclude-caches --exclude-file=$HOME/etc/restic/exclude'
+alias restix='restic -x --exclude-caches --exclude-file=$HOME/etc/restic/exclude --compression max'
 alias rga='rg --hidden --no-ignore'
 is_linux && alias rm='rm -I'  # Prompt on -r or >3 files
 alias setvars='(set -o posix; set)'
