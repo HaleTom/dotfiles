@@ -187,7 +187,8 @@ alias head='head -n $((${LINES:-12}-2))' # as many as possible without scrolling
 alias tail='tail -n $((${LINES:-12}-2)) --sleep-interval=0.2' # 200ms
 
 # rsync
-alias rscp='rsync -ax --partial --sparse --xattrs --no-whole-file --inplace --protect-args'
+# rsync: This rsync does not support --crtimes (-N)
+alias rscp='rsync -a --one-file-system --partial --sparse --acls --xattrs --atimes --no-whole-file --inplace `# <- not good with --update` --protect-args'
 alias rsmv='rscp --remove-source-files'
 # shellcheck disable=SC2142  # Allow positional parameters to aliases (via function call)
 alias droidsync='f(){ rsync "$@" --no-p --no-o --no-g --rsync-path="su root rsync";};f'
