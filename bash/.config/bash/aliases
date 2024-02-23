@@ -169,10 +169,14 @@ alias ia='idle alia'
 # alias nasudo='nicest alia aliasudo '
 
 
+# pacman
 alias pac='paru '  # For convenience
-# [ -e "$HOME/bin/makepkg" ] && alias paru='paru --makepkg "$HOME"/bin/makepkg'
-# Await blobless cloning
-paru() { echo "Awaiting Morganamilo/paru/issues/1104"; command paru "$@"; }
+# Await paru blobless cloning
+if [ -x "$HOME/bin/makepkg" ]; then
+  alias paru='paru --makepkg "$HOME"/bin/makepkg'  # script does the same echo as below
+else
+  alias paru='echo "Awaiting Morganamilo/paru/issues/1104"; paru'
+fi
 
 # tmux / tmuxinator
 alias tmux='tmux -f "$XDG_CONFIG_HOME"/tmux/tmux.conf'
