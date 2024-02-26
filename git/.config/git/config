@@ -270,8 +270,8 @@
   rou    = remote update
   rov    = remote --verbose
   re     = reset
-  reco   = !"cd \"${GIT_PREFIX:-.}\" && git reset -- \"$@\" && git checkout -- \"$@\" # File version"  # Use the current commit
-  recoc   = !"cd \"${GIT_PREFIX:-.}\" && git reset \"$@\" && git checkout \"$@\" # Commit version"  # https://stackoverflow.com/a/52313420/5353461
+  reco   = !"cd \"${GIT_PREFIX:-.}\" && git reset --quiet -- \"$@\" && git checkout -- \"$@\" # File version"  # Use the current commit
+  recoc   = !"cd \"${GIT_PREFIX:-.}\" && git reset --quiet \"$@\" && git checkout \"$@\" # Commit version"  # https://stackoverflow.com/a/52313420/5353461
   reh    = reset --hard
   rem    = reset --merge # Like hard but don't reset files that haven't been committed, failing if the target commit has changes in those files
   rep    = xdhi-alias-helper reset --patch
