@@ -766,6 +766,10 @@
   # https://git-scm.com/docs/git-fetch#_configuration
   parallel = 8  # Also sets default for submodule parallel fetches
 
+[gc]
+  # Uncomment to stop git from losing objects when recovering a repository
+  # auto = 0
+
 [init]
   # https://git-scm.com/docs/git-init#_configuration
   defaultBranch = main
