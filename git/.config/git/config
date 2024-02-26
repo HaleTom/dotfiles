@@ -38,7 +38,7 @@
   a      = add
   aa     = add -A  # deletions and new files
   ai     = add --interactive
-  ar     = "!git add \"$(rev-parse --show-toplevel)\" \"$@\" #"  # Repo level: New and changed, no deletions
+  ar     = "!git add \"$(git rev-parse --show-toplevel)\" \"$@\" #"  # Repo level: New and changed, no deletions
   av     = add -v
   ax     = git add .  # Current directory: New and changed, no deletions
   aacm   = "!f() { git add -A && git commit -m \"$@\"; }; f"
