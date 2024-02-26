@@ -776,12 +776,21 @@
 
 [interactive]
   # diffFilter filters output for later paging, so don't pass through a pager.
-  #
+
+  # See xdhi alias as a work-around for:
+  # error: mismatched output from interactive.diffFilter
+  # hint: Your filter must maintain a one-to-one correspondence
+  # hint: between its input and output lines.
+
   # delta (***diff-hi default***) is broken for --patch as of 2023-06-26
   # https://github.com/dandavison/delta/issues/320
-  # diffFilter = "{ command -v diff-hi &>/dev/null && diff-hi || cat; }"  # Braces keep STDIN consistent
+  diffFilter = "{ command -v diff-hi &>/dev/null && diff-hi || cat; }"  # Braces keep STDIN consistent
+
   # Use dsf:
-  diffFilter = "{ command -v diff-so-fancy &>/dev/null && diff-so-fancy --patch || cat; }"
+  # dsf issue: https://github.com/so-fancy/diff-so-fancy/issues/474
+  # diffFilter = "{ command -v diff-so-fancy &>/dev/null && diff-so-fancy --patch || cat; }"
+  # diffFilter = "{ echo "diffFilter" >&2; faketty tee ~/tmp/diff1 | faketty diff-so-fancy --patch | tee ~/tmp/diff2; }"
+  # diffFilter = " { echo "diffFilter" >&2; cat; }"
 
   # Remove the need to press enter after an interactive prompt.
   # Required packages: Arch: perl-term-readkey, Ubuntu: libterm-readkey-perl
