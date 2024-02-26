@@ -358,6 +358,8 @@
   # Branches / remotes
   #
 
+  main-or-master = !"if git is-branch main; then echo main; elif git is-branch master; then echo master; else echo 'No main or master branch' >&2; exit 1; fi #"
+
   remote-url="!git config --get remote.\"${1:?Remote name required}\".url || { e=$?; echo \"Couldn't get remote URL for $1\"; exit $e; } >&2 # Get the fetch url for $1"
 
   # Mine: https://stackoverflow.com/a/52906108/5353461, https://stackoverflow.com/a/52913537/5353461
