@@ -367,18 +367,22 @@
   main-or-master = !"if git is-branch main; then echo main; elif git is-branch master; then echo master; else echo 'No main or master branch' >&2; exit 1; fi #"
 
   remote-url="!git config --get remote.\"${1:?Remote name required}\".url || { e=$?; echo \"Couldn't get remote URL for $1\"; exit $e; } >&2 # Get the fetch url for $1"
+  remote-url-git = !"git remote-url \"$@\" | sed -E 's/^https?/git/' # Print url with git:// protocol instead of http(s)://"
+
+  remote-branch-rename = !"git-remote-branch-rename \"$@\" # Usage: $1 == remote  $2 == oldname  $3 == newname"
 
   # Mine: https://stackoverflow.com/a/52906108/5353461, https://stackoverflow.com/a/52913537/5353461
   branch-current = "symbolic-deref HEAD"  # https://stackoverflow.com/a/19585361/5353461, at bottom.
   # branch-name: Mine: https://stackoverflow.com/a/56564366/5353461  # Given commitish, print branch head(s) or error
   # This may print more than one, so perhaps rename to branch-names.  Also, if refs/heads/$1 exists, then just print that?
-  branch-name = !"git for-each-ref --format=\"%(refname:short) %(objectname)\" 'refs/heads/' | sed -En 's/^(\\S+)\\s+'\"$(git rev-parse \"${1:-@}\" 2>/dev/null)\"'$/\\1/p' | grep . || { echo \"$1 is not a branch tip\" >&2; false;} # Print commit's branch heads"
-  branch-or-commit = !"x=$(git branch-name \"$1\"); [ -n \"$x\" -a \"$(echo -n \"$x\" | wc -l)\" -eq 0 ] ||{ x=$(git rev-parse --verify \"$1\");}; echo \"$x\"; [ -n \"$x\" ] #"
 
-  branch-remote-print = !"git config branch.$(git name-rev --name-only \"${1:+HEAD}\").remote  # Print remote for given branch (or HEAD)"
-
+  branch-remote-print = !"x=\"${1:-HEAD}\"; git config branch.$(git rev-parse --abbrev-ref \"$x\").remote || echo \"Can't get remote for $x\" >&2 # Print remote for given branch (or HEAD)"
+  # branch-tip-names requires a commitish which is a branch tip - prints alternate tip names
+  branch-tip-names = !"git for-each-ref --format=\"%(refname:short) %(objectname)\" 'refs/heads/' | sed -En 's/^(\\S+)\\s+'\"$(git rev-parse \"${1:-@}\" 2>/dev/null)\"'$/\\1/p' | grep . || { echo \"$1 is not a branch tip\" >&2; false;} # Print all names of a branch tip"
+  branch-or-commit = !"git isbranch-name \"${1:?Commitish required}\" && { x=$(git branch-tip-names \"$1\"); [ -n \"$x\" -a \"$(echo -n \"$x\" | wc -l)\" -eq 0 ] ||{ x=$(git rev-parse --verify \"$1\");}; echo \"$x\"; [ -n \"$x\" ] # Print either the branch that commitish is on, else the commit itself"
   branch-tips = !"[ -z \"$1\" ] && git branch-current 2>/dev/null || git branch --format='%(refname:short)' --contains \"${1:-HEAD}\" #"  # https://stackoverflow.com/a/19585361/5353461
-  branch-tip = !"br=$(git branch-tips \"$1\") && case \"$br\" in *$'\\n'*) printf \"Multiple branches:\\n%s\" \"$br\">&2; exit 1;; esac; echo \"$br\" #"
+  branch-tips = !"git is-branch \"${1:?Give commitish to find branch tips}\" && echo \"$1\" || git branch --format='%(refname:short)' --contains \"${1:-HEAD}\" # Only lists tips if $1 is not a branch itself"  # https://stackoverflow.com/a/19585361/5353461
+  branch-tip = !"br=$(git branch-tips \"$1\") && case \"$br\" in *$'\\n'*) printf \"Error: ambiguous branches:\\n%s\\n\" \"$br\">&2; exit 1;; esac; echo \"$br\" #"
 
   # Mine: https://stackoverflow.com/a/52896538/5353461
   branch-remote-delete = !"usage='Give args <remote> <branch(s) to delete>'; git push --delete \"${1:?$usage}\" \"${@:2}\" # Delete branch(s) from remote"
