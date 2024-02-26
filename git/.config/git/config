@@ -610,6 +610,7 @@
 
 [clone]
   filterSubmodules = true  # Apply --filter= to submodules if --recurse-submodules is used.  Assumed by alias clrsm
+  rejectShallow = true  # Fail cloning a shallow repo.  Override: --no-reject-shallow
 
 [color]
 # Doco: https://git-scm.com/docs/git-config#Documentation/git-config.txt-color
