@@ -88,6 +88,7 @@
   cinit  = !"git init; git is-empty-repo && git commit --allow-empty -m 'Initialise repository'" # init on existing repo is safe
   # Treeless and blobless clones:  https://github.blog/2020-12-21-get-up-to-speed-with-partial-clone-and-shallow-clone/
   cl     = !"echo 'Blobless clone:' >&2; git clone --filter=blob:none \"$@\" # Create a blobless clone"
+  clb    = cl --branch  # Clone only one branch or tag
   clrsm  = cl --recurse-submodules  # Assumes clone.filterSubmodules is set below
   clt    = clone --filter=tree:0  # Treeless clones are also blobless, but don't support `git log -- <path>`
   cltrsm = clt --recurse-submodules
