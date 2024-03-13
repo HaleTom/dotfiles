@@ -513,7 +513,7 @@ export_function cdup
 function cdrp {
   try="$1"
   [[ $# -ne 1  ]] && { echo "$(func_name): Must specify one directory" 2>&1; return 1; }
-  cd "$(realpath "$1")" || exit 1
+  cd "$(realpath "$1")" || return 1
 }
 export_function cdrp
 
@@ -697,7 +697,7 @@ export_function make_completion_wrapper
 function abs_dirname {
   if [[ $# = 0 ]]; then set .; fi # current directory if no arguments
   for path in "$@"; do
-    (cd "${dir:="$(dirname "$path")"}" && pwd || exit 1 )
+    (cd "${dir:="$(dirname "$path")"}" && pwd || return 1 )
     [[ ! $? ]] && return 1
   done
 }
