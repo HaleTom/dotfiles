@@ -192,7 +192,7 @@ alias tail='tail -n $((${LINES:-12}-2)) --sleep-interval=0.2' # 200ms
 alias rscp='rsync -a --one-file-system --partial --sparse --acls --xattrs --atimes --no-whole-file --inplace `# <- not good with --update` --protect-args'
 alias rsmv='rscp --remove-source-files'
 # shellcheck disable=SC2142  # Allow positional parameters to aliases (via function call)
-alias droidsync='f(){ rsync "$@" --no-p --no-o --no-g --rsync-path="su root rsync";};f'
+alias droidsync='f(){ rsync "$@" --no-p --no-o --no-g --rsync-path="su root -c rsync";};f'
 # FAT stores to two-second accuracy, NTFS 100 nanoseconds
 # https://corengen.wordpress.com/2010/03/22/comparing-file-timestamps-on-ntfs-and-fat32/
 # shellcheck disable=SC2142  # Allow positional parameters to aliases (via function call)
