@@ -96,7 +96,7 @@
   # To incrementally deepen: git fetch --deepen 50  -- see also alias `unshallow`
   # More: https://stackoverflow.com/questions/6802145/how-to-convert-a-git-shallow-clone-to-a-full-clone
   # cls    = clone --shallow-since='3 years' --shallow-submodules --recurse-submodules
-  cls    = clone --depth=30 --no-single-branch --shallow-submodules --recurse-submodules
+  cls    = cl --depth=30 --no-single-branch --shallow-submodules --recurse-submodules
   clsb   = cls --branch  # eg git clsb maint git://github.com/user/repo"
   clss   = cls --single-branch  # Clone only one branch
   # Note git clean operates from the current directory, same behaviour:
