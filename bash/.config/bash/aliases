@@ -174,9 +174,9 @@ alias pacn='pac --noconfirm '  # keep on expanding...
 alias pac='GITFLAGS="${GITFLAGS:---mirror --filter=tree:0}" paru'  # For convenience
 # Await paru blobless cloning
 if [ -x "$HOME/bin/makepkg" ]; then
-  alias paru='paru --makepkg "$HOME"/bin/makepkg'  # script does the same echo as below
+  alias paru='paru --makepkg "$HOME"/bin/makepkg --nocheck'  # script does the same echo as below
 else
-  alias paru='echo "Awaiting Morganamilo/paru/issues/1104"; paru'
+  alias paru='echo "Awaiting Morganamilo/paru/issues/1104"; paru --nocheck'
 fi
 
 # tmux / tmuxinator
