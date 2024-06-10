@@ -357,8 +357,8 @@
 
   tag-latest = !"git describe --tags $(git rev-list --tags --max-count=1) # Describe the most recent (in time) tag"
 
-  xdhi = !"git -c interactive.diffFilter='SKIP_DHI=1 diff-hi | less -FLRX --tabs=4' \"$@\" # Disable problematic diff highlighting"
-  xdhi-alias-helper = !"git \"$@\" || git xdhi \"$@\" # Disable diff-hi if initial run fails"
+  xdhi = !"cd ${GIT_PREFIX:-.} && git -c interactive.diffFilter='SKIP_DHI=1 diff-hi | less -FLRX --tabs=4' \"$@\" # Disable problematic diff highlighting"
+  xdhi-alias-helper = !"cd ${GIT_PREFIX:-.} && { git \"$@\" || git xdhi \"$@\"; } # Disable diff-hi if initial run fails"
 
   #
   # Branches / remotes
