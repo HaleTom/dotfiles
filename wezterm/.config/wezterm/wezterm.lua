@@ -1,5 +1,7 @@
 -- Official doco: https://wezfurlong.org/wezterm/config/files.html
 
+-- Ctrl-Shift-P for command palette
+
 local wezterm = require 'wezterm'  -- Pull in the wezterm API
 local act = wezterm.action  -- for binding keys to actions
 local gpus = wezterm.gui.enumerate_gpus()
