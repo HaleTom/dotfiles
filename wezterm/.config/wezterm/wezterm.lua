@@ -13,8 +13,6 @@ local mux = wezterm.mux  -- multiplexer layer: panes, tabs, windows, and workspa
 -- require("on")
 
 
--- Debug
-wezterm.log_level = "debug"
 -- After restarting WezTerm:
   -- $HOME/.local/share/wezterm/logs/ (on Linux/macOS)
   -- %APPDATA%\wezterm\logs\ (on Windows)
@@ -27,6 +25,10 @@ local config = {}  -- This table will hold the configuration.
 if wezterm.config_builder then
   config = wezterm.config_builder()
 end
+
+-- Debug
+wezterm.log_level = "debug"
+-- config.debug_key_events = true  # not sure how to get this working.
 
 -- Set $TERM=wezterm if the terminfo file is accessible
 -- https://wezfurlong.org/wezterm/config/lua/config/term.html
