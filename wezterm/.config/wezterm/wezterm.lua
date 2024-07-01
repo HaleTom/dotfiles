@@ -100,6 +100,11 @@ config.font_size = 13.8
 config.warn_about_missing_glyphs = true
 config.freetype_load_target = 'HorizontalLcd' -- https://wezfurlong.org/wezterm/config/lua/config/freetype_load_target.html
 
+--Unicode version (width of emojis)
+-- https://wezfurlong.org/wezterm/config/lua/config/unicode_version.html
+-- Version 14 allows emojis take up more than one cell
+config.unicode_version = 14
+
 config.underline_position = '200%'
 config.underline_thickness = '2px'
 
