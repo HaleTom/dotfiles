@@ -115,6 +115,11 @@ _prompt_update_zsh () {
     # shellcheck disable=SC2154  # $_git_status not defined here
     PS1=${user_at}${host}${colon_dir}'${_git_status}'${jobs}${exit_status}${percent_or_hash}
 
+    # Set RHS prompt -- from here to end of funciton
+
+    # No RHS prompt running inside of Midnight Commander
+    if [[ $MC_SID ]]; then unset RPS1; return; fi
+
     # Python virtualenvwrapper calls this function via $XDG_DATA_HOME/virtualenvs/post{de,}activate
     local environment
     [[ -n ${VIRTUAL_ENV##*/} ]] && environment+="%F{blue}(venv: ${VIRTUAL_ENV##*/})%f "
