@@ -302,6 +302,7 @@ fi
   alias -g DNE='2> /dev/null'
   alias -g E='| wc -l'  # Enumerate
   alias -g EO='2>&1'
+  alias -g EOF='2>&1 >'
   alias -g H='  | head'  # Head
   alias -g HA='|& head'
   alias -g G=' | grep -E'  # egrep is deprecated
