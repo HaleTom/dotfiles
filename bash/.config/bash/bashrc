@@ -26,12 +26,12 @@ export QUOTING_STYLE=shell-escape  # https://www.gnu.org/software/coreutils/manu
 if command -v nvim > /dev/null; then
   # Work around ^H showing instead of bold:
   # export MANPAGER="nvim -c 'set ft=man' -"
-  export MANPAGER='less -Ms +Gg'
+  export MANPAGER='less -Ms +Gg --incsearch'  # note the dupe of the else case!!
 elif command -v vim > /dev/null; then
   export MANPAGER="vim -M +MANPAGER -"
 else
-    # Use less with percentage of file viewed
-    export MANPAGER='less -Ms +Gg'
+  # Use less with percentage of file viewed
+  export MANPAGER='less -Ms +Gg --incsearch'
 fi
 
 # # Use diff-so-fancy if it's installed
