@@ -57,7 +57,7 @@ alias g='git'
 alias h='history'
 alias j='jobs'
 alias l='ll'  # l^J for ultimate laziness
-alias p='pbpaste |'
+alias P='pbpaste |'
 alias q='ls'  # mnemonic: q = query
 alias r='rake'
 alias s='git s'
@@ -118,6 +118,7 @@ alias mosh='mosh --predict=experimental'  # https://github.com/mobile-shell/mosh
 alias mv='mv -i'
 alias Mv='command mv'  # Allow overwrite
 alias mvg='mvg -g'
+alias ncdu='ncdu --threads=8 --color=dark-bg'  # Colours with dark background
 alias restix='restic -x --exclude-caches --exclude-file=$HOME/etc/restic/exclude --compression max'
 alias rga='rg --hidden --no-ignore'
 is_linux && alias rm='rm -I'  # Prompt on -r or >3 files
