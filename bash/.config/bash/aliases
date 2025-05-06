@@ -24,8 +24,8 @@ fi
 # -F, --classify = append indicator (one of */=>@|) to entries
 if is_linux; then
   # Check for hyperlink support
-  if ls -d / --hyperlink &>/dev/null; then
-    alias ls="colourify ls -CF --hyperlink --block-size=\\'1 --color=auto --quoting-style=shell-escape"
+  if ls -d / --hyperlink=auto &>/dev/null; then
+    alias ls="colourify ls -CF --hyperlink=auto --block-size=\\'1 --color=auto --quoting-style=shell-escape"
   else
     alias ls="colourify ls -CF --block-size=\\'1 --color=auto --quoting-style=shell-escape"
   fi
