@@ -9,8 +9,11 @@ alias alia_debug='shell-quote null alias: '   # For debugging ~/bin/alia
 # Issue: SC2142 occurs when parameters are used in a function #1263
 # https://github.com/koalaman/shellcheck/issues/1263
 
-# Alias colourify to '' if /etc/profile.d/grc.sh has not been sourced
-if ! alias colourify &> /dev/null; then
+if alias colourify &> /dev/null; then
+  # Disable colouring if stdout is not tty
+  alias colourify='/usr/bin/grc -es --colour=auto'
+else
+  # Use a null alias if /etc/profile.d/grc.sh has not been sourced
   alias colourify=''
 fi
 
@@ -22,9 +25,9 @@ fi
 if is_linux; then
   # Check for hyperlink support
   if ls -d / --hyperlink &>/dev/null; then
-    alias ls="colourify ls -CF --hyperlink --block-size=\\'1 --color=always --quoting-style=shell-escape"
+    alias ls="colourify ls -CF --hyperlink --block-size=\\'1 --color=auto --quoting-style=shell-escape"
   else
-    alias ls="colourify ls -CF --block-size=\\'1 --color=always --quoting-style=shell-escape"
+    alias ls="colourify ls -CF --block-size=\\'1 --color=auto --quoting-style=shell-escape"
   fi
 else
   alias ls="colourify ls -CF"
@@ -34,8 +37,8 @@ fi
 # EXA_GRID_ROWS=15 exa -la --header --group --grid --bytes --color-scale --git
 alias la='ls -A'       # Almost all - no . and ..
 alias lal='ls -la'
-alias lsdir='ls -dla * --color=always | grep "^d" --color=never'   # non-hidden directories
-alias lsDir='ls -Al --color=always | grep --color=never ^d'   # directories including hidden
+alias lsdir='ls -dla * --color=auto | grep "^d" --color=never'   # non-hidden directories
+alias lsDir='ls -Al --color=auto | grep --color=never ^d'   # directories including hidden
 alias lal='ls -la'
 alias ll='ls -l'
 alias l.='ls -d .[^.]?*' # Hidden files except . and .. (current directory only)
