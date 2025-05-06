@@ -328,6 +328,13 @@ fi
   alias -g U='| uniq'
   alias -g W='| nowrap'  # mnemonic: width / wrap
   alias -g X='| xargs'
+  alias -g XE='| xargs -0n1 echo'
+  alias -g XI='| xargs -I'
+  alias -g XG='| xargs egrep'
+  alias -g X0='| xargs -0'
+  alias -g X0E='| xargs -0n1 echo'
+  alias -g X0I='| xargs -0I'
+  alias -g X0G='| xargs -0 egrep'
 
 # From zsh-lovers not yet checked
   alias -g CA="2>&1 | cat -A"
@@ -347,8 +354,4 @@ fi
   alias -g SRN='| sort -nr'
   alias -g SZ='| sort -z'
   alias -g VM='/var/log/messages'
-  alias -g X0='| xargs -0'
-  alias -g X0E='| xargs -0n1 echo'
-  alias -g X0G='| xargs -0 egrep'
-  alias -g XG='| xargs egrep'
 }
