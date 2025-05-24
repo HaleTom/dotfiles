@@ -36,24 +36,6 @@ zinit light-mode for \
 
 ### End of Zinit's installer chunk
 
-_source_zinit() {  # Discarded function for local variables
-  zinit=$XDG_DATA_HOME/zinit/bin/zinit.zsh
-  if [ ! -r "$zinit" ]; then
-    zinit_bin=${zinit%/*}
-    echo Cloning Zinit...
-    # shellcheck disable=SC2174  # When used with -p, -m only applies to the deepest directory.
-    mkdir -pm 700 "$zinit_bin"
-    git clone --depth 1 https://github.com/zdharma-continuum/zinit.git "$zinit_bin"
-  fi
-  zinit_home=${zinit%/*/*}  # Set zinit home to be parent of zinit bin dir
-  typeset -gA ZINIT  # Global associative array
-  ZINIT[HOME_DIR]=${zinit_home}
-  source "$zinit"
-}
-autoload -Uz _zinit
-_source_zinit && unfunction _source_zinit
-# shellcheck disable=SC2154,2034,2004
-(( ${+_comps} )) && _comps[zinit]=_zinit
 
 # # Use null plugin to run commands asynchronously. Work-around for https://web.archive.org/web/20201008014818/https://github.com/zdharma/zinit/issues/68
 # # Faster and non-interactive version of `zinit create null`
