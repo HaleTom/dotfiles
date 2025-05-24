@@ -2,8 +2,13 @@
 
 # Read from (eg) `.ruby-version` if no asdf `.tool-versions` file
 # https://asdf-vm.com/manage/configuration.html#legacy-version-file
-legacy_version_file = yes
+legacy_version_file = no
+# changed to no to allow mise to manage this instead
 
-Bhasf
+use_release_candidates = no
+always_keep_download = no
+plugin_repository_last_check_duration = 60
+disable_plugin_short_name_repository = no
+concurrency = auto
 
 # vim: ft=none ft=bash
