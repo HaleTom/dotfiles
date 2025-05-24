@@ -1,0 +1,21 @@
+# https://mise.jdx.dev/configuration.html#global-config-config-mise-config-toml
+
+[settings]
+
+# uv (python)
+# 2025-05-24: disabled this as the experimental flag is required
+#   and I don't know what else that will affect
+# See upnote on "mise" for other per-project options (or even global!)
+# https://mise.jdx.dev/mise-cookbook/python.html#mise-uv
+# experimental = true
+# python.uv_venv_auto = true
+# Env var $MISE_PYTHON_UV_VENV_AUTO does the same thing:
+# https://mise.jdx.dev/lang/python.html#python.uv_venv_auto
+
+# 2025-05-24 disable warning caused by breaking change:
+# https://github.com/jdx/mise/discussions/4345
+idiomatic_version_file_enable_tools = []
+
+
+# 2025-05-24: Don't remember what this was about:
+# paranoid = true # awaiting issue fix
