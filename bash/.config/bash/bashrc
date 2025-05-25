@@ -18,9 +18,14 @@ source "$HOME/.config/bash/xdg"
 
 # Standard-ish variables
 export BROWSER=/usr/bin/google-chrome-stable
-export EDITOR='vi -e' VISUAL=vi  # https://unix.stackexchange.com/q/4859/143394
-export PAGER=less; [ -x "$HOME"/bin/pager ] && PAGER="$HOME"/bin/pager
-export QUOTING_STYLE=shell-escape  # https://www.gnu.org/software/coreutils/manual/html_node/Formatting-the-file-names.html
+# Prefer nvim then vim, else fail over to vi
+export VISUAL="$(command -v nvim 2>/dev/null || command -v vim 2>/dev/null || command -v vi)"
+# Historically, the non-visual line-oriented editor (ed or later ex)  https://unix.stackexchange.com/q/4859/143394
+# systemctl uses non-standard order: EDITOR then VISUAL, so easier to disable than set SYSTEMD_EDITOR
+# export EDITOR='vi -e'
+export PAGER=less
+[ -x "$HOME"/bin/pager ] && PAGER="$HOME"/bin/pager
+export QUOTING_STYLE=shell-escape # https://www.gnu.org/software/coreutils/manual/html_node/Formatting-the-file-names.html
 
 # MANPAGER: nvim, vim, less
 if command -v nvim > /dev/null; then
