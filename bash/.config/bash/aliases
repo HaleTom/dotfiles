@@ -73,7 +73,7 @@ alias jn='jupyter-notebook'
 alias tb='nc termbin.com 9999'
 
 # systemctl
-alias sc='sudo SYSTEMD_EDITOR=/bin/vi /usr/bin/systemctl'
+alias sc='sudo SYSTEMD_EDITOR=$VISUAL /usr/bin/systemctl'
 alias sc_c='sc cat'
 alias sc_d='sc disable'
 alias sc_dn='sc disable --now'
