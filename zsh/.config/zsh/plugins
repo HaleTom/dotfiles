@@ -133,6 +133,10 @@ ZSH_AUTOSUGGEST_USE_ASYNC=1
 
 # SmartCd
 # https://github.com/CodesOfRishi/smartcd
+#
+# TODO: Now archived. Replace with newer:
+# https://github.com/CodesOfRishi/navita
+#
 if [[ ! $OSTYPE == darwin* ]]; then
   # TODO raise issue:
   # whereis: illegal option -- b
