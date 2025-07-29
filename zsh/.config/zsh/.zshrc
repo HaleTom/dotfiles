@@ -44,6 +44,7 @@ setopt pipe_fail  # return right-most command's non-zero return value
 setopt interactive_comments  # Allow #comment in an interactive shell
 setopt posix_aliases  # Don't expand aliases overloading reserved words
 setopt ksh_glob  # Allow for matching one or more with +(x) for bash compatibility
+setopt hist_ignore_space  # Don't store commands starting with whitespace
 
 # Run a command with bash emulation.
 # For safety, alias file has bash-only:  alias as_bash=''
