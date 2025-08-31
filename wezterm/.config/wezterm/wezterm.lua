@@ -153,6 +153,25 @@ config.font_rules = {
   },
 }
 
+--
+-- Bell
+--
+-- Enable the visual bell to briefly change the background color
+config.visual_bell = {
+  -- Duration for the color to fade in (set to 0 for an instant flash)
+  fade_in_duration_ms = 0,
+  -- Duration for the color to fade out
+  fade_out_duration_ms = 150,
+  -- The easing function for the fade-in effect
+  fade_in_function = "EaseIn",
+  -- The easing function for the fade-out effect
+  fade_out_function = "EaseOut",
+  -- The target to flash, which can be "BackgroundColor" or "CursorColor"
+  target = "BackgroundColor",
+}
+config.colors = {
+  visual_bell = '#808080',
+}
 
 -- From: https://stackoverflow.com/a/7470789/5353461
 function merge_tables(t1, t2)
