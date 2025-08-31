@@ -89,7 +89,58 @@ expand-aliases() {
 zle -N expand-aliases
 bindkey '\e^E' expand-aliases
 
-return
+
+# Allow Meta-<number> keys in viins mode without moving to vicmd
+# https://www.perplexity.ai/search/improve-this-code-so-as-to-all-I_KYRsJDQsmI7i2GxG_ORg
+
+# Custom numeric argument handler that returns to insert mode
+digit-argument-viins() { zle reset-prompt; zle .digit-argument; zle .vi-insert }
+
+# Custom minus argument handler
+neg-argument-viins() { zle reset-prompt; zle .neg-argument; zle .vi-insert }
+
+# Safely display the message in $1
+zle-message() {
+        zle -I  # Invalidate display before output
+        zle -M "$1"
+        zle -R  # Force redisplay
+}
+
+# ESC cancellation handlers
+esc-or-cancel-numeric() {
+    if [[ $NUMERIC ]]; then
+        zle-message "Cancelled digit argument"
+        # This is not needed - it seems the digit argument "consumed" anyway
+        # unset NUMERIC
+    else
+        # Process the event as a normal Esc key
+        zle reset-prompt  # Clear any "Cancelled" message
+        if [[ $KEYMAP == vicmd ]]; then
+            zle .beep
+        else
+            zle .vi-cmd-mode
+        fi
+    fi
+   }
+
+# Register widgets
+zle -N digit-argument-viins
+zle -N neg-argument-viins
+zle -N esc-or-cancel-numeric
+
+# Bind Alt+<digit> and Alt+<minus> in insert mode
+for i in {0..9}; do
+    bindkey -M viins "^[$i" digit-argument-viins
+done
+bindkey -M viins "^[-" neg-argument-viins
+
+# ESC cancellation
+bindkey -M viins "^["   esc-or-cancel-numeric  # Esc
+bindkey -M viins "^[^[" esc-or-cancel-numeric  # Meta-Esc
+bindkey -M vicmd "^["   esc-or-cancel-numeric  # Esc
+bindkey -M vicmd "^[^[" esc-or-cancel-numeric  # Meta-Esc
+
+return; return; return; return; return; return; return; return; return; return
 ##
 ## Null code and comments only beyond here
 ##
