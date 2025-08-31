@@ -104,6 +104,9 @@ config.freetype_load_target = 'HorizontalLcd' -- https://wezfurlong.org/wezterm/
 -- https://wezfurlong.org/wezterm/config/lua/config/unicode_version.html
 -- Version 14 allows emojis take up more than one cell
 config.unicode_version = 14
+config.allow_square_glyphs_to_overflow_width = 'WhenFollowedBySpace' -- https://wezterm.org/config/lua/config/allow_square_glyphs_to_overflow_width.html
+-- Wezterm overwrites certain font block characters by default
+config.custom_block_glyphs = true -- https://wezterm.org/config/lua/config/custom_block_glyphs.html#custom_block_glyphs-true
 
 config.underline_position = '200%'
 config.underline_thickness = '2px'
