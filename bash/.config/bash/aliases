@@ -307,7 +307,7 @@ fi
   alias -g EO='2>&1'
   alias -g EOF='2>&1 >'
   alias -g H='  | head'  # Head
-  alias -g HA='|& head'
+  alias -g HA='|& head'  # |& was added in Bash 4 as abbreviation for `2>&1 |`
   alias -g G=' | grep -E'  # egrep is deprecated
   alias -g GA='|& grep -E'
   alias -g GI=' | grep -Ei'
