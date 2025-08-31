@@ -98,7 +98,11 @@ config.exit_behavior = "CloseOnCleanExit"  -- Use 'Hold' to not close
 -- config.font = wezterm.font({ family = 'Iosevka SS06', stretch = 'UltraCondensed'})
 config.font_size = 13.8
 config.warn_about_missing_glyphs = true
-config.freetype_load_target = 'HorizontalLcd' -- https://wezfurlong.org/wezterm/config/lua/config/freetype_load_target.html
+-- config.freetype_load_flags = "DEFAULT"  -- Set DEFAULT even with DPI > 100. xdpyinfo | grep resolution  svelte was 96 x 96
+config.freetype_load_target = 'Light' -- https://wezfurlong.org/wezterm/config/lua/config/freetype_load_target.html
+config.freetype_render_target = 'HorizontalLcd' -- https://wezterm.org/config/lua/config/freetype_render_target.html
+-- NB: Cannot set alpha channel for the text foreground color when using using subpixel-rendering.
+-- See https://wezterm.org/config/lua/config/freetype_load_target.html
 
 --Unicode version (width of emojis)
 -- https://wezfurlong.org/wezterm/config/lua/config/unicode_version.html
