@@ -1,0 +1,29 @@
+monitor.bluez.rules = [
+  {
+    matches = [{ device.name = "~bluez_card.*" }]
+    actions = {
+      update-props = {
+        # Enable codecs
+        bluez5.enable-lc3 = true
+        bluez5.enable-ldac = true
+        bluez5.enable-sbc-xq = true
+
+        # Prioritised codecs
+        # Always includes SBC as universal fallback
+        bluez5.codecs = [ lc3 sbc_xq ldac aptx_hd aptx_adaptive aptx aac sbc ]
+
+        # SBC-XQ: Force high-quality
+        # https://fossies.org/linux/pipewire/spa/plugins/bluez5/README-SBC-XQ.md
+        # https://soundexpert.org/articles/-/blogs/audio-quality-of-sbc-xq-bluetooth-audio-codec
+        bluez5.sbc-xq.bitpool = 94  # Maximum bitpool for 551kbps
+
+        # LDAC: Balance quality/battery
+        bluez5.a2dp.ldac.quality = "sq"
+
+        # Enable automatic profile switching
+        bluez5.auto-connect = [ a2dp_sink hfp_hf hsp_hs ]
+      }
+    }
+  }
+]
+
