@@ -77,6 +77,9 @@ bindkey -M vicmd "j" down-line-or-beginning-search
 
 # Expand aliases
 # https://unix.stackexchange.com/a/150737/143394
+# Doesn't expand aliases where the expansion would have syntax issues, eg `% C`
+# Doesn't handle quoting correctly in some instances:
+#   https://unix.stackexchange.com/questions/150649/resolve-all-aliases-in-a-zsh-command-line/150737#comment823235_150737
 expand-aliases() {
   unset 'functions[_expand-aliases]'
   # shellcheck disable=SC2154  # Use of _expand and aliases
