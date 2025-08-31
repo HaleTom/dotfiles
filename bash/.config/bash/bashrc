@@ -5,6 +5,7 @@
 # #1) Determine shell. #2) Silence when trying to source a filename in a variable
 
 set -o noclobber  # Use >|file to clobber
+umask 027         # No perms for others
 
 # Allow shell-specific code
 function sh_is_zsh { [ -n "${ZSH_VERSION:-}" ]; }
