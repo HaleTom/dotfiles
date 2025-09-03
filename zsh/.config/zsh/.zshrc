@@ -3,6 +3,33 @@
 # https://github.com/koalaman/shellcheck/issues/809
 # shellcheck disable=SC1090 # sourced filenames with variables
 
+# Run a command with bash emulation.
+# For safety, alias file has bash-only:  alias as_bash=''
+# Avoid: emulate bash -c '"$@"' as the $funcfiletrace line numbers go awry
+# (possibly because of code reformatting)
+function as_bash { emulate -LR bash; "$@"; }
+function as_zsh  { emulate -LR  zsh; "$@"; }
+
+# Run combined {ba,z}sh commands; setup $XDG_* variables
+as_bash source ~/.bashrc
+_prompt_timer_start  # Have initial prompt show startup time from this point on
+
+# https://wiki.archlinux.org/title/XDG_Base_Directory#:~:text=XDG_CONFIG_HOME/yarn/config%22%27-,zsh,-~/.zshrc
+# compinit cache file
+[ -d "$XDG_CACHE_HOME"/zsh ] || mkdir -p "$XDG_CACHE_HOME"/zsh
+ZSH_COMPDUMP="$XDG_CACHE_HOME/zsh/zcompdump"  # compinit cache location, default == .zcompdump in $ZDOTDIR else $HOME
+[[ ! -d $ZSH_COMPDUMP:h ]] && mkdir -p "$ZSH_COMPDUMP:h"  # $(dirname $ZSH_COMPDUMP)
+
+# Runtime completion cache directory for individual commands
+_completion_cache_path="$XDG_CACHE_HOME/zsh/zcompcache/"
+[[ ! -d $_completion_cache_path ]] && mkdir -p "$_completion_cache_path"
+zstyle ':completion:*' cache-path "$_completion_cache_path"  # Default == .zcompcache in $ZDOTDIR else $HOME
+unset _completion_cache_path
+
+# -----------------------
+# Completion
+# -----------------------
+# https://zsh.sourceforge.io/Doc/Release/Completion-System.html
 
 # The following lines were added by compinstall
 #
@@ -25,7 +52,6 @@ zstyle ':completion:*' insert-unambiguous true
 zstyle ':completion:*' menu select 2
 zstyle ':completion:*' special-dirs true
 zstyle ':completion:*' verbose true
-zstyle ':completion:*' cache-path "$XDG_CACHE_HOME/zsh/.zcompcache"
 zstyle ':completion:*' use-cache on
 
 zstyle ':completion:*' list-colors ''
@@ -53,9 +79,6 @@ setopt hist_ignore_space  # Don't store commands starting with whitespace
 function as_bash { emulate -LR bash; "$@"; }
 function as_zsh  { emulate -LR  zsh; "$@"; }
 
-# Run combined {ba,z}sh commands
-as_bash source ~/.bashrc
-_prompt_timer_start  # Have initial prompt show startup time from this point on
 
 # Set the prompt
 # http://zsh.sourceforge.net/Doc/Release/Prompt-Expansion.html
@@ -253,8 +276,10 @@ add-zsh-hook precmd        precmd_zsh_hook     # Stop prompt timer, update promp
 
 # add-zsh-hook preexec       preexec_zsh_hook    #
 
+# Initialise completions
 autoload -Uz compinit  # zplugin will do compinit later
-compinit  # this declares the compdef function
+compinit  # Uses $ZSH_COMPDUMP cache for faster load.  Default: .zcompdump in $ZDOTDIR else $HOME
+
 # If not included:  https://github.com/CodesOfRishi/smartcd/issues/11#issuecomment-1012844442
 compdef __smartcd__=cd
 # TODO fix zicompinit in plugins via debug
