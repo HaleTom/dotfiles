@@ -63,21 +63,32 @@ zstyle ':completion:*' file-patterns '%p(D):globbed-files *(D-/):directories' '*
 # Include .hidden directories in completions (eg builtin cd)
 _comp_options+=(globdots)
 
-setopt append_history auto_cd beep extended_glob no_clobber no_match notify prompt_subst
+# --------------------
+# Options
+# --------------------
+# https://zsh.sourceforge.io/Doc/Release/Options.html
+setopt auto_cd extended_glob no_clobber no_match notify prompt_subst
 setopt append_create  # Allow files to be created with >> redirection
 setopt correct  # prompt to correct spelling mistakes
 setopt pipe_fail  # return right-most command's non-zero return value
 setopt interactive_comments  # Allow #comment in an interactive shell
 setopt posix_aliases  # Don't expand aliases overloading reserved words
 setopt ksh_glob  # Allow for matching one or more with +(x) for bash compatibility
-setopt hist_ignore_space  # Don't store commands starting with whitespace
+setopt list_beep  # Beep on an ambiguous completion iff BEEP is also set (which it is by default)
+setopt pipe_fail  # return right-most command's non-zero return value
+setopt posix_aliases  # Don't expand aliases overloading reserved words
+# notify: Report the status of background jobs immediately, rather than waiting until just before printing a prompt.
 
-# Run a command with bash emulation.
-# For safety, alias file has bash-only:  alias as_bash=''
-# Avoid: emulate bash -c '"$@"' as the $funcfiletrace line numbers go awry
-# (possibly because of code reformatting)
-function as_bash { emulate -LR bash; "$@"; }
-function as_zsh  { emulate -LR  zsh; "$@"; }
+# History
+HISTFILE="$XDG_STATE_HOME"/zsh/history
+# Create directory for $HISTFILE if necessary
+[[ ! -d ${HISTFILE%/*} ]] && mkdir -p "${HISTFILE%/*}"
+export HISTSIZE=10000
+export SAVEHIST=10000
+setopt append_history  # Don't overwrite
+setopt hist_ignore_space  # Don't store commands starting with whitespace
+setopt hist_beep  # Beep in ZLE when a widget attempts to access a history entry which isn’t there.
+setopt inc_append_history  # Append history immediately, not just on exit
 
 
 # Set the prompt
@@ -191,14 +202,6 @@ autoload -Uz run-help-p4
 autoload -Uz run-help-sudo
 autoload -Uz run-help-svk
 autoload -Uz run-help-svn
-
-# Lines configured by zsh-newuser-install
-export HISTFILE=$XDG_DATA_HOME/zsh/history
-# Create directory for $HISTFILE if necessary
-[[ ! -d ${HISTFILE%/*} ]] && mkdir -p "${HISTFILE%/*}"
-export HISTSIZE=10000
-export SAVEHIST=10000
-# notify: Report the status of background jobs immediately, rather than waiting until just before printing a prompt.
 
 # End of lines configured by zsh-newuser-install
 
