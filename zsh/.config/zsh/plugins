@@ -124,14 +124,6 @@ ZSH_AUTOSUGGEST_USE_ASYNC=1
 
 
 
-# z: jump around based on frecency
-# https://github.com/agkozak/zsh-z
-ZSHZ_DATA=$XDG_DATA_HOME/zsh-z/database
-ZSHZ_TILDE=1
-ZSHZ_TRAILING_SLASH=1
-ZSHZ_UNCOMMON=1
-zinit ice wait depth"1" blockf
-zinit light 'agkozak/zsh-z'
 
 
 # Reminds you to use existing aliases for commands you just typed
