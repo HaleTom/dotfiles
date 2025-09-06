@@ -75,7 +75,7 @@ setopt interactive_comments  # Allow #comment in an interactive shell
 setopt posix_aliases  # Don't expand aliases overloading reserved words
 setopt ksh_glob  # Allow for matching one or more with +(x) for bash compatibility
 setopt list_beep  # Beep on an ambiguous completion iff BEEP is also set (which it is by default)
-setopt pipe_fail  # return right-most command's non-zero return value
+setopt pipe_fail  # Return the exit status of the pipeline first command that fails
 setopt posix_aliases  # Don't expand aliases overloading reserved words
 # notify: Report the status of background jobs immediately, rather than waiting until just before printing a prompt.
 
