@@ -214,7 +214,7 @@ source $ZDOTDIR/functions
 # Avoid _source_file as it sets `noalias` which seems to be restored by a zinit wait / turbo load after startup
 # if setopt | grep -q noaliases ; then printf "Aliases DISabled at: "; yelp; else printf "Aliases ENabled at: "; yelp; fi
 # Diagnose:  is it zsh-defer or zinit not checking then resetting the current state of option aliases?
-source $ZDOTDIR/plugins
+source "$ZDOTDIR/plugins"
 
 _source_files <<DOTFILES
     # $ZDOTDIR/plugins  # See above for aliases
