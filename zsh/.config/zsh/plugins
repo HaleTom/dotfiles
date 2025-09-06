@@ -122,8 +122,57 @@ ZSH_AUTOSUGGEST_HIGHLIGHT_STYLE='fg=238'
 ZSH_AUTOSUGGEST_USE_ASYNC=1
 
 
+# z.lua - cd faster by learning your habits
+# Upnote and https://github.com/skywind3000/z.lua
 
+export _ZL_CMD=z.lua  # No way to disable aliasing, so set it to something innocuous
+export _ZL_DATA=$XDG_STATE_HOME/zlua
+# export _ZL_EXCLUDE_DIRS="/tmp,/var/tmp"
+export _ZL_ROOT_MARKERS=".git,.svn,.hg,.root,package.json,Cargo.toml"
+# export _ZL_NO_CHECK=1  # Default: 1  Disable path existence check.  Clear with _zlua --perge
+# export _ZL_FZF=fzf  # Default: fzf
+export _ZL_HYPHEN=1  # Treat a hyphen as a normal character (in lua regex means 0 or more repetitions)
 
+# Use z.lua, fall back to cd   https://github.com/skywind3000/z.lua/wiki/FAQ#how-to-use-z-as-cd-
+function z() {
+  local old_pwd=$PWD
+  local cmd_cmd=(builtin cd)
+  if [[ $1 == -* ]]; then  # Use actual cd if wanting to use arguments
+    _zlua "$@"
+  else
+    "${cmd_cmd[@]}" "$@" 2> /dev/null || _zlua "$@"
+    # [[ $PWD != "$old_pwd" ]] || { echo "Directory not changed" >&2; return 1; }
+    # Run cd again to generate an appropriate error message
+    [[ $PWD != "$old_pwd" ]] || "${cmd_cmd[@]}" "$@"
+  fi
+}
+
+function zi() {
+  local dir
+  dir=$(_zlua -l "$@" | fzf --nth 2.. --reverse --inline-info --tac +s -e --height 35%)
+  # Replace the following with -s after: https://github.com/skywind3000/z.lua/issues/226
+  dir=$(sed -E 's/^[[:digit:]]+[[:blank:]]+([[:print:]]+.*)$/\1/' <<< "$dir")  # Strip <number><whitespace>
+  builtin cd "$dir" || return 1
+}
+
+alias zr='_zlua -r'      # cd to highest ranked by access (not frecent)  https://github.com/skywind3000/z.lua/?tab=readme-ov-file#aging
+alias zb='_zlua -b'      # cd to parent directory
+alias zz='_zlua -c'      # Restrict matches to subdirs of $PWD
+alias zf='_zlua -I'      # Use $_ZL_FZF to select in multiple matches
+# TODO keep zi function above?
+# alias zi='_zlua -i'      # cd with interactive selection -- same as `z -I` with `--init fzf` (better interface)
+alias zh='_zlua -I -t .' # List most recently accessed dirs
+alias zx='_zlua -x'      # Remove path from history
+alias ze='_zlua -e'      # Echo without frecency. Don't chdir
+alias zl='_zlua -l'      # List matches instead of cd
+alias zbf='_zlua -b -I'  # Pick parents from list
+alias zcf='_zlua -c -I'  # Pick children from list
+
+# shellcheck disable=SC2016  # Expressions don't expand in single quotes, use double quotes for that.
+zinit wait lucid for \
+  atload'eval "$(lua ${ZINIT[PLUGINS_DIR]}/skywind3000---z.lua/z.lua --init zsh enhanced once fzf)"' \
+  skywind3000/z.lua
+# https://github.com/skywind3000/z.lua/blob/master/z.lua.plugin.zsh
 
 
 # Reminds you to use existing aliases for commands you just typed
