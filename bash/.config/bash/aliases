@@ -309,7 +309,9 @@ fi
   alias -g DNE='2> /dev/null'
   alias -g E='| wc -l'  # Enumerate
   alias -g EO='2>&1'
-  alias -g EOF='2>&1 >'
+  # Awaiting: zinit: Unset aliases to prevent syntax errors or unintended behaviour #720
+  # https://github.com/zdharma-continuum/zinit/issues/720
+  # alias -g EOF='2>&1 >'
   alias -g H='  | head'  # Head
   alias -g HA='|& head'  # |& was added in Bash 4 as abbreviation for `2>&1 |`
   alias -g G=' | grep -E'  # egrep is deprecated
