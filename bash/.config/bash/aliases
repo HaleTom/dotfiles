@@ -296,6 +296,8 @@ fi
 ##
 
 [[ $ZSH_VERSION ]] && {
+  alias noalias='() { setopt local_options noaliases; "$@"; }'
+
   alias -g B='  | bust'  # Head
   alias -g C='| pbcopy'  # Copy
   alias -g BA='|& bust'
