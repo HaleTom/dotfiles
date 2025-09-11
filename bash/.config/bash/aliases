@@ -175,8 +175,10 @@ alias ia='idle alia'
 
 # pacman
 alias pacn='pac --noconfirm '  # keep on expanding...
-alias pac='GITFLAGS="${GITFLAGS:---mirror --filter=tree:0}" paru'  # For convenience
+alias pac='GITFLAGS="${GITFLAGS:---mirror --filter=blob:0}" paru'  # For convenience
+
 # Await paru blobless cloning
+# --nocheck == Don't resolve checkdepends or run the check function
 if [ -x "$HOME/bin/makepkg" ]; then
   alias paru='paru --makepkg "$HOME"/bin/makepkg --nocheck'  # script does the same echo as below
 else
