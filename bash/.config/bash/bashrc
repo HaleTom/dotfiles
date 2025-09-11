@@ -185,7 +185,7 @@ function _source_file {
 
 # Source .dotfiles listed on STDIN (one per line)
 function _source_files {
-    while read -r dotfile ; do
+    while read -r dotfile; do
         case "$dotfile" in
             "") ;& # fall through...
             \#*) continue;; # Skip blank or commented lines
@@ -209,7 +209,8 @@ fi
 
 # grc - Generic coloriser
 export GRC_ALIASES=true  # Required for grc.sh to not return early
-source_first "/etc/profile.d/grc.sh" "/usr/local/etc/grc.sh"; unset GRC_ALIASES;
+source_first "/etc/profile.d/grc.sh" "/usr/local/etc/grc.sh"
+unset GRC_ALIASES
 
 _source_files >> "$XDG_RUNTIME_DIR/source_files-$(date '+%s')-PID:$$" <<DOTFILES 2>&1
     # Git
@@ -251,11 +252,11 @@ export GEM_PATH RUBYLIB
 
 # Print a fortune message if login shell or in TMUX
 # && and || have equal precedence outside [[ test ]], so put && last
-if [[ ${_disable_welcome_message:=0} -eq 0 ]] || \
-   { sh_is_bash && shopt -q login_shell; } || { sh_is_zsh && [[ -o login ]]; } || \
-   [[ -n ${TMUX=} && _disable_welcome_message -lt $SHLVL ]] && \
-   [[ -z $DISABLE_WELCOME ]]; then
-  if_cmd ~/bin/welcome-message || if_cmd fortune
+if [[ ${_disable_welcome_message:=0} -eq 0 ]] ||
+    { sh_is_bash && shopt -q login_shell; } || { sh_is_zsh && [[ -o login ]]; } ||
+    [[ -n ${TMUX=} && _disable_welcome_message -lt $SHLVL ]] &&
+    [[ -z $DISABLE_WELCOME ]]; then
+    if_cmd ~/bin/welcome-message || if_cmd fortune
 fi
 export _disable_welcome_message=$(( SHLVL + 1 ))  # Don't print at this $SHLVL again
 
