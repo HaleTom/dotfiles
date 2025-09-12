@@ -38,6 +38,7 @@ unset _completion_cache_path
 # Completion
 # -----------------------
 # https://zsh.sourceforge.io/Doc/Release/Completion-System.html
+# TODO: read: https://thevaluable.dev/zsh-completion-guide-examples/
 
 # The following lines were added by compinstall
 #
