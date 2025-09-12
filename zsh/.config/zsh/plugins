@@ -34,6 +34,12 @@ autoload -Uz _zinit
 # zpmod source-study
 
 
+# Remove zinit's useless aliases -- 'zi' conflicts with z.lua and zoxide
+# Work around https://github.com/zdharma-continuum/zinit/issues/706
+zinit ice lucid"0" as"null" atinit"unalias zi zini zpl zplg"
+zinit snippet /dev/null
+
+
 # Load a few important annexes, without Turbo
 # (this is currently required for annexes)
 zinit light-mode for \
