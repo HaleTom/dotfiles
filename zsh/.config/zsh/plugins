@@ -26,6 +26,14 @@ source "$HOME/.local/share/zinit/zinit.git/zinit.zsh"
 autoload -Uz _zinit
 (( ${+_comps} )) && _comps[zinit]=_zinit
 
+# Pending issue: (search issue in zshrc also)
+# https://github.com/zdharma-continuum/zinit-module/issues/8
+
+# Profile all "source" commands (but beware of ~/bin/source-file)
+# zinit module build
+# zpmod source-study
+
+
 # Load a few important annexes, without Turbo
 # (this is currently required for annexes)
 zinit light-mode for \

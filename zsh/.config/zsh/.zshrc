@@ -3,6 +3,14 @@
 # https://github.com/koalaman/shellcheck/issues/809
 # shellcheck disable=SC1090 # sourced filenames with variables
 
+# Pending issue: (search issue in plugins also)
+# https://github.com/zdharma-continuum/zinit-module/issues/8
+#
+# Measure duration of `source`s
+# https://github.com/zdharma-continuum/zinit-module#measuring-time-of-sources
+# module_path+=( "/home/ravi/.local/share/zinit/module/Src" )
+# zmodload zdharma_continuum/zinit
+
 # Run a command with bash emulation.
 # For safety, alias file has bash-only:  alias as_bash=''
 # Avoid: emulate bash -c '"$@"' as the $funcfiletrace line numbers go awry
