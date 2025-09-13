@@ -51,17 +51,6 @@ zinit light-mode for \
 ### End of Zinit's installer chunk
 
 
-# # Use null plugin to run commands asynchronously. Work-around for https://web.archive.org/web/20201008014818/https://github.com/zdharma/zinit/issues/68
-# # Faster and non-interactive version of `zinit create null`
-# _null_plug_dir=${ZINIT[PLUGINS_DIR]}/_local---null
-# # echo _null_plug_dir=$_null_plug_dir >&2
-# if [[ ! -d $_null_plug_dir ]]; then
-#   echo "Creating zinit 'null' plugin directory at: $_null_plug_dir"
-#   mkdir -p -- "$_null_plug_dir"
-# fi
-# unset _null_plug_dir
-
-
 # Run these commands asynchronously via null plugin
 __zinit_deferred () {
   # Load pip completions if pip installed
