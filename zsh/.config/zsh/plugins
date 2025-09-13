@@ -209,10 +209,9 @@ zinit light 'b4b4r07/emoji-cli'
 # A collection of LS_COLORS definitions; needs your contribution!
 # https://github.com/trapd00r/LS_COLORS
 # https://zdharma-continuum.github.io/zinit/wiki/LS_COLORS-explanation/
-# shellcheck disable=2016 # Expressions don't expand in single quotes, use double quotes for that.
-zinit ice wait depth"1" atclone"dircolors -b LS_COLORS > clrs.zsh" \
-    atpull'%atclone' pick"clrs.zsh" nocompile'!' \
-    atload'zstyle ":completion:*" list-colors “${(s.:.)LS_COLORS}”'
+# I'm ignoring creating .zsh version - use the supplied .sh version
+zinit ice wait as'null' src'lscolors.sh' compile'*.sh' \
+  atload'zstyle ":completion:*" list-colors "${(s.:.)LS_COLORS}"'
 zinit light trapd00r/LS_COLORS
 
 
