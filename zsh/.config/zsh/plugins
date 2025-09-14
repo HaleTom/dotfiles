@@ -228,17 +228,7 @@ zinit light supercrabtree/k
 zinit ice depth"1"
 zinit light romkatv/zsh-defer
 
-# Disabled due to:
-# find_binary:type:4: bad option: -P
 
-# Adds numbered shortcuts to the output git status, and much more
-# https://madebynathan.com/2011/10/19/git-shortcuts-like-youve-never-seen-before/
-# https://github.com/scmbreeze/scm_breeze
-# Historical note, 2020-09-02: adding 'wait' causes 10 second hang after prompt printed
-# zinit ice wait depth"1"
-# zinit light 'scmbreeze/scm_breeze'
-# zsh-defer -12 zinit light 'scmbreeze/scm_breeze'
-#
 # Run some commands asynchronously for faster startup
 zsh-defer -12 __zinit_deferred  # -12 enables STDOUT, STDERR output
 
