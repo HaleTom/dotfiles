@@ -76,9 +76,16 @@ _comp_options+=(globdots)
 # Options
 # --------------------
 # https://zsh.sourceforge.io/Doc/Release/Options.html
-setopt auto_cd extended_glob no_clobber no_match notify prompt_subst
+setopt auto_cd  # If a command can’t be executed but is a directory, cd command to that directory.
+setopt extended_glob  # Treat the ‘#’, ‘~’ and ‘^’ characters as part of patterns for filename generation, etc. (An initial unquoted ‘~’ always produces named directory expansion.)
+setopt no_clobber  # ‘>!’ or ‘>|’ must be used to truncate a file
+setopt no_match  # Print an error, instead of leaving pattern unchanged. Also applies to file expansion of an initial ‘~’ or ‘=’.
+setopt notify  # Report the status of background jobs immediately, rather than waiting until just before printing a prompt.
+setopt prompt_subst  # Parameter expansion, command substitution and arithmetic expansion are performed in prompts.
 setopt append_create  # Allow files to be created with >> redirection
-setopt correct  # prompt to correct spelling mistakes
+setopt correct  # Prompt to correct spelling mistakes
+# shellcheck disable=SC2079  # (error): (( )) doesn't support decimals. Use bc or awk.  # But it does in Zsh!
+(( ZSH_VERSION >= 5.9 )) && setopt clobber_empty  # Regular files of zero length may be overwritten (‘clobbered’)
 setopt pipe_fail  # return right-most command's non-zero return value
 setopt interactive_comments  # Allow #comment in an interactive shell
 setopt posix_aliases  # Don't expand aliases overloading reserved words
@@ -86,7 +93,6 @@ setopt ksh_glob  # Allow for matching one or more with +(x) for bash compatibili
 setopt list_beep  # Beep on an ambiguous completion iff BEEP is also set (which it is by default)
 setopt pipe_fail  # Return the exit status of the pipeline first command that fails
 setopt posix_aliases  # Don't expand aliases overloading reserved words
-# notify: Report the status of background jobs immediately, rather than waiting until just before printing a prompt.
 
 # History
 HISTFILE="$XDG_STATE_HOME"/zsh/history
