@@ -44,6 +44,9 @@ zinit light-mode for \
 
 ### End of Zinit's installer chunk
 
+# Remove Zinit's useless aliases -- 'zi' conflicts with z.lua and zoxide
+unalias zi zini zpl zplg
+
 
 # Run these commands asynchronously via null plugin
 __zinit_deferred () {
