@@ -211,6 +211,12 @@ zinit ice wait depth"1" pick'k.sh'
 zinit light supercrabtree/k
 
 
+# Autocomplete for Zsh
+# https://github.com/marlonrichert/zsh-autocomplete
+# zinit ice wait depth"1"
+# zinit load 'marlonrichert/zsh-autocomplete'
+
+
 # zsh-defer - allow running commands after shell loads
 # https://github.com/romkatv/zsh-defer
 # No "wait" ice as it's used immediately below
