@@ -303,10 +303,6 @@ autoload -Uz compinit  # zplugin will do compinit later
 compinit  # Uses $ZSH_COMPDUMP cache for faster load.  Default: .zcompdump in $ZDOTDIR else $HOME
 
 
-# TODO fix zicompinit in plugins via debug
-zinit cdreplay  # replay all the compdefs that zinit queued up
-
-
 # Used in __zplg_async_run
 # Clear the namespace of bootstrap functions
 # unfunction _source_file _source_files
@@ -314,7 +310,6 @@ zinit cdreplay  # replay all the compdefs that zinit queued up
 # Setup direnv
 # Required at end of zshrc says: https://github.com/direnv/direnv
 command -v direnv &> /dev/null && eval "$(direnv hook zsh)"
-
 
 return
 
