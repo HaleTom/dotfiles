@@ -217,10 +217,9 @@ zinit light supercrabtree/k
 zinit ice depth"1"
 zinit light romkatv/zsh-defer
 
-
 # Run some commands asynchronously for faster startup
-zsh-defer -12 __zinit_deferred  # -12 enables STDOUT, STDERR output
-
+zsh-defer -12m __zinit_deferred  # -12 enables STDOUT, STDERR output, -m runs precmd hooks (for elapsed time)
+zsh-defer -m unfunction __zinit_deferred
 
 # Syntax highlighting should be the last plugin
 # Optimized and extended zsh-syntax-highlighting
