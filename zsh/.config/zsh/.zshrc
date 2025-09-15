@@ -22,6 +22,9 @@ function as_zsh  { emulate -LR  zsh; "$@"; }
 as_bash source ~/.bashrc
 _prompt_timer_start  # Have initial prompt show startup time from this point on
 
+
+# Completion setup and caching
+
 # https://wiki.archlinux.org/title/XDG_Base_Directory#:~:text=XDG_CONFIG_HOME/yarn/config%22%27-,zsh,-~/.zshrc
 # compinit cache file
 [ -d "$XDG_CACHE_HOME"/zsh ] || mkdir -p "$XDG_CACHE_HOME"/zsh
@@ -29,10 +32,10 @@ ZSH_COMPDUMP="$XDG_CACHE_HOME/zsh/zcompdump"  # compinit cache location, default
 [[ ! -d $ZSH_COMPDUMP:h ]] && mkdir -p "$ZSH_COMPDUMP:h"  # $(dirname $ZSH_COMPDUMP)
 
 # Runtime completion cache directory for individual commands
-_completion_cache_path="$XDG_CACHE_HOME/zsh/zcompcache/"
-[[ ! -d $_completion_cache_path ]] && mkdir -p "$_completion_cache_path"
-zstyle ':completion:*' cache-path "$_completion_cache_path"  # Default == .zcompcache in $ZDOTDIR else $HOME
-unset _completion_cache_path
+_zcompcache_dir="$XDG_CACHE_HOME/zsh/zcompcache/"
+[[ ! -d $_zcompcache_dir ]] && mkdir -p "$_zcompcache_dir"
+zstyle ':completion:*' cache-path "$_zcompcache_dir"  # Default == .zcompcache in $ZDOTDIR else $HOME
+
 
 # -----------------------
 # Completion
