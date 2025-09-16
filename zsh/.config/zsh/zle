@@ -143,6 +143,93 @@ bindkey -M viins "^[^[" esc-or-cancel-numeric  # Meta-Esc
 bindkey -M vicmd "^["   esc-or-cancel-numeric  # Esc
 bindkey -M vicmd "^[^[" esc-or-cancel-numeric  # Meta-Esc
 
+
+# ----------------------
+# Todo: get latest code from:
+# https://www.google.com/search?q=zsh+expansion%3A+any+way+to+avoid+the+eval%3F+eval+%22new_word%3D%5C%24%7Bword%3A%24%7Bexpansion_flag%7D%7D%22+eg%2C+expn_flag%3D%22f%22&udm=50&mtid=SGm0aKH_IMXR1e8P9f3K2QE&mstk=AUtExfBgZo_QjwV7CSQFqLHFQULi9gXdNg4-KN4caT_GT0t7oP9EbKz34P9wZmkBsj737zIe8aKWQVxKjH8mxS-eH9h_ZmJgRUfhtkrr2rdiykzYNUQtV11Wtv4N_1yy7kohvkGHGAenKM3cPUxSDboKUwzHp3HwN2qIFDWzdrApTuSC8hG7KsLkTdQicWIUAOeN8szgRzRhQTeu_gbfPuI5Jl6FMhJfJ6jvBUkE9aoUieE3hlbo6EyrCt6_rhM7oyiNZ1XNxM4nhxT9FA&csuir=1
+# Also:
+# GhatGPT 5 thinking: https://www.google.com/maps/place/Zen+Beach+Parking/@9.7574482,99.9606893,576m/data=!3m1!1e3!4m22!1m15!4m14!1m6!1m2!1s0x305501defe526ac7:0x9f6e3db8717f2f0e!2sQX58%2B79C+Srithanu+Kitchen,+Tambon+Ko+Pha-ngan,+Amphoe+Ko+Pha-ngan,+Chang+Wat+Surat+Thani+84280,+Thailand!2m2!1d99.9659016!2d9.7581895!1m6!1m2!1s0x305501aae64a6f11:0xf4add31f0151d4e!2sTRIBAL+OASIS+Camp,+50,+Srithanu,+15,+Tambon+Ko+Pha-ngan,+Koh+Phangan,+Surat+Thani+84280!2m2!1d99.9627408!2d9.7618869!3m5!1s0x30550111cec25825:0x34e1f184c8943f92!8m2!3d9.7574482!4d99.962358!16s%2Fg%2F11j7xlpp0b?entry=ttu&g_ep=EgoyMDI1MDgyNS4wIKXMDSoASAFQAw%3D%3D
+# Claude 4 think: https://www.perplexity.ai/search/give-zsh-zle-code-for-taking-t-ex6GKWkUSvyJnjP_qZNq5A
+# This one doesn't work right if in whitespace before a word
+# ----------------------
+
+# Pass a path modifier as the first argument, e.g., ":h".
+expand_word_under_cursor() {
+  local expansion_flag="$1"
+  local -a words
+  local word
+  local start_index end_index
+
+  # Get the words from the buffer, respecting quotes and escapes.
+  words=("${(z)BUFFER}")
+
+  # Find the index of the word under the cursor.
+  local word_index=0
+  local char_count=0
+
+  # Loop through the words to find the one at the cursor position.
+  while (( word_index < ${#words} )); do
+    local current_word="${words[$word_index+1]}"
+    local word_len="${#current_word}"
+
+    # Check if cursor is exactly at the end of a word or within the next whitespace.
+    # In these cases, we want to operate on the previous word.
+    if (( char_count + word_len == CURSOR && CURSOR > 0 )); then
+      break
+    fi
+
+    # If the cursor position is inside the current word, break the loop.
+    if (( char_count + word_len >= CURSOR )); then
+      break
+    fi
+
+    # Move to the next word. Add 1 for the space separator.
+    (( char_count += word_len + 1 ))
+    (( word_index++ ))
+  done
+
+  # The word we need is at `word_index` + 1 (because `words` is 1-indexed).
+  word="${words[$((word_index+1))]}"
+  start_index=$(( char_count ))
+  end_index=$(( char_count + ${#word} ))
+
+  # Perform the expansion if a word was found.
+  if [[ -n "$word" ]]; then
+    local expansion_expression='${word'"$expansion_flag"'}'
+    local new_word=${(e)expansion_expression}
+
+    # Replace the word in the buffer with the expanded result.
+    BUFFER="${BUFFER:0:$start_index}${new_word}${BUFFER:$end_index}"
+
+    # Adjust the cursor to the end of the new word.
+    CURSOR=$(( start_index + ${#new_word} ))
+  fi
+}
+
+# ----------------------------------------------------------------------
+# Example widgets that use the helper function
+# ----------------------------------------------------------------------
+
+# Widget to get the basename of the word under the cursor
+get-basename() {
+  expand_word_under_cursor ":t" # :t for tail
+}
+
+# Widget to get the dirname of the word under the cursor
+get-dirname() {
+  expand_word_under_cursor ":h" # :h for head
+}
+
+# Register the new widgets with ZLE
+zle -N get-basename
+zle -N get-dirname
+
+# Bind the widgets to a key combination
+# e.g., to bind `Alt-b` for basename and `Alt-d` for dirname
+bindkey '^xb' get-basename
+bindkey '^xp' get-dirname
+
+
 return; return; return; return; return; return; return; return; return; return
 ##
 ## Null code and comments only beyond here
