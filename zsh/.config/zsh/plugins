@@ -107,8 +107,7 @@ zinit light 'zsh-hooks/zsh-hooks'
 
 # Print zsh's hooks
 # https://github.com/agkozak/zhooks
-zinit ice wait depth"1"
-zinit light 'agkozak/zhooks'
+"${_zinit_defaults[@]}" wait trigger-load'!zhooks' for 'agkozak/zhooks'
 
 
 # Bracketed Paste mode (uses zsh-hooks)
