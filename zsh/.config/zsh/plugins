@@ -88,6 +88,15 @@ zinit ice wait blockf depth"1"  # have zinit manage completions  # https://githu
 zinit light 'zsh-users/zsh-completions'
 
 
+# fzf-tab
+# Replace zsh's default completion selection menu with fzf!
+# https://github.com/Aloxaf/fzf-tab
+"${_zinit_defaults[@]}" for Aloxaf/fzf-tab
+zstyle ':fzf-tab:complete:_zlua:*' query-string input
+is_bin_in_path exa && zstyle ':fzf-tab:complete:cd:*' extra-opts --preview=$extract'exa -1 --color=always ${~ctxt[hpre]}$in'
+zstyle ':fzf-tab:complete:kill:argument-rest' extra-opts --preview=$extract'ps --pid=$in[(w)1] -o cmd --no-headers -w -w' --preview-window=down:3:wrap" \
+
+
 # Add zsh's missing hooks, and support for user-defined hooks
 # eg zle-line-init of the Special Wigets in `man zshzle`
 # https://github.com/zsh-hooks/zsh-hooks'
