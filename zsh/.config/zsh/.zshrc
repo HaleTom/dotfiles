@@ -298,10 +298,9 @@ add-zsh-hook precmd        precmd_zsh_hook     # Stop prompt timer, update promp
 
 # add-zsh-hook preexec       preexec_zsh_hook    #
 
-# Initialise completions
-autoload -Uz compinit  # zplugin will do compinit later
-compinit  # Uses $ZSH_COMPDUMP cache for faster load.  Default: .zcompdump in $ZDOTDIR else $HOME
-
+# Initialise completions -- this is done by zinit at end of ./plugins
+# autoload -Uz compinit  # zplugin will do compinit later
+# compinit  # Uses $ZSH_COMPDUMP cache for faster load.  Default: .zcompdump in $ZDOTDIR else $HOME
 
 # Used in __zplg_async_run
 # Clear the namespace of bootstrap functions
