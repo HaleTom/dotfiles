@@ -118,8 +118,11 @@ unset 'AUTOPAIR_PAIRS[ ]'  # Make typing '[ x ]' consume the auto-inserted ']' a
 
 # Auto suggestions
 # https://github.com/zsh-users/zsh-autosuggestions
-zinit ice wait depth"1" lucid atload'_zsh_autosuggest_start'
-zinit light zsh-users/zsh-autosuggestions
+"${_zinit_defaults[@]}" atload'!_zsh_autosuggest_start' \
+  atload"bindkey '^_' autosuggest-execute
+         bindkey '^ ' autosuggest-accept" \
+  for zsh-users/zsh-autosuggestions
+
 ZSH_AUTOSUGGEST_STRATEGY=match_prev_cmd  # Match on previous history command also
 ZSH_AUTOSUGGEST_BUFFER_MAX_SIZE=20  # Recommended
 ZSH_AUTOSUGGEST_HIGHLIGHT_STYLE='fg=238'
