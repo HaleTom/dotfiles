@@ -208,12 +208,6 @@ zinit ice wait depth"1" pick'k.sh'
 zinit light supercrabtree/k
 
 
-# Autocomplete for Zsh
-# https://github.com/marlonrichert/zsh-autocomplete
-# zinit ice wait depth"1"
-# zinit load 'marlonrichert/zsh-autocomplete'
-
-
 # zsh-defer - allow running commands after shell loads
 # https://github.com/romkatv/zsh-defer
 # No "wait" ice as it's used immediately below
@@ -223,6 +217,16 @@ zinit light romkatv/zsh-defer
 # Run some commands asynchronously for faster startup
 zsh-defer -12m __zinit_deferred  # -12 enables STDOUT, STDERR output, -m runs precmd hooks (for elapsed time)
 zsh-defer -m unfunction __zinit_deferred
+
+
+# Autocomplete for Zsh
+# https://github.com/marlonrichert/zsh-autocomplete
+zsh-defer -a zinit ice depth"1"
+zsh-defer -a zinit load 'marlonrichert/zsh-autocomplete'
+# This causes all input to be ignored, except for Ctrl-C, after a delay of about 10 seconds.
+# zinit ice wait depth"1"
+# zinit load 'marlonrichert/zsh-autocomplete'
+
 
 # Syntax highlighting should be the last plugin
 # Optimized and extended zsh-syntax-highlighting
