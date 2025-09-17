@@ -124,17 +124,19 @@ zinit light hlissner/zsh-autopair
 unset 'AUTOPAIR_PAIRS[ ]'  # Make typing '[ x ]' consume the auto-inserted ']' and be compatible with Midnight Commander
 
 
-# Auto suggestions
+# Auto suggestions - ghost type-ahead text based on history / completions
 # https://github.com/zsh-users/zsh-autosuggestions
+# TODO: New shell: need to press <ENTER> for this to start working
 "${_zinit_defaults[@]}" atload'!_zsh_autosuggest_start' \
   atload"bindkey '^_' autosuggest-execute
-         bindkey '^ ' autosuggest-accept" \
+         bindkey '^ ' autosuggest-accept  # Ctrl-<SPACE>" \
   for zsh-users/zsh-autosuggestions
 
-ZSH_AUTOSUGGEST_STRATEGY=match_prev_cmd  # Match on previous history command also
+ZSH_AUTOSUGGEST_STRATEGY=(match_prev_cmd completion)  # Match on previous history command also.  https://github.com/zsh-users/zsh-autosuggestions#suggestion-strategy
 ZSH_AUTOSUGGEST_BUFFER_MAX_SIZE=20  # Recommended
-ZSH_AUTOSUGGEST_HIGHLIGHT_STYLE='fg=238'
+ZSH_AUTOSUGGEST_HIGHLIGHT_STYLE='fg=240'
 ZSH_AUTOSUGGEST_USE_ASYNC=1
+ZSH_AUTOSUGGEST_MANUAL_REBIND=1  # This can be a big boost to performance, but you'll need to handle re-binding yourself  https://github.com/zsh-users/zsh-autosuggestions#disabling-automatic-widget-re-binding
 
 
 # z.lua - cd faster by learning your habits
