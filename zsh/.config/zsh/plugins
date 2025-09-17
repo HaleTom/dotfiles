@@ -119,9 +119,10 @@ zinit snippet OMZ::plugins/safe-paste/safe-paste.plugin.zsh
 
 # Auto-close and delete matching delimiters in zsh
 # https://github.com/hlissner/zsh-autopair
-zinit ice wait depth"1"
-zinit light hlissner/zsh-autopair
-unset 'AUTOPAIR_PAIRS[ ]'  # Make typing '[ x ]' consume the auto-inserted ']' and be compatible with Midnight Commander
+"${_zinit_defaults[@]}" atload'unset "AUTOPAIR_PAIRS[ ]"' \
+for hlissner/zsh-autopair
+# By default, when typing '[ x ]' the 2nd space doesn't consume the added space.
+# Maybe something about compatibility with Midnight Commander also?
 
 
 # Auto suggestions - ghost type-ahead text based on history / completions
