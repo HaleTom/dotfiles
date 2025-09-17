@@ -47,6 +47,9 @@ zinit light-mode for \
 # Remove Zinit's useless aliases -- 'zi' conflicts with z.lua and zoxide
 unalias zi zini zpl zplg
 
+# Default options for zinit
+_zinit_defaults=(zinit wait light-mode depth'1')
+
 
 # Run these commands asynchronously via null plugin
 __zinit_deferred () {
@@ -268,6 +271,7 @@ FAST_HIGHLIGHT_STYLES[${FAST_THEME_NAME}bracket-level-3]='fg=red,bold'
 # : ${FAST_HIGHLIGHT_STYLES[freeback-dollar-quoted-argument]:=fg=110}
 
 # Syntax highlighting should be the last plugin loaded
+unset _zinit_defaults
 return
 
 
