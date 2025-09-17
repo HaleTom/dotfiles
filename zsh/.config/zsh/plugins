@@ -67,6 +67,7 @@ __zinit_deferred () {
   # Setup my aliases after any turbo-loaded plugins
   _source_file "$XDG_CONFIG_HOME/bash/aliases"
   # echo finished running deferred function
+  unfunction __zinit_deferred  # remove thyself
 }
 
 
@@ -219,7 +220,6 @@ zinit light romkatv/zsh-defer
 
 # Run some commands asynchronously for faster startup
 zsh-defer -12m __zinit_deferred  # -12 enables STDOUT, STDERR output, -m runs precmd hooks (for elapsed time)
-zsh-defer -m unfunction __zinit_deferred
 
 
 # Autocomplete for Zsh
