@@ -248,10 +248,14 @@ zsh-defer -a zinit load 'marlonrichert/zsh-autocomplete'
 # Optimized and extended zsh-syntax-highlighting
 # https://github.com/zdharma-continuum/fast-syntax-highlighting
 FAST_THEME_NAME=free  # From `fast-theme -l`. `fast-theme -t <theme>` to test
-# FIXME: compinit isn't actually running here:
-zinit ice wait depth"1" atinit"zicompinit; zicdreplay"
-zinit ice atload"[[ current_theme.zsh -nt themes/$FAST_THEME_NAME.ini ]] || fast-theme $FAST_THEME_NAME > /dev/null"
-zinit load 'zdharma-continuum/fast-syntax-highlighting'
+# TODO: is compinit working properly?  "$_zcompcache_dir" is empty but "$XDG_DATA_HOME"/zinit/completions populated
+"${_zinit_defaults[@]}" atinit"zicompinit; zicdreplay  # Executed before atload" \
+  atload"[[ current_theme.zsh -nt themes/$FAST_THEME_NAME.ini ]] || fast-theme $FAST_THEME_NAME > /dev/null" \
+  atload'FAST_HIGHLIGHT[chroma-man]=  # Prevent horrible purple background' \
+  atclone'(){local f;cd -q →*;for f (*~*.zwc){zcompile -Uz -- ${f}};}' atpull'%atclone  # compile chroma directory' \
+  compile'.*fast*~*.zwc' nocompletions \
+  for 'zdharma-continuum/fast-syntax-highlighting'
+
 typeset -gA FAST_HIGHLIGHT_STYLES FAST_HIGHLIGHT
 # Customise colours of theme set via fast-theme  https://github.com/zdharma/fast-syntax-highlighting/issues/42
 # Available options in $XDG_CONFIG_HOME/zsh/.zinit/plugins/zdharma---fast-syntax-highlighting/current_theme.zsh
