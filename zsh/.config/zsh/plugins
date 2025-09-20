@@ -84,8 +84,18 @@ zinit light 'softmoth/zsh-vim-mode'
 
 # Additional completion definitions for Zsh
 # https://github.com/zsh-users/zsh-completions
-zinit ice wait blockf depth"1"  # have zinit manage completions  # https://github.com/zdharma-continuum/zinit#completions
-zinit light 'zsh-users/zsh-completions'
+# Have zinit manage completions  # https://github.com/zdharma-continuum/zinit#completions
+"${_zinit_defaults[@]}" completions atpull'zinit cclear -q && zinit creinstall -q .' \
+  atinit"  # Source: https://devstate.de/uncategorized/pimp-my-terminal-with-zinit-2022/#:~:text=zsh%2Dusers/zsh%2Dcompletions
+    zstyle ':completion:*' completer _expand _complete _ignored _approximate
+    zstyle ':completion:*' matcher-list 'm:{a-z}={A-Z}'
+    zstyle ':completion:*' menu select=2
+    zstyle ':completion:*' select-prompt '%SScrolling active: current selection at %p%s'
+    zstyle ':completion:*:*:*:*:processes' command 'ps -u $USER -o pid,user,comm,cmd -w -w'
+    zstyle ':completion:*:descriptions' format '-- %d --'
+    zstyle ':completion:*:processes' command 'ps -au$USER'
+    zstyle ':completion:complete:*:options' sort false" \
+for 'zsh-users/zsh-completions'
 
 
 # fzf required
