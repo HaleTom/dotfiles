@@ -75,6 +75,18 @@ zstyle ':completion:*' file-patterns '%p(D):globbed-files *(D-/):directories' '*
 # Include .hidden directories in completions (eg builtin cd)
 _comp_options+=(globdots)
 
+# Recommended by: https://github.com/Aloxaf/fzf-tab?tab=readme-ov-file#configure
+# Disable sort when completing `git checkout`
+zstyle ':completion:*:git-checkout:*' sort false
+# set descriptions format to enable group support
+# NOTE: don't use escape sequences (like '%F{red}%d%f') here, fzf-tab will ignore them
+zstyle ':completion:*:descriptions' format '[%d]'
+# set list-colors to enable filename colorizing
+zstyle ':completion:*' list-colors ${(s.:.)LS_COLORS}
+# force zsh not to show completion menu, which allows fzf-tab to capture the unambiguous prefix
+zstyle ':completion:*' menu no
+
+
 # --------------------
 # Options
 # --------------------
