@@ -178,6 +178,45 @@ ZSH_AUTOSUGGEST_HIGHLIGHT_STYLE='fg=240'
 ZSH_AUTOSUGGEST_USE_ASYNC=1
 ZSH_AUTOSUGGEST_MANUAL_REBIND=1  # This can be a big boost to performance, but you'll need to handle re-binding yourself  https://github.com/zsh-users/zsh-autosuggestions#disabling-automatic-widget-re-binding
 
+#
+# History
+#
+
+# zsh-history-substring-search
+# https://github.com/zsh-users/zsh-history-substring-search/
+# https://github.com/zsh-users/zsh-history-substring-search/?tab=readme-ov-file#configuration
+"${_zinit_defaults[@]}" for 'zsh-users/zsh-history-substring-search'
+HISTORY_SUBSTRING_SEARCH_ENSURE_UNIQUE=1
+
+
+# history-search-multi-word
+# https://github.com/zdharma-continuum/history-search-multi-word/
+"${_zinit_defaults[@]}" trackbinds bindmap'^R -> ^H' atinit" \
+        zstyle :history-search-multi-word highlight-color fg=yellow,bold  # Color in which to highlight matched, searched text (default bg=17 on 256-color terminals)
+        zstyle :history-search-multi-word page-size "$((LINES / 3))"      # Number of entries to show (default is $LINES/3)
+        zstyle :plugin:history-search-multi-word active underline         # Effect on active history entry. Try: standout, bold, bg=blue (default underline)
+        zstyle :plugin:history-search-multi-word check-paths yes          # Whether to check paths for existence and mark with magenta (default true)
+        zstyle :plugin:history-search-multi-word clear-on-cancel no       # Whether pressing Ctrl-C or ESC should clear entered query
+        zstyle :plugin:history-search-multi-word synhl yes                # Whether to perform syntax highlighting (default true)
+        zstyle :history-search-multi-word highlight-color fg=red,bold" \
+for 'zdharma-continuum/history-search-multi-word'
+#
+# Doesn't seem to be needed:
+# https://github.com/zdharma-continuum/history-search-multi-word#:~:text=search%2Dmulti%2Dword-,reset%2Dprompt%2Dprotect,-1
+# zstyle :plugin:history-search-multi-word reset-prompt-protect 1" \
+
+# Customisation - https://github.com/zdharma-continuum/history-search-multi-word#syntax-highlighting
+typeset -gA HSMW_HIGHLIGHT_STYLES
+# Paths that exist
+HSMW_HIGHLIGHT_STYLES[path]="fg=white,bold"
+# Enable coloring of options of form "-o" and "--option", with cyan:
+HSMW_HIGHLIGHT_STYLES[double-hyphen-option]="fg=cyan"
+HSMW_HIGHLIGHT_STYLES[single-hyphen-option]="fg=cyan"
+# 256 colors to highlight command separators (e.g., ;, &&, and ||):
+HSMW_HIGHLIGHT_STYLES[commandseparator]="fg=white,bg=27"
+
+# My art: [feat]: User-selectable keys for keybindings #14  https://github.com/zdharma-continuum/history-search-multi-word/issues/14
+
 
 # z.lua - cd faster by learning your habits
 # Upnote and https://github.com/skywind3000/z.lua
