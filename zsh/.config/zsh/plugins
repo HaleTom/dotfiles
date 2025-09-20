@@ -128,6 +128,11 @@ if [[ ${commands[fzf]} ]]; then # Don't assume that fzf is installed
 
   # [[ ${commands[eza]} ]] && zstyle ':fzf-tab:complete:cd:*' extra-opts --preview=$extract'eza -1 --color=always ${~ctxt[hpre]}$in'
   # zstyle ':fzf-tab:complete:kill:argument-rest' extra-opts --preview=$extract'ps --pid=$in[(w)1] -o cmd --no-headers -w -w' --preview-window=down:3:wrap
+
+
+  # A collection of fzf-tab's sources taken from: https://github.com/Aloxaf/fzf-tab/wiki/Preview#preview-gallery
+  # https://github.com/Freed-Wu/fzf-tab-source
+  "${_zinit_defaults[@]}" for 'Freed-Wu/fzf-tab-source'
 fi  # have fzf
 
 
