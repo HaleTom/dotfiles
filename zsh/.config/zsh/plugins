@@ -88,13 +88,37 @@ zinit ice wait blockf depth"1"  # have zinit manage completions  # https://githu
 zinit light 'zsh-users/zsh-completions'
 
 
-# fzf-tab
-# Replace zsh's default completion selection menu with fzf!
-# https://github.com/Aloxaf/fzf-tab
-"${_zinit_defaults[@]}" for Aloxaf/fzf-tab
-zstyle ':fzf-tab:complete:_zlua:*' query-string input
-is_bin_in_path exa && zstyle ':fzf-tab:complete:cd:*' extra-opts --preview=$extract'exa -1 --color=always ${~ctxt[hpre]}$in'
-zstyle ':fzf-tab:complete:kill:argument-rest' extra-opts --preview=$extract'ps --pid=$in[(w)1] -o cmd --no-headers -w -w' --preview-window=down:3:wrap" \
+# fzf required
+if [[ ${commands[fzf]} ]]; then # Don't assume that fzf is installed
+  # fzf-tab
+  # Replace zsh's default completion selection menu with fzf!
+  # https://github.com/Aloxaf/fzf-tab
+  "${_zinit_defaults[@]}" for Aloxaf/fzf-tab
+
+  # Preview directory's content with eza when completing cd
+  [[ ${commands[eza]} ]] && zstyle ':fzf-tab:complete:cd:*' fzf-preview 'eza -1 --color=always $realpath'
+  # From: https://github.com/Aloxaf/fzf-tab?tab=readme-ov-file#configure
+  zstyle ':fzf-tab:*' fzf-bindings 'space:accept' 'ctrl-a:toggle-all'  # like --bind=space:accept
+  # NOTE: fzf-tab does not follow FZF_DEFAULT_OPTS by default
+  zstyle ':fzf-tab:*' fzf-flags --color=fg:1,fg+:2
+  # Switch group using `<` and `>`
+  zstyle ':fzf-tab:*' switch-group '<' '>'
+  # To make fzf-tab follow FZF_DEFAULT_OPTS (not FZF_DEFAULT_OPTS_FILE)
+  # NOTE: This may lead to unexpected behavior since some flags break this plugin.
+  # See https://github.com/Aloxaf/fzf-tab/issues/455: [BUG] Using --tmux in an exported FZF_DEFAULT_OPTS breaks ftb-tmux-popup
+  zstyle ':fzf-tab:*' use-fzf-default-opts yes
+
+  # https://github.com/Aloxaf/fzf-tab/wiki/Configuration#universal
+  zstyle ':fzf-tab:*' fzf-command ftb-tmux-popup
+  zstyle ':fzf-tab:*' accept-line enter
+  # To disable continuous-trigger for a specific command, use: zstyle ':fzf-tab:*<CMD>*' continuous-trigger ''
+  zstyle ':fzf-tab:*' continuous-trigger '/'
+  zstyle ':fzf-tab:complete:*' popup-pad 30 0  # for ftb-tmux-popup
+  zstyle ':fzf-tab:complete:_zlua:*' query-string input
+
+  # [[ ${commands[eza]} ]] && zstyle ':fzf-tab:complete:cd:*' extra-opts --preview=$extract'eza -1 --color=always ${~ctxt[hpre]}$in'
+  # zstyle ':fzf-tab:complete:kill:argument-rest' extra-opts --preview=$extract'ps --pid=$in[(w)1] -o cmd --no-headers -w -w' --preview-window=down:3:wrap
+fi  # have fzf
 
 
 # Add zsh's missing hooks, and support for user-defined hooks
