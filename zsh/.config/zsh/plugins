@@ -199,7 +199,7 @@ function z() {
   fi
 }
 
-function zi() {
+[[ ${commands[fzf]} ]] && function zi() {  # Only if fzf is installed
   local dir
   dir=$(_zlua -l "$@" | fzf --nth 2.. --reverse --inline-info --tac +s -e --height 35%)
   # Replace the following with -s after: https://github.com/skywind3000/z.lua/issues/226
