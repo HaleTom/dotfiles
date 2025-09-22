@@ -295,7 +295,7 @@ sh_is_zsh && return
 is_cmd fzf && source_first "/usr/share/fzf/completion.bash" "/usr/local/opt/fzf/shell/completion.bash"
 is_cmd fzf && source_first "/usr/share/fzf/key-bindings.bash" "/usr/local/opt/fzf/shell/key-bindings.bash"
 
-export HISTFILE=$XDG_DATA_HOME/bash/history
+export HISTFILE=$XDG_STATE_HOME/bash/history
 # Exclude duplicates and commands starting with a <space> from history
 export HISTCONTROL=ignoredups:ignorespace
 
