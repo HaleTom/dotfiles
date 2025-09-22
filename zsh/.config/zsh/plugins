@@ -4,6 +4,7 @@
 #
 # shellcheck disable=SC1090 # sourced files with variables
 
+# FIXME: g logda G inserts GG and fails  (bisect)
 
 # Zinit
 # Wiki:    https://zdharma-continuum.github.io/zinit/wiki/
