@@ -107,6 +107,12 @@ if [[ ${commands[fzf]} ]]; then # Don't assume that fzf is installed
   # https://github.com/Aloxaf/fzf-tab
   "${_zinit_defaults[@]}" for Aloxaf/fzf-tab
 
+  # fzf-git.sh -- key bindings for Git objects, powered by fzf
+  # https://github.com/junegunn/fzf-git.sh
+  # Awaiting bell issue: https://github.com/junegunn/fzf-git.sh/issues/88
+  "${_zinit_defaults[@]}" atinit"FZF_GIT_CAT=$HOME/bin/pager" \
+    for junegunn/fzf-git.sh
+
   # Preview directory's content with eza when completing cd
   # shellcheck disable=SC2016  # SC2016 (info): Expressions don't expand in single quotes
   [[ ${commands[eza]} ]] && zstyle ':fzf-tab:complete:cd:*' fzf-preview 'eza -1 --color=always $realpath'
