@@ -17,14 +17,14 @@
 if [[ ! -f $HOME/.local/share/zinit/zinit.git/zinit.zsh ]]; then
     print -P "%F{33} %F{220}Installing %F{33}ZDHARMA-CONTINUUM%F{220} Initiative Plugin Manager (%F{33}zdharma-continuum/zinit%F{220})…%f"
     command mkdir -p "$HOME/.local/share/zinit" && command chmod g-rwX "$HOME/.local/share/zinit"
-    command git clone https://github.com/zdharma-continuum/zinit "$HOME/.local/share/zinit/zinit.git" && \
-        print -P "%F{33} %F{34}Installation successful.%f%b" || \
+    { command git clone https://github.com/zdharma-continuum/zinit "$HOME/.local/share/zinit/zinit.git" && \
+        print -P "%F{33} %F{34}Installation successful.%f%b"; } || \
         print -P "%F{160} The clone has failed.%f%b"
 fi
 
 source "$HOME/.local/share/zinit/zinit.git/zinit.zsh"
 autoload -Uz _zinit
-(( ${+_comps} )) && _comps[zinit]=_zinit
+(( ${+_comps} )) && _comps['zinit']=_zinit
 
 # Pending issue: (search issue in zshrc also)
 # https://github.com/zdharma-continuum/zinit-module/issues/8
@@ -106,6 +106,7 @@ if [[ ${commands[fzf]} ]]; then # Don't assume that fzf is installed
   "${_zinit_defaults[@]}" for Aloxaf/fzf-tab
 
   # Preview directory's content with eza when completing cd
+  # shellcheck disable=SC2016  # SC2016 (info): Expressions don't expand in single quotes
   [[ ${commands[eza]} ]] && zstyle ':fzf-tab:complete:cd:*' fzf-preview 'eza -1 --color=always $realpath'
   # From: https://github.com/Aloxaf/fzf-tab?tab=readme-ov-file#configure
   zstyle ':fzf-tab:*' fzf-bindings 'space:accept' 'ctrl-a:toggle-all'  # like --bind=space:accept
@@ -191,14 +192,15 @@ HISTORY_SUBSTRING_SEARCH_ENSURE_UNIQUE=1
 
 # history-search-multi-word
 # https://github.com/zdharma-continuum/history-search-multi-word/
-"${_zinit_defaults[@]}" trackbinds bindmap'^R -> ^H' atinit" \
+# shellcheck disable=SC2016  # SC2016 (info): Expressions don't expand in single quotes
+"${_zinit_defaults[@]}" trackbinds bindmap'^R -> ^H' atinit' \
         zstyle :history-search-multi-word highlight-color fg=yellow,bold  # Color in which to highlight matched, searched text (default bg=17 on 256-color terminals)
         zstyle :history-search-multi-word page-size "$((LINES / 3))"      # Number of entries to show (default is $LINES/3)
         zstyle :plugin:history-search-multi-word active underline         # Effect on active history entry. Try: standout, bold, bg=blue (default underline)
         zstyle :plugin:history-search-multi-word check-paths yes          # Whether to check paths for existence and mark with magenta (default true)
         zstyle :plugin:history-search-multi-word clear-on-cancel no       # Whether pressing Ctrl-C or ESC should clear entered query
         zstyle :plugin:history-search-multi-word synhl yes                # Whether to perform syntax highlighting (default true)
-        zstyle :history-search-multi-word highlight-color fg=red,bold" \
+        zstyle :history-search-multi-word highlight-color fg=red,bold' \
 for 'zdharma-continuum/history-search-multi-word'
 #
 # Doesn't seem to be needed:
@@ -292,6 +294,7 @@ zinit light 'b4b4r07/emoji-cli'
 # https://github.com/trapd00r/LS_COLORS
 # https://zdharma-continuum.github.io/zinit/wiki/LS_COLORS-explanation/
 # I'm ignoring creating .zsh version - use the supplied .sh version
+# shellcheck disable=SC2016  # SC2016 (info): Expressions don't expand in single quotes
 zinit ice wait as'null' src'lscolors.sh' compile'*.sh' \
   atload'zstyle ":completion:*" list-colors "${(s.:.)LS_COLORS}"'
 zinit light trapd00r/LS_COLORS
@@ -331,6 +334,7 @@ zsh-defer -a zinit load 'marlonrichert/zsh-autocomplete'
 # https://github.com/zdharma-continuum/fast-syntax-highlighting
 FAST_THEME_NAME=free  # From `fast-theme -l`. `fast-theme -t <theme>` to test
 # TODO: is compinit working properly?  "$_zcompcache_dir" is empty but "$XDG_DATA_HOME"/zinit/completions populated
+# shellcheck disable=SC2016  # SC2016 (info): Expressions don't expand in single quotes
 "${_zinit_defaults[@]}" atinit"zicompinit; zicdreplay  # Executed before atload" \
   atload"[[ current_theme.zsh -nt themes/$FAST_THEME_NAME.ini ]] || fast-theme $FAST_THEME_NAME > /dev/null" \
   atload'FAST_HIGHLIGHT[chroma-man]=  # Prevent horrible purple background' \
