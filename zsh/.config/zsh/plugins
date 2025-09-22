@@ -323,11 +323,18 @@ zsh-defer -t1 -12m __zinit_deferred
 
 # Autocomplete for Zsh
 # https://github.com/marlonrichert/zsh-autocomplete
-zsh-defer -a zinit ice depth"1"
-zsh-defer -a zinit load 'marlonrichert/zsh-autocomplete'
-# This causes all input to be ignored, except for Ctrl-C, after a delay of about 10 seconds.
-# zinit ice wait depth"1"
-# zinit load 'marlonrichert/zsh-autocomplete'
+# Test this is working: wemux <space>
+# But this still hangs:
+# zsh-defer -a zinit depth'1' light-mode blockf atpull'zinit creinstall -q .' \
+# "${_zinit_defaults[@]}" blockf atpull'zinit creinstall -q .' \
+#   atinit'zle -N menu-search; zle -N recent-paths' \
+#   for 'marlonrichert/zsh-autocomplete'
+#
+# Disabled as it's a bit hectic
+#
+# TODO: New shell: need to press <ENTER> for this to start working
+# The 'zle -N menu-search; zle -N recent-paths' is not needed if
+# loaded after highlighting but highlighting says it should be loaded last.
 
 
 # Syntax highlighting should be the last plugin
