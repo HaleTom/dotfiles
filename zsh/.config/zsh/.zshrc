@@ -239,7 +239,7 @@ autoload -Uz run-help-svn
 READNULLCMD=less  # have "< file" be piped to less
 
 # shellcheck disable=2153  # Possible misspelling: ZDOTDIR may not be assigned.
-source "$ZDOTDIR"/functions
+source "$ZDOTDIR"/functions-zsh
 
 # Source plugins
 # Avoid _source_file as it sets `noalias` which seems to be restored by a zinit wait / turbo load after startup
