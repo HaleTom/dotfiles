@@ -12,10 +12,6 @@ function export_function {
   # zsh can't export functions: https://stackoverflow.com/a/1896039/5353461
 }
 
-function sh_is_zsh { [[ -n $ZSH_VERSION ]]; }
-function sh_is_bash { [[ -n $BASH_VERSION ]]; }
-export_function sh_is_bash sh_is_zsh
-
 function is_mac () { [[ $OSTYPE == darwin* ]]; }
 function is_linux () { [[ $OSTYPE == linux* ]]; }
 export_function is_mac is_linux
