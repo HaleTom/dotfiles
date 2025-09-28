@@ -2,15 +2,25 @@
 function figzsh {
     local zdotdir=$1
     if [[ -d $zdotdir ]]; then
+        # shellcheck disable=SC2153  # Possible misspelling: ZDOTDIR may not be assigned. Did you mean zdotdir?
         zdotdir=$ZDOTDIR
     else
         zdotdir="$HOME/code/zdotdirs/${1:-skel}"
         if [[ ! -d $zdotdir ]]; then
-            printf "%s is not a directory.\n" $zdotdir >&2
+            printf "%s is not a directory.\n" "$zdotdir" >&2
             return 1
         fi
     fi
     ZDOTDIR=$zdotdir exec -l zsh
 }
+
+
+# Remove files without asking
+# Allows for alias rm=rm -I
+function Rm {
+  setopt localoptions rm_star_silent
+  command rm "$@"
+}
+
 
 # vim: filetype=zsh

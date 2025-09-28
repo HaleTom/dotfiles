@@ -2,6 +2,7 @@
 # ^ For shellcheck's happiness
 
 # An assortment of useful bash functions. zsh sources this with 'emulate bash'.
+# A shell that is not bash is assumed to be zsh.
 # This file is expected to be sourced, not run.
 
 # Allow functions to be accessed from bash sub-shells by:
@@ -15,14 +16,6 @@ function export_function {
 function is_mac () { [[ $OSTYPE == darwin* ]]; }
 function is_linux () { [[ $OSTYPE == linux* ]]; }
 export_function is_mac is_linux
-
-# Remove files without asking
-# Allows for alias rm=rm -I
-function Rm {
-  sh_is_zsh && setopt localoptions rm_star_silent
-  command rm "$@"
-}
-export_function Rm
 
 
 # List all function names
