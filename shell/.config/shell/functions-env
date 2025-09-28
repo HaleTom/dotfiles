@@ -1,0 +1,9 @@
+#! /bin/sh
+# Functions used in all {,ba,z}sh shells (login, interactive, scripts)
+# After the optional debug functions, this should be the first file sourced
+
+sh_is_zsh() { [ -n "$ZSH_VERSION" ]; }
+sh_is_bash() { [ -n "$BASH_VERSION" ]; }
+# export_function sh_is_bash sh_is_zsh
+
+# _shell_rc_dir=${__home_dir:=$HOME/.config/$SHELL}

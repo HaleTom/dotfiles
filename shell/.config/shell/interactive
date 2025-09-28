@@ -1,0 +1,18 @@
+#!/bin/sh
+set -x
+
+# Commands to be run by POSIX interactive shells
+
+_shell_rc_dir=${_shell_rc_dir:-~/.config/shell}
+
+if [ "$_shell_debug" ]; then
+. "$_shellrc_dir"/debug
+fi
+
+echo yelp in file: $0: _shell_rc_dir = $_shell_rc_dir
+
+if [ ! "$_sh_env_loaded" ]; then
+  . "$_shell_rc_dir"/env
+else
+  unset _sh_env_loaded
+fi
