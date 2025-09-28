@@ -1,38 +1,51 @@
-# ~/.zshenv - this file will always be sourced, unless:  zsh -f  or  zsh --no-rcs
-# Used for setting the user's environment variables.
+# $ZDOTDIR/.zshenv - this file will always be sourced, unless:  zsh -f  or  zsh --no-rcs
+
+# /etc/zsh/zshenv is ALWAYS sourced prior, and cannot be skipped with -f
+
+# This file is used for setting user's environment variables.
 # It should not contain commands that produce output or assume the shell is attached to a tty.
 
-#
-# Startup files:
-#
-# /etc/zshenv (Arch: /etc/zsh/zshenv)
-#  - Is sourced prior to .zshenv, and CANNOT be skipped, even with zsh -f or -o no_rcs
-#
-# If option GLOBAL_RCS is unset in any of the files, no global configuration files (/etc/zsh/*) will be read after that file.
-# If option RCS is unset in any of the files, no configuration files will be read after that file.
-#
-#  If login shell, the following are read after this file:
-#  /etc/zprofile (Arch: /etc/zsh/zprofile)
-#  - Only for login shells
-#  - At 2025-09-17, contained only:   emulate sh -c 'source /etc/profile'
-#
-# /etc/profile  (sourced from above)
-# - Sources /etc/profile.d/*.sh
-#
-# $ZDOTDIR/.zprofile
-#
-# If the shell is interactive, then /etc/zsh/zshrc, and then $ZDOTDIR/.zshrc
-#
-# Finally, if a login shell, /etc/zsh/zlogin and $ZDOTDIR/.zlogin are read.
-#
-# When a login shell exits (execept via exec), $ZDOTDIR/.zlogout then /etc/zlogout are read.
-
-# Note: ~/.profile is NOT sourced by default Zsh startup.
+# Sourced before the login shell files:
+# /etc/zsh/zprofile, /etc/profile and $ZDOTDIR/.zprofile (in that order)
 
 # If $ZDOTDIR is not set, $HOME is used instead.
 # Dotfiles has:  .zshenv -> .config/zsh/zshenv
 export ZDOTDIR=$HOME/.config/zsh
 
+# Files sourced next:
+# /etc/zprofile, .zprofile, /etc/zshrc, .zshrc, /etc/zlogin, .zlogin, and .zlogout
+
+# If option GLOBAL_RCS is unset in any of the files, no global configuration files (/etc/zsh/*) will be read after that file.
+# If option RCS is unset in any of the files, no configuration files will be read after that file.
+
+#  If LOGIN shell, the following are read after this file:
+#  /etc/zprofile (Arch: /etc/zsh/zprofile)
+#    - Only for login shells
+#    - At 2025-09-17, contained only:   emulate sh -c 'source /etc/profile'
 #
-# XDG vars should probably be setup from here.
-# Split check from setup?
+#    /etc/profile  (sourced from above)
+#    - Sources /etc/profile.d/*.sh
+#
+# $ZDOTDIR/.zprofile (also only if login shell)
+
+# If the shell is INTERACTIVE, then /etc/zsh/zshrc, and then $ZDOTDIR/.zshrc
+
+# LOGIN shell, login and logout:
+# Finally, if a LOGIN shell, /etc/zsh/zlogin and $ZDOTDIR/.zlogin are read.
+# When a login shell exits (except via `exec`), $ZDOTDIR/.zlogout then /etc/zlogout are read.
+
+# Note: ~/.profile is NOT sourced by default Zsh startup.
+
+##########################################################################
+##########################################################################
+
+# If $ZDOTDIR is not set, $HOME is used instead.
+# Dotfiles has:  .zshenv -> .config/zsh/zshenv
+export ZDOTDIR=$HOME/.config/zsh
+
+# Source environment (eg $XDG_*) for all shells
+# source "$ZDOTDIR"/env
+
+
+# Which shells read ~/.profile and when?
+# https://www.perplexity.ai/search/csh-startup-files-cwpQKOKLR6eGwOZR5jrIKA
