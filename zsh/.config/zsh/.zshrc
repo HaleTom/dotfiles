@@ -167,10 +167,11 @@ _prompt_update_zsh () {
     local hostname=${(%)${:-%m}};
     # %<number of characters>{$string%} tells the width of the printed characters, and includes $string literally
     # https://zsh.sourceforge.io/Doc/Release/Prompt-Expansion.html#:~:text=%25G%20below.-,%25G,-Within%20a%20%25%7B
-    local host_printable=$(fallback_to echo candify "$hostname")
-    local maybe_glitch
-    ((${#hostname} != ${#host_printable})) && maybe_glitch=${#hostname}
-    local host="%B%F{red}%${maybe_glitch}{$host_printable%}"
+    local host_printable
+    if [[ $commands[candify] ]]; then host_printable=$(candify "$hostname")
+    else host_printable=$hostname; fi
+    local hostname_glitch=${#hostname}
+    local host="%B%F{red}%${hostname_glitch}{$host_printable%}"
     local colon_dir='%b%F{white}:'${dir}
     local jobs='%(1j.%f(%B%F{green}%j%f%b%).)'
     local exit_status='%(?.. %F{white}[%F{red}%?%F{white}])'
