@@ -1,0 +1,4 @@
+Move debug_shell to env to save stubbing if $SHELL_DEBUG unset
+ - rename to _shell_debug_to_file?  Or just remove it?
+
+Setting and unsetting _shell_rc_dir is ugly
