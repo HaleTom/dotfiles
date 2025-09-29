@@ -3,31 +3,13 @@
 # Debug functions
 # Intended to be optionally sourced when debugging non-interactive shells
 
-# Say the file, line number and optional message for debugging
-# Inspired by bash's `caller` builtin
-# Thanks to https://unix.stackexchange.com/a/453153/143394
-# shellcheck disable=2120  # Use of global $*
-function yelp () {
-  # shellcheck disable=SC2154  # undeclared zsh variables in bash
-  if sh_is_bash; then
-    local file=${BASH_SOURCE[1]} func=${FUNCNAME[1]} line=${BASH_LINENO[0]}
-  elif sh_is_bash; then  # zsh
-    emulate -LR zsh  # Ensure 1-numbered arrays, regardless of KSH_ARRAYS option
-    # $funcfiletrace has format:  file:line
-    local file=${funcfiletrace[1]%:*} line=${funcfiletrace[1]##*:}
-    local func=${funcstack[2]}
-    local file=${0} func='?' line='?'
-  else  # POSIX sh
-    # TODO: test me
-    file=$0
+# TODO: rename me cmd_to_file?
+debug_file() {
+  if [ -z "$_debug_file" ]; then
+    _debug_file=/tmp/${SHELL_NAME}-$$
+    touch "$_debug_file"
+    echo "$SHELL_NAME debugging to: $_debug_file" >&2
   fi
-  local quoter
-  # Use shell-quote if it exists (nicer output in bash)
-  if command -v shell-quote >/dev/null 2>&1; then
-    quoter=(shell-quote  --)
-  else
-    quoter=(token_quote)
-  fi
-  echo "${file##*/}:$func:$line $("${quoter[@]}" "$@")" >&2
+  "$@" >> "$_debug_file"
+  # echo "$@" ">>" /tmp/$SHELL_NAME-$$
 }
-# export_function yelp

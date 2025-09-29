@@ -1,0 +1,38 @@
+#!/bin/sh
+# This file is intended to be sourced by all shells, login and interactive
+# Therefore, keep it short and sweet
+
+if [ -n "$_already_sourcing_env" ]; then return;
+else _already_sourcing_env=true; fi
+
+# Set _shell_rc_dir
+_shell_rc_dir=${_shell_rc_dir:=${XDG_CONFIG_HOME:=$HOME/.config}/shell}
+# If this is set then this file can be assumed to have been sourced
+
+# Source functions
+. "$_shell_rc_dir"/functions-env
+if [ -n "$_SHELL_DEBUG" ]; then
+. "$_shell_rc_dir"/functions-debug
+else
+  debug_file() { :; }  # stub it out
+fi
+
+if sh_is_zsh; then SHELL_NAME=zsh;
+elif sh_is_bash; then SHELL_NAME=bash;
+else SHELL_NAME=$(basename "$(readlink /proc/$$/exe)"); fi
+
+# debug_file uses $SHELL_NAME
+debug_file echo "Reading env"
+
+case $- in
+  *i*)
+    debug_file echo "Interactive shell"
+    . "${_shell_rc_dir}"/interactive
+    ;;
+  *)
+    debug_file echo "Non-interactive shell"
+esac
+
+[ ! "$_already_sourcing_interactive" ] && unset _shell_rc_dir
+unset _already_sourcing_env
+debug_file echo "DONE Reading env"

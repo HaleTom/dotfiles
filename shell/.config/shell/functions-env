@@ -1,9 +1,36 @@
 #! /bin/sh
 # Functions used in all {,ba,z}sh shells (login, interactive, scripts)
-# After the optional debug functions, this should be the first file sourced
+# After the optional debug functions, this should be the first file sourced by ./env
 
 sh_is_zsh() { [ -n "$ZSH_VERSION" ]; }
 sh_is_bash() { [ -n "$BASH_VERSION" ]; }
-# export_function sh_is_bash sh_is_zsh
+sh_is_sh() { ! { sh_is_zsh || sh_is_bash; } }
 
-# _shell_rc_dir=${__home_dir:=$HOME/.config/$SHELL}
+##############################################################################
+# Quit here if {ba,z}sh, load the advanced versions of functions instead
+if ! sh_is_sh; then
+  . "$_shell_rc_dir"/functions-env-non-posix
+  return $?
+fi
+##############################################################################
+
+# Based on: https://stackoverflow.com/a/29824428/5353461
+token_quote() {
+  for i; do
+    printf '%s' "$i" | sed "s/'/'\\\\''/g; 1 s/^/'/; $ s/$/' /"
+  done
+  printf "\n"
+}
+
+# Say the file, line number and optional message for debugging
+# Inspired by bash's `caller` builtin
+# Thanks to https://unix.stackexchange.com/a/453153/143394
+  yelp () {
+  # Use shell-quote if it exists for nicer output
+  # POSIX $LINENO not useful: only gives the line number of THIS file.
+  if command -v shell-quote >/dev/null 2>&1; then
+    shell-quote -- "$0:" "$@" >&2
+  else
+    token_quote "$0:" "$@" >&2
+  fi
+}

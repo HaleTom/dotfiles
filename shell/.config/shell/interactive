@@ -1,18 +1,18 @@
 #!/bin/sh
-set -x
+# Interactive shell commands
 
-# Commands to be run by POSIX interactive shells
+if [ -n "$_already_sourcing_interactive" ]; then return
+else _already_sourcing_interactive=true; fi
 
-_shell_rc_dir=${_shell_rc_dir:-~/.config/shell}
-
-if [ "$_shell_debug" ]; then
-. "$_shellrc_dir"/debug
-fi
-
-echo yelp in file: $0: _shell_rc_dir = $_shell_rc_dir
-
-if [ ! "$_sh_env_loaded" ]; then
+# For non-login shells: source env if not yet sourced
+if [ -z "$_shell_rc_dir" ]; then
+  _shell_rc_dir=${_shell_rc_dir:=${XDG_CONFIG_HOME:=$HOME/.config}/shell}
   . "$_shell_rc_dir"/env
-else
-  unset _sh_env_loaded
 fi
+debug_file echo "Reading interactive"
+
+. "${_shell_rc_dir}"/functions-interactive
+
+unset _already_sourcing_interactive
+unset _shell_rc_dir
+debug_file echo "DONE reading interactive"
