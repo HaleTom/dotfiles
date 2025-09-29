@@ -1,10 +1,2 @@
 #!/bin/sh
 # Functions for interactive shells
-
-# Remove files without asking
-# Allows for default asking via:  alias rm=rm -I
-function Rm {
-  sh_is_zsh && setopt localoptions rm_star_silent
-  command rm "$@"
-}
-# export_function Rm
