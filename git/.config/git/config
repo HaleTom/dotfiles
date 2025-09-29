@@ -40,7 +40,7 @@
   ai     = add --interactive
   ar     = "!git add \"$(git rev-parse --show-toplevel)\" \"$@\" #"  # Repo level: New and changed, no deletions
   av     = add -v
-  ax     = git add .  # Current directory: New and changed, no deletions
+  ax     = add .  # Current directory: New and changed, no deletions
   aacm   = "!f() { git add -A && git commit -m \"$@\"; }; f"
   an     = add --intent-to-add # add -N
   ap     = xdhi-alias-helper add --patch  # use 'e' == edit to view hunks longer than the screen, or https://stackoverflow.com/a/63688649/5353461
@@ -239,12 +239,12 @@
   # XXX TODO merge thest into master branch not currently checked out branch
   # pom    = pl origin master
   # pum    = pl upstream master
-  rb     = rebase
+  rb     = rebase --committer-date-is-author-date
   rba    = rebase --abort
   rbb    = !"git rebase -i $(git merge-base $1 HEAD) #" # Rebase to branch-name # http://stackoverflow.com/a/31036518/5353461
   rbc    = rebase --continue
   rbce   = !"git commit -t \"$(git rev-parse --git-dir)\"/rebase-apply/final-commit && git rebase --skip # commit editing message"  # https://stackoverflow.com/a/30224412/5353461
-  rbi    = !"bash -c 'c=${1:+$(git rpc \"$1\")~} && set -- ${@:2} && git rebase --interactive --autostash --autosquash --keep-empty \"$(git rpc \"${c:-$(git parent 20)}\")\" \"$@\"' - \"$@\" # Interactive rebase"
+  rbi    = !"bash -c 'c=${1:+$(git rpc \"$1\")~} && set -- ${@:2} && git rb --interactive --autostash --autosquash --keep-empty \"$(git rpc \"${c:-$(git parent 20)}\")\" \"$@\"' - \"$@\" # Interactive rebase"
   rbia   = !"GIT_SEQUENCE_EDITOR=true git rbi \"$@\" #"
   rbm    = rebase master
   rbmg   = rebase --rebase-merges  # incompatible with interactive
@@ -256,6 +256,7 @@
   rbroot = rebase --root # Allows changing root commit(s)
   rbs    = rebase --skip
   rbq    = !"git rebase --quit \"$@\"  # https://git-scm.com/docs/git-rebase#Documentation/git-rebase.txt---quit"
+  rbscp  = rebase --show-current-patch
   ro     = remote
   roa    = remote add
   roao   = remote add origin
@@ -273,7 +274,7 @@
   rov    = remote --verbose
   re     = reset
   reco   = !"cd \"${GIT_PREFIX:-.}\" && git reset --quiet -- \"$@\" && git checkout -- \"$@\" # File version"  # Use the current commit
-  recoc   = !"cd \"${GIT_PREFIX:-.}\" && git reset --quiet \"$@\" && git checkout \"$@\" # Commit version"  # https://stackoverflow.com/a/52313420/5353461
+  recoc  = !"cd \"${GIT_PREFIX:-.}\" && git reset --quiet    \"$@\" && git checkout    \"$@\" # Commit version"  # https://stackoverflow.com/a/52313420/5353461
   reh    = reset --hard
   rem    = reset --merge # Like hard but don't reset files that haven't been committed, failing if the target commit has changes in those files
   rep    = xdhi-alias-helper reset --patch
