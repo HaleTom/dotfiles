@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/sh
 # shellcheck disable=1090
 # ^ don't try to check variable-named sourced files
 # ^ keep shell-check happy
@@ -6,24 +6,29 @@
 # XDG - set defaults as they may not be set (eg Ubuntu 14.04 LTS)
 # See https://specifications.freedesktop.org/basedir-spec/basedir-spec-latest.html#variables
 # and https://wiki.archlinux.org/index.php/XDG_Base_Directory_support
-export XDG_CONFIG_HOME=${XDG_CONFIG_HOME:=$HOME/.config}
-export XDG_DATA_HOME=${XDG_DATA_HOME:=$HOME/.local/share}
-export XDG_CACHE_HOME=${XDG_CACHE_HOME:=$HOME/.cache}
-export XDG_STATE_HOME=${XDG_STATE_HOME:=$HOME/.local/state}
+export XDG_CONFIG_HOME="${XDG_CONFIG_HOME:=$HOME/.config}"
+export XDG_DATA_HOME="${XDG_DATA_HOME:=$HOME/.local/share}"
+export XDG_CACHE_HOME="${XDG_CACHE_HOME:=$HOME/.cache}"
+export XDG_STATE_HOME="${XDG_STATE_HOME:=$HOME/.local/state}"
 
 # Create directories if needed
 for var in XDG_CONFIG_HOME XDG_DATA_HOME XDG_STATE_HOME XDG_CACHE_HOME; do
-  sh_is_bash && dir=${!var}
-  # shellcheck disable=2296  # zsh syntax ${(P)}
-  sh_is_zsh  && dir=${(P)var}
+  if sh_is_bash; then
+    dir=${!var}
+  elif sh_is_zsh; then
+  # shellcheck disable=2296  # zsh syntax ${(P)} - Parameter expansions can't start with (. Double check syntax.
+    dir=${(P)var}
+  else
+    dir=$(eval "echo \"\$$var\"")
+  fi
   if [ ! -d "${dir}" ]; then
     printf "Creating $%s directory: %s\n" "$var" "${dir}"
     mkdir -p "${dir}"
   fi
 done
 
-export XDG_CONFIG_DIRS=${XDG_CONFIG_DIRS:=/etc/xdg}
-export XDG_DATA_DIRS=${XDG_DATA_DIRS:=/usr/local/share:/usr/share}
+export XDG_CONFIG_DIRS="${XDG_CONFIG_DIRS:=/etc/xdg}"
+export XDG_DATA_DIRS="${XDG_DATA_DIRS:=/usr/local/share:/usr/share}"
 
 # $XDG_RUNTIME_DIR
 # https://unix.stackexchange.com/a/580757/143394  # My Q&A
