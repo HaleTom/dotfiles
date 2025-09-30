@@ -3,13 +3,17 @@
 # Check config with:   npm config ls -l | grep / | grep -v '^; | sort'
 
 # XDG Base Dirs compliance
+prefix=${XDG_DATA_HOME}/npm  # prefix is unnecessary (and unsupported) if Node.js is installed by nvm.
 cache=${XDG_CACHE_HOME}/npm
-tmp=${XDG_RUNTIME_DIR}/npm
 init-module=${XDG_CONFIG_HOME}/npm/config/npm-init.js
+logs-dir=${XDG_STATE_HOME}/npm/logs
 
 # Setting prefix is incompatible with nvm
 # Use ~/bin/node-modules-dir "$@" to run a command with node prefix set
 # prefix=${XDG_DATA_HOME}/npm
+
+# npm warn Unknown user config "tmp". This will stop working in the next major version of npm.
+# tmp=${XDG_RUNTIME_DIR}/npm
 
 # https://docs.npmjs.com/misc/config#link
 link
