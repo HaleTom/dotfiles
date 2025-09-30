@@ -3,6 +3,10 @@
 # ^ don't try to check variable-named sourced files
 # ^ keep shell-check happy
 
+
+# NOTE: Add any new files to the random spot-check list at the end
+# https://wiki.archlinux.org/title/XDG_Base_Directory  is your friend.
+
 # XDG - set defaults as they may not be set (eg Ubuntu 14.04 LTS)
 # See https://specifications.freedesktop.org/basedir-spec/basedir-spec-latest.html#variables
 # and https://wiki.archlinux.org/index.php/XDG_Base_Directory_support
@@ -42,16 +46,17 @@ if [ -z "$XDG_RUNTIME_DIR" ]; then  # It's not already set
 fi
 
 _get_octal_perms() {
-  if [[ $OSTYPE == darwin* ]]; then
-    stat -f %A "$@"
-  else
-    stat -c %a "$@"
-  fi
+  case $OSTYPE in
+    darwin*)  # macOS
+      stat -f %A "$@" ;;
+    *)  # Assume Linux
+      stat -c %a "$@"
+  esac
 }
 
 # Check dir has got the correct type, ownership, and permissions
-if ! [[ -d "$XDG_RUNTIME_DIR" && -O "$XDG_RUNTIME_DIR" &&
-  $(_get_octal_perms "$XDG_RUNTIME_DIR") == 700 ]]; then
+if ! [[ -d "$XDG_RUNTIME_DIR"/ && -O "$XDG_RUNTIME_DIR"/ &&
+  $(_get_octal_perms "$XDG_RUNTIME_DIR") = 700 ]]; then
   echo "\$XDG_RUNTIME_DIR: permissions problem with $XDG_RUNTIME_DIR:" >&2
   ls -ld "$XDG_RUNTIME_DIR" >&2
   XDG_RUNTIME_DIR=$(mktemp -d /tmp/"$USER"-runtime-XXXXXX)
@@ -61,7 +66,7 @@ export XDG_RUNTIME_DIR
 unset -f _get_octal_perms
 
 # Export the XDG user directories
-if [[ -f $XDG_CONFIG_HOME/user-dirs.dirs ]]; then
+if [ -f "$XDG_CONFIG_HOME/user-dirs.dirs" ]; then
     # shellcheck disable=1091  # Can't follow - file doesn't exist
     . "$XDG_CONFIG_HOME/user-dirs.dirs"
     export XDG_DESKTOP_DIR XDG_DOWNLOAD_DIR XDG_TEMPLATES_DIR XDG_PUBLICSHARE_DIR XDG_DOCUMENTS_DIR XDG_MUSIC_DIR XDG_PICTURES_DIR XDG_VIDEOS_DIR
@@ -74,11 +79,26 @@ fi
 
 
 # Single-line config
-export INPUTRC=$XDG_CONFIG_HOME/readline/inputrc
-export GNUPGHOME=$XDG_CONFIG_HOME/gnupg
-export MOST_INITFILE=$XDG_CONFIG_HOME/most/config
-export WGETRC=$XDG_CONFIG_HOME/wgetrc
-export PARALLEL_HOME=$XDG_CONFIG_HOME/parallel
+export GNUPGHOME="$XDG_DATA_HOME/gnupg"
+export ICEAUTHORITY="$XDG_CACHE_HOME/ICEauthority"
+export INPUTRC="$XDG_CONFIG_HOME/readline/inputrc"
+export MOST_INITFILE="$XDG_CONFIG_HOME/most/config"
+export PARALLEL_HOME="$XDG_CONFIG_HOME/parallel"
+export WGETRC="$XDG_CONFIG_HOME/wgetrc"
+
+# export XAUTHORITY="$XDG_RUNTIME_DIR"/Xauthority
+# LightDM does not allow you to change this variable:
+# https://wiki.archlinux.org/title/XDG_Base_Directory#:~:text=XDG_CONFIG_HOME%22/xbindkeys/config-,xorg%2Dxauth,-~/.Xauthority
+# user-authority-in-system-dir=true causes symlink in XAUTHORITY #151
+# https://github.com/canonical/lightdm/issues/151
+
+# # Uncommenting breaks Manjaro login
+# X11
+# export XAUTHORITY="$XDG_CACHE_HOME/Xauthority"
+# mkdir -p "$XDG_RUNTIME_DIR/X11"
+# export ICEAUTHORITY="$XDG_RUNTIME_DIR/X11/ICEauthority"
+# export XAUTHORITY="$XDG_RUNTIME_DIR/X11/Xauthority"
+
 
 #
 # Begin multi-line config
@@ -103,18 +123,15 @@ export CARGO_HOME="$XDG_DATA_HOME"/cargo
 # Node.js / npm
 # Check config with:   npm config ls -l | grep / | grep -v '^;'
 # More XDG config is inside the config file itself:
-export NODE_REPL_HISTORY=$XDG_DATA_HOME/node_repl_history
-export NPM_CONFIG_USERCONFIG=$XDG_CONFIG_HOME/npm/npmrc
+export NODE_REPL_HISTORY="$XDG_DATA_HOME/node_repl_history"
+export NPM_CONFIG_USERCONFIG="$XDG_CONFIG_HOME/npm/npmrc"
 # export NPM_CONFIG_PREFIX=${XDG_DATA_HOME}/npm  # nvm removes from npmrc and complains at shell startup
 # This seems to get unset, setting in /home/ravi/.config/npm/npmrc instead:
 # export NPM_CONFIG_PREFIX=$XDG_DATA_HOME/npm
 
-# # Uncommenting breaks Manjaro login
-# X11
-# export XAUTHORITY="$XDG_CACHE_HOME/Xauthority"
-# mkdir -p "$XDG_RUNTIME_DIR/X11"
-# export ICEAUTHORITY="$XDG_RUNTIME_DIR/X11/ICEauthority"
-# export XAUTHORITY="$XDG_RUNTIME_DIR/X11/Xauthority"
+# Bun
+export BUN_INSTALL="$XDG_STATE_HOME/bun"
+export BUN_INSTALL_CACHE_DIR="$XDG_CACHE_HOME/bun"
 
 # A function so that it can be run in the background immediately after declaration
 function check_shadowed_files {
@@ -136,34 +153,46 @@ function check_shadowed_files {
       [[ -L $file && -z ${print_symlinks-} ]] && continue
       printf "%s" "Warning: XDG shadowed "
       # shellcheck disable=SC2015 # A && B || C is not if-then-else. C may run when A is true. [SC2015]
-        [[ -L $file ]] && printf "symlink" || { # symlinks are "both"
-          [[ -d $file ]] && printf "directory"
-          [[ -f $file ]] && printf "file";
+        [ -L $file ] && printf "symlink" || { # symlinks are "both"
+          [ -S $file ] && printf "socket"
+          [ -d $file ] && printf "directory"
+          [ -f $file ] && printf "file";
         }
         printf ': %s\n' "$file"
       } >&2
     fi
   done <<XDGFILES
+    $HOME/.bun
+    $XDG_CACHE_HOME/.bun
+    $HOME/.bundle
+    $HOME/.bitwarden-ssh-agent.sock
+    $HOME/.cargo
     $HOME/.gitconfig
     $HOME/.gnupg
+    $HOME/.gem
     $HOME/.histfile
+    $HOME/.ICEauthority
     $HOME/.inputrc
     $HOME/.less
     $HOME/.lesshst
     $HOME/.mostrc
+    $HOME/.node_repl_history
     $HOME/.npm
     $HOME/.npmrc
     $HOME/.npm-init.js
     $HOME/.parallel
+    $HOME/.rustup
     $HOME/.tmux
     $HOME/.tmuxinator
     $HOME/.vim
     $HOME/.viminfo
     $HOME/.vimperator
+    $HOME/.vimperatorrc
     $HOME/.wgetrc
-    # X/ICEauth don't listen currently, silence them...
+    $HOME/.wget-hsts
+    $HOME/.wine
+    # X/ICEauth don't listen currently, see above.
     # $HOME/.Xauthority
-    # $HOME/.ICEauthority
 XDGFILES
 }
 
