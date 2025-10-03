@@ -232,7 +232,7 @@ DOTFILES
 unset tmuxinator_source GRC_ALIASES _git_prompt_file
 
 # XDG Base Directory Specification says to include $HOME/.local/bin, but it doesn't get a $XDG_... variable
-add_to_path_var PATH before "$HOME/bin:$HOME/.local/bin:$XDG_DATA_HOME/python/bin:$XDG_DATA_HOME/gem/bin:$XDG_DATA_HOME/npm/bin:$XDG_DATA_HOME/go/bin:$XDG_DATA_HOME/cargo/bin:/usr/lib/ccache/bin"
+add_to_path_var PATH before "$HOME/bin:$HOME/.local/bin:$XDG_STATE_HOME/bun/bin:$XDG_DATA_HOME/python/bin:$XDG_DATA_HOME/gem/bin:$XDG_DATA_HOME/npm/bin:$XDG_DATA_HOME/go/bin:$XDG_DATA_HOME/cargo/bin:/usr/lib/ccache/bin"
 
 # Handled by bhruby
 # if ruby_gems=$(ruby -e 'print Gem.user_dir')/bin; then
