@@ -24,6 +24,8 @@ else SHELL_NAME=$(basename "$(readlink /proc/$$/exe)"); fi
 # debug_file uses $SHELL_NAME
 debug_file echo "Reading env"
 
+. "$_shell_rc_dir"/xdg
+
 case $- in
   *i*)
     debug_file echo "Interactive shell"
