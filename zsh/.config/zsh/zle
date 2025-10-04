@@ -6,9 +6,10 @@
 # shut up shellcheck use before assign
 
 # Setup $keys array and bind sensible things to special keys
+# shellcheck disable=SC2296,SC2298  # zsh parameter expansion
 source "${${(%):-%x}:h}/keyboard"  # file in the same directory as this one
 
-# TODO: add more from: 
+# TODO: add more from:
 # https://github.com/robbyrussell/oh-my-zsh/blob/master/lib/key-bindings.zsh
 
 # The time the shell waits, in hundredths of seconds, for another key to be pressed when reading bound multi-character sequences.
@@ -97,10 +98,10 @@ bindkey '\e^E' expand-aliases
 # https://www.perplexity.ai/search/improve-this-code-so-as-to-all-I_KYRsJDQsmI7i2GxG_ORg
 
 # Custom numeric argument handler that returns to insert mode
-digit-argument-viins() { zle reset-prompt; zle .digit-argument; zle .vi-insert }
+digit-argument-viins() { zle reset-prompt; zle .digit-argument; zle .vi-insert; }
 
 # Custom minus argument handler
-neg-argument-viins() { zle reset-prompt; zle .neg-argument; zle .vi-insert }
+neg-argument-viins() { zle reset-prompt; zle .neg-argument; zle .vi-insert; }
 
 # Safely display the message in $1
 zle-message() {
@@ -161,6 +162,7 @@ expand_word_under_cursor() {
   local start_index end_index
 
   # Get the words from the buffer, respecting quotes and escapes.
+  # shellcheck disable=SC2296,SC2298  # zsh parameter expansion
   words=("${(z)BUFFER}")
 
   # Find the index of the word under the cursor.
@@ -195,6 +197,7 @@ expand_word_under_cursor() {
 
   # Perform the expansion if a word was found.
   if [[ -n "$word" ]]; then
+    # shellcheck disable=SC2016 # Expressions don't expand in single quotes, use double quotes for that.
     local expansion_expression='${word'"$expansion_flag"'}'
     local new_word=${(e)expansion_expression}
 
