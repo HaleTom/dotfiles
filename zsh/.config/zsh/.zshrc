@@ -116,6 +116,7 @@ HISTFILE="$XDG_STATE_HOME"/zsh/history
 export HISTSIZE=10000
 export SAVEHIST=10000
 setopt append_history  # Don't overwrite
+setopt extended_history  # : <beginning time>:<elapsed seconds>;<command>
 setopt hist_ignore_space  # Don't store commands starting with whitespace
 setopt hist_beep  # Beep in ZLE when a widget attempts to access a history entry which isn’t there.
 setopt inc_append_history  # Append history immediately, not just on exit
