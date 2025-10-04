@@ -13,7 +13,7 @@ source "${${(%):-%x}:h}/keyboard"  # file in the same directory as this one
 # https://github.com/robbyrussell/oh-my-zsh/blob/master/lib/key-bindings.zsh
 
 # The time the shell waits, in hundredths of seconds, for another key to be pressed when reading bound multi-character sequences.
-KEYTIMEOUT=10
+KEYTIMEOUT=35  # Default == 40 or 0.4 seconds.
 #
 # Have word movement commands stop at a '/'
 WORDCHARS=$WORDCHARS:s:/:
