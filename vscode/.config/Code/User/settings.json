@@ -1,13 +1,110 @@
 {
   "sync.gist": "6f5e4af72ba18e77e05aeffb98b34e52",
+
+  //Worbench
+  "workbench.colorTheme": "Kanagawa Wave",
+  "workbench.editorAssociations": {
+    "*.ipynb": "jupyter.notebook.ipynb"
+  },
+
+  "extensions.experimental.affinity": {
+    "asvetliakov.vscode-neovim": 1
+  },
+
+  // VSCode Neovim settings
   "vscode-neovim.mouseSelectionStartVisualMode": true,
   "vscode-neovim.neovimPath": "/usr/bin/nvim",
+  "vscode-neovim.NVIM_APPNAME": "vim-vscode",
+
   "todo-tree.tree.showScanModeButton": false,
   "workbench.iconTheme": "material-icon-theme",
 
   // An array of language ids which should be validated by ESLint. If not installed ESLint will show an error.
   "eslint.validate": ["javascript", "typescript"],
 
+  // Editor
+  "editor.defaultFormatter": "esbenp.prettier-vscode",
+  "editor.formatOnSaveMode": "modifications",
+  "editor.formatOnType": true,
+
+  "[json]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
+  },
+  "[javascript]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
+  },
+  "[typescript]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
+  },
+  "editor.codeActionsOnSave": {
+    "source.fixAll.eslint": "never"
+  },
+  "[jsonc]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
+  },
+  "eslint.codeAction.disableRuleComment": {
+    "enable": false
+  },
+
+
+  "jest.coverageFormatter": "GutterFormatter",
+  "eslint.codeActionsOnSave.mode": "problems",
+  "tslint.packageManager": "yarn",
+  "npm.packageManager": "bun",
+  "prettier.singleQuote": true,
+  "prettier.eslintIntegration": false,
+  "diffEditor.renderSideBySide": false,
+  "diffEditor.codeLens": true,
+  "window.zoomLevel": 0,
+  "node_require.exclude": [
+    "*.ts",
+    "node_modules",
+    "typings",
+    "dist",
+    "bin",
+    "build",
+    "tmp"
+  ],
+  "vsintellicode.modify.editor.suggestSelection": "automaticallyOverrodeDefaultValue",
+
+  "python.languageServer": "Pylance",
+  "python.pythonPath": "/home/ravi/.local/share/miniconda3/envs/rl/bin/python",
+  "python.analysis.typeCheckingMode": "basic",
+  "python.analysis.completeFunctionParens": true,
+
+  "jupyter.askForKernelRestart": false,
+
+  // Editor
+  "editor.suggestSelection": "first",
+  "editor.tabCompletion": "on",
+  "editor.find.autoFindInSelection": "multiline",
+  "editor.quickSuggestions": null,
+
+  "[elixir]": {
+    "editor.quickSuggestions": {
+      "comments": "on",
+      "strings": "on",
+      "other": "on"
+    }
+  },
+  "elixirLS.enableTestLenses": true,
+  "elixirLS.mixEnv": "dev",
+
+  // Git / Gitlens
+  "git.mergeEditor": true,
+
+  "gitlens.ai.model": "vscode",
+  "gitlens.ai.vscode.model": "copilot:gpt-4.1",
+
+
+  // Copilot
+  "github.copilot.selectedCompletionModel": "",
+
+////////////////////////////////////////////////////////
+//       Disabled extensions ONLY below
+////////////////////////////////////////////////////////
+  // Vim extension (disabled at 2025-10-06)
+  "vim.autoindent": false,
   "vim.leader": "<space>",
   "vim.handleKeys": {
     "<C-a>": false,
@@ -38,65 +135,4 @@
       "commands": [":nohl"]
     }
   ],
-  "editor.defaultFormatter": "esbenp.prettier-vscode",
-  "[json]": {
-    "editor.defaultFormatter": "esbenp.prettier-vscode"
-  },
-  "[javascript]": {
-    "editor.defaultFormatter": "esbenp.prettier-vscode"
-  },
-  "[typescript]": {
-    "editor.defaultFormatter": "esbenp.prettier-vscode"
-  },
-  "editor.codeActionsOnSave": {
-    "source.fixAll.eslint": false
-  },
-  "editor.formatOnType": true,
-  "[jsonc]": {
-    "editor.defaultFormatter": "esbenp.prettier-vscode"
-  },
-  "eslint.codeAction.disableRuleComment": {
-    "enable": false
-  },
-  "jest.coverageFormatter": "GutterFormatter",
-  "editor.formatOnSaveMode": "modifications",
-  "eslint.codeActionsOnSave.mode": "problems",
-  "tslint.packageManager": "yarn",
-  "prettier.eslintIntegration": false,
-  "npm.packageManager": "yarn",
-  "eslint.packageManager": "yarn",
-  "prettier.packageManager": "yarn",
-  "prettier.singleQuote": true,
-  "diffEditor.renderSideBySide": false,
-  "window.zoomLevel": 0,
-  "node_require.exclude": [
-    "*.ts",
-    "node_modules",
-    "typings",
-    "dist",
-    "bin",
-    "build",
-    "tmp"
-  ],
-  "vim.autoindent": false,
-  "python.languageServer": "Pylance",
-  "workbench.editorAssociations": {
-    "*.ipynb": "jupyter.notebook.ipynb"
-  },
-  "python.analysis.typeCheckingMode": "basic",
-  "jupyter.askForKernelRestart": false,
-  "python.pythonPath": "/home/ravi/.local/share/miniconda3/envs/rl/bin/python",
-  "python.analysis.completeFunctionParens": true,
-  "editor.suggestSelection": "first",
-  "vsintellicode.modify.editor.suggestSelection": "automaticallyOverrodeDefaultValue",
-  "editor.tabCompletion": "on",
-  "editor.find.autoFindInSelection": "multiline",
-  "editor.quickSuggestions": null,
-
-  "[elixir]": {
-    "editor.quickSuggestions": true
-  },
-  "diffEditor.codeLens": true,
-  "elixirLS.enableTestLenses": true,
-  "elixirLS.mixEnv": "dev",
 }
