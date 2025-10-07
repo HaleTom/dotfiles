@@ -2,57 +2,103 @@
 # See also: https://www.freedesktop.org/wiki/Specifications/mime-apps-spec/
 
 [Default Applications]
-application/xml=mousepad.desktop
-application/x-cd-image=open-fuse-iso.desktop
-application/x-raw-disk-image=open-fuse-iso.desktop
-application/x-bittorrent=deluge.desktop
+text/plain=nvim.desktop;
+text/html=google-chrome.desktop;firefox.desktop
+text/mml=google-chrome.desktop;firefox.desktop
+
 application/doc=wps-office-wps.desktop
 application/docx=wps-office-wps.desktop
+application/pdf=wps-office-pdf.desktop
 application/xls=wps-office-wps.desktop
 application/xlsx=wps-office-wps.desktop
+application/xml=nvim.desktop
+application/xhtml+xml=google-chrome.desktop;firefox.desktop
+
+application/x-cd-image=open-fuse-iso.desktop
+application/x-raw-disk-image=open-fuse-iso.desktop
+application/x-bittorrent=qbittorrent.desktop
+
+# Images
 image/jpeg=viewnior.desktop
 image/png=viewnior.desktop
 image/gif=viewnior.desktop
-text/plain=mousepad.desktop
-video/x-ms-wmv=vlc.desktop
-video/mp4=vlc.desktop
-video/x-flv=vlc.desktop
-video/ogg=vlc.desktop
-video/x-ogm+ogg=vlc.desktop
-video/x-theora+ogg=vlc.desktop
+image/bmp=viewnior.desktop
 
-# Chrome
-x-scheme-handler/chrome=google-chrome.desktop
+# Audio
+audio/mp4=smplayer.desktop;vlc.desktop;
+audio/x-ms-wma=smplayer.desktop;vlc.desktop;picard.desktop;
+
+# Video
+video/mp4=smplayer.desktop;vlc.desktop;
+video/ogg=smplayer.desktop;vlc.desktop;
+video/x-flv=smplayer.desktop;vlc.desktop;
+video/x-matroska=smplayer.desktop;vlc.desktop;
+video/x-ms-wmv=smplayer.desktop;vlc.desktop;
+video/x-msvideo=smplayer.desktop;vlc.desktop;
+video/x-ogm+ogg=smplayer.desktop;vlc.desktop;
+video/x-theora+ogg=smplayer.desktop;vlc.desktop;
+
+
+# Hypertext
+
 application/x-extension-htm=google-chrome.desktop;firefox.desktop
 application/x-extension-html=google-chrome.desktop;firefox.desktop
 application/x-extension-shtml=google-chrome.desktop;firefox.desktop
-application/xhtml+xml=google-chrome.desktop;firefox.desktop
 application/x-extension-xhtml=google-chrome.desktop;firefox.desktop
 application/x-extension-xht=google-chrome.desktop;firefox.desktop
-text/html=google-chrome.desktop;firefox.desktop
-text/mml=google-chrome.desktop;firefox.desktop
+
+
+application/wps-office.pptx=wps-office-wpp.desktop
+application/wps-office.ppt=wps-office-wpp.desktop
+application/wps-office.pot=wps-office-wpp.desktop
+application/wps-office.potx=wps-office-wpp.desktop
+application/wps-office.dps=wps-office-wpp.desktop
+application/wps-office.dpt=wps-office-wpp.desktop
+application/wps-office.dpss=wps-office-wpp.desktop
+application/wps-office.dpso=wps-office-wpp.desktop
+
+application/wps-office.xlsx=wps-office-et.desktop
+application/wps-office.xls=wps-office-et.desktop
+application/wps-office.xlt=wps-office-et.desktop
+application/wps-office.xltx=wps-office-et.desktop
+application/wps-office.et=wps-office-et.desktop
+application/wps-office.ett=wps-office-et.desktop
+application/wps-office.ets=wps-office-et.desktop
+application/wps-office.eto=wps-office-et.desktop
+
+application/wps-office.docx=wps-office-wps.desktop
+application/wps-office.doc=wps-office-wps.desktop
+application/wps-office.dot=wps-office-wps.desktop
+application/wps-office.dotx=wps-office-wps.desktop
+application/wps-office.wps=wps-office-wps.desktop
+application/wps-office.wpss=wps-office-wps.desktop
+application/wps-office.wpso=wps-office-wps.desktop
+application/wps-office.wpt=wps-office-wps.desktop
+
+x-scheme-handler/chrome=google-chrome.desktop
+x-scheme-handler/tg=org.telegram.desktop.desktop
+x-scheme-handler/tonsite=org.telegram.desktop.desktop
+x-scheme-handler/magnet=qbittorrent.desktop
+x-scheme-handler/fdm=freedownloadmanager_fdm_up.desktop
 x-scheme-handler/http=google-chrome.desktop;firefox.desktop
 x-scheme-handler/https=google-chrome.desktop;firefox.desktop
 x-scheme-handler/ftp=google-chrome.desktop;firefox.desktop
-audio/x-ms-wma=vlc.desktop
+
 
 ##
 ## The [Added Associations] group defines additional associations of applications with mimetypes, as if the .desktop file was listing this mimetype in the first place.
 ##
 
 [Added Associations]
-
-text/plain=mousepad.desktop;
-text/csv=wps-office-et.desktop;
+text/plain=nvim.desktop;vim.desktop;wps-office-wps.desktop;mousepad.desktop;
+text/csv=wps-office-et.desktop;nvim.desktop;libreoffice-calc.desktop;
 text/html=google-chrome.desktop;
-
-
 application/octet-stream=uget-gtk.desktop;deluge.desktop;qpdfview.desktop;mousepad.desktop;
-application/pdf=org.pwmt.zathura-pdf-mupdf.desktop;zathura-pdf-mupdf.desktop;
+application/pdf=wps-office-pdf.desktop;org.gnome.Evince.desktop;google-chrome.desktop;chromium.desktop;qpdfview.desktop;org.pwmt.zathura-pdf-mupdf.desktop;libreoffice-draw.desktop;zathura-pdf-mupdf.desktop;
 application/x-gettext-translation=mousepad.desktop;
 application/x-wine-extension-ini=mousepad.desktop;
-application/epub+zip=engrampa.desktop;
-application/x-mobipocket-ebook=libreoffice-writer.desktop;
+application/epub+zip=calibre-ebook-viewer.desktop;calibre-gui.desktop;engrampa.desktop;
+application/x-mobipocket-ebook=calibre-ebook-viewer.desktop;calibre-gui.desktop;libreoffice-writer.desktop;
 application/x-shellscript=gvim.desktop;nvim.desktop;
 application/x-xpinstall=thunderbird.desktop;firefox.desktop;
 
@@ -71,14 +117,38 @@ inode/directory=exo-file-manager.desktop
 x-scheme-handler/trash=exo-file-manager.desktop
 x-scheme-handler/http=exo-web-browser.desktop
 x-scheme-handler/https=exo-web-browser.desktop
+audio/mpeg=smplayer.desktop;vlc.desktop;gmp3info.desktop;audacity.desktop;
 
-# VLC
-audio/mpeg=vlc.desktop;
-audio/mp4=vlc.desktop;
-video/mp4=vlc.desktop;
-video/x-matroska=vlc.desktop;
-audio/x-ms-wma=picard.desktop;vlc.desktop;
-video/x-msvideo=vlc.desktop;
+
+# Video
+
+
+# Archives
+application/x-compressed-tar=userapp-peazip"-96IAZZ.desktop;userapp-"peazip"-5VXWYZ.desktop;
+application/x-tar=uget-gtk.desktop;userapp-peazip"-96IAZZ.desktop;
+application/x-cd-image=open-fuse-iso.desktop;
+application/wps-office.pdf=qpdfview.desktop;org.pwmt.zathura-pdf-mupdf.desktop;
+application/vnd.openxmlformats-officedocument.wordprocessingml.document=wps-office-wps.desktop;libreoffice-writer.desktop;
+application/vnd.openxmlformats-officedocument.presentationml.presentation=wps-office-wpp.desktop;
+image/png=pinta.desktop;
+application/wps-office.potx=wps-office-wpp.desktop;
+application/wps-office.dpss=wps-office-wpp.desktop;
+application/wps-office.dpso=wps-office-wpp.desktop;
+application/wps-office.xltx=wps-office-et.desktop;
+application/wps-office.ets=wps-office-et.desktop;
+application/wps-office.eto=wps-office-et.desktop;
+application/wps-office.dotx=wps-office-wps.desktop;
+application/wps-office.wpss=wps-office-wps.desktop;
+application/wps-office.wpso=wps-office-wps.desktop;
+x-scheme-handler/tg=userapp-Telegram Desktop-QNO4X0.desktop;org.telegram.desktop.desktop;
+application/javascript=visual-studio-code.desktop;
+text/x-nfo=nvim.desktop;
+application/wps-office.xls=nvim.desktop;
+application/json=nvim.desktop;
+image/bmp=viewnior.desktop;
+x-scheme-handler/tonsite=org.telegram.desktop.desktop;
+x-scheme-handler/sms=org.gnome.Shell.Extensions.GSConnect.desktop;
+x-scheme-handler/tel=org.gnome.Shell.Extensions.GSConnect.desktop;
 
 ##
 ## The [Removed Associations] group removes associations of applications with mimetypes, as if the .desktop file was NOT listing this mimetype in the first place.
