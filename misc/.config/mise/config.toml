@@ -16,6 +16,9 @@
 # https://github.com/jdx/mise/discussions/4345
 idiomatic_version_file_enable_tools = []
 
+[tools]
+rust = "latest"
+
 
 # 2025-05-24: Don't remember what this was about:
 # paranoid = true # awaiting issue fix
