@@ -1,0 +1,113 @@
+# https://github.com/jbensmann/mouseless#configuration
+# https://github.com/jbensmann/mouseless/blob/main/example_configs/config_full.yaml
+
+# Reload config: <space>+z
+# Debug: sc_u p mouseless; mouseless -d
+
+
+###################
+# Mouse
+###################
+baseScrollSpeed: 20
+
+mouseLoopInterval: 5  # Rate at which the mouse pointer moves (in ms)
+startMouseSpeed: 2  # Initial mouse speed
+baseMouseSpeed: 800  # When fully accelerated
+# mouseLoopInterval: 20  # Default speed for mouse movement and scrolling baseScrollSpeed: 20.0 baseMouseSpeed: 1700
+mouseAccelerationTime: 400  # Milliseconds to accelerate to baseMouseSpeed, 0 == immediate
+mouseAccelerationCurve: 1  # Shape of the acceleration curve, 1.0 is linear, higher values have more time at low speeds
+# Decelerate hard and fast
+mouseDecelerationTime: 500
+# mouseDecelerationTime: 0
+mouseDecelerationCurve: 10  # Very rapid deceleration
+
+
+###################
+# Keyboard
+###################
+comboTime: 25  # ms to wait between 1st and 2nd keys of combos
+quickTapTime: 300  # Auto-repeat tap key when pressed twice within this duration
+fdfsa: 200
+
+###################
+# Layers
+###################
+
+# Remainder of config defines layers with their bindings
+layers:
+  # The first layer is active at start
+  - name: initial
+    passThrough: true
+    bindings:
+
+      tab: tap-hold tab ; toggle-layer mouse ; 200 # when tab is held and another key pressed, activate mouse layer
+
+      # https://github.com/jbensmann/mouseless/issues/90
+      # d+f: layer mouse
+
+      # Combo: both f and d pressed simultaneously
+      f+d: layer mouse
+
+      # when a is held: activate mouse layer
+      a: tap-hold a ; toggle-layer mouse ; 200  # last parameter is ms to hold before activate 2nd argument
+      # esc: tap-hold capslock
+      #
+
+      space: tap-hold space ; toggle-layer cursor ; 200
+
+      # Work around Alt-Tab being "eaten" by initial tab binding
+      leftalt: tap-hold leftalt ; leftalt; 200
+
+  # Cursor movement
+  - name: cursor
+    passThrough: true
+    bindings:
+      k: up
+      h: left
+      j: down
+      l: right
+      i: home
+      o: end
+
+      f: leftshift
+      d: leftctrl
+      s: leftalt
+      a: left
+
+
+      v: leftctrl+v  # paste
+      c: leftctrl+c  # copy
+      x: leftctrl+x  # cut
+      q: leftalt+f4  # close window
+
+      z: reload-config
+
+  # Mouse movement
+  - name: mouse
+    # when true, keys that are not mapped keep their original meaning
+    # passThrough: true
+    bindings:
+      space: layer mouse  # Keep the mouse layer active
+      q: layer initial  # Quit mouse layer
+
+      # Movement
+      l: move  1  0
+      j: move -1  0
+      k: move  0  1
+      i: move  0 -1
+      p: scroll up
+      # Buttons
+      n: scroll down
+      f: button left
+      d: button middle
+      s: button right
+
+      # Speed modifiers
+      leftalt: speed 4
+      space: speed 2
+      w: speed 2.5  # Pressing a, w and j or l together don't work well on Logitech K380 keyboard
+      r: speed 2.5
+      v: speed 2.5
+      e: speed 0.3
+
+      z: reload-config
