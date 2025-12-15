@@ -117,7 +117,9 @@ alias df,='colourify df'
 alias home='git --git-dir=$HOME/.githome --work-tree=$HOME'
 alias ghub='command gh'  # gh='g logda'
 alias lesc='less-compressed-wrapper'
-alias mosh='mosh --predict=experimental'  # https://github.com/mobile-shell/mosh/issues/878
+# predict: https://github.com/mobile-shell/mosh/issues/878
+# remote-ip: https://github.com/mobile-shell/mosh/issues/24  https://github.com/mobile-shell/mosh/issues/1181
+alias mosh='mosh --predict=experimental --experimental-remote-ip=remote'
 alias mv='mv -i'
 alias Mv='command mv'  # Allow overwrite
 alias mvg='mvg -g'
