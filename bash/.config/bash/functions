@@ -5,6 +5,16 @@
 # A shell that is not bash is assumed to be zsh.
 # This file is expected to be sourced, not run.
 
+
+# True if argument is a function. Works in zsh and bash
+# https://unix.stackexchange.com/a/332047/143394
+is_function() {
+    typeset -f "$1" > /dev/null
+}
+
+# Source POSIX shell functions if they've not yet been (eg source-file)
+! is_function sh_is_bash && source "$XDG_CONFIG_HOME/shell/functions-env"
+
 # Allow functions to be accessed from bash sub-shells by:
 # 'export_function <func-name>'
 function export_function {
@@ -12,6 +22,8 @@ function export_function {
   if sh_is_bash; then export -f "$@"; fi
   # zsh can't export functions: https://stackoverflow.com/a/1896039/5353461
 }
+
+export_function is_function export_function
 
 function is_mac () { [[ $OSTYPE == darwin* ]]; }
 function is_linux () { [[ $OSTYPE == linux* ]]; }
@@ -567,14 +579,6 @@ function col_n {
 # }
 
 ######### End non-exported functions ##########
-
-# True if argument is a function. Works in zsh and bash
-# https://unix.stackexchange.com/a/332047/143394
-is_function() {
-    typeset -f "$1" > /dev/null
-}
-export_function is_function
-
 
 # Read a single char from /dev/tty, prompting with "$*"
 # Note: pressing enter will return a null string. Perhaps a version terminated with X and then remove it in caller?
