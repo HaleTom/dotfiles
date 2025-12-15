@@ -283,7 +283,10 @@ _pre_command() {
   #   :
   # fi
 
-  _prompt_timer_start
+  # Run only if shell is interactive
+  if [[ $- == *i* ]]; then
+    _prompt_timer_start
+  fi
 }
 trap '_pre_command' DEBUG
 
