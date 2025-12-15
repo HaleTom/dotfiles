@@ -111,7 +111,8 @@ export BINARY_SCP=/usr/bin/scp
 
 # fzf  https://github.com/junegunn/fzfhttps://github.com/junegunn/fzf
 export FZF_DEFAULT_COMMAND='fd --type f'
-export FZF_CTRL_T_COMMAND="$FZF_DEFAULT_COMMAND --hidden --exclude .git/"
+export FZF_CTRL_T_COMMAND="$FZF_DEFAULT_COMMAND --hidden -E node_modules -E .git"
+export FZF_ALT_C_OPTS="--walker dir,follow,hidden --walker-skip .git,node_modules --preview 'tree -C --hyperlink {}'"
 
 #
 # Python
