@@ -4,6 +4,9 @@
 # Above two lines are for shellcheck's happiness:
 # #1) Determine shell. #2) Silence when trying to source a filename in a variable
 
+# Setup $XDG* variables, etc
+source "${XDG_CONFIG_HOME:=$HOME/.config}/shell/env"
+
 set -o noclobber  # Use >|file to clobber
 umask 027         # No perms for others
 
@@ -13,9 +16,6 @@ function sh_is_bash { [ -n "${BASH_VERSION:-}" ]; }
 
 # Setup functions (required for XDG background checks)
 source "$HOME/.config/bash/functions"
-
-# Setup $XDG* variables
-source "$HOME/.config/bash/xdg"
 
 # Standard-ish variables
 export BROWSER=/usr/bin/google-chrome-stable
