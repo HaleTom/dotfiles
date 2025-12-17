@@ -8,7 +8,6 @@
 source "${XDG_CONFIG_HOME:=$HOME/.config}/shell/env"
 
 set -o noclobber  # Use >|file to clobber
-umask 027         # No perms for others
 
 # Allow shell-specific code
 function sh_is_zsh { [ -n "${ZSH_VERSION:-}" ]; }
