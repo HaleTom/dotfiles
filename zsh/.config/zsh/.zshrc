@@ -321,10 +321,6 @@ add-zsh-hook precmd        precmd_zsh_hook     # Stop prompt timer, update promp
 # Clear the namespace of bootstrap functions
 # unfunction _source_file _source_files
 
-# Setup direnv
-# Required at end of zshrc says: https://github.com/direnv/direnv
-command -v direnv &> /dev/null && eval "$(direnv hook zsh)"
-
 return
 
 

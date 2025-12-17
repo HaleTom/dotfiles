@@ -322,10 +322,6 @@ DOTFILES
 # need because __git_ps1 will return colors.  See "prompt" sourced file.
 PROMPT_COMMAND='_prompt_bash_set'
 
-# Setup direnv
-# Required after setting the prompt says: https://github.com/direnv/direnv
-command -v direnv &> /dev/null && eval "$(direnv hook bash)"
-
 
 ##############################################################
 ###############  Comments only below here  ###################
