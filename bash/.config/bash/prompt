@@ -1,6 +1,18 @@
 #!/bin/bash
 # _options=$(shopt -op); set -exu # save and set shell options for testing
 
+
+__bash_debug=  # set to non-blank for debug output
+__zsh_debug=   # set to non-blank for debug output
+
+__debug() {
+  if { sh_is_zsh && [ "$__zsh_debug" ]; } || { sh_is_bash && [ "$__bash_debug" ]; } ; then
+    printf "%s\n" "$@";
+  fi
+}
+__debug_err() { __debug "$@" >&2; }
+__debug_tty() { __debug "$@" > /dev/tty; }
+
 ##################
 # Set the prompt #   Sourced from .bashrc
 ##################
@@ -145,37 +157,63 @@ _cd_hook() {
   if [[ ${ZSH_VERSION:-} ]]; then _prompt_update_zsh; fi
 }
 
+sh_is_zsh && autoload -Uz is-at-least
+if { sh_is_zsh && ! is-at-least 4.3.11 "$ZSH_VERSION"; } || (( BASH_VERSINFO[0] < 5 )); then
+  __EPOCHREALTIME_not_supported=true
+fi
 
-# Functions to get the time since last prompt
+
+# Get current time in MICROsecends since epoch
+# MUST only print digits, because of $PS0 hack
+# If using default nanseconds: zsh: number truncated after 19 digits: 17659534784507477283 / 1000
 _timer_now() {
-  # For zsh no sub-processs, float-type zsh $SECONDS or $EPOCHREALTIME:
-  # https://unix.stackexchange.com/a/204807/143394
+  # Avoid forking date if possible. Reduces prompt printing time by 100ms on AMD Ryzen AI 9 365
+  if [ -z "$__EPOCHREALTIME_not_supported" ]; then
+    local sec usec nsec
+    sec=${EPOCHREALTIME%.*}  # Seconds component only
+    nsec=${EPOCHREALTIME#*.}  # Decimal component only
+    printf -v usec "%6.0f" "$nsec"  # First 6 digits of nanoseconds, rounded.
+    # __debug_err "$EPOCHREALTIME $sec $usec $nsec"
+    printf "%s\n" "$sec$usec"
+    return
+  fi
+  # __debug_err "NOT using \$EPOCH"
 
-  if [[ $OSTYPE == darwin* ]]; then
+  # Older shells only:
+  if [[ $OSTYPE != darwin* ]]; then
+    date '+%s%6N'
+  else  # The native date command on macOS does not support microseconds
     if command -v gdate >& /dev/null; then
-      gdate +%s%N
+      gdate '+%s%6N'
     elif command -v perl >& /dev/null; then
       # https://github.com/jichu4n/bash-command-timer/blob/master/bash_command_timer.sh#L77
-      perl -MTime::HiRes -e 'printf(\"%d\",Time::HiRes::time()*1000000000)'
+      perl -MTime::HiRes -e 'printf("%d\n",Time::HiRes::time() * 1_000_000)'
     else
-      date +%s
+      date '+%s000000'
     fi
-  else  # non-macOS
-    date +%s%N
   fi
 }
 
 
 _prompt_timer_start() {
-  # Do nothing if timer already started
+  # Don't start the timer again if it's already started
   _prompt_timer_start=${_prompt_timer_start:-$(_timer_now)}
+  # __debug "Set _prompt_timer_start = $_prompt_timer_start"
 }
+
+_prompt_timer_start=  # Don't inherit this from a parent shell
 
 
 _prompt_timer_stop() {
+  # __debug "Stop is checking _prompt_timer_start = $_prompt_timer_start"
+  if [ ! "$_prompt_timer_start" ]; then
+    _timer_show=""
+    return 0
+  fi
   # Taken from: http://stackoverflow.com/a/34812608/5353461
   # See also: http://jakemccrary.com/blog/2015/05/03/put-the-last-commands-run-time-in-your-bash-prompt/
-  local delta_us=$((($(_timer_now) - _prompt_timer_start) / 1000))
+  local delta_us=$(( $(_timer_now) - _prompt_timer_start ))
+  __debug "delta_us = $delta_us"
   local us=$((delta_us % 1000))
   local ms=$(((delta_us / 1000) % 1000))
   local s=$(((delta_us / 1000000) % 60))
@@ -273,22 +311,67 @@ _cd_hook_bash() {
   fi
 }
 
+# Setup hook after user presses ENTER
+
+# $PS0 was included in bash 4.4 on 2016-09-15 -- https://stromberg.dnsalias.org/~strombrg/PS0-prompt/
+if (( BASH_VERSINFO[0] < 4 )) || (( BASH_VERSINFO[0] == 4 && BASH_VERSINFO[1] < 4 )); then
+  __PS0_not_supported=true
+else
+  # Print nothing: $- from element 0, length 0.
+  # Use the side-effect of assignment, but return 0 to create :0:0
+  # _timer_now() must only print a single number, else prompt breaks
+  export PS0=$'${-:0:$((_prompt_timer_start=$(_timer_now),0))}'
+fi
+
+
+# # This hook runs only once, immediately after user presses ENTER
+_hook_after_prompt() {
+  [[ "_hook_after_prompt() starting..." ]]  # silent debug -- leave active
+  __debug "_hook_after_prompt() starting..."
+  _prompt_timer_start  # Start timer ASAP after prompt
+  __debug ------- After prompt complete --------   # debug
+  [[ "_hook_after_prompt() complete" ]]  # silent debug -- leave active
+}
+
 
 # Run before every command (via DEBUG trap)
-_pre_command() {
-  # echo _pre_command started # Debug
+# NB: This trap fires for EVERY part of a complex command, eg pipe, loop, function
+# and also for each command of each entry of PROMPT_COMMAND if it is an array.
+_hook_DEBUG() {
+  # echo _hook_DEBUG started # Debug
+  [[ "_hook_DEBUG() starting..." ]]  # silent debug -- leave active
+  # __debug "$(printf "hook_DEBUG() on command "%s" _prompt_timer_start = $_prompt_timer_start" "$BASH_COMMAND")"
 
-  # Run only when generating the prompt
-  # if [[ $BASH_COMMAND = "$PROMPT_COMMAND" ]]; then
-  #   :
-  # fi
-
-  # Run only if shell is interactive
-  if [[ $- == *i* ]]; then
-    _prompt_timer_start
+  if sh_is_bash && [[ "$__PS0_not_supported" && "$_prompt_just_printed" ]]; then
+    _hook_after_prompt
+    unset _prompt_just_printed
+    unset _next_prompt_command_started
   fi
+
+  [ "$_next_prompt_command_started" ] && return
+
+  # Continue only if:
+  # - interactive - not a ssh/scp cmd -- Bash is the only shell that explicitly runs bashrc for these
+  # - main shell  - not $(subshell) with `set -T` or `set -o functrace`
+  # - we're not in the process of running the prompt command itself
+  [[ $- == *i* && $BASH_SUBSHELL -eq 0 && ! "$_next_prompt_command_started" ]] || return
+
+  # Stop if just about to execute $PROMPT_COMMAND itself
+  # Assume that there are no complex commands (eg "a; b") inside it
+  # An array will evaluate to its first entry in scalar context, and we'll catch that.
+  if [[ "$BASH_COMMAND" == "$PROMPT_COMMAND" ]]; then
+    _next_prompt_command_started=true
+    return
+  fi
+
+  # At last, we can run commands before commands, but not before PROMPT_COMMAND commands
+
+  # Other pre-commands >> HERE <<
+
+  # __debug "------- DEBUG hook complete --------"   # debug
+  [[ "_hook_DEBUG() complete" ]]  # silent debug -- leave active
 }
-trap '_pre_command' DEBUG
+trap '_hook_DEBUG' DEBUG
 
 
 # Sets prompt like:
@@ -303,7 +386,7 @@ _prompt_bash_set() {
     # local -- - # Make shell options local to this function, restore on completion
     [[ $- = *e* ]] && local set_e=1
     [[ $- = *x* ]] && local set_x=1
-    set +ex    # Don\'t debug or die in setting the prompt!
+    set +ex    # Don't debug or die in setting the prompt!
   fi
   _prompt_timer_stop
 
@@ -458,7 +541,7 @@ _prompt_bash_set() {
   [[ $set_x ]] && set -x
 
   # echo "\$PS1=$PS1" # Debug
+  _prompt_just_printed=true  # Used for _pre_command but only for very first command
 }
-
 
 # eval "$_options"; unset _options # Restore previous shell options from line 2
