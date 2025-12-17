@@ -211,7 +211,7 @@ export GRC_ALIASES=true  # Required for grc.sh to not return early
 source_first "/etc/profile.d/grc.sh" "/usr/local/etc/grc.sh"
 unset GRC_ALIASES
 
-_source_files >> "$XDG_RUNTIME_DIR/source_files-$(date '+%s')-PID:$$" <<DOTFILES 2>&1
+_source_files <<DOTFILES
     # Git
     $_git_prompt_file
 
