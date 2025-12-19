@@ -94,6 +94,7 @@ zstyle ':completion:*' menu no
 setopt auto_cd  # If a command can’t be executed but is a directory, cd command to that directory.
 setopt extended_glob  # Treat the ‘#’, ‘~’ and ‘^’ characters as part of patterns for filename generation, etc. (An initial unquoted ‘~’ always produces named directory expansion.)
 setopt no_clobber  # ‘>!’ or ‘>|’ must be used to truncate a file
+setopt complete_aliases  # Have completion work with `alias ip="colourify ip"`
 setopt no_match  # Print an error, instead of leaving pattern unchanged. Also applies to file expansion of an initial ‘~’ or ‘=’.
 setopt notify  # Report the status of background jobs immediately, rather than waiting until just before printing a prompt.
 setopt prompt_subst  # Parameter expansion, command substitution and arithmetic expansion are performed in prompts.
