@@ -271,12 +271,6 @@ else
   [[ "$-" == *i* ]] && printf "Can't find keychain or ssh-agent/ssh-add in path\n" >&2
 fi
 
-# Activate mise - https://mise.jdx.dev/getting-started.html
-# Some IDEs may need $XDG_DATA_HOME/mise/shims in $PATH.
-if command -v /usr/bin/mise &> /dev/null; then
-  sh_is_bash && eval "$(mise activate bash)"
-  sh_is_zsh  && eval "$(mise activate zsh )"
-fi
 
 # Install fzf shell files if required
 if [[ ! -d $XDG_CONFIG_HOME/fzf ]]; then
@@ -289,6 +283,10 @@ fi
 sh_is_zsh && return
 ##############################################################
 ##############################################################
+
+# Activate mise - https://mise.jdx.dev/getting-started.html
+# Some IDEs may need $XDG_DATA_HOME/mise/shims in $PATH.
+is_cmd /usr/bin/mise && eval "$(mise activate bash)"
 
 # fzf
 is_cmd fzf && source_first "/usr/share/fzf/completion.bash" "/usr/local/opt/fzf/shell/completion.bash"

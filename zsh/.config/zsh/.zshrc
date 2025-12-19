@@ -321,9 +321,12 @@ add-zsh-hook precmd        precmd_zsh_hook     # Stop prompt timer, update promp
 # Clear the namespace of bootstrap functions
 # unfunction _source_file _source_files
 
+# Activate mise - https://mise.jdx.dev/getting-started.html
+# Some IDEs may need $XDG_DATA_HOME/mise/shims in $PATH.
+is_cmd /usr/bin/mise && eval "$(mise activate zsh)"
+
+
 return
-
-
 ##
 ## Null code and comments only beyond here
 ##
