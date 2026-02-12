@@ -1,0 +1,137 @@
+;; ---------------------------------------------------------------------------
+;; SOURCE: Physical Layout
+;; ---------------------------------------------------------------------------
+(defsrc
+  esc  f1   f2   f3   f4   f5   f6   f7   f8   f9   f10  f11  f12  prtsc  ins  del
+  grv  1    2    3    4    5    6    7    8    9    0    -    =    bspc        pgup
+  tab  q    w    e    r    t    y    u    i    o    p    [    ]    \           pgdn
+  caps a    s    d    f    g    h    j    k    l    ;    '         ret         home
+  lsft z    x    c    v    b    n    m    ,    .    /    rsft      up          end
+  lctl lmet lalt           spc            ralt rctl      left      down        right
+)
+
+;; ---------------------------------------------------------------------------
+;; ALIASES & MACROS
+;; ---------------------------------------------------------------------------
+(defalias
+  ;; --- CAPS LOCK LOGIC ---
+  ;; 1. Tap (<300ms) -> esc
+  ;; 2. Chord (press another key while holding) -> lctl
+  ;; 3. Hold (>300ms alone) -> caps
+  escctrl (tap-hold-press-timeout 300 300 esc lctl caps)
+
+  ;; --- NAVIGATION LAYER & MACROS ---
+  ;; Left Meta acts as Meta, but activates 'nav' layer when held.
+  ;; tap-hold <tap-timeout> <hold-timeout> <tap-action> <hold-action>
+  met (tap-hold 200 200 lmet (layer-toggle nav))
+
+  ;; --- NAVIGATION KEYS (FIXED) ---
+  ;; We map these directly to the keys.
+  ;; If 'Meta+Home' triggers a Manjaro shortcut you don't want,
+  ;; disable it in Manjaro System Settings -> Shortcuts.
+  hom home
+  end end
+  pup pgup
+  pdn pgdn
+
+  ;; --- SHORTCUTS LAYER ---
+  ;; Right Control acts as RCtrl AND activates 'shortcuts' layer.
+  rctl_lay (multi rctl (layer-while-held shortcuts))
+
+  ;; RCtrl+Caps -> Clean CapsLock toggle
+  cap caps
+
+  ;; --- PRINT SCREEN LOGIC (Ctrl+Shift+Alt+P) ---
+  ;; Fork: Send 'p' by default.
+  ;; If Left Control AND Left Shift AND Left Alt are held, send 'prtsc'.
+  p (fork p prtsc (lctl lsft lalt))
+
+  ;; --- SYSRQ ---
+  ;; Direct SysRq key code (often same as PrtScr but defined explicitly for shortcuts)
+  sys sys
+
+  ;; Config Reload (Meta + F5)
+  rld  lrld
+)
+
+
+;; ---------------------------------------------------------------------------
+;; BASE LAYER
+;; ---------------------------------------------------------------------------
+(deflayer base
+  esc      f1   f2   f3   f4   f5   f6   f7   f8   f9   f10  f11  f12  prtsc  ins  del
+  grv      1    2    3    4    5    6    7    8    9    0    -    =    bspc        pgup
+  tab      q    w    e    r    t    y    u    i    o    @p   [    ]    \           pgdn
+  @escctrl a    s    d    f    g    h    j    k    l    ;    '         ret         home
+  lsft     z    x    c    v    b    n    m    ,    .    /    rsft      up          end
+  lctl     @met lalt           spc            ralt @rctl_lay left      down        right
+)
+
+;; ---------------------------------------------------------------------------
+;; NAV LAYER (Active when Left Meta is held)
+;; ---------------------------------------------------------------------------
+(deflayer nav
+  _    _    _    _    _    @rld _    _    _    _    _    _    _    @sys   _    _
+  _    _    _    _    _    _    _    _    _    _    _    _    _    _           _
+  _    _    _    _    _    _    _    _    _    _    _    _    _    _           _
+  _    _    _    _    _    _    _    _    _    _    _    _    _               _
+  _    _    _    _    _    _    _    _    _    _    _    _         @pup        _
+  _    _    _              _              _    _         @hom      @pdn        @end
+)
+
+;; ---------------------------------------------------------------------------
+;; SHORTCUTS LAYER (Active when Right Control is held)
+;; ---------------------------------------------------------------------------
+(deflayer shortcuts
+  _      _    _    _    _    _    _    _    _    _    _    _    _    _      _    _
+  _      _    _    _    _    _    _    _    _    _    _    _    _    _           _
+  _      _    _    _    _    _    _    _    _    _    _    _    _    _           _
+  @cap  _    _    _    _    _    _    _    _    _    _    _    _               _
+  _      _    _    _    _    _    _    _    _    _    _    _         _           _
+  _      _    _              _              _    _         _         _           _
+)
+
+;; ---------------------------------------------------------------------------
+;; SUGGESTED RELOAD KEY BINDINGS (Swap @rld in the 'nav' layer above)
+;; ---------------------------------------------------------------------------
+;; 1. Meta + F5 (Implemented above):
+;;    Good for "Refresh" mnemonic.
+;;
+;; 2. Meta + Esc:
+;;    (deflayer nav @rld ...)
+;;    Fast, top-left corner, easy to hit blindly if things break.
+;;
+;; 3. Meta + Backspace:
+;;    (deflayer nav ... @rld pgup)
+;;    Out of the way, hard to hit accidentally.
+;;
+;; 4. Meta + Space:
+;;    (deflayer nav ... @rld ... )
+;;    Very ergonomic, but might conflict if you use Meta+Space for search/launcher.
+
+;; ---------------------------------------------------------------------------
+;; SUGGESTED IMPROVEMENTS
+;; ---------------------------------------------------------------------------
+;; 1. Caps Word:
+;;    (defalias cw (caps-word 2000))
+;;    Bind to 'Both Shifts' or 'Double Tap Shift'. Intellignetly capitalizes
+;;    the current word you are typing (like_THIS_STYLE) then auto-disables
+;;    when you type a space or punctuation.
+;;
+;; 2. Tap-Dance for Common Keys:
+;;    (defalias end_dance (tap-dance 200 (end (macro end ret))))
+;;    Tap 'End' once for End, double-tap for "End + Enter" (useful for coding).
+;;
+;; 3. Space Cadet Shift:
+;;    (defalias ls (tap-hold 150 150 ( unicode "(" ) lsft))
+;;    (defalias rs (tap-hold 150 150 ( unicode ")" ) rsft))
+;;    Tapping Left Shift types '(', holding acts as Shift.
+;;
+;; 4. Mouse Keys Layer:
+;;    Create a layer where WASD or HJKL moves the mouse cursor.
+;;    Useful if your trackpad driver crashes or you want to keep hands on home row.
+;;
+;; 5. One-Shot Modifiers (Sticky Keys):
+;;    (defalias os_sft (one-shot 1000 lsft))
+;;    Tap Shift once, and the NEXT key you press will be capitalized.
+;;    Reduces pinky strain for single capital letters.
