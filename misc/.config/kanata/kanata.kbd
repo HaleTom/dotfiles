@@ -1,3 +1,7 @@
+;; Modifiers list
+;; https://github.com/jtroo/kanata/blob/main/parser/src/keys/mod.rs
+
+
 ;; ---------------------------------------------------------------------------
 ;; SOURCE: Physical Layout
 ;; ---------------------------------------------------------------------------
@@ -22,8 +26,8 @@
 
   ;; --- NAVIGATION LAYER & MACROS ---
   ;; Left Meta acts as Meta, but activates 'nav' layer when held.
-  ;; tap-hold <tap-timeout> <hold-timeout> <tap-action> <hold-action>
-  met (tap-hold 200 200 lmet (layer-toggle nav))
+  ;; tap-hold-press <tap-timeout> <hold-timeout> <tap-action> <hold-action>
+  met (tap-hold-press 200 200 lmet (layer-toggle nav))
 
   ;; --- NAVIGATION KEYS (FIXED) ---
   ;; We map these directly to the keys.
@@ -36,7 +40,7 @@
 
   ;; --- SHORTCUTS LAYER ---
   ;; Right Control acts as RCtrl AND activates 'shortcuts' layer.
-  rctl_lay (multi rctl (layer-while-held shortcuts))
+  rctl (multi rctl (layer-while-held shortcuts))
 
   ;; RCtrl+Caps -> Clean CapsLock toggle
   cap caps
@@ -64,7 +68,7 @@
   tab      q    w    e    r    t    y    u    i    o    @p   [    ]    \           pgdn
   @escctrl a    s    d    f    g    h    j    k    l    ;    '         ret         home
   lsft     z    x    c    v    b    n    m    ,    .    /    rsft      up          end
-  lctl     @met lalt           spc            ralt @rctl_lay left      down        right
+  lctl     @met lalt           spc            ralt @rctl     left      down        right
 )
 
 ;; ---------------------------------------------------------------------------
@@ -123,8 +127,8 @@
 ;;    Tap 'End' once for End, double-tap for "End + Enter" (useful for coding).
 ;;
 ;; 3. Space Cadet Shift:
-;;    (defalias ls (tap-hold 150 150 ( unicode "(" ) lsft))
-;;    (defalias rs (tap-hold 150 150 ( unicode ")" ) rsft))
+;;    (defalias ls (tap-hold-press 150 150 ( unicode "(" ) lsft))
+;;    (defalias rs (tap-hold-press 150 150 ( unicode ")" ) rsft))
 ;;    Tapping Left Shift types '(', holding acts as Shift.
 ;;
 ;; 4. Mouse Keys Layer:
