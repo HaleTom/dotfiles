@@ -27,7 +27,7 @@
   ;; --- NAVIGATION LAYER & MACROS ---
   ;; Left Meta acts as Meta, but activates 'nav' layer when held.
   ;; tap-hold-press <tap-timeout> <hold-timeout> <tap-action> <hold-action>
-  met (tap-hold-press 200 200 lmet (layer-toggle nav))
+  met (tap-hold-press 200 200 lmet (layer-toggle meta))
 
   ;; --- NAVIGATION KEYS (FIXED) ---
   ;; We map these directly to the keys.
@@ -45,18 +45,30 @@
   ;; RCtrl+Caps -> Clean CapsLock toggle
   cap caps
 
-  ;; --- PRINT SCREEN LOGIC (Ctrl+Shift+Alt+P) ---
-  ;; Fork: Send 'p' by default.
-  ;; If Left Control AND Left Shift AND Left Alt are held, send 'prtsc'.
-  p (fork p prtsc (lctl lsft lalt))
+;;   ;; Left Control: Sends lctl. Check: If Alt+Shift also held? -> Toggle Layer
+;;   c_mod (multi lctl (fork (multi) (layer-toggle csa_layer) (alt sft)))
+;;
+;;   ;; Left Alt: Sends lalt. Check: If Ctrl+Shift also held? -> Toggle Layer
+;;   a_mod (multi lalt (fork (multi) (layer-toggle csa_layer) (ctl sft)))
+;;
+;;   ;; Left Shift: Sends lsft. Check: If Ctrl+Alt also held? -> Toggle Layer
+;;   s_mod (multi lsft (fork (multi) (layer-toggle csa_layer) (ctl alt)))
+;;
+;;   ;; --- PRINT SCREEN LOGIC (Ctrl+Shift+Alt+P) ---
+;;   ;; Fork: Send 'p' by default.
+;;   ;; If Left Control AND Left Shift AND Left Alt are held, send 'prtsc'.
+;; ;;  p (fork p prtsc (lctl lsft lalt))
 
   ;; --- SYSRQ ---
-  ;; Direct SysRq key code (often same as PrtScr but defined explicitly for shortcuts)
-  sys sys
-
-  ;; Config Reload (Meta + F5)
-  rld  lrld
+  sys    sys          ;; SysRq key
+  rld    lrld        ;; Config Reload (Meta + F5)
+  ptsc   prtsc       ;; Print Screen
 )
+
+;; (defchords mods 50
+;;   ;; List of keys in the chord       Action when all are pressed
+;;   (lctl lalt lsft)                   (layer-toggle csa_layer)
+;; )
 
 
 ;; ---------------------------------------------------------------------------
@@ -65,16 +77,16 @@
 (deflayer base
   esc      f1   f2   f3   f4   f5   f6   f7   f8   f9   f10  f11  f12  prtsc  ins  del
   grv      1    2    3    4    5    6    7    8    9    0    -    =    bspc        pgup
-  tab      q    w    e    r    t    y    u    i    o    @p   [    ]    \           pgdn
+  tab      q    w    e    r    t    y    u    i    o    p    [    ]    \           pgdn
   @escctrl a    s    d    f    g    h    j    k    l    ;    '         ret         home
   lsft     z    x    c    v    b    n    m    ,    .    /    rsft      up          end
-  lctl     @met lalt           spc            ralt @rctl     left      down        right
+  lctl     @met lalt           spc           ralt  rctl      left      down        right
 )
 
 ;; ---------------------------------------------------------------------------
-;; NAV LAYER (Active when Left Meta is held)
+;; Left Meta Layer
 ;; ---------------------------------------------------------------------------
-(deflayer nav
+(deflayer meta
   _    _    _    _    _    @rld _    _    _    _    _    _    _    @sys   _    _
   _    _    _    _    _    _    _    _    _    _    _    _    _    _           _
   _    _    _    _    _    _    _    _    _    _    _    _    _    _           _
@@ -93,6 +105,16 @@
   @cap  _    _    _    _    _    _    _    _    _    _    _    _               _
   _      _    _    _    _    _    _    _    _    _    _    _         _           _
   _      _    _              _              _    _         _         _           _
+)
+
+;; Control Alt Shift
+(deflayer csa_layer
+  _    _    _    _    _    _    _    _    _    _    _    _    _    _     _    _
+  _    _    _    _    _    _    _    _    _    _    _    _    _    _          _
+  _    _    _    _    _    _    _    _    _    _    @ptsc _    _    _          _
+  _    _    _    _    _    _    _    _    _    _    _    _         _          _
+  _    _    _    _    _    _    _    _    _    _    _    _         _          _
+  _    _    _              _              _    _         _         _          _
 )
 
 ;; ---------------------------------------------------------------------------
@@ -139,3 +161,5 @@
 ;;    (defalias os_sft (one-shot 1000 lsft))
 ;;    Tap Shift once, and the NEXT key you press will be capitalized.
 ;;    Reduces pinky strain for single capital letters.
+
+;; vim: set ft=lisp ts=2 sw=2 et :
