@@ -69,6 +69,7 @@ alias s='git s'
 alias ft='faketty '  # space at end allows next word to be alias-expanded
 alias gh='git logda' # Git History
 alias jc='journalctl'
+alias jcc='SYSTEMD_COLORS=1 jc '
 alias jn='jupyter-notebook'
 alias tb='nc termbin.com 9999'
 
@@ -87,14 +88,19 @@ alias sc_ldr='sc list-dependencies --reverse'
 alias sc_lu='sc list-units'
 alias sc_luf='sc list-unit-files'
 alias sc_r='sc restart'
+alias sc_re='sc reenable'
 alias sc_rf='sc reset-failed'
 alias sc_s='sc status'
 alias sc_sf='sc status --full --lines 99999'
+alias sc_sth='sc suspend-then-hibernate'
 alias sc_p='sc stop'
 alias sc_t='sc start'
+alias sc_v='sudo systemd-analyze verify'
+
 # shellcheck disable=SC2142  # Allow positional parameters to aliases (via function call)
 # shellcheck disable=SC2154  # x is referenced but not assigned.
-alias sc_u='f(){ x=$(alias_expand sc_"$1" | sed -En "s/^sc /systemctl --user /p") && eval "$x" "$(shell-quote "${@:2}")"; };f'
+alias scu=$'f(){ set -o pipefail; local x; if x=$(alias_expand sc_"$1" | sed -En "s/^sc /systemctl --user /p"); then eval "$x" "$(shell-quote -- "${@:2}")"; else  /usr/bin/systemctl --user "$@"; fi };f'
+alias sc_u='scu'
 
 # Currently done as function
 # https://stackoverflow.com/a/34071958/5353461
@@ -146,6 +152,7 @@ alias chad='NVIM_APPNAME=nvchad nvim '
 alias lazy='NVIM_APPNAME=lazyvim nvim '
 alias lunar='NVIM_APPNAME=lunarvim nvim '
 alias videv='NVIM_APPNAME=vim-dev nvim '
+alias vicode='NVIM_APPNAME=vim-vscode nvim '
 
 alias btrbk_prune_wipe_preserve_backups='sudo btrbk prune --wipe --preserve-backups'
 
@@ -316,11 +323,11 @@ fi
   # alias -g EOF='2>&1 >'
   alias -g H='  | head'  # Head
   alias -g HA='|& head'  # |& was added in Bash 4 as abbreviation for `2>&1 |`
-  alias -g G=' | grep -E'  # egrep is deprecated
-  alias -g GA='|& grep -E'
-  alias -g GI=' | grep -Ei'
-  alias -g GIV=' | grep -Eiv'
-  alias -g GV=' | grep -Ev'
+  alias -g G=' | grep -P'  # egrep is deprecated.  NOTE: mac grep doesn't support -P
+  alias -g GA='|& grep -P'
+  alias -g GI=' | grep -Pi'
+  alias -g GIV=' | grep -Piv'
+  alias -g GV=' | grep -Pv'
   alias -g L="  | less"
   alias -g LA=" |& less"
   alias -g LS=" | less -S"  # -S or --chop-long-lines
@@ -338,11 +345,11 @@ fi
   alias -g X='| xargs'
   alias -g XE='| xargs -0n1 echo'
   alias -g XI='| xargs -I'
-  alias -g XG='| xargs egrep'
+  alias -g XG='| xargs grep -P'
   alias -g X0='| xargs -0'
   alias -g X0E='| xargs -0n1 echo'
   alias -g X0I='| xargs -0I'
-  alias -g X0G='| xargs -0 egrep'
+  alias -g X0G='| xargs -0 grep -P'
 
 # From zsh-lovers not yet checked
   alias -g CA="2>&1 | cat -A"
