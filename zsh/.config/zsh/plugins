@@ -73,6 +73,16 @@ __zinit_deferred () {
 }
 
 
+# clockify-cli completions
+# Awaiting https://aur.archlinux.org/packages/clockify-cli-bin#comment-1060465
+"${_zinit_defaults[@]}" id-as'clockify-completion' has'clockify-cli' \
+    null completions \
+    atclone'/usr/bin/clockify-cli completion zsh >| _completions' \
+    atpull'%atclone' run-atpull \
+    src'_completions' \
+  for zdharma-continuum/null
+
+
 # Friendly bindings for ZSH's vi mode
 # https://github.com/softmoth/zsh-vim-mode
 MODE_CURSOR_VICMD="green block"
