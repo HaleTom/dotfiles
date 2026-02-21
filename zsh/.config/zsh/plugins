@@ -46,6 +46,7 @@ zinit light-mode for \
     zdharma-continuum/zinit-annex-bin-gem-node \
     zdharma-continuum/zinit-annex-patch-dl \
     zdharma-continuum/zinit-annex-rust
+    # NICHOLAS85/z-a-eval
 
 ### End of Zinit's installer chunk
 
@@ -72,6 +73,9 @@ __zinit_deferred () {
   unfunction __zinit_deferred  # remove thyself
 }
 
+# Cache the output of arbitrarily slow initialization command to speed up shell startup time.
+# https://github.com/NICHOLAS85/z-a-eval
+# "${_zinit_defaults[@]}" for 'NICHOLAS85/z-a-eval'
 
 # clockify-cli completions
 # Awaiting https://aur.archlinux.org/packages/clockify-cli-bin#comment-1060465
@@ -348,6 +352,7 @@ zsh-defer -t1 -12m __zinit_deferred
 #   for 'marlonrichert/zsh-autocomplete'
 #
 # Disabled as it's a bit hectic
+# BUG: Has issue: _autocomplete__command:local:3: bad option: -P
 #
 # TODO: New shell: need to press <ENTER> for this to start working
 # The 'zle -N menu-search; zle -N recent-paths' is not needed if
