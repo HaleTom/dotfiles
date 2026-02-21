@@ -405,6 +405,50 @@ FAST_HIGHLIGHT_STYLES[${FAST_THEME_NAME}bracket-level-3]='fg=red,bold'
 
 # Syntax highlighting should be the last plugin loaded
 unset _zinit_defaults
+
+# Check that all ices are valid - by default invalid ones are silently skipped
+# Usage: zinit-lint-ices softmoth/zsh-vim-mode
+zinit-lint-ices() {
+    local id="${1:?Usage: zinit-lint-ices <id-as or user/plugin>}"
+
+    local -a valid_ices
+    valid_ices=( ${(s:|:)ZINIT[ice-list]} ${(s:|:)ZINIT[nval-ice-list]} )
+
+    local raw="${ZINIT_SICE[$id]}"
+    if [[ -z "$raw" ]]; then
+        print "❌ No stored ices for: '$id'"
+        print "   Known keys: ${(k)ZINIT_SICE}"
+        return 1
+    fi
+
+    # ZINIT_SICE = alternating z-format tokens: key val key val ...
+    local -a flat
+    flat=( "${(@z)raw}" )
+
+    (( ${#flat} % 2 != 0 )) && print "⚠ Odd token count (${#flat}) — truncated parse"
+
+    local -A unpacked
+    local i key val
+    for (( i=1; i<=${#flat}; i+=2 )); do
+        key="${(Q)flat[$i]}"
+        val="${(Q)flat[$((i+1))]}"
+        unpacked[$key]="$val"
+    done
+
+    # Zinit internal bookkeeping keys — not user-authored ices
+    local -a internal=( 0 teleid )
+
+    print "\nIces for plugin: $id"
+    for key in ${(ko)unpacked}; do
+        (( ${internal[(I)$key]} )) && continue
+        if (( ${valid_ices[(I)$key]} )); then
+            print "  ✅ ${key}='${unpacked[$key]}'"
+        else
+            print "  ❌ UNKNOWN: ${key}='${unpacked[$key]}'"
+        fi
+    done
+}
+
 return
 
 
