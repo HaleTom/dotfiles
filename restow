@@ -1,25 +1,71 @@
 #!/bin/bash
-
 set -euo pipefail
 
-dir=${1:-$(dirname "$0")}
+# NOTE:
+# /home/var/ravi/stow also exists for data to be excluded from long-term backups.
+# Run /home/var/ravi/stow-to-home for a dry-run, append "go" to execute.
 
-if [[ $# -gt 1 || ! -d $dir ]]; then
-  printf "Usage: %s [directory]\n" "${0##*/}"
-  printf "Run install under PERSONAL directory if it exists.\n"
-  printf "Stow directories to %s\n" "$HOME"
-  printf "Run stow on all directories under given directory\n"
-  printf "Else, run stow on all directories which are siblings to this file\n"
-  printf "\nDirectories named PERSONAL Z-* .* are excluded.\n"
+# NOTE: man page says:
+# The stow directory is assumed to be the value of the "STOW_DIR" environment variable or if unset the current directory
+# the target directory is assumed to be the parent of the current directory
+
+script_dir=$(dirname "$0")
+stow_dir=${STOW_DIR:-$script_dir}  # Source or 'stow' directory.  Maybe overwrite with -s option
+extra_args=()
+#TODO? Allow target directory to be specified as an argument, default to script directory. But for now, just use script directory as target directory.
+target_dir=$HOME
+
+# Dodgy getopts
+[[ $# -ge 1 && "$1" == "-n" ]]     && extra_args+=("$1") && shift
+[[ $# -ge 1 && "$1" == "--adopt" ]] && extra_args+=("$1") && shift
+[[ $# -ge 2 && "$1" == "-s" ]] && stow_dir=$2 && shift 2
+
+
+if [[ $# -ne 0 || ! -d $stow_dir ]]; then
+  printf "Usage: %s [-n] [--adopt] [-s source directory]\n\n" "${0##*/}"
+  printf "Firstly, runs install under PERSONAL directory if it exists.\n"
+  printf "\nStow options allowed: (strict ordering)\n"
+  printf -- "  -n == dry run\n"
+  printf -- "  --adopt == MODIFY the stow (source) directory -- subsume any different files\n\n"
+  printf "Stow all directories from source 'stow' directory (default == \$STOWDIR, else %s) to %s\n" "$script_dir" "$target_dir"
+  # printf "Run stow on all directories under given directory\n"
+  printf "Run stow on all directories which are siblings to %s\n" "$0"
+  printf "\nDirectories named  PERSONAL  Z-*  .*  are excluded.\n"
   exit 1
 fi
 
-cd "$dir"
+cd "$stow_dir"
 
 # Link personal stow directories to main directory
-if [[ -f PERSONAL/install ]]; then
+if [[ -x PERSONAL/install ]]; then
   PERSONAL/install
 fi
 
+# NOTE: Debug: use stow option: --simulate
+# NOTE: stow --dotfiles was broken until Apr 8, 2024, so avoid for a few more years:
+# https://github.com/aspiers/stow/issues/33
+
 # Assume that there are no newlines in directory names
-find -L . -maxdepth 1 -type d ! \( -name PERSONAL -o -name '.*' -o -name 'Z-*' \) -print | sed 's/^.\///' | xargs -t -n1 -- stow -v --target="$HOME"
+# find -L . -maxdepth 1 -type d ! \( -name PERSONAL -o -name '.*' -o -name 'Z-*' \) -print | sed 's/^.\///' | xargs -t -n1 -- stow -v --target="$HOME" # --simulate --restow #  --no-folding
+
+mapfile -td $'\0' dirs < \
+  <(find -L . -maxdepth 1 -type d ! \( -name PERSONAL -o -name '.*' -o -name 'Z-*' \) -print0 | sed -z 's/^.\///')
+
+failed_dirs=()
+stow_cmd=(stow -v "${extra_args[@]}" --target="$target_dir")  # Not quoting extra_args because it may be empty or contain multiple options, e.g. "-n --simulate"
+for dir in "${dirs[@]}"; do
+  # Interesting man page entries: --simulate  --restow  --no-folding
+  echo "  ${stow_cmd[@]}" "$dir"
+  if ! "${stow_cmd[@]}" "$dir"; then
+    failed_dirs+=("$dir")
+  fi
+done
+
+if [[ ${#failed_dirs[@]} -gt 0 ]]; then
+  printf "The following commands failed:\n"
+  for dir in "${failed_dirs[@]}"; do
+    printf "  %s %s %s\n" "STOW_DIR=\"$stow_dir\"" "${stow_cmd[*]}" "$dir"
+  done
+  # printf "%s\n" "${failed_dirs[@]}"
+  exit 1
+fi
