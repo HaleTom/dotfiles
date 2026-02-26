@@ -913,6 +913,17 @@ function apt_update_repo() {
 }
 export_function apt_update_repo
 
+function clockify() {
+  local base=(clockify-cli --config "$XDG_CONFIG_HOME/clockify-cli/config.yaml")
+  if [[ "$1" == "in" && "$#" -eq 1 ]]; then
+    # bare 'clock in' → clone last entry, no prompts
+    "${base[@]}" clone last -i=0
+  else
+    "${base[@]}" "$@"
+  fi
+}
+export_function clockify
+
 # transfer.sh
 # Adapted from: https://transfer.sh/#samples
 # | tee /dev/null forces the progress bar to appear

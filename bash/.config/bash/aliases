@@ -117,6 +117,8 @@ alias Cp='command cp --reflink=auto --sparse=always'  # Allow overwrite without 
 alias cpg='cpg -g'  # graphical cp
 alias cuc='cucumber'
 alias ccze='ccze -Ao nolookups'  # Don't look up {user,service}names, etc.
+alias clock='clockify'  # see functions
+alias clockify-cli='clockify'
 alias diff='diff-alias'
 alias df="colourify df --block-size=\\'1K"  #'"
 alias df,='colourify df'
