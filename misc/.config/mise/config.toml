@@ -70,6 +70,9 @@ idiomatic_version_file_enable_tools = []
 [tools]
 rust = "latest"
 
+[env]
+MISE_ENV_DIR = "{{env.HOME}}/etc/secure/env/"
+
 
 # 2025-05-24: Don't remember what this was about:
 # paranoid = true # awaiting issue fix
