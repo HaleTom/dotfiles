@@ -1,4 +1,55 @@
+# ~/.config/mise/config.toml
 # https://mise.jdx.dev/configuration.html#global-config-config-mise-config-toml
+
+# These are hidden from logs
+# BUT STILL SHOWN by `mise env`
+#
+# To show ONLY these:
+# mise env --redactions
+redactions = [
+    # https://www.perplexity.ai/search/give-a-very-full-list-of-redac-sbR5JNW4SKujfa7jSoIbig
+
+    # ── Tier 1: Universal stem globs ─────────────────────────────────────
+    # These alone cover ~85% of all cases. Order matters for readability only.
+    "*SECRET*",           # CLIENT_SECRET, JWT_SECRET, WEBHOOK_SECRET, SECRET_KEY_BASE...
+    "*TOKEN*",            # ACCESS_TOKEN, BEARER_TOKEN, GITHUB_TOKEN, VAULT_TOKEN...
+    "*PASSWORD*",         # DB_PASSWORD, MYSQL_PASSWORD, SMTP_PASSWORD...
+    "*PASSWD*",           # PASSWD, DB_PASSWD (different stem from PASSWORD)
+    "*PASSPHRASE*",       # GPG_PASSPHRASE, SSH_PASSPHRASE
+    "*CREDENTIAL*",       # CREDENTIALS, CREDENTIAL_FILE (subsumes *CREDENTIALS*)
+    "*PRIVATE_KEY*",      # RSA_PRIVATE_KEY, SSH_PRIVATE_KEY, PGP_PRIVATE_KEY
+    "*CONNECTION_STRING*",# AZURE_STORAGE_CONNECTION_STRING, DB_CONNECTION_STRING
+    "*_PWD",              # DB_PWD, LDAP_PWD (short-form passwords)
+
+    # ── Tier 2: KEY patterns (split to avoid *KEY* false positives) ───────
+    "*_KEY",              # API_KEY, SECRET_KEY, STRIPE_SECRET_KEY (suffix)
+    "*_KEY_*",            # AWS_ACCESS_KEY_ID, HMAC_KEY_VERSION (KEY in middle)
+    "*APIKEY*",           # APIKEY, MY_APIKEY (no underscore variant)
+
+    # ── Tier 3: Explicit entries not caught by Tier 1/2 ──────────────────
+    # Only entries where NO stem glob above would match:
+    "AWS_ACCESS_KEY_ID",              # ends in _ID, not _KEY
+    "GOOGLE_APPLICATION_CREDENTIALS", # no SECRET/TOKEN/KEY/PASSWORD stem
+    "KUBECONFIG",                     # no standard stem
+    "SENTRY_DSN",                     # DSN contains embedded secret
+    "CLOUDINARY_URL",                 # URI with embedded credentials
+    "MONGODB_URI",                    # URI with embedded credentials
+    "DATABASE_URL",                   # URI with embedded credentials
+    "*_URI",                          # catch-all for credential-bearing URIs
+    "*_DSN",                          # Data Source Names (embed credentials)
+    "*_PEM",                          # PEM certificate files
+    "*_P12",                          # PKCS12 keystores
+    "*_PFX",                          # PFX keystores
+    "CREDS",                          # shorthand, not caught by *CREDENTIAL*
+    "*_CREDS",
+    "*_SALT",                         # cryptographic salts
+    "*_HASH",                         # password hashes
+
+    # ── Tier 4: App framework specifics (no stem match) ──────────────────
+    "SECRET_KEY_BASE",    # Rails — caught by *SECRET* ✓ (redundant, shown for clarity)
+    # Only list here if you want an ALLOWLIST exception audit trail.
+]
+
 
 [settings]
 
