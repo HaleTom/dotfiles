@@ -288,6 +288,14 @@ sh_is_zsh && return
 # Some IDEs may need $XDG_DATA_HOME/mise/shims in $PATH.
 is_cmd /usr/bin/mise && eval "$(mise activate bash)"
 
+# z.lua
+__zlua=$XDG_DATA_HOME/zinit/plugins/skywind3000---z.lua/z.lua
+if is_cmd lua && [[ -x "$__zlua" ]]; then
+  source "$XDG_CONFIG_HOME/bash/z.lua.config" && \
+  eval "$(lua "$__zlua" --init bash enhanced once fzf)"
+fi
+unset __zlua
+
 # fzf
 is_cmd fzf && source_first "/usr/share/fzf/completion.bash" "/usr/local/opt/fzf/shell/completion.bash"
 is_cmd fzf && source_first "/usr/share/fzf/key-bindings.bash" "/usr/local/opt/fzf/shell/key-bindings.bash"
