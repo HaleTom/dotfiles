@@ -4,6 +4,9 @@
 # Above two lines are for shellcheck's happiness:
 # #1) Determine shell. #2) Silence when trying to source a filename in a variable
 
+# When an interactive shell that is NOT a login shell is started, this file is read.
+# The --norc option inhibits this behavior.  The --rcfile file option causes bash to use file instead of ~/.bashrc.
+
 # Setup $XDG* variables, etc
 source "${XDG_CONFIG_HOME:=$HOME/.config}/shell/env"
 
@@ -14,7 +17,6 @@ function sh_is_zsh { [ -n "${ZSH_VERSION:-}" ]; }
 function sh_is_bash { [ -n "${BASH_VERSION:-}" ]; }
 
 # Setup functions (required for XDG background checks)
-# shellcheck disable=SC1091
 source "$HOME/.config/bash/functions"
 
 # Standard-ish variables
@@ -182,7 +184,6 @@ function _source_file {
 
   local file=$1
   if [[ -f $file ]]; then
-      # shellcheck disable=SC1090
       source "$file"
   else
       yelp "Cannot source $file" >&2
@@ -301,7 +302,6 @@ is_cmd /usr/bin/mise && eval "$(mise activate bash)"
 __zlua=$XDG_DATA_HOME/zinit/plugins/skywind3000---z.lua/z.lua
 if is_cmd lua; then
   if [[ -r "$__zlua" ]]; then
-    # shellcheck disable=SC1091
     source "$XDG_CONFIG_HOME/bash/z.lua.config" && \
     eval "$(lua "$__zlua" --init bash enhanced once fzf)"
   else
