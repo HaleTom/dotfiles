@@ -925,6 +925,7 @@ function clockify() {
 export_function clockify
 
 # transfer.sh
+# Upload file to transfer.sh for downloading somewhere else
 # Adapted from: https://transfer.sh/#samples
 # | tee /dev/null forces the progress bar to appear
 transfer() {
