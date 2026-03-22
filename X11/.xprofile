@@ -3,7 +3,12 @@
 #
 
 # Set key repeat rate
-xset r rate 200 40  # 200ms delay, then 40 repeats per second
+xset r rate 200 50  # 200ms delay, then 40 repeats per second
+
+
+# Prevent weird font scaling (eg flameshot)
+# https://wiki.archlinux.org/index.php?title=Flameshot&diff=prev&oldid=852968
+export QT_SCALE_FACTOR_ROUNDING_POLICY=Round
 
 # if which dbus-launch >/dev/null && test -z "$DBUS_SESSION_BUS_ADDRESS"; then
 #     eval "$(dbus-launch --sh-syntax --exit-with-session)"
