@@ -1,14 +1,16 @@
 #!/bin/bash
 # _options=$(shopt -op); set -exu # save and set shell options for testing
 
-
 __bash_debug=  # set to non-blank for debug output
 __zsh_debug=   # set to non-blank for debug output
 
+# Just calling this function with `set -x` will do some debugging :)
 __debug() {
   if { sh_is_zsh && [ "$__zsh_debug" ]; } || { sh_is_bash && [ "$__bash_debug" ]; } ; then
     printf "%s\n" "$@";
   fi
+  # Displayed with `set -x`:
+  [[ $- == *x* ]] && : "DEBUG: $(func_name 2): $(shell-quote "$@")"
 }
 __debug_err() { __debug "$@" >&2; }
 __debug_tty() { __debug "$@" > /dev/tty; }
@@ -169,13 +171,14 @@ fi
 _timer_now() {
   # Avoid forking date if possible. Reduces prompt printing time by 100ms on AMD Ryzen AI 9 365
   if [ -z "$__EPOCHREALTIME_not_supported" ]; then
+    __debug "\$EPOCHREALTIME supported"
     local sec usec nsec
     sec=${EPOCHREALTIME%.*}  # Seconds component only
     nsec=${EPOCHREALTIME#*.}  # Decimal component only
     printf -v usec "%6.0f" "$nsec"  # First 6 digits of nanoseconds, rounded.
-    # __debug_err "$EPOCHREALTIME $sec $usec $nsec"
+    __debug "\${EPOCHREALTIME} \${sec} \${nsec} \${usec} = ${EPOCHREALTIME} ${sec} ${nsec} ${usec}<EOS>"
     printf "%s\n" "$sec$usec"
-    return
+    return 0
   fi
   # __debug_err "NOT using \$EPOCH"
 
@@ -321,16 +324,15 @@ else
   # Use the side-effect of assignment, but return 0 to create :0:0
   # _timer_now() must only print a single number, else prompt breaks
   export PS0=$'${-:0:$((_prompt_timer_start=$(_timer_now),0))}'
+  __debug "\$PS0=$PS0"
 fi
 
 
 # # This hook runs only once, immediately after user presses ENTER
 _hook_after_prompt() {
-  [[ "_hook_after_prompt() starting..." ]]  # silent debug -- leave active
   __debug "_hook_after_prompt() starting..."
   _prompt_timer_start  # Start timer ASAP after prompt
-  __debug ------- After prompt complete --------   # debug
-  [[ "_hook_after_prompt() complete" ]]  # silent debug -- leave active
+  __debug "_hook_after_prompt() complete ======--------"
 }
 
 
@@ -339,7 +341,8 @@ _hook_after_prompt() {
 # and also for each command of each entry of PROMPT_COMMAND if it is an array.
 _hook_DEBUG() {
   # echo _hook_DEBUG started # Debug
-  [[ "_hook_DEBUG() starting..." ]]  # silent debug -- leave active
+  __debug "_hook_DEBUG() starting..."
+  __debug "\$PROMPT_COMMAND=$PROMPT_COMMAND"
   # __debug "$(printf "hook_DEBUG() on command "%s" _prompt_timer_start = $_prompt_timer_start" "$BASH_COMMAND")"
 
   if sh_is_bash && [[ "$__PS0_not_supported" && "$_prompt_just_printed" ]]; then
@@ -369,7 +372,7 @@ _hook_DEBUG() {
   # Other pre-commands >> HERE <<
 
   # __debug "------- DEBUG hook complete --------"   # debug
-  [[ "_hook_DEBUG() complete" ]]  # silent debug -- leave active
+  __debug "_hook_DEBUG() complete"
 }
 trap '_hook_DEBUG' DEBUG
 
