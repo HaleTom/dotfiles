@@ -798,17 +798,25 @@ export_function confirm_yes
 
 
 function keychain_load {
-  local noask cmd keys
+  local noask cmd keys keylist_file
   # Don't ask for password if either STDIN or STDOUT is !isatty
   noask=''; [[ ! -t 0 || ! -t 1 ]] && noask='--noask'
 
-  # If ever going to include "$(shell-quote "$@")" in the below, it must go after "$keys":
-  # Null argument before keys causes keys not to be processed - https://github.com/funtoo/keychain/issues/123
-
   # Only load the keys specified here:
-  keys='' && [[ -r ~/.ssh/keychain-keys ]] && keys=$(cat ~/.ssh/keychain-keys)
-  cmd=$(keychain --eval --quiet --absolute --dir "$XDG_CACHE_HOME"/keychain --quick "$keys" "$noask")
-  eval "$cmd"
+  keylist_file=~/.ssh/keychain-keys
+  if ! [[ -e "$keylist_file" ]]; then
+    printf "%s: Creating non-existant file at: %s\n" "$(func_name)" "$keylist_file"
+    touch "$keylist_file"
+  elif ! [[ -r "$keylist_file" ]]; then
+    printf "%s: Cannot read file at: %s\n" "$(func_name)" "$keylist_file"
+    return 1
+  else
+    keys=$(cat "$keylist_file")
+    # If ever going to include "$(shell-quote "$@")" in the below, it must go after "$keys":
+    # Null argument before keys causes keys not to be processed - https://github.com/funtoo/keychain/issues/123
+    cmd=$(keychain --eval --quiet --absolute --dir "$XDG_CACHE_HOME"/keychain --quick "$keys" "$noask")
+    eval "$cmd"
+  fi
 }
 export_function keychain_load
 
