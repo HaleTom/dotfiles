@@ -18,7 +18,13 @@ function sh_is_bash { [ -n "${BASH_VERSION:-}" ]; }
 source "$HOME/.config/bash/functions"
 
 # Standard-ish variables
-export BROWSER=/usr/bin/google-chrome-stable
+for _browser in brave floorp firefox google-cheome-stable; do
+  if [[ -x /usr/bin/"$_browser" ]]; then
+    export BROWSER=/usr/bin/"$_browser"
+    break
+  fi
+done; unset _browser
+
 # Prefer nvim then vim, else fail over to vi
 export VISUAL; VISUAL="$(command -v nvim 2>/dev/null || command -v vim 2>/dev/null || command -v vi)"
 # Historically, the non-visual line-oriented editor (ed or later ex)  https://unix.stackexchange.com/q/4859/143394
