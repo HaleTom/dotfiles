@@ -6,6 +6,8 @@
 xset r rate 200 50  # 200ms delay, then 40 repeats per second
 
 
+[ -n $XDG_CURRENT_DESKTOP ] && export QT_QPA_PLATFORMTHEME="qt6ct"  # Qt6 was released in 2020
+
 # Prevent weird font scaling (eg flameshot)
 # https://wiki.archlinux.org/index.php?title=Flameshot&diff=prev&oldid=852968
 export QT_SCALE_FACTOR_ROUNDING_POLICY=Round
@@ -15,6 +17,5 @@ export QT_SCALE_FACTOR_ROUNDING_POLICY=Round
 # fi
 
 # Environment variables
-#
 
 [[ -f ~/.extend.xprofile ]] && . ~/.extend.xprofile
