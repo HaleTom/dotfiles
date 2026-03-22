@@ -290,9 +290,13 @@ is_cmd /usr/bin/mise && eval "$(mise activate bash)"
 
 # z.lua
 __zlua=$XDG_DATA_HOME/zinit/plugins/skywind3000---z.lua/z.lua
-if is_cmd lua && [[ -x "$__zlua" ]]; then
-  source "$XDG_CONFIG_HOME/bash/z.lua.config" && \
-  eval "$(lua "$__zlua" --init bash enhanced once fzf)"
+if is_cmd lua; then
+  if [[ -r "$__zlua" ]]; then
+    source "$XDG_CONFIG_HOME/bash/z.lua.config" && \
+    eval "$(lua "$__zlua" --init bash enhanced once fzf)"
+  else
+    echo "$__zlua not found or not readable" >&2
+  fi
 fi
 unset __zlua
 
