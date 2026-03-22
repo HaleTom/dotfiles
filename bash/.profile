@@ -1,10 +1,9 @@
 # ~/.profile: executed by the command interpreter for login shells.
-# This file is not read by bash(1), if ~/.bash_profile or ~/.bash_login
-# exists.
-# see /usr/share/doc/bash/examples/startup-files for examples.
-# the files are located in the bash-doc package.
+# This file is not read by bash(1), if ~/.bash_profile or ~/.bash_login exists.
+# See /usr/share/doc/bash/examples/startup-files for examples.
+# The files are located in the bash-doc package.
 
-# the default umask is set in /etc/profile; for setting the umask
+# The default umask is set in /etc/profile; for setting the umask
 # for ssh logins, install and configure the libpam-umask package.
 #umask 022
 
@@ -26,10 +25,10 @@
 #     # xcape -t 300 -e 'Alt_R=Caps_Lock'
 # fi
 
-# if running bash
+# If running bash (then .bash_profile and .bash_logon don't exist -- only the first one to exist is read.
 if [ -n "$BASH_VERSION" ]; then
     # include .bashrc if it exists
-    if [ -f "$HOME/.bashrc" ]; then
+    if [ -e "$HOME/.bashrc" ]; then
 	. "$HOME/.bashrc"
     fi
 fi
