@@ -527,6 +527,7 @@ function cduprp {
 }
 export_function cduprp
 
+# Run a binary from the npm bin directory
 function nbin {
   local dir;
   dir=$(npm bin)
