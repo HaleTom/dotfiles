@@ -14,12 +14,13 @@ function sh_is_zsh { [ -n "${ZSH_VERSION:-}" ]; }
 function sh_is_bash { [ -n "${BASH_VERSION:-}" ]; }
 
 # Setup functions (required for XDG background checks)
+# shellcheck disable=SC1091
 source "$HOME/.config/bash/functions"
 
 # Standard-ish variables
 export BROWSER=/usr/bin/google-chrome-stable
 # Prefer nvim then vim, else fail over to vi
-export VISUAL="$(command -v nvim 2>/dev/null || command -v vim 2>/dev/null || command -v vi)"
+export VISUAL; VISUAL="$(command -v nvim 2>/dev/null || command -v vim 2>/dev/null || command -v vi)"
 # Historically, the non-visual line-oriented editor (ed or later ex)  https://unix.stackexchange.com/q/4859/143394
 # systemctl uses non-standard order: EDITOR then VISUAL, so easier to disable than set SYSTEMD_EDITOR
 # export EDITOR='vi -e'
@@ -175,6 +176,7 @@ function _source_file {
 
   local file=$1
   if [[ -f $file ]]; then
+      # shellcheck disable=SC1090
       source "$file"
   else
       yelp "Cannot source $file" >&2
@@ -260,7 +262,8 @@ fi
 export _disable_welcome_message=$(( SHLVL + 1 ))  # Don't print at this $SHLVL again
 
 # Source API keys etc that I don't want to publish to GitHub
-[[ -f $XDG_CONFIG_HOME/bash/personal ]] && source "$XDG_CONFIG_HOME/bash/personal"
+# TODO: move to mise-en-place
+[[ -e $XDG_CONFIG_HOME/bash/personal ]] && source "$XDG_CONFIG_HOME/bash/personal"
 
 # Setup ssh-agent
 if is_bin_in_path keychain; then
@@ -292,6 +295,7 @@ is_cmd /usr/bin/mise && eval "$(mise activate bash)"
 __zlua=$XDG_DATA_HOME/zinit/plugins/skywind3000---z.lua/z.lua
 if is_cmd lua; then
   if [[ -r "$__zlua" ]]; then
+    # shellcheck disable=SC1091
     source "$XDG_CONFIG_HOME/bash/z.lua.config" && \
     eval "$(lua "$__zlua" --init bash enhanced once fzf)"
   else
