@@ -18,6 +18,9 @@ is_function() {
 # Allow functions to be accessed from bash sub-shells by:
 # 'export_function <func-name>'
 function export_function {
+  ############  2026-03-22: Disable this: I've been using zsh for years without needing these exported functions
+  ############  Slight possibility that non-interactive shells somehow source this file, so keeping for now.
+  return 0;
   # shellcheck disable=SC2163
   if sh_is_bash; then export -f "$@"; fi
   # zsh can't export functions: https://stackoverflow.com/a/1896039/5353461
