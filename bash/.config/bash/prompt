@@ -175,7 +175,7 @@ _timer_now() {
     local sec usec nsec
     sec=${EPOCHREALTIME%.*}  # Seconds component only
     nsec=${EPOCHREALTIME#*.}  # Decimal component only
-    printf -v usec "%6.0f" "$nsec"  # First 6 digits of nanoseconds, rounded.
+    printf -v usec "%06.0f" "$nsec"  # First 6 digits of nanoseconds, rounded.
     __debug "\${EPOCHREALTIME} \${sec} \${nsec} \${usec} = ${EPOCHREALTIME} ${sec} ${nsec} ${usec}<EOS>"
     printf "%s\n" "$sec$usec"
     return 0
