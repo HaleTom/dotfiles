@@ -13,6 +13,7 @@ is_function() {
 }
 
 # Source POSIX shell functions if they've not yet been (eg source-file)
+# shellcheck disable=SC1091
 ! is_function sh_is_bash && source "$XDG_CONFIG_HOME/shell/functions-env"
 
 # Allow functions to be accessed from bash sub-shells by:
