@@ -985,3 +985,18 @@ ansi_colours() {
         done
 }
 export_function ansi_colours
+
+function source_env_var() {
+    local failed=0  # Set to 1 if error occurs
+    local env_dir=~/etc/secure/env
+    for i; do
+        if ! [ -r "$env_dir/$i" ]; then
+            echo "Cannot read $env_dir/$i" >&2
+            failed=1
+            continue
+        fi
+        builtin source -- "$env_dir/$i"
+    done
+    return "$failed"
+}
+export_function source_env_var
