@@ -3,9 +3,13 @@
 # ^ don't try to check variable-named sourced files
 # ^ keep shell-check happy
 
+# This file assumes nothing and creates an environment conforming to the XDG Base Directories Specification:
+# https://specifications.freedesktop.org/basedir-spec/basedir-spec-latest.html
 
-# NOTE: Add any new files to the random spot-check list at the end
+# NOTE: Updates: Add any new files to the random spot-check list at the end
 # https://wiki.archlinux.org/title/XDG_Base_Directory  is your friend.
+# https://specifications.freedesktop.org/basedir-spec/basedir-spec-latest.html
+# Hint: search "single" or "multi-line" to find app config sections.
 
 # XDG - set defaults as they may not be set (eg Ubuntu 14.04 LTS)
 # See https://specifications.freedesktop.org/basedir-spec/basedir-spec-latest.html#variables
@@ -18,6 +22,7 @@ export XDG_STATE_HOME="${XDG_STATE_HOME:=$HOME/.local/state}"
 # Create directories if needed
 for var in XDG_CONFIG_HOME XDG_DATA_HOME XDG_STATE_HOME XDG_CACHE_HOME; do
   if sh_is_bash; then
+    # FIXME! for POSIX: shellcheck: In POSIX sh, indirect expansion is undefined.
     dir=${!var}
   elif sh_is_zsh; then
   # shellcheck disable=2296  # zsh syntax ${(P)} - Parameter expansions can't start with (. Double check syntax.
@@ -65,10 +70,13 @@ fi
 export XDG_RUNTIME_DIR
 unset -f _get_octal_perms
 
+# TODO: review:
+# https://specifications.freedesktop.org/basedir-spec/basedir-spec-latest.html#variables
+# Check all the vars listed there are covered THROUGHOUT this file.  Add a comment with date and spec version "Last checked ....
 # Export the XDG user directories
 if [ -f "$XDG_CONFIG_HOME/user-dirs.dirs" ]; then
     # shellcheck disable=1091  # Can't follow - file doesn't exist
-    . "$XDG_CONFIG_HOME/user-dirs.dirs"
+    source "$XDG_CONFIG_HOME/user-dirs.dirs"
     export XDG_DESKTOP_DIR XDG_DOWNLOAD_DIR XDG_TEMPLATES_DIR XDG_PUBLICSHARE_DIR XDG_DOCUMENTS_DIR XDG_MUSIC_DIR XDG_PICTURES_DIR XDG_VIDEOS_DIR
 fi
 
@@ -79,10 +87,16 @@ fi
 
 
 # Single-line config
+export AIDER_CONFIG="${XDG_CONFIG_HOME}/aider/aider.conf.yml"
+export CLAUDE_CONFIG_DIR="${XDG_CONFIG_HOME}/claude"  # https://code.claude.com/docs/en/env-vars
+export CLAUDE_HOME="${XDG_CONFIG_HOME}/claude"
+export CODEX_HOME="${XDG_CONFIG_HOME}/codex"
+# TODO: GEMINI when supported   https://github.com/google-gemini/gemini-cli/issues/1825
 export GNUPGHOME="$XDG_DATA_HOME/gnupg"
 export ICEAUTHORITY="$XDG_CACHE_HOME/ICEauthority"
 export INPUTRC="$XDG_CONFIG_HOME/readline/inputrc"
 export MOST_INITFILE="$XDG_CONFIG_HOME/most/config"
+export OLLAMA_MODELS="${XDG_DATA_HOME}/ollama/models"  # TODO: deal with ~/.ollama/server.json   https://github.com/ollama/ollama/pull/4656
 export PARALLEL_HOME="$XDG_CONFIG_HOME/parallel"
 export WGETRC="$XDG_CONFIG_HOME/wgetrc"
 
@@ -133,8 +147,13 @@ export NPM_CONFIG_USERCONFIG="$XDG_CONFIG_HOME/npm/npmrc"
 export BUN_INSTALL="$XDG_STATE_HOME/bun"
 export BUN_INSTALL_CACHE_DIR="$XDG_CACHE_HOME/bun"
 
+# If we're not Bash or Zsh, don't try to check for shadowed XDGBDS files
+if sh_is_sh; then
+  return 0
+fi
+
 # A function so that it can be run in the background immediately after declaration
-function check_shadowed_files {
+function _check_shadowed_files {
   # Only warn that symlinks are shadowed on the odd occasion
   # Set XDG_CHECK=1 to force the check
   if ((RANDOM % 100 == 0)) || [[ $XDG_CHECK ]]; then
@@ -149,14 +168,14 @@ function check_shadowed_files {
       "") ;&
       \#*) continue # Allow for blank and commened out files
     esac
-    if [[ -e $file ]]; then { # bracket for STDERR
-      [[ -L $file && -z ${print_symlinks-} ]] && continue
+    if [ -e "$file" ]; then { # bracket for STDERR
+      [ -L "$file" ] && [ -z "${print_symlinks-}" ] && continue
       printf "%s" "Warning: XDG shadowed "
       # shellcheck disable=SC2015 # A && B || C is not if-then-else. C may run when A is true. [SC2015]
-        [ -L $file ] && printf "symlink" || { # symlinks are "both"
-          [ -S $file ] && printf "socket"
-          [ -d $file ] && printf "directory"
-          [ -f $file ] && printf "file";
+        [ -L "$file" ] && printf "symlink" || { # symlinks are "both"
+          [ -S "$file" ] && printf "socket"
+          [ -d "$file" ] && printf "directory"
+          [ -f "$file" ] && printf "file";
         }
         printf ': %s\n' "$file"
       } >&2
@@ -167,6 +186,9 @@ function check_shadowed_files {
     $HOME/.bundle
     $HOME/.bitwarden-ssh-agent.sock
     $HOME/.cargo
+    $HOME/.claude
+    $HOME/.codex
+    $HOME/.gemini
     $HOME/.gitconfig
     $HOME/.gnupg
     $HOME/.gem
@@ -196,4 +218,6 @@ function check_shadowed_files {
 XDGFILES
 }
 
-silent_background check_shadowed_files
+# TODO: https://www.perplexity.ai/search/home-ravi-config-shell-xdg-205-cZomeNy7S.SJc2zPBm5q4A#3
+# uipdate from above, then import the function in interactive.
+silent_background _check_shadowed_files
