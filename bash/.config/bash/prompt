@@ -1,6 +1,10 @@
 #!/bin/bash
 # _options=$(shopt -op); set -exu # save and set shell options for testing
 
+# Debugging:
+# $_ps1_debug    set non-blank to prevent `set -x` and `set -e` being disabled
+# $PROMPT_DEBUG  set non-blank to turn on `set -x` in all prompt code
+
 __bash_debug=  # set to non-blank for debug output
 __zsh_debug=   # set to non-blank for debug output
 
@@ -188,11 +192,12 @@ _timer_now() {
   else  # The native date command on macOS does not support microseconds
     if command -v gdate >& /dev/null; then
       gdate '+%s%6N'
-    elif command -v perl >& /dev/null; then
+    elif [[ -x "$(command -v perl 2>/dev/null)" ]]; then
+      # If this perl command doesn't execute, the prompt doesn't accept commands
       # https://github.com/jichu4n/bash-command-timer/blob/master/bash_command_timer.sh#L77
-      perl -MTime::HiRes -e 'printf("%d\n",Time::HiRes::time() * 1_000_000)'
+      command perl -MTime::HiRes -e 'printf("%.0f\n",Time::HiRes::time() * 1_000_000)'
     else
-      date '+%s000000'
+      command date '+%s000000'
     fi
   fi
 }
@@ -296,12 +301,26 @@ _prompt_pwd_generate() {
 [[ $ZSH_VERSION ]] && return
 
 
+# Hook immediately after user presses ENTER
+# $PS0 was included in bash 4.4 on 2016-09-15 -- https://stromberg.dnsalias.org/~strombrg/PS0-prompt/
+if (( BASH_VERSINFO[0] < 4 )) || (( BASH_VERSINFO[0] == 4 && BASH_VERSINFO[1] < 4 )); then
+  __PS0_not_supported=true
+else
+  # This parameter expansion evaluates to nothing: $- from element 0, length 0.
+  # Use the side-effect of assignment, but return 0 to create :0:0
+  # _timer_now() must only print a single number, else prompt breaks
+  export PS0=$'${-:0:$((_prompt_timer_start=$(_timer_now),0))}'
+  __debug "One time setup: \$PS0=$PS0"
+fi
+
+
 # Check if we support colours
 _colour_enabled() {
   local -i colors
-  colors=$(tput colors 2>/dev/null)  # TODO cache this
+  colors=$(/bin/tput colors 2>/dev/null)  # TODO cache this
   [[ $? && $colors -gt 2 ]]
 }
+
 
 # Has directory changed?
 _cd_hook_bash() {
@@ -313,19 +332,6 @@ _cd_hook_bash() {
     _cd_hook
   fi
 }
-
-# Setup hook after user presses ENTER
-
-# $PS0 was included in bash 4.4 on 2016-09-15 -- https://stromberg.dnsalias.org/~strombrg/PS0-prompt/
-if (( BASH_VERSINFO[0] < 4 )) || (( BASH_VERSINFO[0] == 4 && BASH_VERSINFO[1] < 4 )); then
-  __PS0_not_supported=true
-else
-  # Print nothing: $- from element 0, length 0.
-  # Use the side-effect of assignment, but return 0 to create :0:0
-  # _timer_now() must only print a single number, else prompt breaks
-  export PS0=$'${-:0:$((_prompt_timer_start=$(_timer_now),0))}'
-  __debug "\$PS0=$PS0"
-fi
 
 
 # # This hook runs only once, immediately after user presses ENTER
@@ -384,13 +390,14 @@ _prompt_bash_set() {
 
   # Allow user to set $ps1_debug to have "set -xe" continue through the prompt
   # shellcheck disable=SC2154
-  if [[ -z ${ps1_debug+x} ]]; then
+  if [[ -z ${_ps1_debug+x} ]]; then
     # Doesn't work on bash prior to v4.4:
     # local -- - # Make shell options local to this function, restore on completion
     [[ $- = *e* ]] && local set_e=1
     [[ $- = *x* ]] && local set_x=1
     set +ex    # Don't debug or die in setting the prompt!
   fi
+  [[ ${_PROMPT_DEBUG+x} ]] && set -x
   _prompt_timer_stop
 
   # Allow for a simple prompt for copy / paste examples
@@ -534,13 +541,13 @@ _prompt_bash_set() {
   if [[ -n $COLUMNS ]]; then
     columns=$COLUMNS
   else
-    columns=$(tput cols)
+    columns=$(/bin/tput cols)
   fi
 
   # TODO: Use readline_ANSI_escape() to escape all non-printables only once.
 
   PS1='\['${Save}'\e['$((columns - ${#rhs_printable}))G${rhs}${Restore}'\]'${lhs}
-
+  [[ $_PROMPT_DEBUG ]] && set +x  # Turn off prompt debugging
   [[ $set_e ]] && set -e
   [[ $set_x ]] && set -x
 
