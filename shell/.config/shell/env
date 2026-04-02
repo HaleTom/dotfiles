@@ -5,6 +5,11 @@
 if [ -n "$_already_sourcing_env" ]; then return;
 else _already_sourcing_env=true; fi
 
+umask 027  # No perms for others
+
+# Hide remote host's username if we are connecting via SSH:
+[ -n "$SSH_CONNECTION" ] && unset USERNAME
+
 # Set _shell_rc_dir
 _shell_rc_dir=${_shell_rc_dir:=${XDG_CONFIG_HOME:=$HOME/.config}/shell}
 # If this is set then this file can be assumed to have been sourced
@@ -19,7 +24,12 @@ fi
 
 if sh_is_zsh; then SHELL_NAME=zsh;
 elif sh_is_bash; then SHELL_NAME=bash;
-else SHELL_NAME=$(basename "$(readlink /proc/$$/exe)"); fi
+elif [ -r /proc/$$/exe ]; then
+  SHELL_NAME=$(basename "$(readlink /proc/$$/exe)")
+else
+  # shellcheck disable=SC2209  # Intentional plain literal assignment.
+  SHELL_NAME=sh
+fi
 
 # debug_file uses $SHELL_NAME
 debug_file echo "Reading env"

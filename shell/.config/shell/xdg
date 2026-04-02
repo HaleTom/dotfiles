@@ -39,10 +39,13 @@ done
 export XDG_CONFIG_DIRS="${XDG_CONFIG_DIRS:=/etc/xdg}"
 export XDG_DATA_DIRS="${XDG_DATA_DIRS:=/usr/local/share:/usr/share}"
 
+_uname_s=$(uname -s 2>/dev/null || printf unknown)
+_uid=$(id -u)
+
 # $XDG_RUNTIME_DIR
 # https://unix.stackexchange.com/a/580757/143394  # My Q&A
 if [ -z "$XDG_RUNTIME_DIR" ]; then  # It's not already set
-  XDG_RUNTIME_DIR=/run/user/$UID  # Try systemd created path
+  XDG_RUNTIME_DIR=/run/user/"$_uid"  # Try systemd created path
   if [ ! -d "$XDG_RUNTIME_DIR" ]; then
     # systemd-created directory doesn't exist
     XDG_RUNTIME_DIR=/tmp/$USER-runtime
@@ -51,11 +54,20 @@ if [ -z "$XDG_RUNTIME_DIR" ]; then  # It's not already set
 fi
 
 _get_octal_perms() {
-  case $OSTYPE in
-    darwin*)  # macOS
+  case $_uname_s in
+    Darwin)  # macOS
       stat -f %A "$@" ;;
     *)  # Assume Linux
       stat -c %a "$@"
+  esac
+}
+
+_get_owner_uid() {
+  case $_uname_s in
+    Darwin)  # macOS
+      stat -f %u "$@" ;;
+    *)  # Assume Linux
+      stat -c %u "$@"
   esac
 }
 
@@ -76,7 +88,7 @@ unset -f _get_octal_perms
 # Export the XDG user directories
 if [ -f "$XDG_CONFIG_HOME/user-dirs.dirs" ]; then
     # shellcheck disable=1091  # Can't follow - file doesn't exist
-    source "$XDG_CONFIG_HOME/user-dirs.dirs"
+    . "$XDG_CONFIG_HOME/user-dirs.dirs"
     export XDG_DESKTOP_DIR XDG_DOWNLOAD_DIR XDG_TEMPLATES_DIR XDG_PUBLICSHARE_DIR XDG_DOCUMENTS_DIR XDG_MUSIC_DIR XDG_PICTURES_DIR XDG_VIDEOS_DIR
 fi
 
@@ -153,20 +165,21 @@ if sh_is_sh; then
 fi
 
 # A function so that it can be run in the background immediately after declaration
-function _check_shadowed_files {
+_check_shadowed_files() {
   # Only warn that symlinks are shadowed on the odd occasion
   # Set XDG_CHECK=1 to force the check
-  if ((RANDOM % 100 == 0)) || [[ $XDG_CHECK ]]; then
+  # shellcheck disable=SC3043  # Only runs on bash/zsh path; file returns early for plain sh.
+  local print_symlinks=
+  if [ -n "${XDG_CHECK-}" ] || [ $(( $$ % 100 )) -eq 0 ]; then
     echo "Running random spot check of XDG shadowed symlinks"
-    local print_symlinks=true
+    print_symlinks=true
   fi
 
   # Check that only one version of files exist
   # Ignore the file if it is a symlink, unless print_symlinks is set
-  while read -r file; do # HERE doc at end
+  while IFS= read -r file; do # HERE doc at end
     case "$file" in
-      "") ;&
-      \#*) continue # Allow for blank and commened out files
+      ""|\#*) continue ;; # Allow for blank and commented out files
     esac
     if [ -e "$file" ]; then { # bracket for STDERR
       [ -L "$file" ] && [ -z "${print_symlinks-}" ] && continue
