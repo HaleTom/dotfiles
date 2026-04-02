@@ -6,6 +6,8 @@ sh_is_zsh() { [ -n "$ZSH_VERSION" ]; }
 sh_is_bash() { [ -n "$BASH_VERSION" ]; }
 sh_is_sh() { ! { sh_is_zsh || sh_is_bash; } }
 
+_shell_rc_dir=${_shell_rc_dir:=${XDG_CONFIG_HOME:=$HOME/.config}/shell}
+
 ##############################################################################
 # Quit here if {ba,z}sh, load the advanced versions of functions instead
 if ! sh_is_sh; then
