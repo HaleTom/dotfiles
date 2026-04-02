@@ -22,13 +22,16 @@ export XDG_STATE_HOME="${XDG_STATE_HOME:=$HOME/.local/state}"
 # Create directories if needed
 for var in XDG_CONFIG_HOME XDG_DATA_HOME XDG_STATE_HOME XDG_CACHE_HOME; do
   if sh_is_bash; then
-    # FIXME! for POSIX: shellcheck: In POSIX sh, indirect expansion is undefined.
+    # shellcheck disable=SC3053  # bash-only fast path
     dir=${!var}
   elif sh_is_zsh; then
-  # shellcheck disable=2296  # zsh syntax ${(P)} - Parameter expansions can't start with (. Double check syntax.
+  # shellcheck disable=SC2296  # zsh ${(P)...} is only used on the zsh path.
     dir=${(P)var}
+  elif dir=$(eval "printf '%s\n' \"\${$var}\""); then
+    :
   else
-    dir=$(eval "echo \"\$$var\"")
+    printf 'Failed to resolve $%s\n' "$var" >&2
+    continue
   fi
   if [ ! -d "${dir}" ]; then
     printf "Creating $%s directory: %s\n" "$var" "${dir}"
