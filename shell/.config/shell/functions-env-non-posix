@@ -1,0 +1,35 @@
+#!/bin/bash
+
+# Keep bash/zsh-only parameter expansion out of xdg itself so POSIX parsers
+# such as yash do not have to parse ${!var} or ${(P)var} when sourcing it.
+
+_shell_rc_dir=${_shell_rc_dir:=${XDG_CONFIG_HOME:=$HOME/.config}/shell}
+sh_is_sh && return 1
+
+# Run the command given by "$@" in the background
+silent_background() {
+  if [[ -n $ZSH_VERSION ]]; then  # zsh:  https://superuser.com/a/1285272/365890
+    setopt local_options no_notify no_monitor
+    # We'd use &| to background and disown, but incompatible with bash, so:
+    "$@" &
+  else  # This bit is POSIX
+    { 2>&9 "$@" & } 9>&2 2>/dev/null
+  fi
+  # Non-POSIX:
+  disown &>/dev/null  # /dev/null to prevent whine if job has already completed
+}
+
+resolve_var_value() {
+  local var=$1
+  [ -z "${var+var_is_already_set}" ] && return 1  # expansion `+` only occurs if var is set
+
+  if sh_is_bash; then
+    # shellcheck disable=SC3053  # bash-only fast path
+    printf '%s\n' "${!var}"
+  elif sh_is_zsh; then
+    # shellcheck disable=SC2296  # zsh ${(P)...} is only used on the zsh path.
+    printf '%s\n' "${(P)var}"
+  else
+   eval "printf '%s\n' \"\${$var}\""
+  fi
+}

@@ -6,6 +6,20 @@ sh_is_zsh() { [ -n "$ZSH_VERSION" ]; }
 sh_is_bash() { [ -n "$BASH_VERSION" ]; }
 sh_is_sh() { ! { sh_is_zsh || sh_is_bash; } }
 
+# POSIX-only function definitions
+# These should all have equivalents in functions-env-non-posix
+if sh_is_sh; then
+
+  resolve_var_value() {
+    [ -z "${var+var_is_already_set}" ] && return 1  # expansion `+` only occurs if var is set
+    eval "printf '%s\n' \"\${$var}\""
+  }
+
+  silent_background() {
+    { 2>&9 "$@" & } 9>&2 2>/dev/null
+  }
+fi
+
 _shell_rc_dir=${_shell_rc_dir:=${XDG_CONFIG_HOME:=$HOME/.config}/shell}
 
 ##############################################################################
