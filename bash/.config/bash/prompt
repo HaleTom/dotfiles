@@ -8,6 +8,10 @@
 __bash_debug=  # set to non-blank for debug output
 __zsh_debug=   # set to non-blank for debug output
 
+# Check if defined, then define if needed. Without these the prompt breaks
+type sh_is_zsh &>/dev/null || sh_is_zsh() { [ -n "${ZSH_VERSION:-}" ]; }
+type sh_is_bash &>/dev/null || sh_is_bash() { [ -n "${BASH_VERSION:-}" ]; }
+
 # Just calling this function with `set -x` will do some debugging :)
 __debug() {
   if { sh_is_zsh && [ "$__zsh_debug" ]; } || { sh_is_bash && [ "$__bash_debug" ]; } ; then
@@ -314,6 +318,7 @@ else
   else
     __PS0_not_supported=true
   fi
+fi
 
 
 # Check if we support colours
