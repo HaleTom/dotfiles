@@ -21,13 +21,7 @@ export XDG_STATE_HOME="${XDG_STATE_HOME:=$HOME/.local/state}"
 
 # Create directories if needed
 for var in XDG_CONFIG_HOME XDG_DATA_HOME XDG_STATE_HOME XDG_CACHE_HOME; do
-  if sh_is_bash; then
-    # shellcheck disable=SC3053  # bash-only fast path
-    dir=${!var}
-  elif sh_is_zsh; then
-  # shellcheck disable=SC2296  # zsh ${(P)...} is only used on the zsh path.
-    dir=${(P)var}
-  elif dir=$(eval "printf '%s\n' \"\${$var}\""); then
+  if dir=$(resolve_var_value "$var"); then
     :
   else
     printf 'Failed to resolve $%s\n' "$var" >&2
@@ -43,7 +37,9 @@ export XDG_CONFIG_DIRS="${XDG_CONFIG_DIRS:=/etc/xdg}"
 export XDG_DATA_DIRS="${XDG_DATA_DIRS:=/usr/local/share:/usr/share}"
 
 _uname_s=$(uname -s 2>/dev/null || printf unknown)
-_uid=$(id -u)
+# shellcheck disable=SC3028  # UID is used only on the bash/zsh fast path.
+if sh_is_bash || sh_is_zsh; then _uid=$UID
+else _uid=$(id -u); fi
 
 # $XDG_RUNTIME_DIR
 # https://unix.stackexchange.com/a/580757/143394  # My Q&A
@@ -56,34 +52,50 @@ if [ -z "$XDG_RUNTIME_DIR" ]; then  # It's not already set
   fi
 fi
 
-_get_octal_perms() {
+_check_runtime_dir_metadata() {
+  [ -d "$1" ] || return 1
   case $_uname_s in
     Darwin)  # macOS
-      stat -f %A "$@" ;;
+      _runtime_stat=$(stat -f '%u %A' "$1" 2>/dev/null) || return 1 ;;
     *)  # Assume Linux
-      stat -c %a "$@"
+      _runtime_stat=$(stat -c '%u %a' "$1" 2>/dev/null) || return 1
   esac
+  _runtime_owner=${_runtime_stat%% *}
+  _runtime_perms=${_runtime_stat#* }
+  unset _runtime_stat
 }
 
-_get_owner_uid() {
-  case $_uname_s in
-    Darwin)  # macOS
-      stat -f %u "$@" ;;
-    *)  # Assume Linux
-      stat -c %u "$@"
-  esac
+_runtime_dir_is_valid_sh() {
+  _check_runtime_dir_metadata "$1" || return 1
+  [ "$_runtime_owner" = "$_uid" ] && [ "$_runtime_perms" = 700 ]
+}
+
+_runtime_dir_is_valid_non_posix() {
+  # shellcheck disable=SC3067  # -O means "owned by the effective user ID"; use it only on the bash/zsh path.
+  [ -O "$1" ] && _runtime_dir_is_valid_sh "$1"
+}
+
+_runtime_dir_is_valid() {
+  if sh_is_bash || sh_is_zsh; then
+    _runtime_dir_is_valid_non_posix "$1"
+  else
+    _runtime_dir_is_valid_sh "$1"
+  fi
 }
 
 # Check dir has got the correct type, ownership, and permissions
-if ! [[ -d "$XDG_RUNTIME_DIR"/ && -O "$XDG_RUNTIME_DIR"/ &&
-  $(_get_octal_perms "$XDG_RUNTIME_DIR") = 700 ]]; then
+if ! _runtime_dir_is_valid "$XDG_RUNTIME_DIR"; then
   echo "\$XDG_RUNTIME_DIR: permissions problem with $XDG_RUNTIME_DIR:" >&2
   ls -ld "$XDG_RUNTIME_DIR" >&2
   XDG_RUNTIME_DIR=$(mktemp -d /tmp/"$USER"-runtime-XXXXXX)
   echo "Set \$XDG_RUNTIME_DIR=$XDG_RUNTIME_DIR" >&2
 fi
 export XDG_RUNTIME_DIR
-unset -f _get_octal_perms
+unset -f _check_runtime_dir_metadata
+unset -f _runtime_dir_is_valid_sh
+unset -f _runtime_dir_is_valid_non_posix
+unset -f _runtime_dir_is_valid
+unset _runtime_owner _runtime_perms _runtime_stat _uid _uname_s
 
 # TODO: review:
 # https://specifications.freedesktop.org/basedir-spec/basedir-spec-latest.html#variables
@@ -133,17 +145,17 @@ export WGETRC="$XDG_CONFIG_HOME/wgetrc"
 # Begin multi-line config
 #
 
-export LESSKEY=$XDG_CONFIG_HOME/less/keys
-export LESSHISTFILE=$XDG_CACHE_HOME/less/history
+export LESSKEY="${XDG_CONFIG_HOME}/less/keys"
+export LESSHISTFILE="${XDG_CACHE_HOME}/less/history"
 
 export VIMPERATOR_INIT=":source $XDG_CONFIG_HOME/vimperator/vimperatorrc"
-export VIMPERATOR_RUNTIME=$XDG_CONFIG_HOME/vimperator
+export VIMPERATOR_RUNTIME="${XDG_CONFIG_HOME}/vimperator"
 
 # Ruby
-export GEM_HOME=$XDG_DATA_HOME/gem GEM_SPEC_CACHE=$XDG_CACHE_HOME/gem
-export BUNDLE_USER_CONFIG=$XDG_CONFIG_HOME/bundle
-export BUNDLE_USER_CACHE=$XDG_CACHE_HOME/bundle
-export BUNDLE_USER_PLUGIN=$XDG_DATA_HOME/bundle
+export GEM_HOME="${XDG_DATA_HOME}/gem" GEM_SPEC_CACHE="${XDG_CACHE_HOME}/gem"
+export BUNDLE_USER_CONFIG="${XDG_CONFIG_HOME}/bundle"
+export BUNDLE_USER_CACHE="${XDG_CACHE_HOME}/bundle"
+export BUNDLE_USER_PLUGIN="${XDG_DATA_HOME}/bundle"
 
 # Rust
 export RUSTUP_HOME="$XDG_DATA_HOME"/rustup
@@ -162,20 +174,13 @@ export NPM_CONFIG_USERCONFIG="$XDG_CONFIG_HOME/npm/npmrc"
 export BUN_INSTALL="$XDG_STATE_HOME/bun"
 export BUN_INSTALL_CACHE_DIR="$XDG_CACHE_HOME/bun"
 
-# If we're not Bash or Zsh, don't try to check for shadowed XDGBDS files
-if sh_is_sh; then
-  return 0
-fi
-
-# A function so that it can be run in the background immediately after declaration
 _check_shadowed_files() {
   # Only warn that symlinks are shadowed on the odd occasion
   # Set XDG_CHECK=1 to force the check
-  # shellcheck disable=SC3043  # Only runs on bash/zsh path; file returns early for plain sh.
-  local print_symlinks=
+  _print_symlinks=
   if [ -n "${XDG_CHECK-}" ] || [ $(( $$ % 100 )) -eq 0 ]; then
     echo "Running random spot check of XDG shadowed symlinks"
-    print_symlinks=true
+    _print_symlinks=true
   fi
 
   # Check that only one version of files exist
@@ -185,7 +190,7 @@ _check_shadowed_files() {
       ""|\#*) continue ;; # Allow for blank and commented out files
     esac
     if [ -e "$file" ]; then { # bracket for STDERR
-      [ -L "$file" ] && [ -z "${print_symlinks-}" ] && continue
+      [ -L "$file" ] && [ -z "${_print_symlinks-}" ] && continue
       printf "%s" "Warning: XDG shadowed "
       # shellcheck disable=SC2015 # A && B || C is not if-then-else. C may run when A is true. [SC2015]
         [ -L "$file" ] && printf "symlink" || { # symlinks are "both"
@@ -232,8 +237,15 @@ _check_shadowed_files() {
     # X/ICEauth don't listen currently, see above.
     # $HOME/.Xauthority
 XDGFILES
+  unset _print_symlinks
 }
 
-# TODO: https://www.perplexity.ai/search/home-ravi-config-shell-xdg-205-cZomeNy7S.SJc2zPBm5q4A#3
-# uipdate from above, then import the function in interactive.
-silent_background _check_shadowed_files
+ is_function() {
+  [ "$(command -v "$1")" = "$1" ] && [ "$1" ]
+}
+
+if is_function silent_background; then
+  silent_background _check_shadowed_files
+else
+  _check_shadowed_files
+fi
