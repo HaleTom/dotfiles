@@ -309,9 +309,11 @@ else
   # This parameter expansion evaluates to nothing: $- from element 0, length 0.
   # Use the side-effect of assignment, but return 0 to create :0:0
   # _timer_now() must only print a single number, else prompt breaks
-  export PS0=$'${-:0:$((_prompt_timer_start=$(_timer_now),0))}'
-  __debug "One time setup: \$PS0=$PS0"
-fi
+  if type -t _timer_now &>/dev/null; then
+    export PS0=$'${-:0:$((_prompt_timer_start=$(_timer_now),0))}'
+  else
+    __PS0_not_supported=true
+  fi
 
 
 # Check if we support colours
