@@ -380,7 +380,7 @@ _hook_DEBUG() {
   # __debug "------- DEBUG hook complete --------"   # debug
   __debug "_hook_DEBUG() complete"
 }
-trap '_hook_DEBUG' DEBUG
+trap '_last_cmd=$_; _hook_DEBUG; : "$_last_cmd"' DEBUG
 
 
 # Sets prompt like:
