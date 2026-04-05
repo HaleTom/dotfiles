@@ -9,8 +9,9 @@ __bash_debug=  # set to non-blank for debug output
 __zsh_debug=   # set to non-blank for debug output
 
 # Check if defined, then define if needed. Without these the prompt breaks
-type sh_is_zsh &>/dev/null || sh_is_zsh() { [ -n "${ZSH_VERSION:-}" ]; }
-type sh_is_bash &>/dev/null || sh_is_bash() { [ -n "${BASH_VERSION:-}" ]; }
+is_function() { [ "$(command -v "$1")" = "$1" ] && [ "$1" ]; }
+is_function sh_is_zsh  || sh_is_zsh()  { [ -n "${ZSH_VERSION:-}" ]; }
+is_function sh_is_bash || sh_is_bash() { [ -n "${BASH_VERSION:-}" ]; }
 
 # Just calling this function with `set -x` will do some debugging :)
 __debug() {
