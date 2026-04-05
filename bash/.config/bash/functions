@@ -289,6 +289,17 @@ func_rename() {
 }
 export_function func_copy func_rename
 
+# List the definition of function(s)
+func_print() {
+  [ "$?" -eq 0 ] && return 1
+  if sh_is_bash || sh_is_zsh; then
+    for i; do typeset -f "$i"; done
+  else
+    for i; do type "$i"; done
+  fi
+}; export_function func_print
+
+
 # Use for checking arguments to bc / awk / ...
 function is_float {
   local regex='^[+-]?([0-9]*\.[0-9]+|[0-9]+\.?[0-9]*)([eE][+-]?[0-9]+)?$'
