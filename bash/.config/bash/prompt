@@ -461,7 +461,7 @@ _prompt_bash_set() {
   local slash_colour=$BYel
   local root_colour=$Red
 
-  dir=$(_prompt_pwd_generate) || dir='\w'
+  local dir=$(_prompt_pwd_generate) || dir='\w'
   dir=${dir_colour}${dir}  # Initially coloured quoted $PWD
 
   [[ $EUID = 0 ]] && slash_colour=$root_colour
