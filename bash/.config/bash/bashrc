@@ -158,20 +158,21 @@ if [[ $TERM = linux ]]; then
 fi
 
 # Update "tmuxinator.{z,ba}sh" symlink if needed
-if { [[ -x $(command -v tmuxinator) && -x $(command -v gem) ]] 2>/dev/null; }; then
-  tmuxinator_source="$XDG_CONFIG_HOME/tmuxinator/tmuxinator.$(sh_is_zsh && printf zsh || printf bash)"
+if [ -d "$XDG_CONFIG_HOME/tmuxinator" ] && \
+  { [[ -x $(command -v tmuxinator) && -x $(command -v gem) ]] 2>/dev/null; }; then
+  _tmuxinator_source="$XDG_CONFIG_HOME/tmuxinator/tmuxinator.$(sh_is_zsh && printf zsh || printf bash)"
   # If not a regular file or symlink to one
-  if [[ ! -f $tmuxinator_source ]]; then
+  if [[ ! -f $_tmuxinator_source ]]; then
       # If doesn't exist or already a symlink
-      if [[ ! -e $tmuxinator_source || -L $tmuxinator_source ]]; then
-          echo "Creating ${tmuxinator_source##*/} symlink:"
-          tmp=$(gem which tmuxinator) && # tmuxinator executable
-              tmp=$(readlink -f "${tmp%/*}/../completion") && # completion scripts dir
-              ln -fsv "$tmp/${tmuxinator_source##*/}" "$tmuxinator_source"
-          unset tmp
+      if [[ ! -e $_tmuxinator_source || -L $_tmuxinator_source ]]; then
+          echo "Creating ${_tmuxinator_source##*/} symlink:"
+          _tmp=$(gem which tmuxinator) && # tmuxinator executable
+              _tmp=$(readlink -f "${_tmp%/*}/../completion") && # completion scripts dir
+              ln -fsv "$_tmp/${_tmuxinator_source##*/}" "$_tmuxinator_source"
+          unset _tmp
       else
         echo "Not creating symlink at at existing:"
-        ls -lF "$tmuxinator_source"
+        ls -lF "$_tmuxinator_source"
       fi
   fi
 fi
@@ -232,12 +233,12 @@ _source_files <<DOTFILES
     # Needs to be before prompt
     # $HOME/.extend.bashrc
 
-    $tmuxinator_source
+    $_tmuxinator_source
     # $HOME/.vim/bundle/gruvbox/gruvbox_256palette.sh
 
     $XDG_CONFIG_HOME/bash/prompt
 DOTFILES
-unset tmuxinator_source GRC_ALIASES _git_prompt_file
+unset _tmuxinator_source GRC_ALIASES _git_prompt_file
 
 # XDG Base Directory Specification says to include $HOME/.local/bin, but it doesn't get a $XDG_... variable
 add_to_path_var PATH before "$HOME/bin:$HOME/.local/bin:$XDG_STATE_HOME/bun/bin:$XDG_DATA_HOME/python/bin:$XDG_DATA_HOME/gem/bin:$XDG_DATA_HOME/npm/bin:$XDG_DATA_HOME/go/bin:$XDG_DATA_HOME/cargo/bin:/usr/lib/ccache/bin"
