@@ -36,6 +36,11 @@ if os.execute("infocmp wezterm") then
   config.term = 'wezterm'
 end
 
+-- Enable Kitty protocol  (eg Shift+Enter)
+-- https://wezterm.org/config/lua/config/enable_kitty_keyboard.html
+-- https://sw.kovidgoyal.net/kitty/keyboard-protocol/
+config.enable_kitty_keyboard = true
+
 --
 -- Key assignments
 --
