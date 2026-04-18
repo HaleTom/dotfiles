@@ -20,10 +20,13 @@ local mux = wezterm.mux  -- multiplexer layer: panes, tabs, windows, and workspa
 --- Config struct documentation
 -- https://wezfurlong.org/wezterm/config/lua/config/index.html
 local config = {}  -- This table will hold the configuration.
--- In newer versions of wezterm, use the config_builder which will
--- help provide clearer error messages
 if wezterm.config_builder then
+  -- In newer versions of wezterm, use the config_builder which will
+  -- provide error messages on invalid key / values
   config = wezterm.config_builder()
+  print "Using config_builder"
+else
+  print "Not using config_builder -- old Wezterm version?"
 end
 
 -- Debug
