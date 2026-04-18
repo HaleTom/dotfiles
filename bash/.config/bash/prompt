@@ -315,7 +315,8 @@ else
   # Use the side-effect of assignment, but return 0 to create :0:0
   # _timer_now() must only print a single number, else prompt breaks
   if type -t _timer_now &>/dev/null; then
-    export PS0=$'${-:0:$((_prompt_timer_start=$(_timer_now),0))}'
+    # Don't break the prompt if either /dev/null or _timer_now don't exist with a parent-shell exported PS0
+    PS0='${-:0:$((_prompt_timer_start=$(exec 2>&-;_timer_now||echo 0),0))}'
   else
     __PS0_not_supported=true
   fi
