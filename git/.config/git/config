@@ -9,6 +9,11 @@
 
   # pager order: $GIT_PAGER, core.pager, $PAGER, compile-time default (less)
   # diff.pager may be set differently
+  # pager = "command -v pager &>/dev/null && pager || less -FLRX --tabs=4"
+  # pager = "faketty tee $HOME/tmp/diff1 | diff-so-fancy --patch 2>&1 | tee $HOME/tmp/diff2"
+  pager = "tee $HOME/tmp/diff1 | diff-so-fancy --patch | tee $HOME/tmp/diff2"
+  pager = "tee $HOME/tmp/diff1 | diff-so-fancy --patch > $HOME/tmp/diff2"
+  pager = "tee $HOME/tmp/diff1 | delta --color-only --patch | tee $HOME/tmp/diff2"
   pager = "command -v pager &>/dev/null && pager || less -FLRX --tabs=4"
   # whitespace doco: https://git-scm.com/docs/git-config#Documentation/git-config.txt-corewhitespace
   whitespace=space-before-tab,trailing-space,cr-at-eol
@@ -33,6 +38,7 @@
 
 # Gotchas:
 # rev-parse without --verify prints its argument, then returns false
+# All !"shell command" aliases first change directory to git root.  See alias "sh", eg: git sh pwd
 
 [alias]  # these are case INsensitive
   a      = add
@@ -77,7 +83,7 @@
   can    = commit -a --amend
   cann   = commit -a --amend --no-edit
   canm   = commit -a --amend -m
-  caum   = !"bash -c 'cd ${GIT_PREFIX:-.} && git add --update \"${@:2}\" && git commit -m \"$1\"' _ \"$@\" # Usage: caum "commit message" [files]"
+  caum   = !"bash -c 'cd \"${GIT_PREFIX:-.}\" && git add --update \"${@:2}\" && git commit -m \"$1\"' _ \"$@\" # Usage: caum "commit message" [files]"
   cfu    = !"bash -c 'git commit --fixup=\"$1\" \"${@:2}\"' _ \"$@\" #"
   cfgl   = config --local
   cfgll  = config --local --list
@@ -100,7 +106,7 @@
   clsb   = cls --branch  # eg git clsb maint git://github.com/user/repo"
   clss   = cls --single-branch  # Clone only one branch
   # Note git clean operates from the current directory, same behaviour:
-  clear  = !"cd ${GIT_PREFIX:-.} && bash -c 'git clean -nd \"$@\" | sed \"s/^Would remove //\"; \
+  clear  = !"cd \"${GIT_PREFIX:-.}\" && bash -c 'git clean -nd \"$@\" | sed \"s/^Would remove //\"; \
     read -rn1 -p \"Delete all the above? [y/N] \" r; echo; \
     [[ x$r =~ ^x[yY] ]] && git clean -df \"$@\" || echo Untouched.' removed \"$@\" #"
   # Same as above, but relative to root directory
@@ -111,11 +117,11 @@
   # Default commit mode if files are given is --only, which only commits the named paths.
   # https://stackoverflow.com/a/51587932/5353461
   # The alternative to --only is --include.  --only = intersect,  --include = union.
-  cmaf = !"cd ${GIT_PREFIX:-.} && git cmf \"Add $*\" \"$@\" # Add files with comment like: Add f1 f2 f3"
-  cmf    = !"[ $# -lt 2 ] && { echo \"Give arguments: <commit msg> <files>\" >&2; exit 1; }; cd ${GIT_PREFIX:-.} && git add \"${@:2}\" && git commit -m \"$@\" #"
-  cmi    = !"bash -c '[ $# -ge 2 ] || { echo \"Give arguments: <commit msg> <files>\" >&2; exit 1; }; cd ${GIT_PREFIX:-.} && git commit -m \"${@:1:1}\" -i \"${@:2}\"' - \"$@\" # Include named files in index, then commit"
+  cmaf = !"cd \"${GIT_PREFIX:-.}\" && git cmf \"Add $*\" \"$@\" # Add files with comment like: Add f1 f2 f3"
+  cmf    = !"[ $# -lt 2 ] && { echo \"Give arguments: <commit msg> <files>\" >&2; exit 1; }; cd \"${GIT_PREFIX:-.}\" && git add \"${@:2}\" && git commit -m \"$@\" #"
+  cmi    = !"bash -c '[ $# -ge 2 ] || { echo \"Give arguments: <commit msg> <files>\" >&2; exit 1; }; cd \"${GIT_PREFIX:-.}\" && git commit -m \"${@:1:1}\" -i \"${@:2}\"' - \"$@\" # Include named files in index, then commit"
   cmu    = "! cd \"${GIT_PREFIX:-.}\" && git add --update \"${@:2}\" && git commit -m \"$@\" # Update add, then commit with message"
-  au     = add --update  # deletions of tracked files but no new ones
+  cmo    = !"cd \"${GIT_PREFIX:-.}\" && git commit -m \"$1\" -o \"${@:2}\" # Commit only paths specified, with message==$1"
   cn     = commit --amend
   # cn0    = commit --amend --allow-empty
   cne    = commit --no-edit
@@ -180,7 +186,7 @@
   fsk    = fsck --no-dangling  # Dangling objects are common, eg staged but not commited changes
   fx     = fixup
   fxa    = fixup-auto
-  g      = !"cd \"${GIT_PREFIX:-.}\" && git \"$@\" #"  # Idempotent. Allow for `gsudo !!` to run previous command as root.
+  g      = !"cd \"${GIT_PREFIX:-.}\" && git \"$@\" # Idempotent -- for gsudo !!"  # to run previous command as root.
   head   = !"c=$(git rpc \"$1\") && p=$(git log -n1 --oneline --decorate) && git update-ref --no-deref -m \"Move from $p\" HEAD \"$c\" #" # Move HEAD to specified commit-ish
   icdiff = difftool --no-prompt --extcmd icdiff # \"$@\"
   l      = log --compact-summary --dirstat
@@ -194,6 +200,8 @@
   logdai  = !"lines=$(($(tput lines)*3/5)); eval git log $(git fmt-commit-1line-iso) --graph --all --remotes --color=always \"$@\" | head -n$lines #"
   logdaa = !"eval git log $(git fmt-commit-1line) --graph --all --remotes --color=always \"$@\" #"
   logdaai= !"eval git log $(git fmt-commit-1line-iso) --graph --all --remotes --color=always \"$@\" #"
+  logdar = logdai   --simplify-by-decoration
+  logdaar = logdaai --simplify-by-decoration
   lp     = log --patch --compact-summary --dirstat
   lsr    = ls-remote
   lsrt   = ls-remote --tags --refs
@@ -239,6 +247,7 @@
   # XXX TODO merge thest into master branch not currently checked out branch
   # pom    = pl origin master
   # pum    = pl upstream master
+  pwd    = sh pwd
   rb     = rebase --committer-date-is-author-date
   rba    = rebase --abort
   rbb    = !"git rebase -i $(git merge-base $1 HEAD) #" # Rebase to branch-name # http://stackoverflow.com/a/31036518/5353461
@@ -314,6 +323,8 @@
   sps    = stash push
   spcosp = !"git stash push && git checkout \"$@\" && git stash pop #"
   spsp   = stash push --patch
+  sq     = !"shell-quote \"$@\" # shell-quote the following tokens"
+  sqx    = !"git sq \"$@\" && git here \"$@\" # shell-quote then run the git command"
   ss     = stash push
   ssa    = stash push --all # includes ignored
   ssk    = stash push --keep-index # Changes to index are left intact
@@ -344,12 +355,12 @@
   hidden = !"git ls-files -v -- \"$@\"| grep -E '^(S|[[:lower:]])' # S means update-index --skip-worktree, and lower first letter means --assume-unchanged."
   ignored = !"{ git ls-files -oz; git ls-files -z; } | xargs -0 git ignore-q \"$@\" # Show all ignored and hidden paths. Pass -v for why."
 
-  # TODO: check if final parameter exists, if not die.  Check behaviour if dir and without trailing/
-  repo = !"bash -c 'r=$(realpath \"${@:$#}\") && cd \"$(dirname \"$r\")\" && git \"${@:1:$# -1}\" \"$r\"' _ \"$@\" # Run command in directory of realpath of last argument, convert it to realpath"
-  repo = !"bash -c 'r=$(realpath \"${@:$#}\") && cd \"$(dirname \"$r\")\" &&pwd && shell-quote git \"${@:1:$# -1}\" \"$r\"' _ \"$@\" # Run command in directory of realpath of last argument, convert it to realpath"
-  repo = !"bash -c 'r=$(realpath \"${@:$#}\") && cd \"$(dirname \"$r\")\" &&pwd && git \"${@:1:$# -1}\" \"$r\"' _ \"$@\" # Run command in directory of realpath of last argument, convert it to realpath"
-  # Top level directory of repository
-  top = !"git \"$@\" #"  # re-run git command in repository toplevel directory
+  # Execute git command in dirnname of the last argument
+  rel = !"bash -xc 'r=\"$(realpath \"${@:$#}\")\"; git -C \"${r%/*}\" \"${@:1:$# -1}\" \"$r\"' _ \"$@\" # Use $_ to run a command in the directory of it's realpath. Use realpath at end to allow $_ == ../foo"
+
+  # Execute git command in dir or dirnname of the first argument
+  x = !"bash -c 'set -x; r=$(realpath \"$1\") &&{ [ -d \"$r\" ]&&d=$r;}||d=${r%/*} && git -C \"$d\" \"${@:2}\"' _ \"$@\" # Use $_ to run a command in the directory of it's realpath. Use realpath at end to allow $1 == ../foo"
+
   root = rev-parse --show-toplevel  # Show git top-level.  Also see bash function git_root for something more robust.
   # For superproject and submodules toplevel see https://stackoverflow.com/a/52047313/5353461
   git-dir = rev-parse --git-dir  # Show .git directory
@@ -359,8 +370,8 @@
 
   tag-latest = !"git describe --tags $(git rev-list --tags --max-count=1) # Describe the most recent (in time) tag"
 
-  xdhi = !"cd ${GIT_PREFIX:-.} && git -c interactive.diffFilter='SKIP_DHI=1 diff-hi | less -FLRX --tabs=4' \"$@\" # Disable problematic diff highlighting"
-  xdhi-alias-helper = !"cd ${GIT_PREFIX:-.} && { git \"$@\" || git xdhi \"$@\"; } # Disable diff-hi if initial run fails"
+  xdhi = !"cd \"${GIT_PREFIX:-.}\" && git -c interactive.diffFilter='SKIP_DHI=1 diff-hi | less -FLRX --tabs=4' \"$@\" # Disable problematic diff highlighting"
+  xdhi-alias-helper = !"cd \"${GIT_PREFIX:-.}\" && { git \"$@\" || git xdhi \"$@\"; } # Disable diff-hi if initial run fails"
 
   #
   # Branches / remotes
@@ -384,7 +395,7 @@
   branch-or-commit = !"git isbranch-name \"${1:?Commitish required}\" && { x=$(git branch-tip-names \"$1\"); [ -n \"$x\" -a \"$(echo -n \"$x\" | wc -l)\" -eq 0 ] ||{ x=$(git rev-parse --verify \"$1\");}; echo \"$x\"; [ -n \"$x\" ] # Print either the branch that commitish is on, else the commit itself"
   branch-tips = !"[ -z \"$1\" ] && git branch-current 2>/dev/null || git branch --format='%(refname:short)' --contains \"${1:-HEAD}\" #"  # https://stackoverflow.com/a/19585361/5353461
   branch-tips = !"git is-branch \"${1:?Give commitish to find branch tips}\" && echo \"$1\" || git branch --format='%(refname:short)' --contains \"${1:-HEAD}\" # Only lists tips if $1 is not a branch itself"  # https://stackoverflow.com/a/19585361/5353461
-  branch-tip = !"br=$(git branch-tips \"$1\") && case \"$br\" in *$'\\n'*) printf \"Error: ambiguous branches:\\n%s\\n\" \"$br\">&2; exit 1;; esac; echo \"$br\" #"
+  branch-tip = !"br=$(git branch-tips \"${1:-HEAD}\") && case \"$br\" in *$'\\n'*) printf \"Error: ambiguous branches:\\n%s\\n\" \"$br\">&2; exit 1;; esac; echo \"$br\" #"
 
   # Mine: https://stackoverflow.com/a/52896538/5353461
   branch-remote-delete = !"usage='Give args <remote> <branch(s) to delete>'; git push --delete \"${1:?$usage}\" \"${@:2}\" # Delete branch(s) from remote"
@@ -431,7 +442,7 @@
   # Commits
   #
 
-  commit-undo = "!git reset @~ \"$(git branch-tip)\" && git commit --amend --no-edit --allow-empty #"
+  commit-undo = "!git reset \"$(git branch-tip)\"~ # Note the ~ "
 
   #
   # Display data
@@ -516,7 +527,7 @@
 
   # Direct-decendant commits of $1 which are also ancestors of $2, sorted newest first
   # Use 'HEAD' if $1 not given. Use last checked out branch if $2 not given
-  children-branch = !"git print-commit-1 $(git children-branch \"$1\" \"$2\") #" # Subshell unquoted to split output into arguments 
+  children-branch = !"git print-commit-1 $(git children-branch \"$1\" \"$2\") #" # Subshell unquoted to split output into arguments
   children-branch-hash = !"c=$(git children \"$1\") && git scions \"$1\" | grep -xF \"$c\" #"
 
   # TODO split into a function which announces if there is more than one child and whether the oldest is a branch-child
@@ -564,13 +575,15 @@
   squash = !"c=\"$1\"; shift; git commit -m \"squash! $(git log -1 --format='%s' \"$c\")\" \"$@\" -e #" # -e to add message to squash in
 
   # Run a command in the root of the working tree
-  bsh     = !"\"$@\" #" # BOURNE shell, save some typing in default case :)
-  sh      = !"bash -c '\"$@\"' -" # default to bash
-  zsh     = !"zsh  -c '\"$@\"' -"
-  sheval  = !"bash -c 'eval \"$@\"' -"
-  shevalq = !"bash -c 'shell-quote eval \"$@\"' -"
-  bsheval = !"sh   -c 'eval \"$@\"' -"
-  zsheval = !"zsh  -c 'eval \"$@\"' -"
+  top = !"git \"$@\" # Run the given command in the git root"
+
+  # Run commands
+  here   = !"git -C \"${GIT_PREFIX:-.}\" \"$@\" # Run following git command in $PWD (not the git root)"
+  sh  = !"cd \"${GIT_PREFIX:-.}\" && eval bash -c '\"$(shell-quote \"$@\")\"' git-bash  # Run a shell command in the current directory"
+  shq = !"cd \"${GIT_PREFIX:-.}\" && eval bash -c '\"$(shell-quote \"$@\")\"' git-bash  # Run a shell command in the current directory"
+  # check:  git sh shell-quote 'a b' \  'c d'
+  # example: date = "sh bash -c \"f=$(date); echo $f\""
+
 
   # Quote / unquote a sh command, converting it to / from a git alias string
   quote-string = !"read -r l; printf !\\\"; printf %s \"$l\" | sed 's/\\([\\\"]\\)/\\\\\\1/g'; printf \" #\\\"\\n\" #"
@@ -703,15 +716,22 @@
 [commit]
   verbose = true # include diff output for easy review
 
+; [credential "https://github.com"]
+;   helper =
+;   helper = !/usr/bin/gh auth git-credential
+; [credential "https://gist.github.com"]
+; 	helper =
+; 	helper = !/usr/bin/gh auth git-credential
+
 [delta]
     features = line-numbers decorations
     inspect-raw-lines = true  # default: true which support git's --color-moved
-    minus-color = "#340001"
-    # minus-style = syntax "#3f0001"
+    minus-color = "#600000"
+    minus-style = syntax "#900000"
     minus-style = syntax bold auto
     navigate = true
-    plus-color = "#012800"
-    # plus-style = syntax "#003800"
+    plus-color = "#005000"
+    plus-style = syntax "#009000"
     plus-style = syntax bold auto
     side-by-side = false
     syntax-theme = Monokai Extended
@@ -732,7 +752,11 @@
   colorMovedWS = ignore-space-change
   indentHeuristic = true # New default from v2.14, see https://github.com/blog/2188-git-2-9-has-been-released
   interHunkContext = 2
-  pager = "{ command -v diff-hi &>/dev/null && diff-hi || less -FLRX --tabs=4; }"  # Braces keep STDIN consistent
+  ; pager = "echo $PATH && { command -v diff-hi &>/dev/null && diff-hi || less -FLRX --tabs=4; }"  # Braces keep STDIN consistent
+  ; pager = "/home/ravi/bin/diff-hi | cat"
+  ; pager = cat
+  # pager = "faketty tee $HOME/tmp/diff1 | diff-so-fancy --patch 2>&1 | tee $HOME/tmp/diff2"
+  ; pager = delta
   renames = copies  # detect both copies and renames
   tool = vimdiff
   wsErrorHighlight = old,new,context
@@ -784,15 +808,15 @@
   # hint: Your filter must maintain a one-to-one correspondence
   # hint: between its input and output lines.
 
-  # delta (***diff-hi default***) is broken for --patch as of 2023-06-26
-  # https://github.com/dandavison/delta/issues/320
   diffFilter = "{ command -v diff-hi &>/dev/null && diff-hi || cat; }"  # Braces keep STDIN consistent
+  ; diffFilter = "tee $HOME/tmp/diff1 | delta --color-only | tee $HOME/tmp/diff2"
 
   # Use dsf:
   # dsf issue: https://github.com/so-fancy/diff-so-fancy/issues/474
-  # diffFilter = "{ command -v diff-so-fancy &>/dev/null && diff-so-fancy --patch || cat; }"
+  ; diffFilter = "{ command -v diff-so-fancy &>/dev/null && diff-so-fancy --patch || cat; }"
   # diffFilter = "{ echo "diffFilter" >&2; faketty tee ~/tmp/diff1 | faketty diff-so-fancy --patch | tee ~/tmp/diff2; }"
   # diffFilter = " { echo "diffFilter" >&2; cat; }"
+
 
   # Remove the need to press enter after an interactive prompt.
   # Required packages: Arch: perl-term-readkey, Ubuntu: libterm-readkey-perl
@@ -826,6 +850,7 @@
   log      = less
   show     = true
   status   = less
+	diff     = "{ command -v diff-hi &>/dev/null && diff-hi || less -FLRX --tabs=4; }"  # Braces keep STDIN consistent
 
   # Allow hunk movement with n/p keys
   # diff = diff-hi | less -FLRX --tabs=4 --pattern '^(\\@\\@.*,.*,.*\\@\\@|diff --git .* .*)$' # Allow hunk movement with n/p keys
@@ -840,7 +865,7 @@
 
 [push]
   # https://git-scm.com/docs/git-push#_configuration
-  autoSetupRemote
+  autoSetupRemote = true
   # To set branch upstream push on a per-branch basis:
   # git config --local remote.origin.push main:master
   # https://stackoverflow.com/a/76578202/5353461
@@ -878,4 +903,4 @@
   # https://git-scm.com/docs/git-config#git-config-versionsortprereleaseSuffixdeprecated
   prereleaseSuffix = "-"  # Have 2.0-rc1 be earlier than 2.0
 
-# vim: sw=2 ts=2
+# vim: ts=2 sw=2 sts=2 et:
