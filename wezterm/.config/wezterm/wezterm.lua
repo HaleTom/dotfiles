@@ -29,6 +29,11 @@ else
   print "Not using config_builder -- old Wezterm version?"
 end
 
+-- Config reload
+config.automatically_reload_config = true  -- default; set false to disable
+-- Default keybind:  Ctrl+Shift+R
+-- Command palette:  Ctrl+Shift+P → type reload → Enter
+
 -- Debug
 wezterm.log_level = "debug"
 -- config.debug_key_events = true  # not sure how to get this working.
