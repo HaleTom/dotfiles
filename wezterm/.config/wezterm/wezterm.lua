@@ -165,6 +165,8 @@ config.font_rules = {
 --
 -- Bell
 --
+config.audible_bell = "Disabled"
+
 -- Enable the visual bell to briefly change the background color
 config.visual_bell = {
   -- Duration for the color to fade in (set to 0 for an instant flash)
