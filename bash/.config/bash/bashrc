@@ -345,6 +345,8 @@ DOTFILES
 # need because __git_ps1 will return colors.  See "prompt" sourced file.
 PROMPT_COMMAND='_prompt_bash_set'
 
+# lean-ctx shell hook
+[ "$BWRAPPED" ] && [ -f "$HOME/.lean-ctx/shell-hook.bash" ] && . "$HOME/.lean-ctx/shell-hook.bash"
 
 ##############################################################
 ###############  Comments only below here  ###################
