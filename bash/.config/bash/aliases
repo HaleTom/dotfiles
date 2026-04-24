@@ -121,9 +121,11 @@ alias cuc='cucumber'
 alias ccze='ccze -Ao nolookups'  # Don't look up {user,service}names, etc.
 alias clock='clockify'  # see functions
 alias clockify-cli='clockify'
+alias codex-sessions='codex-sessions --sessions-dir "$CODEX_HOME"/sessions'
 alias diff='diff-alias'
 alias df="colourify df --block-size=\\'1K"  #'"
 alias df,='colourify df'
+alias fd='fd --hyperlink=auto'
 alias home='git --git-dir=$HOME/.githome --work-tree=$HOME'
 alias lesc='less-compressed-wrapper'
 # predict: https://github.com/mobile-shell/mosh/issues/878
