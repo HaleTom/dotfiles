@@ -980,6 +980,22 @@ transfer() {
 export_function transfer
 
 
+browser() {
+  fallback_to floorp brave "$@"
+}; export_function browser
+
+
+info() {
+  if [ "$DISPLAY" ]; then
+    for i; do
+      browser "https://www.gnu.org/software/$i/manual/$i.html"
+    done
+  else
+    command info "$@"
+  fi
+}; export_function info
+
+
 ansi_colours() {
         local fgc bgc vals seq0
 
