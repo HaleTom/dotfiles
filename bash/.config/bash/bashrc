@@ -251,7 +251,7 @@ add_to_path_var PATH before "$HOME/bin:$HOME/.local/bin:$XDG_STATE_HOME/bun/bin:
 add_to_path_var PATH after "/usr/lib/systemd:/usr/local/heroku/bin:$XDG_DATA_HOME/miniconda3/bin:$HOME/.cabal/bin"
 
 # scmpuff  https://github.com/mroth/scmpuff/
-is_cmd scmpuff && eval "$(command scmpuff init -s --aliases=false)"
+is_cmd scmpuff && eval "$(command scmpuff init --shell=bash --aliases=false 2>&1)"
 
 add_to_path_var RUBYLIB before "$HOME"/lib
 for _gem_version in /usr/lib/ruby/gems/*; do
