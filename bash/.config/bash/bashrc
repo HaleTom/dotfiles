@@ -58,6 +58,7 @@ export GNULIB_SRCDIR="$HOME"/repo/gnulib
 export GCC_COLORS=1 # Enable gcc colours, available since gcc 4.9.0
 export RSYNC_PARTIAL_DIR=.rsync-tmp-partial # Automatically set --partial-dir with --partial
 export GOPATH="$XDG_DATA_HOME/go"
+export PNPM_HOME=${XDG_DATA_HOME}/pnpm
 
 # Have less display colours
 # from: https://wiki.archlinux.org/index.php/Color_output_in_console#man
@@ -241,7 +242,7 @@ DOTFILES
 unset _tmuxinator_source GRC_ALIASES _git_prompt_file
 
 # XDG Base Directory Specification says to include $HOME/.local/bin, but it doesn't get a $XDG_... variable
-add_to_path_var PATH before "$HOME/bin:$HOME/.local/bin:$XDG_STATE_HOME/bun/bin:$XDG_DATA_HOME/python/bin:$XDG_DATA_HOME/gem/bin:$XDG_DATA_HOME/npm/bin:$XDG_DATA_HOME/go/bin:$XDG_DATA_HOME/cargo/bin:/usr/lib/ccache/bin"
+add_to_path_var PATH before "$HOME/bin:$HOME/.local/bin:$XDG_STATE_HOME/bun/bin:$XDG_DATA_HOME/pnpm/bin:$XDG_DATA_HOME/python/bin:$XDG_DATA_HOME/gem/bin:$XDG_DATA_HOME/npm/bin:$XDG_DATA_HOME/go/bin:$XDG_DATA_HOME/cargo/bin:/usr/lib/ccache/bin"
 
 # Handled by bhruby
 # if ruby_gems=$(ruby -e 'print Gem.user_dir')/bin; then
@@ -328,8 +329,9 @@ shopt -s extglob failglob globstar
 
 # shopt -s histverify  # Show output of !! - press enter twice
 
-# Setup git completion
-source_first "/usr/share/git/completion/git-completion.bash" "/Library/Developer/CommandLineTools/usr/share/git-core/git-completion.bash"
+# Completion -- but only if base command is installed
+is_cmd git && source_first "/usr/share/git/completion/git-completion.bash" "/Library/Developer/CommandLineTools/usr/share/git-core/git-completion.bash"
+is_cmd pnpm && source_first '/usr/lib/node_modules/pnpm/dist/templates/completion.bash'
 
 _source_files <<DOTFILES
     # Completion
