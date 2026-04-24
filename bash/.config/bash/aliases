@@ -67,11 +67,13 @@ alias s='git s'
 
 # Two letters
 alias ft='faketty '  # space at end allows next word to be alias-expanded
-alias gh='git logda' # Git History
 alias jc='journalctl'
 alias jcc='SYSTEMD_COLORS=1 jc '
 alias jn='jupyter-notebook'
 alias tb='nc termbin.com 9999'
+
+# Three letters
+alias ghi='git logda' # Git History
 
 # systemctl
 alias sc='sudo SYSTEMD_EDITOR=$VISUAL /usr/bin/systemctl'
@@ -123,7 +125,6 @@ alias diff='diff-alias'
 alias df="colourify df --block-size=\\'1K"  #'"
 alias df,='colourify df'
 alias home='git --git-dir=$HOME/.githome --work-tree=$HOME'
-alias ghub='command gh'  # gh='g logda'
 alias lesc='less-compressed-wrapper'
 # predict: https://github.com/mobile-shell/mosh/issues/878
 # remote-ip: https://github.com/mobile-shell/mosh/issues/24  https://github.com/mobile-shell/mosh/issues/1181
