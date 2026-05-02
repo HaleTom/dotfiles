@@ -296,6 +296,20 @@ sh_is_zsh && return
 ##############################################################
 ##############################################################
 
+export HISTFILE=$XDG_STATE_HOME/bash/history
+# Exclude duplicates and commands starting with a <space> from history
+export HISTCONTROL=ignoredups:ignorespace
+
+# Enable extended globbing:
+shopt -s extglob failglob globstar
+# https://www.gnu.org/software/bash/manual/bash.html#Pattern-Matching
+# https://unix.stackexchange.com/questions/276911/is-it-dangerous-to-always-have-extglob-on : TL;DR: no
+# globstar enables **/*.txt like in zsh. **/ will match only directories.
+# globstar ** doesn't follow symlinks since bash-4.3
+
+# shopt -s histverify  # Show output of !! - press enter twice
+
+
 # Activate mise - https://mise.jdx.dev/getting-started.html
 # Some IDEs may need $XDG_DATA_HOME/mise/shims in $PATH.
 is_cmd /usr/bin/mise && eval "$(mise activate bash)"
@@ -316,18 +330,6 @@ unset __zlua
 is_cmd fzf && source_first "/usr/share/fzf/completion.bash" "/usr/local/opt/fzf/shell/completion.bash"
 is_cmd fzf && source_first "/usr/share/fzf/key-bindings.bash" "/usr/local/opt/fzf/shell/key-bindings.bash"
 
-export HISTFILE=$XDG_STATE_HOME/bash/history
-# Exclude duplicates and commands starting with a <space> from history
-export HISTCONTROL=ignoredups:ignorespace
-
-# Enable extended globbing:
-shopt -s extglob failglob globstar
-# https://www.gnu.org/software/bash/manual/bash.html#Pattern-Matching
-# https://unix.stackexchange.com/questions/276911/is-it-dangerous-to-always-have-extglob-on : TL;DR: no
-# globstar enables **/*.txt like in zsh. **/ will match only directories.
-# globstar ** doesn't follow symlinks since bash-4.3
-
-# shopt -s histverify  # Show output of !! - press enter twice
 # Atuin shell history
 # is_cmd /usr/bin/atuin && eval "$(/usr/bin/atuin init bash)"
 
