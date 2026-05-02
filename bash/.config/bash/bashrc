@@ -347,7 +347,13 @@ DOTFILES
 
 # This tells bash to reinterpret PS1 after every command, which we
 # need because __git_ps1 will return colors.  See "prompt" sourced file.
-PROMPT_COMMAND='_prompt_bash_set'
+case "$PROMPT_COMMAND" in
+    *_prompt_bash_set*) ;;
+    *)
+        PROMPT_COMMAND="${PROMPT_COMMAND%;}"
+        PROMPT_COMMAND="${PROMPT_COMMAND:+${PROMPT_COMMAND};}_prompt_bash_set"
+        ;;
+esac
 
 # lean-ctx shell hook
 [ "$BWRAPPED" ] && [ -f "$HOME/.lean-ctx/shell-hook.bash" ] && . "$HOME/.lean-ctx/shell-hook.bash"
