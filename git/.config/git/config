@@ -126,6 +126,7 @@
   # cn0    = commit --amend --allow-empty
   cne    = commit --no-edit
   cnn    = commit --amend --no-edit
+  cnno   = commit --amend --no-edit --only
   cnnra  = commit --amend --no-edit --reset-author
   cnrbc  = !"git cn  && git rbc #"
   cnnrbc = !"git cnn && git rbc #"
@@ -346,6 +347,9 @@
   tm     = tag -m
   td     = tag -d
   ws     = wrapstash
+
+  # GitHub
+  hfc    = !"f(){ /bin/gh repo fork \"${1?Upstream repo required}\" --clone -- --filter=blob:none \"${@:2}\";}; f"  # Fork, clone blobless
 
   # Ignored files, including those included by index
   # If avoiding passing context number of lines, then no colour :(   https://stackoverflow.com/questions/63371544/diff-color-always-no-colour-when-line-format-specified
