@@ -1040,3 +1040,113 @@ function source_env_var() {
     return "$failed"
 }
 export_function source_env_var
+
+# rm_from_path_var — remove all occurrences of a directory from PATH
+#
+# Usage: rm_from_path_var <dir>
+#   Removes every exact occurrence of <dir> from PATH.
+#   PATH entries are colon-delimited; only full-segment matches are removed.
+#   Partial matches (e.g. removing /bin matching /usr/bin) never happen.
+#
+# Return codes:
+#   0  — removed successfully
+#   1  — dir not present in PATH (no-op)
+#   2  — usage error: empty arg, arg contains colon/newline, or arg is not absolute
+#   3  — PATH would be empty after removal (aborted, PATH unchanged)
+#
+# Security guarantees:
+#   - Glob metacharacters in <dir> are treated as literal characters, never as patterns
+#   - Only full PATH segment matches are removed (no partial/substring matches)
+#   - Colons and newlines in <dir> are rejected (they corrupt PATH structure)
+#   - Caller's extglob state is preserved across the call
+#   - POSIX // special-case is handled correctly
+#
+# Implementation note: Uses character-scan (v3) instead of ${var//pattern/}
+# substitution to avoid glob interpretation entirely.  The ${var//} approach
+# requires escaping glob metacharacters (\* \? \[ \]) in the dir string, and
+# the \] escaping is ambiguous in bash: a literal ] inside a bracket expression
+# must be first ([]...]) per POSIX, but the backslash-escaped form \] is
+# implementation-defined for pattern matching.  An earlier IFS split-rejoin
+# approach (v2) was abandoned because read -a treats consecutive IFS delimiters
+# as a single separator, losing empty PATH segments.  Character scan walks
+# PATH char-by-char, splitting on colons — zero glob surface area, preserves
+# empty PATH segments, O(n) single pass.
+rm_from_path_var() {
+    local dir="$1"
+
+    # ── validate input ──────────────────────────────────────────────
+    [[ -z "$dir" ]] && return 2
+
+    # Reject colons — they are the PATH delimiter and make segment
+    # matching ambiguous.  Reject newlines — they corrupt PATH silently.
+    [[ "$dir" == *[:$'\n']* ]] && return 2
+
+    # Reject non-absolute paths — PATH entries are always absolute.
+    # This prevents accidental partial-string matches on relative names.
+    [[ "$dir" != /* ]] && return 2
+
+    # ── normalise the directory path ────────────────────────────────
+    # Preserve caller's extglob state to avoid leaking or overrestoring.
+    local _extglob_was_on=0
+    shopt -q extglob && _extglob_was_on=1
+    shopt -s extglob
+
+    # POSIX special case: leading // is meaningful on some systems (Distributed
+    # Name Service per POSIX.1-2017 §4.13).  Preserve exactly two leading slashes
+    # when the third character is not also a slash.
+    if [[ "$dir" == "//"* && "${dir:2:1}" != "/" ]]; then
+        # Keep leading //, collapse internal runs, strip trailing slashes.
+        # Example: ////host/path// → //host/path
+        local body="${dir:2}"
+        body="${body//+(\/)/\/}"           # collapse internal //+ → /
+        body="${body%/}"                   # strip trailing slash
+        [[ -z "$body" ]] && dir="//" || dir="//${body}"
+    else
+        dir="${dir//+(\/)/\/}"             # collapse internal //+ → /
+        dir="${dir%/}"                     # strip trailing slash
+        [[ -z "$dir" ]] && dir="/"         # was all slashes → root
+    fi
+
+    # Restore extglob to its prior state
+    [[ "$_extglob_was_on" -eq 0 ]] && shopt -u extglob
+
+    # ── remove matching segments by peeling from front ─────────────
+    # Split PATH by peeling segments with parameter expansion — O(n)
+    # vs the old O(n²) per-character index scan.  Preserves empty
+    # segments, no glob interpretation.
+    local -a kept=()
+    local found=0
+    local seg rest="$PATH"
+    while true; do
+        seg="${rest%%:*}"
+        if [[ "$seg" == "$dir" ]]; then
+            found=1
+        else
+            kept+=("$seg")
+        fi
+        case "$rest" in
+            *:*) rest="${rest#*:}" ;;
+            *)   break ;;
+        esac
+    done
+
+    # ── bail if not present ─────────────────────────────────────────
+    [[ "$found" -eq 0 ]] && return 1
+
+    # ── guard: don't leave PATH empty ────────────────────────────────
+    if [[ "${#kept[@]}" -eq 0 ]]; then
+        echo "rm_from_path_var: PATH would be empty after removal" >&2
+        return 3
+    fi
+
+    # ── rejoin ──────────────────────────────────────────────────────
+    # Always emit a colon separator between segments, even if a segment
+    # is empty (consecutive colons / leading/trailing colons in PATH).
+    local after="${kept[0]}"
+    local i
+    for (( i = 1; i < ${#kept[@]}; i++ )); do
+        after="${after}:${kept[i]}"
+    done
+
+    PATH="$after"
+}
