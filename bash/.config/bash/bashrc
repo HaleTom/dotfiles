@@ -328,6 +328,8 @@ shopt -s extglob failglob globstar
 # globstar ** doesn't follow symlinks since bash-4.3
 
 # shopt -s histverify  # Show output of !! - press enter twice
+# Atuin shell history
+# is_cmd /usr/bin/atuin && eval "$(/usr/bin/atuin init bash)"
 
 # Completion -- but only if base command is installed
 is_cmd git && source_first "/usr/share/git/completion/git-completion.bash" "/Library/Developer/CommandLineTools/usr/share/git-core/git-completion.bash"
