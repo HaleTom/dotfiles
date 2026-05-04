@@ -1129,3 +1129,93 @@ rm_from_path_var() {
     # between records including empty ones.
     PATH=$(printf '%s' "$PATH" | /usr/bin/tr ':' '\0' | /usr/bin/grep -zFxv -- "$dir" | /usr/bin/tr '\0' '\n' | /usr/bin/paste -sd ':')
 }
+
+
+# _cached_eval CMD [ARG]...
+#
+# Cache the output of `eval "$(CMD ARG...)"` to disk.
+# On subsequent runs, source the cached file instead of re-running the binary,
+# saving the subprocess + parse cost (typically 80-90% faster).
+#
+# Cache filename is derived from the full command: resolved binary path (via
+# realpath + /→@ swap) plus all args (space→_), so that a PATH change pointing
+# to a different binary, or different args, automatically creates a new cache.
+# An -nt (newer-than) check also invalidates when the binary is upgraded
+# in-place.  A staleness warning is printed if the binary hasn't been modified
+# in over a year — the tool may be unmaintained or replaced.
+#
+# Writes are atomic (tmpfile + mv) to prevent half-written caches on crash.
+#
+# Env vars:
+#   EVALCACHE_DISABLE=true   Bypass cache entirely; eval directly every time.
+#   EVALCACHE_DIR            Override cache directory (default: $XDG_CACHE_HOME/bash/evalcache)
+#
+# See also: _cached_eval_clear
+_cached_eval() {
+    local bin_name="$1"
+    local bin_path
+    bin_path=$(command -v "$bin_name" 2>/dev/null) || return 0
+
+    local real_bin
+    real_bin=$(realpath "$bin_path") || real_bin=$bin_path
+
+    local path_slug=${real_bin//\//@}
+    local args_slug
+    if (( $# > 1 )); then
+        local all_args="${*:2}"
+        args_slug=_${all_args// /_}
+        args_slug=${args_slug//\//@}
+    fi
+    local cache_dir="${EVALCACHE_DIR:-${XDG_CACHE_HOME:-$HOME/.cache}/bash/evalcache}"
+    local cache="$cache_dir/${path_slug}${args_slug}.bash"
+
+    if [[ "$EVALCACHE_DISABLE" == "true" ]]; then
+        eval "$("$@")"
+        return $?
+    fi
+
+    if [[ -e "$real_bin" ]]; then
+        local now last_mod diff_days
+        now=$(date +%s)
+        last_mod=$(stat -c %Y -- "$real_bin" 2>/dev/null) || return 0
+        diff_days=$(( (now - last_mod) / 86400 ))
+        if (( diff_days > 365 )); then
+            printf '_cached_eval: %s (%s) not modified in %d days — consider checking for a maintained replacement\n' \
+                "$bin_name" "$real_bin" "$diff_days" >&2
+        fi
+    fi
+
+    local arg stale=0
+    if [[ -s "$cache" && ! "$real_bin" -nt "$cache" ]]; then
+        for arg; do
+            if [[ -f "$arg" && "$arg" -nt "$cache" ]]; then
+                stale=1
+                break
+            fi
+        done
+    fi
+
+    if [[ -s "$cache" && ! "$real_bin" -nt "$cache" && stale -eq 0 ]]; then
+        source "$cache"
+    else
+        local out
+        out=$("$@") || return $?
+        mkdir -p "$cache_dir"
+        printf '%s\n' "$out" > "${cache}.tmp.$$"
+        mv "${cache}.tmp.$$" "$cache"
+        source "$cache"
+    fi
+}
+export_function _cached_eval
+
+
+# _cached_eval_clear — remove all cached eval files
+_cached_eval_clear() {
+    local cache_dir="${EVALCACHE_DIR:-${XDG_CACHE_HOME:-$HOME/.cache}/bash/evalcache}"
+    local count=0
+    if [[ -d "$cache_dir" ]]; then
+        count=$(find "$cache_dir" -name '*.bash' -type f -print -delete | wc -l)
+    fi
+    printf 'Cleared %d cached eval file(s) from %s\n' "$count" "$cache_dir"
+}
+export_function _cached_eval_clear

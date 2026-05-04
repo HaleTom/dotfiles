@@ -258,7 +258,7 @@ add_to_path_var PATH before "$HOME/bin:$HOME/.local/bin:$XDG_STATE_HOME/bun/bin:
 add_to_path_var PATH after "/usr/lib/systemd:/usr/local/heroku/bin:$XDG_DATA_HOME/miniconda3/bin:$HOME/.cabal/bin"
 
 # scmpuff  https://github.com/mroth/scmpuff/
-is_cmd scmpuff && eval "$(command scmpuff init --shell=bash --aliases=false 2>&1)"
+is_cmd scmpuff && _cached_eval scmpuff init --shell=bash --aliases=false
 
 add_to_path_var RUBYLIB before "$HOME"/lib
 for _gem_version in /usr/lib/ruby/gems/*; do
@@ -319,14 +319,14 @@ shopt -s extglob failglob globstar
 
 # Activate mise - https://mise.jdx.dev/getting-started.html
 # Some IDEs may need $XDG_DATA_HOME/mise/shims in $PATH.
-is_cmd /usr/bin/mise && eval "$(mise activate bash)"
+is_cmd /usr/bin/mise && _cached_eval /usr/bin/mise activate bash
 
 # z.lua
 __zlua=$XDG_DATA_HOME/zinit/plugins/skywind3000---z.lua/z.lua
 if is_cmd lua; then
   if [[ -r "$__zlua" ]]; then
     source "$XDG_CONFIG_HOME/bash/z.lua.config" && \
-    eval "$(lua "$__zlua" --init bash enhanced once fzf)"
+    _cached_eval lua "$__zlua" --init bash enhanced once fzf
   else
     echo "$__zlua not found or not readable" >&2
   fi
@@ -339,7 +339,7 @@ is_cmd fzf && source_first "/usr/share/fzf/key-bindings.bash" "/usr/local/opt/fz
 
 # Atuin shell history
 _atuin_bin=/usr/bin/atuin
-is_cmd "$_atuin_bin" && eval "$("$_atuin_bin" init bash)"
+is_cmd "$_atuin_bin" && _cached_eval "$_atuin_bin" init bash
 unset _atuin_bin
 
 # Completion -- but only if base command is installed
