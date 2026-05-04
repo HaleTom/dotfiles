@@ -1,0 +1,2 @@
+#!/usr/bin/env bash
+find "$(dirname "$0")" -name '*.bats' -exec bats {} +

@@ -12,6 +12,21 @@ is_function() {
     typeset -f "$1" > /dev/null
 }
 
+# is_item_in_array ITEM ARRAY_NAME
+#   Returns 0 if ITEM is an exact element in the array named ARRAY_NAME,
+#   1 otherwise. Uses nameref so caller passes the array *name* (unquoted).
+#   The nameref is declared read-only to guard against accidental mutation.
+#   Example: is_item_in_array _prompt_bash_set precmd_functions || precmd_functions+=(...)
+is_item_in_array() {
+    local needle=$1
+    declare -rn _haystack=$2
+    local i
+    for i in "${_haystack[@]}"; do
+        [[ $i == "$needle" ]] && return 0
+    done
+    return 1
+}
+
 # Source POSIX shell functions if they've not yet been (eg source-file)
 # shellcheck disable=SC1091
 ! is_function sh_is_bash && source "$XDG_CONFIG_HOME/shell/functions-env"
