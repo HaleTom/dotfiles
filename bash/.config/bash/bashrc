@@ -378,9 +378,3 @@ printf '%s\0' "${precmd_functions[@]}" | grep -Fzq --line-regexp '_prompt_bash_s
 ##############################################################
 ###############  Comments only below here  ###################
 ##############################################################
-
-# alias g=git (done in .bash_aliases)
-# This needs to be here - doesn't work inside .bash_aliases for some reason
-# See http://stackoverflow.com/a/39507158/5353461
-## Not needed in Manjaro with bash-completion
-#_xfunc git __git_complete g _git
