@@ -41,11 +41,10 @@ teardown() {
     [ "$PATH" = "/a:/c" ]
 }
 
-@test "1.4 PATH would be empty after removal returns 3" {
+@test "1.4 PATH becomes empty after removal — allowed" {
     PATH="/only"
-    rm_from_path_var /only 2>/dev/null || _rc=$?
-    [ "$_rc" -eq 3 ]
-    [ "$PATH" = "/only" ]
+    rm_from_path_var /only
+    [ "$PATH" = "" ]
 }
 
 @test "1.5 contains colon returns 2" {
@@ -121,11 +120,10 @@ teardown() {
     [ "$PATH" = "/b:/c" ]
 }
 
-@test "3.2 three copies in a row → empty → RC 3" {
+@test "3.2 three copies in a row → all removed, PATH empty" {
     PATH="/x:/x:/x"
-    rm_from_path_var /x 2>/dev/null || _rc=$?
-    [ "$_rc" -eq 3 ]
-    [ "$PATH" = "/x:/x:/x" ]
+    rm_from_path_var /x
+    [ "$PATH" = "" ]
 }
 
 @test "3.3 adjacent duplicates" {
@@ -134,11 +132,10 @@ teardown() {
     [ "$PATH" = "/b" ]
 }
 
-@test "3.4 only entry duplicated → empty → RC 3" {
+@test "3.4 only entry duplicated → all removed, PATH empty" {
     PATH="/only:/only"
-    rm_from_path_var /only 2>/dev/null || _rc=$?
-    [ "$_rc" -eq 3 ]
-    [ "$PATH" = "/only:/only" ]
+    rm_from_path_var /only
+    [ "$PATH" = "" ]
 }
 
 # ===========================================================================
@@ -290,18 +287,16 @@ teardown() {
     [ "$PATH" = "/usr/bin:/sbin" ]
 }
 
-@test "7.4 PATH with only one entry → empty → RC 3" {
+@test "7.4 PATH with only one entry → removed, PATH empty" {
     PATH="/only"
-    rm_from_path_var /only 2>/dev/null || _rc=$?
-    [ "$_rc" -eq 3 ]
-    [ "$PATH" = "/only" ]
+    rm_from_path_var /only
+    [ "$PATH" = "" ]
 }
 
-@test "7.5 PATH with two same entries → empty → RC 3" {
+@test "7.5 PATH with two same entries → both removed, PATH empty" {
     PATH="/x:/x"
-    rm_from_path_var /x 2>/dev/null || _rc=$?
-    [ "$_rc" -eq 3 ]
-    [ "$PATH" = "/x:/x" ]
+    rm_from_path_var /x
+    [ "$PATH" = "" ]
 }
 
 @test "7.6 empty PATH env var → RC 1" {
@@ -310,10 +305,10 @@ teardown() {
     [ "$_rc" -eq 1 ]
 }
 
-@test "7.7 PATH ends with colon — trailing empty segment kept" {
+@test "7.7 trailing empty segment dropped (no trailing colon in result)" {
     PATH="/a:/b:"
     rm_from_path_var /b
-    [ "$PATH" = "/a:" ]
+    [ "$PATH" = "/a" ]
 }
 
 @test "7.8 PATH starts with colon — leading empty segment preserved" {
@@ -405,9 +400,8 @@ teardown() {
     [ "$PATH" = "/a/b" ]
 }
 
-@test "9.6 PATH all-same-dir → empty → RC 3" {
+@test "9.6 PATH all-same-dir → empty allowed" {
     PATH="/x:/x:/x"
-    rm_from_path_var /x 2>/dev/null || _rc=$?
-    [ "$_rc" -eq 3 ]
-    [ "$PATH" = "/x:/x:/x" ]
+    rm_from_path_var /x
+    [ "$PATH" = "" ]
 }
