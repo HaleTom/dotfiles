@@ -222,6 +222,13 @@ export GRC_ALIASES=true  # Required for grc.sh to not return early
 source_first "/etc/profile.d/grc.sh" "/usr/local/etc/grc.sh"
 unset GRC_ALIASES
 
+# Before prompt
+_ble_sh=/usr/share/blesh/ble.sh
+if [[ $- == *i* && -r "$_ble_sh" ]]; then
+  source "$_ble_sh" --noattach # --noinputrc
+fi
+unset _ble_sh
+
 _source_files <<DOTFILES
     # Git
     $_git_prompt_file
@@ -331,7 +338,9 @@ is_cmd fzf && source_first "/usr/share/fzf/completion.bash" "/usr/local/opt/fzf/
 is_cmd fzf && source_first "/usr/share/fzf/key-bindings.bash" "/usr/local/opt/fzf/shell/key-bindings.bash"
 
 # Atuin shell history
-# is_cmd /usr/bin/atuin && eval "$(/usr/bin/atuin init bash)"
+_atuin_bin=/usr/bin/atuin
+is_cmd "$_atuin_bin" && eval "$("$_atuin_bin" init bash)"
+unset _atuin_bin
 
 # Completion -- but only if base command is installed
 is_cmd git && source_first "/usr/share/git/completion/git-completion.bash" "/Library/Developer/CommandLineTools/usr/share/git-core/git-completion.bash"
@@ -347,13 +356,21 @@ DOTFILES
 
 # This tells bash to reinterpret PS1 after every command, which we
 # need because __git_ps1 will return colors.  See "prompt" sourced file.
+# Note: With ble.sh, PROMPT_COMMAND is ignored; use precmd_functions array instead.
 case "$PROMPT_COMMAND" in
     *_prompt_bash_set*) ;;
     *)
-        PROMPT_COMMAND="${PROMPT_COMMAND%;}"
+        PROMPT_COMMAND="${PROMPT_COMMAND%;}"  # Remove trailing ; to prevent ;; syntax error
         PROMPT_COMMAND="${PROMPT_COMMAND:+${PROMPT_COMMAND};}_prompt_bash_set"
         ;;
 esac
+
+# Register with ble.sh's precmd_functions so it survives ble-attach/reload
+# Idempotent: only add if not already present
+printf '%s\0' "${precmd_functions[@]}" | grep -Fzq --line-regexp '_prompt_bash_set' || precmd_functions+=(_prompt_bash_set)
+
+[[ ${BLE_VERSION:-} ]] && ble-attach
+
 
 # lean-ctx shell hook
 [ "$BWRAPPED" ] && [ -f "$HOME/.lean-ctx/shell-hook.bash" ] && . "$HOME/.lean-ctx/shell-hook.bash"
