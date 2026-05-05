@@ -7,8 +7,28 @@
 # When an interactive shell that is NOT a login shell is started, this file is read.
 # The --norc option inhibits this behavior.  The --rcfile file option causes bash to use file instead of ~/.bashrc.
 
+# Opt-in per-section profiling: set _profile_bashrc=1 before starting bash
+# to write millisecond timestamps to /tmp/bash_profile_*.txt for each sourced block.
+# Default is off — no overhead when not enabled.
+[[ -n "${_profile_bashrc:-}" ]] && {
+  _profile_log="/tmp/bash_profile_$(date -Is).txt"
+  _profile_t=$(date +%s%N)
+  _profile_mark() {
+    local _now _ms
+    _now=$(date +%s%N)
+    _ms=$(( ( _now - _profile_t ) / 1000000 ))
+    echo "${_ms}ms: $1" >> "$_profile_log"
+    _profile_t=$_now
+  }
+  echo "=== bashrc profile $(date -Is) ===" >> "$_profile_log"
+  _profile_mark "bashrc start"
+} || {
+  _profile_mark() { :; }
+}
+
 # Setup $XDG* variables, etc
 source "${XDG_CONFIG_HOME:=$HOME/.config}/shell/env"
+_profile_mark "shell/env"
 
 set -o noclobber  # Use >|file to clobber
 
@@ -18,6 +38,7 @@ function sh_is_bash { [ -n "${BASH_VERSION:-}" ]; }
 
 # Setup functions (required for XDG background checks)
 source "$HOME/.config/bash/functions"
+_profile_mark "functions"
 
 # Standard-ish variables
 for _browser in brave floorp firefox google-cheome-stable; do
@@ -97,6 +118,7 @@ fi
 
 # Set $LS_COLORS
 [ -x /usr/bin/dircolors ] && eval "$(/usr/bin/dircolors)"
+_profile_mark "dircolors"
 
 # Colour iostat when on a terminal. This should be default, but needed to be set at 2018-05-21.
 export S_COLORS=auto
@@ -221,6 +243,7 @@ fi
 export GRC_ALIASES=true  # Required for grc.sh to not return early
 source_first "/etc/profile.d/grc.sh" "/usr/local/etc/grc.sh"
 unset GRC_ALIASES
+_profile_mark "grc.sh"
 
 # Before prompt
 _ble_sh=/usr/share/blesh/ble.sh
@@ -228,6 +251,7 @@ if [[ $- == *i* && -r "$_ble_sh" ]]; then
   source "$_ble_sh" --noattach # --noinputrc
 fi
 unset _ble_sh
+_profile_mark "ble.sh --noattach"
 
 _source_files <<DOTFILES
     # Git
@@ -247,6 +271,7 @@ _source_files <<DOTFILES
     $XDG_CONFIG_HOME/bash/prompt
 DOTFILES
 unset _tmuxinator_source GRC_ALIASES _git_prompt_file
+_profile_mark "dotfiles (git-prompt + prompt)"
 
 # XDG Base Directory Specification says to include $HOME/.local/bin, but it doesn't get a $XDG_... variable
 add_to_path_var PATH before "$HOME/bin:$HOME/.local/bin:$XDG_STATE_HOME/bun/bin:$XDG_DATA_HOME/pnpm/bin:$XDG_DATA_HOME/python/bin:$XDG_DATA_HOME/gem/bin:$XDG_DATA_HOME/npm/bin:$XDG_DATA_HOME/go/bin:$XDG_DATA_HOME/cargo/bin:/usr/lib/ccache/bin"
@@ -256,9 +281,11 @@ add_to_path_var PATH before "$HOME/bin:$HOME/.local/bin:$XDG_STATE_HOME/bun/bin:
 #     add_to_PATH before "$ruby_gems"
 # fi
 add_to_path_var PATH after "/usr/lib/systemd:/usr/local/heroku/bin:$XDG_DATA_HOME/miniconda3/bin:$HOME/.cabal/bin"
+_profile_mark "PATH setup"
 
 # scmpuff  https://github.com/mroth/scmpuff/
 is_cmd scmpuff && _cached_eval scmpuff init --shell=bash --aliases=false
+_profile_mark "scmpuff"
 
 add_to_path_var RUBYLIB before "$HOME"/lib
 for _gem_version in /usr/lib/ruby/gems/*; do
@@ -276,10 +303,12 @@ if [[ ${_disable_welcome_message:=0} -eq 0 ]] ||
     ( if_cmd ~/bin/welcome-message || if_cmd fortune ) & disown
 fi
 export _disable_welcome_message=$(( SHLVL + 1 ))  # Don't print at this $SHLVL again
+_profile_mark "welcome-message"
 
 # Source API keys etc that I don't want to publish to GitHub
 # TODO: move to mise-en-place
 [[ -e $XDG_CONFIG_HOME/bash/personal ]] && source "$XDG_CONFIG_HOME/bash/personal"
+_profile_mark "personal"
 
 # Setup ssh-agent
 if is_bin_in_path keychain; then
@@ -289,6 +318,7 @@ elif is_bin_in_path ssh-agent ssh-add; then
 else
   [[ "$-" == *i* ]] && printf "Can't find keychain or ssh-agent/ssh-add in path\n" >&2
 fi
+_profile_mark "keychain/ssh-agent"
 
 
 # Install fzf shell files if required
@@ -320,6 +350,7 @@ shopt -s extglob failglob globstar
 # Activate mise - https://mise.jdx.dev/getting-started.html
 # Some IDEs may need $XDG_DATA_HOME/mise/shims in $PATH.
 is_cmd /usr/bin/mise && _cached_eval /usr/bin/mise activate bash
+_profile_mark "mise activate"
 
 # z.lua
 __zlua=$XDG_DATA_HOME/zinit/plugins/skywind3000---z.lua/z.lua
@@ -332,19 +363,23 @@ if is_cmd lua; then
   fi
 fi
 unset __zlua
+_profile_mark "z.lua"
 
 # fzf
 is_cmd fzf && source_first "/usr/share/fzf/completion.bash" "/usr/local/opt/fzf/shell/completion.bash"
 is_cmd fzf && source_first "/usr/share/fzf/key-bindings.bash" "/usr/local/opt/fzf/shell/key-bindings.bash"
+_profile_mark "fzf"
 
 # Atuin shell history
 _atuin_bin=/usr/bin/atuin
 is_cmd "$_atuin_bin" && _cached_eval "$_atuin_bin" init bash
 unset _atuin_bin
+_profile_mark "atuin init"
 
 # Completion -- but only if base command is installed
 is_cmd git && source_first "/usr/share/git/completion/git-completion.bash" "/Library/Developer/CommandLineTools/usr/share/git-core/git-completion.bash"
 is_cmd pnpm && source_first '/usr/lib/node_modules/pnpm/dist/templates/completion.bash'
+_profile_mark "completions (git+pnpm)"
 
 _source_files <<DOTFILES
     # Completion
@@ -353,6 +388,7 @@ _source_files <<DOTFILES
     # Source my personal files last so they're not overridden
     $XDG_CONFIG_HOME/bash/aliases
 DOTFILES
+_profile_mark "completion+aliases"
 
 # This tells bash to reinterpret PS1 after every command, which we
 # need because __git_ps1 will return colors.  See "prompt" sourced file.
@@ -370,10 +406,14 @@ esac
 printf '%s\0' "${precmd_functions[@]}" | grep -Fzq --line-regexp '_prompt_bash_set' || precmd_functions+=(_prompt_bash_set)
 
 [[ ${BLE_VERSION:-} ]] && ble-attach
+_profile_mark "ble-attach"
 
 
 # lean-ctx shell hook
 [ "$BWRAPPED" ] && [ -f "$HOME/.lean-ctx/shell-hook.bash" ] && . "$HOME/.lean-ctx/shell-hook.bash"
+_profile_mark "lean-ctx hook"
+
+_profile_mark "bashrc done"
 
 ##############################################################
 ###############  Comments only below here  ###################
