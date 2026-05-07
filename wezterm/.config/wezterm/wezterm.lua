@@ -110,6 +110,7 @@ config.exit_behavior = "CloseOnCleanExit"  -- Use 'Hold' to not close
 -- config.font = wezterm.font({ family = 'Iosevka Term SS06', stretch = 'UltraCondensed'})
 -- config.font = wezterm.font({ family = 'Iosevka SS06', stretch = 'UltraCondensed'})
 config.font_size = 13.8
+config.bold_brightens_ansi_colors = 'BrightAndBold'
 config.warn_about_missing_glyphs = true
 -- config.freetype_load_flags = "DEFAULT"  -- Set DEFAULT even with DPI > 100. xdpyinfo | grep resolution  svelte was 96 x 96
 config.freetype_load_target = 'Light' -- https://wezfurlong.org/wezterm/config/lua/config/freetype_load_target.html
@@ -150,11 +151,13 @@ config.font_rules = {
 
   { -- Bold
     intensity = 'Bold',
+    -- https://github.com/Wilfred/difftastic/issues/497
     italic = false,
     font = wezterm.font( {
       family='Monaspace Krypton',
+      -- Weights: https://wezterm.org/config/lua/wezterm/font.html
       -- weight='ExtraBold',
-      weight='DemiBold',
+      weight='ExtraBlack',
       })
   },
 
