@@ -760,6 +760,11 @@
   colorMoved = dimmed_zebra  # May need to turn off for delta diff viewer
   # colorMovedWS https://git-scm.com/docs/git-diff#Documentation/git-diff.txt---color-moved-wsltmodesgt
   colorMovedWS = ignore-space-change
+
+  # Avoid with:  git diff --no-ext-diff
+  external = $HOME/bin/difft-with-fallback  # ~/bin/diff: tries difft, falls back to diff
+  # external = "if command -v difft 2>/dev/null; then difft \"$@\"; else diff \"$@\"; fi"
+
   indentHeuristic = true # New default from v2.14, see https://github.com/blog/2188-git-2-9-has-been-released
   interHunkContext = 2
   ; pager = "echo $PATH && { command -v diff-hi &>/dev/null && diff-hi || less -FLRX --tabs=4; }"  # Braces keep STDIN consistent
@@ -768,7 +773,8 @@
   # pager = "faketty tee $HOME/tmp/diff1 | diff-so-fancy --patch 2>&1 | tee $HOME/tmp/diff2"
   ; pager = delta
   renames = copies  # detect both copies and renames
-  tool = vimdiff
+  # tool = vimdiff
+  tool = difftastic
   wsErrorHighlight = old,new,context
 
   # https://git-scm.com/docs/gitattributes
@@ -793,8 +799,13 @@
     command = git-nbdiffdriver diff
 
 [difftool]
-  prompt = true # Use alias for no-prompt
+  prompt = true # Ask 'are you sure' each time. Use alias for no-prompt
   trustExitCode = true # true by default, :cq in vim to exit non-zero
+
+  [difftool "difftastic"]
+    # See `man git-difftool` for a description of MERGED, LOCAL and REMOTE.
+    cmd = difft "$MERGED" "$LOCAL" "abcdef1" "100644" "$REMOTE" "abcdef2" "100644"
+
   [difftool "nbdime"]
     cmd = git-nbdifftool diff \"$LOCAL\" \"$REMOTE\" \"$BASE\"
 
