@@ -208,6 +208,32 @@ expand_word_under_cursor() {
     CURSOR=$(( start_index + ${#new_word} ))
   fi
 }
+expand_word_under_cursor() {
+  local expansion_flag="$1"
+
+  # If cursor is on whitespace, move it back to previous word
+  if [[ "${BUFFER[CURSOR]}" == [[:space:]] && $CURSOR -gt 0 ]]; then
+    (( CURSOR-- ))
+    while [[ $CURSOR -gt 0 && "${BUFFER[CURSOR]}" == [[:space:]] ]]; do
+      (( CURSOR-- ))
+    done
+  fi
+
+  # Now use LBUFFER approach
+  local -a words=("${(z)LBUFFER}")
+  [[ ${#words} -eq 0 ]] && return
+
+  local word="${words[-1]}"
+  local expansion_expression='${word'"$expansion_flag"'}'
+  local new_word=${(e)expansion_expression}
+
+  # Find where last word starts in LBUFFER
+  local word_start_pos=$(( ${#LBUFFER} - ${#word} ))
+
+  # Rebuild
+  BUFFER="${LBUFFER:0:$word_start_pos}${new_word}${RBUFFER}"
+  CURSOR=$(( word_start_pos + ${#new_word} ))
+}
 
 # ----------------------------------------------------------------------
 # Example widgets that use the helper function

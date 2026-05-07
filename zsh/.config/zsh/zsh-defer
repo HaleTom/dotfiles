@@ -1,0 +1,6 @@
+28   │  # Run some commands asynchronously for faster startup
+  29   │ -zsh-defer -12m __zinit_deferred  # -12 enables STDOUT, STDERR output, -m runs precmd hooks (for elapsed time)
+  30   │ +# -t1 delays 1 second to allow for the Turbo zicompinit to run
+  31   │ +# -12 enables STDOUT, STDERR output
+  32   │ +# -m runs precmd hooks (for elapsed time)
+  33   │ +zsh-defer -t1 -12m __zinit_deferred

@@ -1,0 +1,361 @@
+#!/bin/bash
+#      ^----- get shellcheck hints based on bash
+# https://github.com/koalaman/shellcheck/issues/809
+#
+# shellcheck disable=SC1090 # sourced files with variables
+
+
+# Zinit
+# Wiki:    https://zdharma-continuum.github.io/zinit/wiki/
+# Github:  https://github.com/zdharma-continuum/zinit
+#
+# Debug:   https://github.com/zdharma-continuum/zinit#tracking-of-the-active-session
+
+# Source Zinit
+# shellcheck disable=SC1072,1073  # https://github.com/koalaman/shellcheck/issues/1931
+### Added by Zinit's installer
+if [[ ! -f $HOME/.local/share/zinit/zinit.git/zinit.zsh ]]; then
+    print -P "%F{33} %F{220}Installing %F{33}ZDHARMA-CONTINUUM%F{220} Initiative Plugin Manager (%F{33}zdharma-continuum/zinit%F{220})…%f"
+    command mkdir -p "$HOME/.local/share/zinit" && command chmod g-rwX "$HOME/.local/share/zinit"
+    command git clone https://github.com/zdharma-continuum/zinit "$HOME/.local/share/zinit/zinit.git" && \
+        print -P "%F{33} %F{34}Installation successful.%f%b" || \
+        print -P "%F{160} The clone has failed.%f%b"
+fi
+
+source "$HOME/.local/share/zinit/zinit.git/zinit.zsh"
+autoload -Uz _zinit
+(( ${+_comps} )) && _comps[zinit]=_zinit
+
+# Pending issue: (search issue in zshrc also)
+# https://github.com/zdharma-continuum/zinit-module/issues/8
+
+# Profile all "source" commands (but beware of ~/bin/source-file)
+# zinit module build
+# zpmod source-study
+
+
+# Load a few important annexes, without Turbo
+# (this is currently required for annexes)
+zinit light-mode for \
+    zdharma-continuum/zinit-annex-as-monitor \
+    zdharma-continuum/zinit-annex-bin-gem-node \
+    zdharma-continuum/zinit-annex-patch-dl \
+    zdharma-continuum/zinit-annex-rust
+
+### End of Zinit's installer chunk
+
+# Remove Zinit's useless aliases -- 'zi' conflicts with z.lua and zoxide
+unalias zi zini zpl zplg
+
+return;  # bisect end 2
+# Default options for zinit
+_zinit_defaults=(zinit wait light-mode depth'1')
+
+
+# Run these commands asynchronously via null plugin
+__zinit_deferred () {
+  # Load pip completions if pip installed
+  # Alternatively, as suggested in https://web.archive.org/web/20201008014818/https://github.com/zdharma/zinit/issues/68#issuecomment-410531439
+  # shellcheck disable=2154  # $commands not assigned
+  [[ ${commands[pip]} ]] && eval "$(pip completion --zsh)"
+
+  # Source fzf files
+  # Needs to be sourced after zsh-vim-mode to have ^R work
+  if [[ ${commands[fzf]} ]]; then  # fzf is installed
+    source_first "/usr/share/fzf/completion.zsh" "/usr/local/opt/fzf/shell/completion.zsh"
+    source_first "/usr/share/fzf/key-bindings.zsh" "/usr/local/opt/fzf/shell/key-bindings.zsh"
+  fi
+  # Setup my aliases after any turbo-loaded plugins
+  _source_file "$XDG_CONFIG_HOME/bash/aliases"
+
+  unfunction __zinit_deferred  # remove thyself
+  # echo finished running deferred function
+}
+
+
+# Friendly bindings for ZSH's vi mode
+# https://github.com/softmoth/zsh-vim-mode
+MODE_CURSOR_VICMD="green block"
+MODE_CURSOR_VIINS="#20d08a blinking bar"
+MODE_CURSOR_SEARCH="#ff00ff steady underline"
+# How to manage bindkeys in plugins - eg withold the ^R binding
+# https://web.archive.org/web/20201008014818/https://github.com/zdharma/zinit/issues/69
+zinit ice wait depth"1" trackbinds bindmap'^R -> hold'  # ^R conflicts with fzf
+zinit light 'softmoth/zsh-vim-mode'
+
+
+# Don't assume that fzf is installed
+if [[ ${commands[fzf]} ]]; then
+  # fzf-tab
+  # Replace zsh's default completion selection menu with fzf!
+  # https://github.com/Aloxaf/fzf-tab
+  "${_zinit_defaults[@]}" for Aloxaf/fzf-tab
+  zstyle ':fzf-tab:complete:_zlua:*' query-string input
+  ${commands[exa]} && zstyle ':fzf-tab:complete:cd:*' extra-opts --preview=$extract'exa -1 --color=always ${~ctxt[hpre]}$in'
+  zstyle ':fzf-tab:complete:kill:argument-rest' extra-opts --preview=$extract'ps --pid=$in[(w)1] -o cmd --no-headers -w -w' --preview-window=down:3:wrap
+fi
+
+
+
+# zinit ice blockf atpull'zinit creinstall -q .' \
+#   atinit"
+#     zstyle ':completion:*' completer _expand _complete _ignored _approximate
+#     zstyle ':completion:*' matcher-list 'm:{a-z}={A-Z}'
+#     zstyle ':completion:*' menu select=2
+#     zstyle ':completion:*' select-prompt '%SScrolling active: current selection at %p%s'
+#     zstyle ':completion:*:*:*:*:processes' command 'ps -u $USER -o pid,user,comm,cmd -w -w'
+#     zstyle ':completion:*:descriptions' format '-- %d --'
+#     zstyle ':completion:*:processes' command 'ps -au$USER'
+#     zstyle ':completion:complete:*:options' sort false
+# zinit light zsh-users/zsh-completions
+
+
+# Add zsh's missing hooks, and support for user-defined hooks
+# eg zle-line-init of the Special Wigets in `man zshzle`
+# https://github.com/zsh-hooks/zsh-hooks'
+# No 'wait' ice as it's used immediately in keyboard setup
+zinit ice depth"1" # pick"zsh-hooks.plugin.zsh"
+zinit light 'zsh-hooks/zsh-hooks'
+
+
+# Print zsh's hooks
+# https://github.com/agkozak/zhooks
+"${_zinit_defaults[@]}" wait'1' for 'agkozak/zhooks'
+
+
+# Bracketed Paste mode (uses zsh-hooks)
+# My merged PR with small unaddressed comment: https://github.com/robbyrussell/oh-my-zsh/pull/7887
+# zinit snippet 'https://github.com/HaleTom/oh-my-zsh/blob/bracketed-paste/plugins/safe-paste/safe-paste.plugin.zsh'
+zinit ice wait depth"1"
+zinit snippet OMZ::plugins/safe-paste/safe-paste.plugin.zsh
+
+
+# Auto-close and delete matching delimiters in zsh
+# https://github.com/hlissner/zsh-autopair
+"${_zinit_defaults[@]}" atload'unset "AUTOPAIR_PAIRS[ ]"' \
+for hlissner/zsh-autopair
+# By default, when typing '[ x ]' the 2nd space doesn't consume the added space.
+# Maybe something about compatibility with Midnight Commander also?
+
+# Auto suggestions
+# https://github.com/zsh-users/zsh-autosuggestions
+# TODO: New shell: need to press <ENTER> for this to start working
+  # atload"bindkey '^_' autosuggest-execute
+  #        bindkey '^ ' autosuggest-accept" \
+# "${_zinit_defaults[@]}" atload'!_zsh_autosuggest_start' \
+#   atload"bindkey '^_' autosuggest-execute" \
+#   for zsh-users/zsh-autosuggestions
+
+ZSH_AUTOSUGGEST_STRATEGY=match_prev_cmd  # Match on previous history command also
+ZSH_AUTOSUGGEST_BUFFER_MAX_SIZE=20  # Recommended
+ZSH_AUTOSUGGEST_HIGHLIGHT_STYLE='fg=238'
+ZSH_AUTOSUGGEST_USE_ASYNC=1
+
+
+# z.lua - cd faster by learning your habits
+# Upnote and https://github.com/skywind3000/z.lua
+
+export _ZL_CMD=z.lua  # No way to disable aliasing, so set it to something innocuous
+export _ZL_DATA=$XDG_STATE_HOME/zlua
+# export _ZL_EXCLUDE_DIRS="/tmp,/var/tmp"
+export _ZL_ROOT_MARKERS=".git,.svn,.hg,.root,package.json,Cargo.toml"
+# export _ZL_NO_CHECK=1  # Default: 1  Disable path existence check.  Clear with _zlua --perge
+# export _ZL_FZF=fzf  # Default: fzf
+export _ZL_HYPHEN=1  # Treat a hyphen as a normal character (in lua regex means 0 or more repetitions)
+
+# Use z.lua, fall back to cd   https://github.com/skywind3000/z.lua/wiki/FAQ#how-to-use-z-as-cd-
+function z() {
+  local old_pwd=$PWD
+  local cmd_cmd=(builtin cd)
+  if [[ $1 == -* ]]; then  # Use actual cd if wanting to use arguments
+    _zlua "$@"
+  else
+    "${cmd_cmd[@]}" "$@" 2> /dev/null || _zlua "$@"
+    # [[ $PWD != "$old_pwd" ]] || { echo "Directory not changed" >&2; return 1; }
+    # Run cd again to generate an appropriate error message
+    [[ $PWD != "$old_pwd" ]] || "${cmd_cmd[@]}" "$@"
+  fi
+}
+
+return;  # bisect end 2
+
+# Only if fzf is installed
+[[ ${commands[fzf]} ]] && function zi() {
+  local dir
+  dir=$(_zlua -l "$@" | fzf --nth 2.. --reverse --inline-info --tac +s -e --height 35%)
+  # Replace the following with -s after: https://github.com/skywind3000/z.lua/issues/226
+  dir=$(sed -E 's/^[[:digit:]]+[[:blank:]]+([[:print:]]+.*)$/\1/' <<< "$dir")  # Strip <number><whitespace>
+  builtin cd "$dir" || return 1
+}
+
+
+alias zr='_zlua -r'      # cd to highest ranked by access (not frecent)  https://github.com/skywind3000/z.lua/?tab=readme-ov-file#aging
+alias zb='_zlua -b'      # cd to parent directory
+alias zz='_zlua -c'      # Restrict matches to subdirs of $PWD
+alias zf='_zlua -I'      # Use $_ZL_FZF to select in multiple matches
+# TODO keep zi function above?
+# alias zi='_zlua -i'      # cd with interactive selection -- same as `z -I` with `--init fzf` (better interface)
+alias zh='_zlua -I -t .' # List most recently accessed dirs
+alias zx='_zlua -x'      # Remove path from history
+alias ze='_zlua -e'      # Echo without frecency. Don't chdir
+alias zl='_zlua -l'      # List matches instead of cd
+alias zbf='_zlua -b -I'  # Pick parents from list
+alias zcf='_zlua -c -I'  # Pick children from list
+
+# shellcheck disable=SC2016  # Expressions don't expand in single quotes, use double quotes for that.
+zinit wait lucid for \
+  atload'eval "$(lua ${ZINIT[PLUGINS_DIR]}/skywind3000---z.lua/z.lua --init zsh enhanced once)"' \
+  skywind3000/z.lua
+# https://github.com/skywind3000/z.lua/blob/master/z.lua.plugin.zsh
+
+
+# Reminds you to use existing aliases for commands you just typed
+# https://github.com/MichaelAquilina/zsh-you-should-use
+# zinit ice wait'0' load'[[ ! -v ps1 ]]' unload'[[ -v ps1 ]]'  # Doesn't work
+zinit ice wait depth"1"
+zinit load 'MichaelAquilina/zsh-you-should-use'
+
+
+# Emoji completion on the command line
+# https://github.com/b4b4r07/emoji-cli
+# If ever emoji.js needs to be updated:  https://github.com/b4b4r07/emoji-cli/issues/15
+EMOJI_CLI_KEYBIND='^o'  # Default is ^S
+EMOJI_CLI_USE_EMOJI=1   # Insert the emoji itself, not the :explanation:
+EMOJI_CLI_FILTER='fzf-tmux -d 30%:fzf:peco:percol'  # fzf --min-height default is 10
+zinit ice wait depth"1"
+zinit light 'b4b4r07/emoji-cli'
+
+
+# A collection of LS_COLORS definitions; needs your contribution!
+# https://github.com/trapd00r/LS_COLORS
+# https://zdharma-continuum.github.io/zinit/wiki/LS_COLORS-explanation/
+# I'm ignoring creating .zsh version - use the supplied .sh version
+zinit ice wait as'null' src'lscolors.sh' compile'*.sh' \
+  atload'zstyle ":completion:*" list-colors "${(s.:.)LS_COLORS}"'
+zinit light trapd00r/LS_COLORS
+
+
+# k is the new l, yo
+# https://github.com/supercrabtree/k
+# zinit ice wait'[[ -n ${ZLAST_COMMANDS[(r)k*]} ]]' pick'k.sh'
+zinit ice wait depth"1" pick'k.sh'
+zinit light supercrabtree/k
+
+
+# zsh-defer - allow running commands after shell loads
+# https://github.com/romkatv/zsh-defer
+# No "wait" ice as it's used immediately below
+zinit ice depth"1"
+zinit light romkatv/zsh-defer
+
+# Run some commands asynchronously for faster startup
+# -t1 delays 1 second to allow for the Turbo zicompinit to run
+# -12 enables STDOUT, STDERR output
+# -m runs precmd hooks (for elapsed time)
+# zsh-defer -t1 -12m __zinit_deferred
+
+
+# Autocomplete for Zsh
+# https://github.com/marlonrichert/zsh-autocomplete
+# Test this is working: wemux <space>
+# But this still hangs:
+# zsh-defer -a zinit depth'1' light-mode blockf atpull'zinit creinstall -q .' \
+"${_zinit_defaults[@]}" blockf atpull'zinit creinstall -q .' \
+  for 'marlonrichert/zsh-autocomplete'
+# If warnings about widgets:
+# atinit"zle -N menu-search; zle -N recent-paths" \
+# Or just manually run zinit cuninstall; zinit creinstall marlonrichert/zsh-autocomplete
+
+
+
+# Additional completion definitions for Zsh
+# https://github.com/zsh-users/zsh-completions
+# Have zinit manage completions  # https://github.com/zdharma-continuum/zinit#completions
+# zsh-defer -a zinit blockf depth"1" light-mode for 'zsh-users/zsh-completions'
+"${_zinit_defaults[@]}" blockf completions for 'zsh-users/zsh-completions'
+
+# Syntax highlighting should be the last plugin
+# Optimized and extended zsh-syntax-highlighting
+# https://github.com/zdharma-continuum/fast-syntax-highlighting
+FAST_THEME_NAME=free  # From `fast-theme -l`. `fast-theme -t <theme>` to test
+# TODO: is compinit working properly?  "$_zcompcache_dir" is empty but "$XDG_DATA_HOME"/zinit/completions populated
+"${_zinit_defaults[@]}" atinit"zicompinit; zicdreplay  # Executed before atload" \
+  atload"[[ current_theme.zsh -nt themes/$FAST_THEME_NAME.ini ]] || fast-theme $FAST_THEME_NAME > /dev/null" \
+  atload'FAST_HIGHLIGHT[chroma-man]=  # Prevent horrible purple background' \
+  atclone'(){local f;cd -q →*;for f (*~*.zwc){zcompile -Uz -- ${f}};}' atpull'%atclone  # compile chroma directory' \
+  compile'.*fast*~*.zwc' nocompletions \
+  for 'zdharma-continuum/fast-syntax-highlighting'
+
+typeset -gA FAST_HIGHLIGHT_STYLES FAST_HIGHLIGHT
+# Customise colours of theme set via fast-theme  https://github.com/zdharma/fast-syntax-highlighting/issues/42
+# Available options in $XDG_CONFIG_HOME/zsh/.zinit/plugins/zdharma---fast-syntax-highlighting/current_theme.zsh
+FAST_HIGHLIGHT[use_brackets]=1
+FAST_HIGHLIGHT_STYLES[${FAST_THEME_NAME}unknown-token]="fg=196"  # bright red
+FAST_HIGHLIGHT_STYLES[${FAST_THEME_NAME}alias]='fg=177'  # lavender
+FAST_HIGHLIGHT_STYLES[${FAST_THEME_NAME}reserved-word]='fg=214'  # orange
+FAST_HIGHLIGHT_STYLES[${FAST_THEME_NAME}suffix-alias]='fg=cyan'  # cyan
+FAST_HIGHLIGHT_STYLES[${FAST_THEME_NAME}builtin]='fg=148'  # leaf green
+FAST_HIGHLIGHT_STYLES[${FAST_THEME_NAME}function]='fg=117'  # cyan
+FAST_HIGHLIGHT_STYLES[${FAST_THEME_NAME}command]='fg=180'  # grey tinged brown
+FAST_HIGHLIGHT_STYLES[${FAST_THEME_NAME}precommand]='fg=255'  # white
+FAST_HIGHLIGHT_STYLES[${FAST_THEME_NAME}assign]='fg=219'  # pink
+FAST_HIGHLIGHT_STYLES[${FAST_THEME_NAME}paired-bracket]='bg:green'
+FAST_HIGHLIGHT_STYLES[${FAST_THEME_NAME}bracket-level-1]='fg=green,bold'
+FAST_HIGHLIGHT_STYLES[${FAST_THEME_NAME}bracket-level-2]='fg=yellow,bold'
+FAST_HIGHLIGHT_STYLES[${FAST_THEME_NAME}bracket-level-3]='fg=red,bold'
+# TODO:
+# : ${FAST_HIGHLIGHT_STYLES[freepath]:=fg=166}
+# : ${FAST_HIGHLIGHT_STYLES[freepath_pathseparator]:=}
+# : ${FAST_HIGHLIGHT_STYLES[freeglobbing]:=fg=112}
+# : ${FAST_HIGHLIGHT_STYLES[freehistory-expansion]:=fg=blue,bold}
+# : ${FAST_HIGHLIGHT_STYLES[freesingle-hyphen-option]:=fg=110}
+# : ${FAST_HIGHLIGHT_STYLES[freedouble-hyphen-option]:=fg=110}
+# : ${FAST_HIGHLIGHT_STYLES[freeback-quoted-argument]:=none}
+# : ${FAST_HIGHLIGHT_STYLES[freesingle-quoted-argument]:=fg=150}
+# : ${FAST_HIGHLIGHT_STYLES[freedouble-quoted-argument]:=fg=150}
+# : ${FAST_HIGHLIGHT_STYLES[freedollar-quoted-argument]:=fg=150}
+# : ${FAST_HIGHLIGHT_STYLES[freeback-or-dollar-double-quoted-argument]:=fg=110}
+# : ${FAST_HIGHLIGHT_STYLES[freeback-dollar-quoted-argument]:=fg=110}
+
+
+# Syntax highlighting should be the last plugin loaded
+unset _zinit_defaults
+return
+
+
+##
+## Null code and comments only beyond here
+##
+
+# # zsh syntax highlighting
+# # https://github.com/zsh-users/zsh-syntax-highlighting
+# # Must be at end, after any widgets, any 'zle -N', and compinit
+# zinit light 'zsh-users/zsh-syntax-highlighting'
+# ZSH_HIGHLIGHT_HIGHLIGHTERS=(main brackets pattern regexp root)
+# typeset -A ZSH_HIGHLIGHT_STYLES
+# ZSH_HIGHLIGHT_STYLES[alias]='fg=magenta,bold'
+# ZSH_HIGHLIGHT_STYLES[arg0]='fg=blue'
+# ZSH_HIGHLIGHT_STYLES[suffix-alias]='fg=blue,underline'
+# ZSH_HIGHLIGHT_STYLES[precommand]='fg=green'
+# ZSH_HIGHLIGHT_STYLES[path]='fg=cyan'
+# ZSH_HIGHLIGHT_STYLES[root]='bg=red'
+# ZSH_HIGHLIGHT_STYLES[bracket-level-1]='fg=green,bold'
+# ZSH_HIGHLIGHT_STYLES[bracket-level-2]='fg=yellow,bold'
+# ZSH_HIGHLIGHT_STYLES[bracket-level-3]='fg=red,bold'
+# ZSH_HIGHLIGHT_STYLES[bracket-level-4]='fg=magenta,bold'
+# # These aren't working
+# ZSH_HIGHLIGHT_PATTERNS+=('foo' 'fg=white,bold,bg=red')
+# ZSH_HIGHLIGHT_REGEXP+=('\bsudo\b' 'fg=white,bold,bg=red')
+# # fg=, bg=, bold, standout, underline none, black, red, green, yellow, blue, magenta, cyan and white
+
+# For shell-check to see variables used
+# shellcheck disable=SC2128  # Arrays without indexing
+# shellcheck disable=SC2317  # Command appears to be unreachable
+cat <<END > /dev/null
+$ZSH_AUTOSUGGEST_BUFFER_MAX_SIZE $ZSH_AUTOSUGGEST_USE_ASYNC
+$ZSH_AUTOSUGGEST_STRATEGY $ZSH_HIGHLIGHT_HIGHLIGHTERS $ZSH_HIGHLIGHT_STYLES
+$ZSH_HIGHLIGHT_PATTERNS $ZSH_HIGHLIGHT_REGEXP $ZSH_AUTOSUGGEST_HIGHLIGHT_STYLE
+$FAST_HIGHLIGHT_STYLES $MODE_CURSOR_VICMD $MODE_CURSOR_VIINS
+$MODE_CURSOR_SEARCH $FAST_HIGHLIGHT $ZINIT $EMOJI_CLI_KEYBIND
+$EMOJI_CLI_USE_EMOJI $EMOJI_CLI_FILTER
+END
