@@ -924,4 +924,11 @@
   # https://git-scm.com/docs/git-config#git-config-versionsortprereleaseSuffixdeprecated
   prereleaseSuffix = "-"  # Have 2.0-rc1 be earlier than 2.0
 
+[credential "https://github.com"]
+	helper =
+	helper = !/usr/bin/gh auth git-credential
+[credential "https://gist.github.com"]
+	helper =
+	helper = !/usr/bin/gh auth git-credential
+
 # vim: ts=2 sw=2 sts=2 et:
