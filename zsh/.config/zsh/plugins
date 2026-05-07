@@ -53,6 +53,51 @@ zinit light-mode for \
 # Default options for zinit
 _zinit_defaults=(zinit wait light-mode depth'1')
 
+# Wrap zinit ice calls to validate
+zinit_ice_validated() {
+    local -a valid
+    valid=( ${(s:|:)ZINIT[ice-list]} ${(s:|:)ZINIT[nval-ice-list]} )
+
+    # Parse each argument token name (strip quoted value)
+    local arg
+    for arg in "$@"; do
+        local ice_name="${arg%%['\"\`]*}"  # strip value part
+        ice_name="${ice_name%%=*}"
+        [[ -z $ice_name ]] && continue
+        if (( ! ${valid[(I)$ice_name]} )); then
+            print -P "%F{red}⚠ zinit: unknown ice modifier: '${ice_name}'%f" >&2
+        fi
+    done
+    zinit ice "$@"
+}
+
+# Place this block after zinit is loaded in .zshrc
+# Wrap zinit function in-place using zsh's function copy trick
+functions[.zinit-unwrapped]=$functions[zinit]
+
+zinit() {
+    # Run normally first — for ice, this populates ZINIT_ICE
+    .zinit-unwrapped "$@"
+
+    # Only validate after `zinit ice` calls
+    [[ "$1" != ice ]] && return
+
+    local -a valid internal
+    valid=( ${(s:|:)ZINIT[ice-list]} ${(s:|:)ZINIT[nval-ice-list]} )
+    internal=( 0 teleid )          # zinit-internal keys, never user-authored
+
+    local key
+    for key in ${(k)ZINIT_ICE}; do
+        (( ${internal[(I)$key]} )) && continue
+        (( ! ${valid[(I)$key]} )) && \
+            print -P "%F{red}⚠ zinit ice: unknown modifier: '${key}'%f" >&2
+    done
+}
+
+zi () {
+  zinit "${_zinit_defaults[@]:1}" "$@"
+}
+
 
 # Run these commands asynchronously via null plugin
 __zinit_deferred () {
