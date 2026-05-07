@@ -914,10 +914,10 @@
   allowFilter = true
 
 [url "ssh://aur@aur.archlinux.org"]
-  pushInsteadOf = "https://aur.archlinux.org"
+  ; pushInsteadOf = "https://aur.archlinux.org"
 
 [url "ssh://git@github.com"]
-  pushInsteadOf = "https://github.com"
+  ; pushInsteadOf = "https://github.com"
 
 [versionsort]
   # prereleaseSuffix is deprecated in favour of suffix, but used for compatibility.
