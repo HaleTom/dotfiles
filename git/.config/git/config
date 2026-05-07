@@ -736,12 +736,12 @@
 [delta]
     features = line-numbers decorations
     inspect-raw-lines = true  # default: true which support git's --color-moved
-    minus-color = "#600000"
-    minus-style = syntax "#900000"
+    minus-color = "#700000"
+    minus-style = syntax "#A00000"
     minus-style = syntax bold auto
     navigate = true
-    plus-color = "#005000"
-    plus-style = syntax "#009000"
+    plus-color = "#007000"
+    plus-style = syntax "#00C000"
     plus-style = syntax bold auto
     side-by-side = false
     syntax-theme = Monokai Extended
