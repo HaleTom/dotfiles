@@ -1,0 +1,8 @@
+# Blame
+# https://www.perplexity.ai/search/05c24947-5a83-44d2-b3d6-0901ad751e10
+customCommands:
+  - key: "B"
+    context: "files"
+    command: "tig blame -- {{.SelectedFile.Name}}"
+    description: "Blame file via tig"
+    output: terminal
