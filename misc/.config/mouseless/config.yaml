@@ -2,7 +2,11 @@
 # https://github.com/jbensmann/mouseless/blob/main/example_configs/config_full.yaml
 
 # Reload config: <space>+z
-# Debug: sc_u p mouseless; mouseless -d
+
+# Debug:
+# sc_u p mouseless && mouseless --debug | grep -v 'level=debug'
+# sc_u dr && sc_u r mouseless && sleep 3 && jc --user --since '-3s' -u mouseless.service
+# jc --user --since '-1m' -u mouseless.service
 
 
 ###################
@@ -40,7 +44,7 @@ layers:
     passThrough: true
     bindings:
 
-      tab: tap-hold tab ; toggle-layer mouse ; 200 # when tab is held and another key pressed, activate mouse layer
+      # tab: tap-hold tab ; toggle-layer mouse ; 200 # when tab is held and another key pressed, activate mouse layer
 
       # https://github.com/jbensmann/mouseless/issues/90
       # d+f: layer mouse
@@ -56,25 +60,33 @@ layers:
       space: tap-hold space ; toggle-layer cursor ; 200
 
       # Work around Alt-Tab being "eaten" by initial tab binding
-      leftalt: tap-hold leftalt ; leftalt; 200
+      # leftalt: tap-hold leftalt ; leftalt; 200
 
   # Cursor movement
   - name: cursor
     passThrough: true
     bindings:
-      k: up
-      h: left
-      j: down
+      # Movement - WASD but right hand:
+      i: up
+      j: left
+      k: down
       l: right
-      i: home
-      o: end
+      h: home
+      semicolon: end
 
-      f: leftshift
-      d: leftctrl
+      # Modifiers
+      # Better, but no finger memory
+      # f: leftshift
+      # d: leftctrl
+      # s: leftalt
+      # a: leftshift
+
+      f: leftctrl
+      d: leftshift
       s: leftalt
-      a: left
+      a: leftmeta  # Super, or Windows key
 
-
+      # Copy / paste
       v: leftctrl+v  # paste
       c: leftctrl+c  # copy
       x: leftctrl+x  # cut
@@ -96,6 +108,7 @@ layers:
       k: move  0  1
       i: move  0 -1
       p: scroll up
+
       # Buttons
       n: scroll down
       f: button left
@@ -105,9 +118,10 @@ layers:
       # Speed modifiers
       leftalt: speed 4
       space: speed 2
-      w: speed 2.5  # Pressing a, w and j or l together don't work well on Logitech K380 keyboard
-      r: speed 2.5
-      v: speed 2.5
-      e: speed 0.3
-
-      z: reload-config
+      # w: speed 2.5
+# # Pressing a, w and j or l together don't work well on Logitech K380 keyboard
+#       r: speed 2.5
+#       v: speed 2.5
+#       e: speed 0.3
+#
+#       z: reload-config

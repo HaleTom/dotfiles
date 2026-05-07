@@ -16,4 +16,5 @@ logs-dir=${XDG_STATE_HOME}/npm/logs
 # tmp=${XDG_RUNTIME_DIR}/npm
 
 # https://docs.npmjs.com/misc/config#link
-link
+link=true
+fund=false

@@ -67,12 +67,122 @@ redactions = [
 # https://github.com/jdx/mise/discussions/4345
 idiomatic_version_file_enable_tools = []
 
+# Shell variable expansion
+# https://mise.jdx.dev/environments/#shell-style-variable-expansion
+# Will become default in 2026.7.0 release
+env_shell_expand = true
+experimental = true
+
 [tools]
 rust = "latest"
 
 [env]
 MISE_ENV_DIR = "{{env.HOME}}/etc/secure/env/"
 
+# Remove the above??
+[vars]
+keys = "{{env.HOME}}/etc/secure/env/"
+
+##########
+# Tasks
+##########
+
+# `run =` semantics
+# Command after `sh -c -o errexit`  # MISE_DEBUG=1
+# Command will have properly-quoted command-line arguments appended to them
+# Example:  run = '''shell-quote 'opencode' "$@"  '''
+
+# _.file
+# ~~~~~~
+# Missing files are silently ignored at 2026-04-13.  Not sure about source.
+
+# Claude Code
+[tasks.claude]
+run = "/usr/bin/claude"
+# run = "/bin/bash"
+
+[tasks.claude.env]
+_.file = "{{env.MISE_ENV_DIR}}/LITELLM_MASTER_KEY"
+ANTHROPIC_BASE_URL="http://localhost:4000"
+ANTHROPIC_AUTH_TOKEN = "{{env.LITELLM_MASTER_KEY}}"
+CLAUDE_CONFIG_DIR = "{{env.HOME}}/config/claude/"
+
+
+# LiteLLM Server
+[tasks.litellm]
+run = '''/bin/bash -xc -- "/usr/bin/litellm --config ~/.config/litellm/\"${LITELLM_CONFIG%.yaml}\".yaml --port 4000 --host 127.0.0.1 --detailed_debug"'''
+
+[tasks.litellm.env]
+LITELLM_CONFIG = "claude-baseten"
+LITELLM_PROXY_URL = "http://localhost:4000"
+_.file = [
+  '{{vars.keys}}/LITELLM_MASTER_KEY',
+  '{{vars.keys}}/NVIDIA_NIM_API_KEY',
+  '{{vars.keys}}/BASETEN_GLM5_KEY',
+]
+
+
+# LiteLLM Proxy
+[tasks.litellm-proxy]
+run="/usr/bin/litellm-proxy"
+
+[tasks.litellm-proxy.env]
+_.file = "{{env.MISE_ENV_DIR}}/LITELLM_MASTER_KEY"
+LITELLM_PROXY_API_KEY = "{{env.LITELLM_MASTER_KEY}}"
+LITELLM_PROXY_URL = "http://localhost:4000"
+
+[tasks.test]
+run = '''set | grep TEST'''
+
+[tasks.test.env]
+  _.file = [
+    '/tmp/test.env'
+  ]
+  TEST_explicit='loaded'
+
+
+[tasks.aicode]
+# run = '''/bin/bash -c -- '{{env.HOME}}/bin/opencode "$@"' '''
+# run = '''set | grep -E 'KEY|TOKEN|API';  "$@" '''
+run = '''set | grep -E 'KEY|TOKEN|API';  '''
+# run = '''mise env'''
+quiet = true  # Suppress mise's extra output.  https://mise.jdx.dev/tasks/task-configuration.html#quiet
+raw = true  # Don't redact variables or mess with terminal
+
+[tasks.aicode.env]
+_.file = [
+  '{{vars.keys}}/GEMINI_API_KEY',
+  '{{vars.keys}}/GITHUB_PAT',
+  '{{vars.keys}}/KILOCODE_API_KEY',
+  '{{vars.keys}}/LINKUP_API_KEY',
+  '{{vars.keys}}/NEURALWATT_API_KEY',
+  '{{vars.keys}}/OPENADAPTER_API_KEY',
+  '{{vars.keys}}/OPENCODE_API_KEY',
+  '{{vars.keys}}/OLLAMA_API_KEY',
+  '{{vars.keys}}/PERPLEXITY_API_KEY',
+  '{{vars.keys}}/TAVILY_API_KEY-Coding',
+  ## TODO FIXME: delete after PAT working:
+  '{{vars.keys}}/GH_CLASSIC_TMP_KEY',
+]
+
+# tmuxai
+[tasks.tmuxai]
+run="/usr/bin/tmuxai"
+# run="bash"  # debug env
+
+[tasks.tmuxai.env]
+_.file = [
+    "{{vars.keys}}/GEMINI_API_KEY",
+    "{{env.MISE_ENV_DIR}}/LITELLM_MASTER_KEY",
+    "$MISE_ENV_DIR/OPENROUTER_API_KEY"
+]
+# _.file = "{{env.MISE_ENV_DIR}}/GEMINI_API_KEY"
+# GEMINI_API_KEY        = "{{env.GEMINI_API_KEY}}"
+# LITELLM_MASTER_KEY    = "{{env.LITELLM_MASTER_KEY}}"
+# LITELLM_PROXY_URL     = "http://localhost:4000"
+
 
 # 2025-05-24: Don't remember what this was about:
 # paranoid = true # awaiting issue fix
+
+# vim: ts=2 sw=2 et
