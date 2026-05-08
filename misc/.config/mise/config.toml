@@ -148,6 +148,7 @@ raw = true  # Don't redact variables or mess with terminal
 
 [tasks.aicode.env]
 _.file = [
+  '{{vars.keys}}/COMMANDCODE_API_KEY',
   '{{vars.keys}}/GEMINI_API_KEY',
   '{{vars.keys}}/GITHUB_PAT',
   '{{vars.keys}}/KILOCODE_API_KEY',
