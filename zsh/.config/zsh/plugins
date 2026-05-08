@@ -345,7 +345,7 @@ zinit ice depth"1"
 zinit light romkatv/zsh-defer
 
 # Run some commands asynchronously for faster startup
-# -t1 delays 1 second to allow for the Turbo zicompinit to run
+# -t1 delays 1 second to allow for Turbo-mode completion loading to finish
 # -12 enables STDOUT, STDERR output
 # -m runs precmd hooks (for elapsed time)
 zsh-defer -t1 -12m __zinit_deferred
@@ -373,13 +373,12 @@ zsh-defer -t1 -12m __zinit_deferred
 # Downloads the pre-compiled binary from GitHub releases (as"program" from"gh-r"),
 # moves the binary to plugin root via atclone/atpull, and activates via z-a-eval.
 # Completion written to ZINIT[COMPLETIONS_DIR] in atclone (avoids compdef glob issue
-# when eval-cached alongside activate). Must be the last plugin (after compinit).
+# when eval-cached alongside activate). Must be the last plugin.
 zinit ice as"program" from"gh-r" \
   atclone'mv zsh-patina-*/zsh-patina . && rm -rf zsh-patina-*/' \
   atclone'./zsh-patina completion > "${ZINIT[COMPLETIONS_DIR]}/_zsh-patina"' \
   atpull'%atclone' \
-  eval"./zsh-patina activate" \
-  atinit"zicompinit; zicdreplay"
+  eval"./zsh-patina activate"
 zinit light michel-kraemer/zsh-patina
 
 # Syntax highlighting should be the last plugin loaded
