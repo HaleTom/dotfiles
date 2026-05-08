@@ -247,7 +247,7 @@ _profile_mark "grc.sh"
 
 # Before prompt
 _ble_sh=/usr/share/blesh/ble.sh
-if [[ $- == *i* && -r "$_ble_sh" ]]; then
+if sh_is_bash && [[ $- == *i* && -r "$_ble_sh" ]]; then
   source "$_ble_sh" --noattach # --noinputrc
 fi
 unset _ble_sh
@@ -407,7 +407,6 @@ printf '%s\0' "${precmd_functions[@]}" | grep -Fzq --line-regexp '_prompt_bash_s
 
 [[ ${BLE_VERSION:-} ]] && ble-attach
 _profile_mark "ble-attach"
-
 
 # lean-ctx shell hook
 [ "$BWRAPPED" ] && [ -f "$HOME/.lean-ctx/shell-hook.bash" ] && . "$HOME/.lean-ctx/shell-hook.bash"
