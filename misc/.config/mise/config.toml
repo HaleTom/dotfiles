@@ -73,9 +73,6 @@ idiomatic_version_file_enable_tools = []
 env_shell_expand = true
 experimental = true
 
-[tools]
-rust = "latest"
-
 [env]
 MISE_ENV_DIR = "{{env.HOME}}/etc/secure/env/"
 
