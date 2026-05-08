@@ -78,6 +78,11 @@ _comp_options+=(globdots)
 # Recommended by: https://github.com/Aloxaf/fzf-tab?tab=readme-ov-file#configure
 # Disable sort when completing `git checkout`
 zstyle ':completion:*:git-checkout:*' sort false
+# Process completion formatting for kill, ps, etc.
+zstyle ':completion:*:*:*:*:processes' command 'ps -u "$USER" -o pid,user,comm,cmd -w -w'
+zstyle ':completion:*:processes' command 'ps -au$USER'
+# Prevent sorting of completion options (e.g., flags)
+zstyle ':completion:complete:*:options' sort false
 # set descriptions format to enable group support
 # NOTE: don't use escape sequences (like '%F{red}%d%f') here, fzf-tab will ignore them
 zstyle ':completion:*:descriptions' format '[%d]'
