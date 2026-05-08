@@ -377,49 +377,19 @@ zsh-defer -t1 -12m __zinit_deferred
 # loaded after highlighting but highlighting says it should be loaded last.
 
 
-# Syntax highlighting should be the last plugin
-# Optimized and extended zsh-syntax-highlighting
-# https://github.com/zdharma-continuum/fast-syntax-highlighting
-FAST_THEME_NAME=free  # From `fast-theme -l`. `fast-theme -t <theme>` to test
-# TODO: is compinit working properly?  "$_zcompcache_dir" is empty but "$XDG_DATA_HOME"/zinit/completions populated
-# shellcheck disable=SC2016  # SC2016 (info): Expressions don't expand in single quotes
-"${_zinit_defaults[@]}" atinit"zicompinit; zicdreplay  # Executed before atload" \
-  atload"[[ current_theme.zsh -nt themes/$FAST_THEME_NAME.ini ]] || fast-theme $FAST_THEME_NAME > /dev/null" \
-  atload'FAST_HIGHLIGHT[chroma-man]=  # Prevent horrible purple background' \
-  atclone'(){local f;cd -q →*;for f (*~*.zwc){zcompile -Uz -- ${f}};}' atpull'%atclone  # compile chroma directory' \
-  compile'.*fast*~*.zwc' nocompletions \
-  for 'zdharma-continuum/fast-syntax-highlighting'
-
-typeset -gA FAST_HIGHLIGHT_STYLES FAST_HIGHLIGHT
-# Customise colours of theme set via fast-theme  https://github.com/zdharma/fast-syntax-highlighting/issues/42
-# Available options in $XDG_CONFIG_HOME/zsh/.zinit/plugins/zdharma---fast-syntax-highlighting/current_theme.zsh
-FAST_HIGHLIGHT[use_brackets]=1
-FAST_HIGHLIGHT_STYLES[${FAST_THEME_NAME}unknown-token]="fg=196"  # bright red
-FAST_HIGHLIGHT_STYLES[${FAST_THEME_NAME}alias]='fg=177'  # lavender
-FAST_HIGHLIGHT_STYLES[${FAST_THEME_NAME}reserved-word]='fg=214'  # orange
-FAST_HIGHLIGHT_STYLES[${FAST_THEME_NAME}suffix-alias]='fg=cyan'  # cyan
-FAST_HIGHLIGHT_STYLES[${FAST_THEME_NAME}builtin]='fg=148'  # leaf green
-FAST_HIGHLIGHT_STYLES[${FAST_THEME_NAME}function]='fg=117'  # cyan
-FAST_HIGHLIGHT_STYLES[${FAST_THEME_NAME}command]='fg=180'  # grey tinged brown
-FAST_HIGHLIGHT_STYLES[${FAST_THEME_NAME}precommand]='fg=255'  # white
-FAST_HIGHLIGHT_STYLES[${FAST_THEME_NAME}assign]='fg=219'  # pink
-FAST_HIGHLIGHT_STYLES[${FAST_THEME_NAME}paired-bracket]='bg:green'
-FAST_HIGHLIGHT_STYLES[${FAST_THEME_NAME}bracket-level-1]='fg=green,bold'
-FAST_HIGHLIGHT_STYLES[${FAST_THEME_NAME}bracket-level-2]='fg=yellow,bold'
-FAST_HIGHLIGHT_STYLES[${FAST_THEME_NAME}bracket-level-3]='fg=red,bold'
-# TODO:
-# : ${FAST_HIGHLIGHT_STYLES[freepath]:=fg=166}
-# : ${FAST_HIGHLIGHT_STYLES[freepath_pathseparator]:=}
-# : ${FAST_HIGHLIGHT_STYLES[freeglobbing]:=fg=112}
-# : ${FAST_HIGHLIGHT_STYLES[freehistory-expansion]:=fg=blue,bold}
-# : ${FAST_HIGHLIGHT_STYLES[freesingle-hyphen-option]:=fg=110}
-# : ${FAST_HIGHLIGHT_STYLES[freedouble-hyphen-option]:=fg=110}
-# : ${FAST_HIGHLIGHT_STYLES[freeback-quoted-argument]:=none}
-# : ${FAST_HIGHLIGHT_STYLES[freesingle-quoted-argument]:=fg=150}
-# : ${FAST_HIGHLIGHT_STYLES[freedouble-quoted-argument]:=fg=150}
-# : ${FAST_HIGHLIGHT_STYLES[freedollar-quoted-argument]:=fg=150}
-# : ${FAST_HIGHLIGHT_STYLES[freeback-or-dollar-double-quoted-argument]:=fg=110}
-# : ${FAST_HIGHLIGHT_STYLES[freeback-dollar-quoted-argument]:=fg=110}
+# zsh-patina — blazingly fast Zsh syntax highlighter (Rust daemon)
+# https://github.com/michel-kraemer/zsh-patina
+# Downloads the pre-compiled binary from GitHub releases (as"program" from"gh-r"),
+# moves the binary to plugin root via atclone/atpull, and activates via z-a-eval.
+# Completion written to ZINIT[COMPLETIONS_DIR] in atclone (avoids compdef glob issue
+# when eval-cached alongside activate). Must be the last plugin (after compinit).
+zinit ice as"program" from"gh-r" \
+  atclone'mv zsh-patina-*/zsh-patina . && rm -rf zsh-patina-*/' \
+  atclone'./zsh-patina completion > "${ZINIT[COMPLETIONS_DIR]}/_zsh-patina"' \
+  atpull'%atclone' \
+  eval"./zsh-patina activate" \
+  atinit"zicompinit; zicdreplay"
+zinit light michel-kraemer/zsh-patina
 
 # Syntax highlighting should be the last plugin loaded
 unset _zinit_defaults
@@ -474,26 +444,71 @@ return
 ## Null code and comments only beyond here
 ##
 
-# # zsh syntax highlighting
+# Syntax highlighting should be the last plugin
+# Replaced by zsh-patina (below) — a fast Rust-based syntax highlighter
+# https://github.com/zdharma-continuum/fast-syntax-highlighting
+# FAST_THEME_NAME=free  # From `fast-theme -l`. `fast-theme -t <theme>` to test
+# # TODO: is compinit working properly?  "$_zcompcache_dir" is empty but "$XDG_DATA_HOME"/zinit/completions populated
+# # shellcheck disable=SC2016  # SC2016 (info): Expressions don't expand in single quotes
+# "${_zinit_defaults[@]}" atinit"zicompinit; zicdreplay  # Executed before atload" \
+#   atload"[[ current_theme.zsh -nt themes/$FAST_THEME_NAME.ini ]] || fast-theme $FAST_THEME_NAME > /dev/null" \
+#   atload'FAST_HIGHLIGHT[chroma-man]=  # Prevent horrible purple background' \
+#   atclone'(){local f;cd -q →*;for f (*~*.zwc){zcompile -Uz -- ${f}};}' atpull'%atclone  # compile chroma directory' \
+#   compile'.*fast*~*.zwc' nocompletions \
+#   for 'zdharma-continuum/fast-syntax-highlighting'
+#
+# typeset -gA FAST_HIGHLIGHT_STYLES FAST_HIGHLIGHT
+# # Customise colours of theme set via fast-theme  https://github.com/zdharma/fast-syntax-highlighting/issues/42
+# # Available options in $XDG_CONFIG_HOME/zsh/.zinit/plugins/zdharma---fast-syntax-highlighting/current_theme.zsh
+# FAST_HIGHLIGHT[use_brackets]=1
+# FAST_HIGHLIGHT_STYLES[${FAST_THEME_NAME}unknown-token]="fg=196"  # bright red
+# FAST_HIGHLIGHT_STYLES[${FAST_THEME_NAME}alias]='fg=177'  # lavender
+# FAST_HIGHLIGHT_STYLES[${FAST_THEME_NAME}reserved-word]='fg=214'  # orange
+# FAST_HIGHLIGHT_STYLES[${FAST_THEME_NAME}suffix-alias]='fg=cyan'  # cyan
+# FAST_HIGHLIGHT_STYLES[${FAST_THEME_NAME}builtin]='fg=148'  # leaf green
+# FAST_HIGHLIGHT_STYLES[${FAST_THEME_NAME}function]='fg=117'  # cyan
+# FAST_HIGHLIGHT_STYLES[${FAST_THEME_NAME}command]='fg=180'  # grey tinged brown
+# FAST_HIGHLIGHT_STYLES[${FAST_THEME_NAME}precommand]='fg=255'  # white
+# FAST_HIGHLIGHT_STYLES[${FAST_THEME_NAME}assign]='fg=219'  # pink
+# FAST_HIGHLIGHT_STYLES[${FAST_THEME_NAME}paired-bracket]='bg:green'
+# FAST_HIGHLIGHT_STYLES[${FAST_THEME_NAME}bracket-level-1]='fg=green,bold'
+# FAST_HIGHLIGHT_STYLES[${FAST_THEME_NAME}bracket-level-2]='fg=yellow,bold'
+# FAST_HIGHLIGHT_STYLES[${FAST_THEME_NAME}bracket-level-3]='fg=red,bold'
+# # TODO:
+# # : ${FAST_HIGHLIGHT_STYLES[freepath]:=fg=166}
+# # : ${FAST_HIGHLIGHT_STYLES[freepath_pathseparator]:=}
+# # : ${FAST_HIGHLIGHT_STYLES[freeglobbing]:=fg=112}
+# # : ${FAST_HIGHLIGHT_STYLES[freehistory-expansion]:=fg=blue,bold}
+# # : ${FAST_HIGHLIGHT_STYLES[freesingle-hyphen-option]:=fg=110}
+# # : ${FAST_HIGHLIGHT_STYLES[freedouble-hyphen-option]:=fg=110}
+# # : ${FAST_HIGHLIGHT_STYLES[freeback-quoted-argument]:=none}
+# # : ${FAST_HIGHLIGHT_STYLES[freesingle-quoted-argument]:=fg=150}
+# # : ${FAST_HIGHLIGHT_STYLES[freedouble-quoted-argument]:=fg=150}
+# # : ${FAST_HIGHLIGHT_STYLES[freedollar-quoted-argument]:=fg=150}
+# # : ${FAST_HIGHLIGHT_STYLES[freeback-or-dollar-double-quoted-argument]:=fg=110}
+# # : ${FAST_HIGHLIGHT_STYLES[freeback-dollar-quoted-argument]:=fg=110}
+
+
+# # zsh syntax highlighting — superseded by zsh-patina (see above)
 # # https://github.com/zsh-users/zsh-syntax-highlighting
 # # Must be at end, after any widgets, any 'zle -N', and compinit
-# zinit light 'zsh-users/zsh-syntax-highlighting'
-# ZSH_HIGHLIGHT_HIGHLIGHTERS=(main brackets pattern regexp root)
-# typeset -A ZSH_HIGHLIGHT_STYLES
-# ZSH_HIGHLIGHT_STYLES[alias]='fg=magenta,bold'
-# ZSH_HIGHLIGHT_STYLES[arg0]='fg=blue'
-# ZSH_HIGHLIGHT_STYLES[suffix-alias]='fg=blue,underline'
-# ZSH_HIGHLIGHT_STYLES[precommand]='fg=green'
-# ZSH_HIGHLIGHT_STYLES[path]='fg=cyan'
-# ZSH_HIGHLIGHT_STYLES[root]='bg=red'
-# ZSH_HIGHLIGHT_STYLES[bracket-level-1]='fg=green,bold'
-# ZSH_HIGHLIGHT_STYLES[bracket-level-2]='fg=yellow,bold'
-# ZSH_HIGHLIGHT_STYLES[bracket-level-3]='fg=red,bold'
-# ZSH_HIGHLIGHT_STYLES[bracket-level-4]='fg=magenta,bold'
-# # These aren't working
-# ZSH_HIGHLIGHT_PATTERNS+=('foo' 'fg=white,bold,bg=red')
-# ZSH_HIGHLIGHT_REGEXP+=('\bsudo\b' 'fg=white,bold,bg=red')
-# # fg=, bg=, bold, standout, underline none, black, red, green, yellow, blue, magenta, cyan and white
+# # zinit light 'zsh-users/zsh-syntax-highlighting'
+# # ZSH_HIGHLIGHT_HIGHLIGHTERS=(main brackets pattern regexp root)
+# # typeset -A ZSH_HIGHLIGHT_STYLES
+# # ZSH_HIGHLIGHT_STYLES[alias]='fg=magenta,bold'
+# # ZSH_HIGHLIGHT_STYLES[arg0]='fg=blue'
+# # ZSH_HIGHLIGHT_STYLES[suffix-alias]='fg=blue,underline'
+# # ZSH_HIGHLIGHT_STYLES[precommand]='fg=green'
+# # ZSH_HIGHLIGHT_STYLES[path]='fg=cyan'
+# # ZSH_HIGHLIGHT_STYLES[root]='bg=red'
+# # ZSH_HIGHLIGHT_STYLES[bracket-level-1]='fg=green,bold'
+# # ZSH_HIGHLIGHT_STYLES[bracket-level-2]='fg=yellow,bold'
+# # ZSH_HIGHLIGHT_STYLES[bracket-level-3]='fg=red,bold'
+# # ZSH_HIGHLIGHT_STYLES[bracket-level-4]='fg=magenta,bold'
+# # # These aren't working
+# # ZSH_HIGHLIGHT_PATTERNS+=('foo' 'fg=white,bold,bg=red')
+# # ZSH_HIGHLIGHT_REGEXP+=('\bsudo\b' 'fg=white,bold,bg=red')
+# # # fg=, bg=, bold, standout, underline none, black, red, green, yellow, blue, magenta, cyan and white
 
 # For shell-check to see variables used
 # shellcheck disable=SC2128  # Arrays without indexing
