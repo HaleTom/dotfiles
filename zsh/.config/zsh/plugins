@@ -291,7 +291,7 @@ HSMW_HIGHLIGHT_STYLES[commandseparator]="fg=white,bg=27"
 
 # shellcheck disable=SC2016  # Expressions don't expand in single quotes, use double quotes for that.
 zinit wait lucid for \
-  atload'eval "$(lua "${ZINIT[PLUGINS_DIR]}/skywind3000---z.lua/z.lua" --init zsh enhanced once fzf)"' \
+  eval"lua ${ZINIT[PLUGINS_DIR]}/skywind3000---z.lua/z.lua --init zsh enhanced once fzf" \
   skywind3000/z.lua
 # https://github.com/skywind3000/z.lua/blob/master/z.lua.plugin.zsh
 
