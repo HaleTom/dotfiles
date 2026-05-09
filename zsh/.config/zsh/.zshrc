@@ -46,7 +46,6 @@ zstyle ':completion:*' cache-path "$_zcompcache_dir"  # Default == .zcompcache i
 # The following lines were added by compinstall
 #
 # zstyle ':completion:*' auto-description 'specify %d'
-# zstyle ':completion:*' expand prefix suffix
 # zstyle ':completion:*' file-sort name
 # zstyle ':completion:*' format 'Completing %d'
 # zstyle ':completion:*' group-name ''
@@ -58,6 +57,9 @@ zstyle ':completion:*' cache-path "$_zcompcache_dir"  # Default == .zcompcache i
 # # zstyle ':completion:*' select-prompt %SScrolling active: current selection at %p (%l)%s
 # zstyle :compinstall filename '/home/ravi/.config/zsh/.zshrc'
 # End of lines added by compinstall
+
+# Universal abbreviated path expansion: /u/b/l → /usr/bin/ls
+zstyle ':completion:*' expand prefix suffix
 
 zstyle ':completion:*' completer _expand _complete _ignored _match _correct _approximate _prefix
 zstyle ':completion:*' insert-unambiguous true
@@ -99,6 +101,7 @@ zstyle ':completion:*' list-colors ${(s.:.)LS_COLORS}
 # --------------------
 # https://zsh.sourceforge.io/Doc/Release/Options.html
 setopt auto_cd  # If a command can’t be executed but is a directory, cd command to that directory.
+setopt complete_in_word                                # Enable completion of incomplete path segments: /u/b/l -> /usr/bin/ls
 setopt extended_glob  # Treat the ‘#’, ‘~’ and ‘^’ characters as part of patterns for filename generation, etc. (An initial unquoted ‘~’ always produces named directory expansion.)
 setopt no_clobber  # ‘>!’ or ‘>|’ must be used to truncate a file
 setopt no_complete_aliases
