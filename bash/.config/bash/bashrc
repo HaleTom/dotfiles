@@ -372,7 +372,7 @@ _profile_mark "fzf"
 
 # Atuin shell history
 _atuin_bin=/usr/bin/atuin
-is_cmd "$_atuin_bin" && _cached_eval "$_atuin_bin" init bash
+[[ "$TERM" != dumb ]] && is_cmd "$_atuin_bin" && _cached_eval "$_atuin_bin" init bash
 unset _atuin_bin
 _profile_mark "atuin init"
 
