@@ -88,8 +88,10 @@ zstyle ':completion:complete:*:options' sort false
 zstyle ':completion:*:descriptions' format '[%d]'
 # set list-colors to enable filename colorizing
 zstyle ':completion:*' list-colors ${(s.:.)LS_COLORS}
-# force zsh not to show completion menu, which allows fzf-tab to capture the unambiguous prefix
-zstyle ':completion:*' menu no
+# fzf-tab needs `menu no`, but only after it has loaded. If we set it here,
+# zsh disables its own completion menu immediately while fzf-tab is still
+# loading asynchronously, leaving ambiguous Tab completions with no chooser UI.
+# Set it from fzf-tab's `atload` hook instead so normal completion works first.
 
 
 # --------------------
@@ -100,8 +102,7 @@ setopt auto_cd  # If a command can’t be executed but is a directory, cd comman
 setopt extended_glob  # Treat the ‘#’, ‘~’ and ‘^’ characters as part of patterns for filename generation, etc. (An initial unquoted ‘~’ always produces named directory expansion.)
 setopt no_clobber  # ‘>!’ or ‘>|’ must be used to truncate a file
 setopt complete_aliases  # Have completion work with `alias ip="colourify ip"`
-setopt no_match  # Print an error, instead of leaving pattern unchanged. Also applies to file expansion of an initial ‘~’ or ‘=’.
-setopt notify  # Report the status of background jobs immediately, rather than waiting until just before printing a prompt.
+setopt no_match  # Print an error, instead of leaving pattern unchanged. Also applies to file expansion of an initial unquoted '~' or '='.
 setopt prompt_subst  # Parameter expansion, command substitution and arithmetic expansion are performed in prompts.
 setopt append_create  # Allow files to be created with >> redirection
 setopt correct  # Prompt to correct spelling mistakes
@@ -255,6 +256,9 @@ source "$ZDOTDIR"/functions-zsh
 # Diagnose:  is it zsh-defer or zinit not checking then resetting the current state of option aliases?
 [[ ! $_NO_SHELL_PLUGINS ]] && builtin source "$ZDOTDIR/plugins"
 
+# Initialise completions -- compinit is called by zinit via zicompinit in
+# zsh-patina's atinit (see plugins file), so compdef works after plugins load.
+
 _source_files <<DOTFILES
     # $ZDOTDIR/plugins  # See above re noalias
     # $XDG_CONFIG_HOME/bash/aliases  # Sourced in plugins: __zsh_deferred
@@ -319,9 +323,12 @@ add-zsh-hook precmd        precmd_zsh_hook     # Stop prompt timer, update promp
 
 # add-zsh-hook preexec       preexec_zsh_hook    #
 
-# Initialise completions -- this is done by zinit at end of ./plugins
-# autoload -Uz compinit  # zplugin will do compinit later
-# compinit  # Uses $ZSH_COMPDUMP cache for faster load.  Default: .zcompdump in $ZDOTDIR else $HOME
+# Initialise completions early so compdef works from shell start.
+# zinit's turbo mode defers compinit (via zicompinit), but that creates a
+# window where compdef is unavailable. Calling compinit directly here closes it.
+# zinit will re-invoke compinit when it processes turbo completions — that's fine,
+# it detects the existing compdump and is fast.
+autoload -Uz compinit && compinit -d "$ZSH_COMPDUMP"
 
 # Used in __zplg_async_run
 # Clear the namespace of bootstrap functions
@@ -344,4 +351,3 @@ $RPS1 $READNULLCMD $ZSH_AUTOSUGGEST_BUFFER_MAX_SIZE $ZSH_AUTOSUGGEST_USE_ASYNC
 $ZSH_HIGHLIGHT_HIGHLIGHTERS $ZSH_HIGHLIGHT_STYLES $ZSH_HIGHLIGHT_PATTERNS
 $ZSH_HIGHLIGHT_REGEXP $ZSH_AUTOSUGGEST_HIGHLIGHT_STYLE $FAST_HIGHLIGHT_STYLES
 END
-

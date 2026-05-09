@@ -154,8 +154,10 @@ for 'zsh-users/zsh-completions'
 if [[ ${commands[fzf]} ]]; then # Don't assume that fzf is installed
   # fzf-tab
   # Replace zsh's default completion selection menu with fzf!
+  # Delay `menu no` until the plugin has loaded; setting it earlier disables
+  # zsh's built-in completion menu during turbo-load startup.
   # https://github.com/Aloxaf/fzf-tab
-  "${_zinit_defaults[@]}" for Aloxaf/fzf-tab
+  "${_zinit_defaults[@]}" atload'zstyle ":completion:*" menu no' for Aloxaf/fzf-tab
 
   # fzf-git.sh -- key bindings for Git objects, powered by fzf
   # https://github.com/junegunn/fzf-git.sh
