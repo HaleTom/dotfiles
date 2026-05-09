@@ -549,9 +549,19 @@ function cdrp {
 export_function cdrp
 
 function cduprp {
+  [[ $# -ne 1  ]] && { echo "$(func_name): Must specify one directory" 2>&1; return 1; }
   cdup "$(realpath "$1")"
 }
 export_function cduprp
+
+# cd to repo root of current directory or a specified directory
+function cdrr {
+  [[ $# -gt 1  ]] && { echo "$(func_name): Must specify one directory, or none (for current repo)" 2>&1; return 1; }
+  local root=${1-$PWD}
+  root=$(git -C "$root" rev-parse --show-toplevel)
+  cd -- "$root" || return 1
+}
+export_function cdrr
 
 # Run a binary from the npm bin directory
 function nbin {
