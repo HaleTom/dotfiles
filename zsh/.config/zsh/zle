@@ -47,10 +47,19 @@ zle -N self-insert url-quote-magic
 # Select keymap `viins' for operations. Also link `viins' to `main' so that it is selected by default
 bindkey -v
 
-# Why aren't these working?
-bindkey -a '^_' undo
-bindkey -a '^Y' redo
-bindkey -a '^Q' push-input  # https://stackoverflow.com/a/11690592/5353461
+# Undo / redo (both vicmd and viins)
+# NOTE: zsh `redo` re-executes the widget rather than restoring buffer state,
+# so redo of backward-kill-word re-kills from the *current* cursor position,
+# producing duplicate text.  This is an upstream zsh limitation.
+# https://www.zsh.org/mla/users/2020/msg00632.html
+bindkey -a '^Z' undo;  bindkey -M viins '^Z' undo
+bindkey -a '^Y' redo;  bindkey -M viins '^Y' redo
+
+# FIXME: With tmuxai or equiv:  doesn't actually work
+# push-input: push current line onto stack, type another command, then pop.
+# Only works in vicmd; in viins ^Q is vi-quoted-insert by default.
+# https://stackoverflow.com/a/11690592/5353461
+bindkey -a '^Q' push-input
 
 # Tested OK below here
 bindkey -a '^K' kill-line
@@ -58,6 +67,9 @@ bindkey -a '\e.' insert-last-word  # Insert $! repeating back through history
 bindkey -a '^[[3~' delete-char # Del key works as expected
 bindkey -a '^[[1;5C' forward-word
 bindkey -a '^[[1;5D' backward-word
+# Ctrl+Backspace: delete one shell-token backward (wezterm sends \e[3;5~ via SendString)
+bindkey -a '^[[3;5~' backward-kill-word
+bindkey -M viins '^[[3;5~' backward-kill-word
 
 # Better searching in command mode
 bindkey -M vicmd '?' history-incremental-search-backward
