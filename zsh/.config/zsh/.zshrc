@@ -101,7 +101,12 @@ zstyle ':completion:*' list-colors ${(s.:.)LS_COLORS}
 setopt auto_cd  # If a command can’t be executed but is a directory, cd command to that directory.
 setopt extended_glob  # Treat the ‘#’, ‘~’ and ‘^’ characters as part of patterns for filename generation, etc. (An initial unquoted ‘~’ always produces named directory expansion.)
 setopt no_clobber  # ‘>!’ or ‘>|’ must be used to truncate a file
-setopt complete_aliases  # Have completion work with `alias ip="colourify ip"`
+setopt no_complete_aliases
+# ↑ backwards: when set, aliases are NOT expanded before completion —
+#   they must be explicitly mapped with compdef. Unsetting restores
+#   the intuitive behaviour where `g=git` inherits git completions.
+#   See ~/code/ai-directives/wiki/zsh-alias-completion.md
+unsetopt complete_aliases
 setopt no_match  # Print an error, instead of leaving pattern unchanged. Also applies to file expansion of an initial unquoted '~' or '='.
 setopt prompt_subst  # Parameter expansion, command substitution and arithmetic expansion are performed in prompts.
 setopt append_create  # Allow files to be created with >> redirection
