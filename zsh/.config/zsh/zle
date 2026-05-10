@@ -26,6 +26,8 @@ bindkey kj vi-cmd-mode
 bindkey '\C-p' history-beginning-search-backward
 bindkey '\C-n' history-beginning-search-forward
 
+# Show help / bindings active
+bindkey '^Xh' _complete_help  # this is the default binding
 
 ## Cycle through history based on characters already typed on the line
 ## https://unix.stackexchange.com/a/285151/143394
