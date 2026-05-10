@@ -185,6 +185,7 @@ if [[ ${commands[fzf]} ]]; then # Don't assume that fzf is installed
   # To disable continuous-trigger for a specific command, use: zstyle ':fzf-tab:*<CMD>*' continuous-trigger ''
   zstyle ':fzf-tab:*' continuous-trigger '/'
   zstyle ':fzf-tab:complete:*' popup-pad 30 0  # for ftb-tmux-popup
+  zstyle ':fzf-tab:*' popup-min-size 50 8      # recommended min size to avoid tiny popups
   zstyle ':fzf-tab:complete:_zlua:*' query-string input
 
   # [[ ${commands[eza]} ]] && zstyle ':fzf-tab:complete:cd:*' extra-opts --preview=$extract'eza -1 --color=always ${~ctxt[hpre]}$in'
