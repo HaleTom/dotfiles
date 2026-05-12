@@ -7,15 +7,16 @@ local act = wezterm.action  -- for binding keys to actions
 local gpus = wezterm.gui.enumerate_gpus()
 local mux = wezterm.mux  -- multiplexer layer: panes, tabs, windows, and workspaces
 
+-- Debug
+-- $XDG_RUNTIME_DIR/wezterm on unix systems,
+-- $HOME/.local/share/wezterm on macOS and Windows systems
+local debug_key_events = true    -- assigned to config.debug_key_events
+local debug_log_level = "config=debug,info"  -- Everything else at info.  Assigned to wezterm.log_level
+
 -- local scheme = wezterm.get_builtin_color_schemes()["nord"]
 -- local keybinds = require 'keybinds'
 -- local utils = require("utils")
 -- require("on")
-
-
--- After restarting WezTerm:
-  -- $HOME/.local/share/wezterm/logs/ (on Linux/macOS)
-  -- %APPDATA%\wezterm\logs\ (on Windows)
 
 --- Config struct documentation
 -- https://wezfurlong.org/wezterm/config/lua/config/index.html
@@ -24,19 +25,22 @@ if wezterm.config_builder then
   -- In newer versions of wezterm, use the config_builder which will
   -- provide error messages on invalid key / values
   config = wezterm.config_builder()
-  print "Using config_builder"
+  wezterm.log_info "Using config_builder"
 else
-  print "Not using config_builder -- old Wezterm version?"
+  wezterm.log_info "Not using config_builder -- old Wezterm version?"
 end
+
+-- Debug
+wezterm.log_level = debug_log_level
+config.debug_key_events = debug_key_events
+-- After restarting WezTerm:
+  -- $HOME/.local/share/wezterm/logs/ (on Linux/macOS)
+  -- %APPDATA%\wezterm\logs\ (on Windows)
 
 -- Config reload
 config.automatically_reload_config = true  -- default; set false to disable
 -- Default keybind:  Ctrl+Shift+R
 -- Command palette:  Ctrl+Shift+P → type reload → Enter
-
--- Debug
-wezterm.log_level = "debug"
--- config.debug_key_events = true  # not sure how to get this working.
 
 -- Set $TERM=wezterm if the terminfo file is accessible
 -- https://wezfurlong.org/wezterm/config/lua/config/term.html
