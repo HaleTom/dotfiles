@@ -4,8 +4,10 @@
 
 local wezterm = require 'wezterm'  -- Pull in the wezterm API
 local act = wezterm.action  -- for binding keys to actions
-local gpus = wezterm.gui.enumerate_gpus()
-local mux = wezterm.mux  -- multiplexer layer: panes, tabs, windows, and workspaces
+-- Unused for now:
+-- local os = require 'os'
+-- local gpus = wezterm.gui.enumerate_gpus()
+-- local mux = wezterm.mux  -- multiplexer layer: panes, tabs, windows, and workspaces
 
 -- Debug
 -- $XDG_RUNTIME_DIR/wezterm on unix systems,
@@ -13,7 +15,6 @@ local mux = wezterm.mux  -- multiplexer layer: panes, tabs, windows, and workspa
 local debug_key_events = true    -- assigned to config.debug_key_events
 local debug_log_level = "config=debug,info"  -- Everything else at info.  Assigned to wezterm.log_level
 
--- local scheme = wezterm.get_builtin_color_schemes()["nord"]
 -- local keybinds = require 'keybinds'
 -- local utils = require("utils")
 -- require("on")
@@ -110,12 +111,52 @@ table.insert(config.hyperlink_rules, {
 --
 -- Miscellaneous
 --
-
 config.enable_scroll_bar=true
 config.hide_tab_bar_if_only_one_tab = true
 config.initial_cols = 140
 config.initial_rows = 40
 config.exit_behavior = "CloseOnCleanExit"  -- Use 'Hold' to not close
+
+--
+-- Appearance
+-- https://wezterm.org/config/appearance.html
+--
+
+-- config.bold_brightens_ansi_colors = false  -- 'BrightAndBold' 'BrightOnly'
+config.bold_brightens_ansi_colors = 'BrightAndBold'
+-- local scheme_path = os.expanduser('/home/ravi/etc/colorscheme-tom-hale-2026-05-12.yml')  -- Use / not ~/$HOME
+-- local colors, metadata = wezterm.color.load_base16_scheme(scheme_path)
+
+-- local colors, metadata = wezterm.color.load_base16_scheme(os.expanduser('$HOME/etc/colorscheme-tom-hale-2026-05-12.yml'))
+-- config.color_schemes = {[metadata.name] = colors}
+-- config.color_scheme = metadata.name
+
+local scheme_basename = wezterm.home_dir .. '/etc/colorscheme-tom-hale-2026-05-12'
+local colors, metadata = wezterm.color.load_scheme(scheme_basename .. ".toml")
+  -- Convert a yaml colourscheme to a toml:
+  -- local colors, metadata = wezterm.color.load_base16_scheme(scheme_basename .. ".yml")
+  -- wezterm.color.save_scheme(colors, metadata,scheme_basename .. ".toml")
+
+
+if colors and metadata then
+  config.color_schemes = {
+    ['My Custom'] = colors,
+  }
+  config.color_scheme = 'My Custom'
+else
+  config.color_scheme = 'Grass'
+  -- config.color_scheme = 'Kibble (Gogh)'
+  -- config.color_scheme = 'Grass'  -- To check changes go live -- has a green background
+  -- config.color_scheme = 'ayu'
+  -- config.color_scheme = 'Gruvbox dark, hard (base16)'
+  -- config.color_scheme = 'GruvboxDarkHard'
+  -- config.color_scheme = 'Warm Neon (Gogh)'
+  -- config.color_scheme = 'Wez'
+end
+
+config.colors = {
+  visual_bell = '#604040',
+}
 
 --
 -- Fonts
@@ -130,7 +171,6 @@ config.exit_behavior = "CloseOnCleanExit"  -- Use 'Hold' to not close
 -- config.font = wezterm.font({ family = 'Iosevka Term SS06', stretch = 'UltraCondensed'})
 -- config.font = wezterm.font({ family = 'Iosevka SS06', stretch = 'UltraCondensed'})
 config.font_size = 13.8
-config.bold_brightens_ansi_colors = 'BrightAndBold'
 config.warn_about_missing_glyphs = true
 -- config.freetype_load_flags = "DEFAULT"  -- Set DEFAULT even with DPI > 100. xdpyinfo | grep resolution  svelte was 96 x 96
 config.freetype_load_target = 'Light' -- https://wezfurlong.org/wezterm/config/lua/config/freetype_load_target.html
@@ -210,9 +250,6 @@ config.visual_bell = {
   fade_out_function = "EaseOut",
   -- The target to flash, which can be "BackgroundColor" or "CursorColor"
   target = "BackgroundColor",
-}
-config.colors = {
-  visual_bell = '#808080',
 }
 
 -- From: https://stackoverflow.com/a/7470789/5353461
