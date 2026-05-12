@@ -44,14 +44,30 @@ if os.execute("infocmp wezterm") then
   config.term = 'wezterm'
 end
 
+-- DISABLED 2026-05-12 -- couldn't get it to work with Ctrl-{Del,Bksp} below, but my debugging of keys wasn't great either.
 -- Enable Kitty protocol  (eg Shift+Enter)
 -- https://wezterm.org/config/lua/config/enable_kitty_keyboard.html
 -- https://sw.kovidgoyal.net/kitty/keyboard-protocol/
-config.enable_kitty_keyboard = true
+-- config.enable_kitty_keyboard = true
 
 --
 -- Key assignments
 --
+config.keys = {
+  {
+    -- Ctrl-Delete
+    -- https://github.com/wezterm/wezterm/issues/3594
+    key = 'Backspace',   -- keycode 22 / keysym 0xff08 at 2026-05-12
+    mods = 'CTRL',
+    action = act.SendString '\x1b[127;5u',  -- What kitty sends
+  },
+  {
+    -- Ctrl-Backspace
+    key = 'Delete',  -- keycode 119 / keysym 0xffff
+    mods = 'CTRL',
+    action = act.SendString '\x1b[3;5~',  -- standard Ctrl+Delete
+  },
+}
 
 -- Defaults: https://wezfurlong.org/wezterm/config/default-keys.html
 
