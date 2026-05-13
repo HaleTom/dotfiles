@@ -757,6 +757,8 @@
 
 [diff]
   # https://git-scm.com/docs/git-diff
+  # Git config diff.* starts here:
+  #   https://git-scm.com/docs/git-config#Documentation/git-config.txt-diffautoRefreshIndex
   algorithm = minimal # Take longer for a smaller diff
   # colorMoved https://git-scm.com/docs/git-diff#Documentation/git-diff.txt---color-movedltmodegt
   # Dimmed Zebra in pictures:  https://stackoverflow.com/a/57829126/5353461
@@ -764,9 +766,10 @@
   # colorMovedWS https://git-scm.com/docs/git-diff#Documentation/git-diff.txt---color-moved-wsltmodesgt
   colorMovedWS = ignore-space-change
 
+  # external = "shell-quote \"$@\" "
   # Avoid with:  git diff --no-ext-diff
-  external = $HOME/bin/difft-with-fallback  # ~/bin/diff: tries difft, falls back to diff
-  # external = "if command -v difft 2>/dev/null; then difft \"$@\"; else diff \"$@\"; fi"
+  # Gets passed $@ like specimen:
+  #   difft-with-fallback /tmp/git-blob-oriRs1/difft-with-fallback e2ea9a73cec482864bfa92f60ddcc11a875f77c5 100755 difft-with-fallback 0000000000000000000000000000000000000000 100755
 
   indentHeuristic = true # New default from v2.14, see https://github.com/blog/2188-git-2-9-has-been-released
   interHunkContext = 2
@@ -832,15 +835,7 @@
   # hint: Your filter must maintain a one-to-one correspondence
   # hint: between its input and output lines.
 
-  diffFilter = "{ command -v diff-hi &>/dev/null && diff-hi || cat; }"  # Braces keep STDIN consistent
-  ; diffFilter = "tee $HOME/tmp/diff1 | delta --color-only | tee $HOME/tmp/diff2"
-
-  # Use dsf:
-  # dsf issue: https://github.com/so-fancy/diff-so-fancy/issues/474
-  ; diffFilter = "{ command -v diff-so-fancy &>/dev/null && diff-so-fancy --patch || cat; }"
-  # diffFilter = "{ echo "diffFilter" >&2; faketty tee ~/tmp/diff1 | faketty diff-so-fancy --patch | tee ~/tmp/diff2; }"
-  # diffFilter = " { echo "diffFilter" >&2; cat; }"
-
+  diffFilter = "{ x=~/bin/diff-hi; command -v "$x" &>/dev/null && "$x" || cat; }"  # Braces keep STDIN consistent
 
   # Remove the need to press enter after an interactive prompt.
   # Required packages: Arch: perl-term-readkey, Ubuntu: libterm-readkey-perl
