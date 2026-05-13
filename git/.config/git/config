@@ -765,11 +765,7 @@
   colorMoved = dimmed_zebra  # May need to turn off for delta diff viewer
   # colorMovedWS https://git-scm.com/docs/git-diff#Documentation/git-diff.txt---color-moved-wsltmodesgt
   colorMovedWS = ignore-space-change
-
-  # external = "shell-quote \"$@\" "
-  # Avoid with:  git diff --no-ext-diff
-  # Gets passed $@ like specimen:
-  #   difft-with-fallback /tmp/git-blob-oriRs1/difft-with-fallback e2ea9a73cec482864bfa92f60ddcc11a875f77c5 100755 difft-with-fallback 0000000000000000000000000000000000000000 100755
+  wsErrorHighlight = old,new,context
 
   indentHeuristic = true # New default from v2.14, see https://github.com/blog/2188-git-2-9-has-been-released
   interHunkContext = 2
@@ -779,9 +775,12 @@
   # pager = "faketty tee $HOME/tmp/diff1 | diff-so-fancy --patch 2>&1 | tee $HOME/tmp/diff2"
   ; pager = delta
   renames = copies  # detect both copies and renames
-  # tool = vimdiff
   tool = difftastic
-  wsErrorHighlight = old,new,context
+
+  # external = "shell-quote \"$@\" "
+  # Avoid with:  git diff --no-ext-diff
+  # Gets passed $@ like specimen:
+  #   difft-with-fallback /tmp/git-blob-oriRs1/difft-with-fallback e2ea9a73cec482864bfa92f60ddcc11a875f77c5 100755 difft-with-fallback 0000000000000000000000000000000000000000 100755
 
   # https://git-scm.com/docs/gitattributes
   # Remove cachetextconv via : git update-ref -d refs/notes/textconv/<driver>
