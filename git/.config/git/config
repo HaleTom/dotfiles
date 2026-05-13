@@ -834,7 +834,7 @@
   # hint: Your filter must maintain a one-to-one correspondence
   # hint: between its input and output lines.
 
-  diffFilter = "{ x=~/bin/diff-hi; command -v "$x" &>/dev/null && "$x" || cat; }"  # Braces keep STDIN consistent
+  diffFilter = "{ command -v ~/bin/diff-hi &>/dev/null && diff-hi || cat; }"  # Braces keep STDIN consistent
 
   # Remove the need to press enter after an interactive prompt.
   # Required packages: Arch: perl-term-readkey, Ubuntu: libterm-readkey-perl
