@@ -49,7 +49,8 @@
   ax     = add .  # Current directory: New and changed, no deletions
   aacm   = "!f() { git add -A && git commit -m \"$@\"; }; f"
   an     = add --intent-to-add # add -N
-  ap     = xdhi-alias-helper add --patch  # use 'e' == edit to view hunks longer than the screen, or https://stackoverflow.com/a/63688649/5353461
+  # ap     = xdhi-alias-helper add --patch  # use 'e' == edit to view hunks longer than the screen, or https://stackoverflow.com/a/63688649/5353461
+  ap     = add --patch  # use 'e' == edit to view hunks longer than the screen, or https://stackoverflow.com/a/63688649/5353461
   au     = add --update  # deletions of tracked files but no new ones
   aucnn  = !"git au && git cnn #"
   aut    = "!git ls-files -z -o --exclude-standard | xargs -0 git add; #" # Add only untracked files
@@ -146,7 +147,8 @@
   coif   = checkout-index --force  # update existing files
   coiaf  = checkout-index --all --force  # update all existing files
   coo    = checkout --ours
-  cop    = xdhi-alias-helper checkout --patch
+  # cop    = xdhi-alias-helper checkout --patch
+  cop    = checkout --patch
   cos    = !"git spcosp \"$@\" # move uncommitted changes to new branch via stash"
   cot    = checkout --theirs
   cp     = commit --patch
@@ -293,7 +295,8 @@
   recoc  = !"cd \"${GIT_PREFIX:-.}\" && git reset --quiet    \"$@\" && git checkout    \"$@\" # Commit version"  # https://stackoverflow.com/a/52313420/5353461
   reh    = reset --hard
   rem    = reset --merge # Like hard but don't reset files that haven't been committed, failing if the target commit has changes in those files
-  rep    = xdhi-alias-helper reset --patch
+  # rep    = xdhi-alias-helper reset --patch
+  rep    = reset --patch
   res    = reset --soft
   # XXX test with $(:) resc
   resc   = !"git reset --soft $(c=$(git child); [ \"$c\" ] && echo $c || git children)" # Move HEAD to the child
