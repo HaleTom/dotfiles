@@ -216,6 +216,9 @@ _prompt_update_zsh () {
     # Add separator if environment is non-null
     [[ -n $environment ]] && environment+='%B%F{white}| %f%b'
 
+    # Show BWRAPPED if set
+    [[ -n $BWRAPPED ]] && environment+="($BWRAPPED) "
+
     # shellcheck disable=2016  # Keep variables literal
     RPS1='${MODE_INDICATOR_PROMPT} '"${environment}"'${_timer_show} | %F{white}%D %*'
 }
