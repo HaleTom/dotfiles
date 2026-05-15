@@ -69,9 +69,21 @@ bindkey -a '\e.' insert-last-word  # Insert $! repeating back through history
 bindkey -a '^[[3~' delete-char # Del key works as expected
 bindkey -a '^[[1;5C' forward-word
 bindkey -a '^[[1;5D' backward-word
-# Ctrl+Backspace: delete one shell-token backward (wezterm sends \e[3;5~ via SendString)
-bindkey -a '^[[3;5~' backward-kill-word
-bindkey -M viins '^[[3;5~' backward-kill-word
+# Ctrl+Backspace: delete one shell-token backward.
+# Wezterm sends ^W (\x17); tmux passes single-byte control chars through.
+# Zsh default binding (^W -> backward-kill-word) handles it; word boundaries
+# are set by `select-word-style shell` above.
+#
+# Previously used kitty keyboard protocol (\e[127;5u, May 2026) which
+# broke inside tmux -- tmux does not support u-terminated CSI and
+# silently eats the sequence (see https://github.com/tmux/tmux/pull/4912,
+# likely merged ~2026-06-01).  Once merged, switch back to these and
+# revert the ^W SendString in wezterm.lua to \x1b[127;5u:
+# bindkey -a '^[[127;5u' backward-kill-word
+# bindkey -M viins '^[[127;5u' backward-kill-word
+# Ctrl+Delete: wezterm sends \e[3;5~ via SendString
+bindkey -a '^[[3;5~' kill-word
+bindkey -M viins '^[[3;5~' kill-word
 
 # Better searching in command mode
 bindkey -M vicmd '?' history-incremental-search-backward
