@@ -60,17 +60,26 @@ end
 --
 config.keys = {
   {
-    -- Ctrl-Delete
+    -- Ctrl+Backspace: delete word backward.
+    -- We send ^W (\x17 / Ctrl+W) because tmux passes single-byte control
+    -- characters through.  Kitty keyboard protocol (\x1b[127;5u) uses a
+    -- u-terminated CSI that tmux does NOT support and silently eats.
+    -- Zsh with `select-word-style shell` binds ^W to backward-kill-word.
     -- https://github.com/wezterm/wezterm/issues/3594
-    key = 'Backspace',   -- keycode 22 / keysym 0xff08 at 2026-05-12
+    -- Once https://github.com/tmux/tmux/pull/4912 merges (~2026-06-01),
+    -- revert this to:  act.SendString '\x1b[127;5u'
+    -- keycode 22 / keysym 0xff08 (Backspace key) with CTRL modifier.
+    key = 'Backspace',
     mods = 'CTRL',
-    action = act.SendString '\x1b[127;5u',  -- What kitty sends
+    action = act.SendString '\x17',  -- ^W: single-byte, tmux-compatible
   },
   {
-    -- Ctrl-Backspace
-    key = 'Delete',  -- keycode 119 / keysym 0xffff
+    -- Ctrl+Delete: delete word forward.
+    -- Standard xterm CSI (\e[3;5~), works in tmux and all terminals.
+    -- keycode 119 / keysym 0xffff (Delete key) with CTRL modifier.
+    key = 'Delete',
     mods = 'CTRL',
-    action = act.SendString '\x1b[3;5~',  -- standard Ctrl+Delete
+    action = act.SendString '\x1b[3;5~',  -- standard, unchanged
   },
 }
 
