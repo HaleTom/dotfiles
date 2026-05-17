@@ -101,11 +101,6 @@ zi () {
 
 # Run these commands asynchronously via null plugin
 __zinit_deferred () {
-  # Load pip completions if pip installed
-  # Alternatively, as suggested in https://web.archive.org/web/20201008014818/https://github.com/zdharma/zinit/issues/68#issuecomment-410531439
-  # shellcheck disable=2154  # $commands not assigned
-  [[ ${commands[pip]} ]] && eval "$(pip completion --zsh)"
-
   # Source fzf files
   # Needs to be sourced after zsh-vim-mode to have ^R work
   if [[ ${commands[fzf]} ]]; then  # fzf is installed
