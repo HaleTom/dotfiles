@@ -1,6 +1,8 @@
 # ~/.config/mise/config.toml
 # https://mise.jdx.dev/configuration.html#global-config-config-mise-config-toml
 
+# See also:  ~/.config/mise/miserc.toml
+
 # These are hidden from logs
 # BUT STILL SHOWN by `mise env`
 #
@@ -149,6 +151,8 @@ raw = true  # Don't redact variables or mess with terminal
 [tasks.aicode.env]
 _.file = [
   '{{vars.keys}}/COMMANDCODE_API_KEY',
+  '{{vars.keys}}/DEEPSEEK_API_KEY',
+  '{{vars.keys}}/DIALAGRAM_API_KEY',
   '{{vars.keys}}/GEMINI_API_KEY',
   '{{vars.keys}}/GITHUB_PAT',
   '{{vars.keys}}/KILOCODE_API_KEY',
@@ -159,7 +163,8 @@ _.file = [
   '{{vars.keys}}/OLLAMA_API_KEY',
   '{{vars.keys}}/PERPLEXITY_API_KEY',
   '{{vars.keys}}/TAVILY_API_KEY-Coding',
-  ## TODO FIXME: delete after PAT working:
+  '{{vars.keys}}/XIAOMI_API_KEY',
+  ## TODO FIXME: delete after PAT working: -- also check the 2 diffferent GH keys in secure/env.
   '{{vars.keys}}/GH_CLASSIC_TMP_KEY',
 ]
 
