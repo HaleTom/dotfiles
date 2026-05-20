@@ -140,12 +140,11 @@ __zinit_deferred () {
 
 # clockify-cli completions
 # Awaiting https://aur.archlinux.org/packages/clockify-cli-bin#comment-1060465
-"${_zinit_defaults[@]}" id-as'clockify-completion' has'clockify-cli' \
-    null completions \
-    atclone'/usr/bin/clockify-cli completion zsh >| _completions' \
-    atpull'%atclone' run-atpull \
-    src'_completions' \
-  for zdharma-continuum/null
+# tail -n +2 strips buggy leading `compinit` — https://github.com/lucassabreu/clockify-cli/issues/295
+zi id-as'clockify-completion' has'clockify-cli' \
+  atclone'/usr/bin/clockify-cli completion zsh | tail -n +2 >| _clockify-cli' \
+  atpull'%atclone' run-atpull nocompile! \
+for zdharma-continuum/null
 
 
 # Friendly bindings for ZSH's vi mode
@@ -318,13 +317,6 @@ zinit ice wait id-as"atuinsh/atuin" has'atuin' \
   atpull"%atclone" run-atpull nocompile!
 zinit light zdharma-continuum/null
 
-# TODO:
-# "${_zinit_defaults[@]}" id-as'clockify-completion' has'clockify-cli' \
-#     null completions \
-#     atclone'/usr/bin/clockify-cli completion zsh >| _completions' \
-#     atpull'%atclone' run-atpull \
-#     src'_completions' \
-#   for zdharma-continuum/null
 
 
 # Reminds you to use existing aliases for commands you just typed
