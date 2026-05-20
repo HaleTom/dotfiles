@@ -106,6 +106,9 @@ zinit() {
             print -P "%F{red}⚠ zinit ice: unknown modifier: '${key}'%f" >&2
     done
 }
+# Test bad ice:
+# https://github.com/zdharma-continuum/zinit/issues/766
+zinit light-mode null id-as'invalid-ice-test' as'INVALID' for zdharma-continuum/null
 
 
 # Default options for zinit
