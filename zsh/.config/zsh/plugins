@@ -50,9 +50,6 @@ zinit light-mode for \
 
 ### End of Zinit's installer chunk
 
-# Default options for zinit
-_zinit_defaults=(zinit wait light-mode depth'1')
-
 # Wrap zinit ice calls to validate
 zinit_ice_validated() {
     local -a valid
@@ -93,6 +90,11 @@ zinit() {
             print -P "%F{red}⚠ zinit ice: unknown modifier: '${key}'%f" >&2
     done
 }
+
+
+# Default options for zinit
+# - light-mode is faster, but zinit report won't work
+_zinit_defaults=(zinit wait light-mode depth'1')
 
 zi() {
   zinit "${_zinit_defaults[@]:1}" "$@"
