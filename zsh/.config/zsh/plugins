@@ -38,17 +38,33 @@ autoload -Uz _zinit
 # zinit module build
 # zpmod source-study
 
+### End of Zinit's installer chunk
+
 
 # Load a few important annexes, without Turbo
 # (this is currently required for annexes)
-zinit light-mode for \
+# Z_A_USECOMP=1 enables tab completion for annex subcommands (e.g. zinit recache)
+#   https://github.com/NICHOLAS85/z-a-eval#zinit-tab-completion-support
+#   Awaiting proper fix: https://github.com/NICHOLAS85/z-a-eval/issues/5
+zinit atinit'Z_A_USECOMP=1' light-mode for \
     zdharma-continuum/zinit-annex-as-monitor \
     zdharma-continuum/zinit-annex-bin-gem-node \
     zdharma-continuum/zinit-annex-patch-dl \
     zdharma-continuum/zinit-annex-rust \
     NICHOLAS85/z-a-eval
 
-### End of Zinit's installer chunk
+# Workaround: _zinit has a hardcoded subcommand list that doesn't include 'recache'.
+# Source _zinit (minus the final '_zinit "$@"' call) to define all functions, then
+# inject 'recache' into __zinit_commands. Since _zinit becomes a real function
+# (not an autoload stub), the autoload won't overwrite our patch.
+# Awaiting: https://github.com/NICHOLAS85/z-a-eval/issues/5
+local _zinit_file="${ZINIT[BIN_DIR]}/_zinit"
+if [[ -r $_zinit_file ]]; then
+  eval "$(head -n -1 "$_zinit_file")" 2>/dev/null
+  eval "$(sed -n '/^__zinit_commands()/,/^} # \]\]\]$/p' "$_zinit_file" \
+    | sed "/recently:Show plugins that changed recently/a\\    'recache:Regenerate eval cache (z-a-eval annex)'")"
+fi
+
 
 # Wrap zinit ice calls to validate
 zinit_ice_validated() {
