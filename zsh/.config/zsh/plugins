@@ -278,14 +278,14 @@ HSMW_HIGHLIGHT_STYLES[commandseparator]="fg=white,bg=27"
 
 # z.lua - cd faster by learning your habits
 # Upnote and https://github.com/skywind3000/z.lua
-(){
-  zlua_config="$XDG_CONFIG_HOME/bash/z.lua.config"  # Combined {ba,z}sh setup
-  if ! [[ -r "$zlua_config" ]]; then
-    echo "plugins: not loading z.lua: $zlua_config not readable" >&2
-  else
-    source "$zlua_config"
-  fi
-}
+# https://github.com/skywind3000/z.lua/blob/master/z.lua.plugin.zsh
+# eval (priority 55) runs after atinit/source; atload (priority 80) runs after eval
+# so _zlua is defined before the config file (with z/zi/aliases) is sourced
+zi has'lua' eval"lua ./z.lua --init zsh enhanced once fzf" \
+  eval'f="$XDG_CONFIG_HOME/bash/z.lua.config"; [[ -r "$f" ]] && cat "$f"' \
+for skywind3000/z.lua
+
+
 
 # Atuin - shell history
 # https://docs.atuin.sh/cli/guide/installation/
@@ -296,12 +296,6 @@ zinit ice wait id-as"atuinsh/atuin" has'atuin' \
   atclone"atuin init zsh > init.zsh && atuin gen-completions --shell zsh > _atuin" \
   atpull"%atclone" run-atpull nocompile!
 zinit light zdharma-continuum/null
-
-# shellcheck disable=SC2016  # Expressions don't expand in single quotes, use double quotes for that.
-zinit wait lucid for \
-  eval"lua ${ZINIT[PLUGINS_DIR]}/skywind3000---z.lua/z.lua --init zsh enhanced once fzf" \
-  skywind3000/z.lua
-# https://github.com/skywind3000/z.lua/blob/master/z.lua.plugin.zsh
 
 # TODO:
 # "${_zinit_defaults[@]}" id-as'clockify-completion' has'clockify-cli' \
