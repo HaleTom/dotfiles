@@ -319,13 +319,9 @@ for zdharma-continuum/null
 
 # Carapace
 # https://carapace-sh.github.io/carapace-bin/setup.html#zsh
-# atclone writes init.zsh (auto-sourced by zinit, like atuin does).
-# The sed wraps compdef with {} 2>/dev/null to suppress the verbose output.
-# nopromptmsg suppresses compdef's "Running compdef:" messages during load.
-zinit ice wait id-as"carapace-sh/carapace-bin" has'carapace' \
-  atclone'carapace _carapace | sed "s/compdef _carapace_completer/{ compdef _carapace_completer ; } 2>\/dev\/null/" > init.zsh' \
-  atpull"%atclone" run-atpull nocompile!
-zinit light zdharma-continuum/null
+zi id-as"carapace-sh/carapace-bin" has'carapace' \
+  nocompile! eval'carapace _carapace' \
+for zdharma-continuum/null
 
 
 # Reminds you to use existing aliases for commands you just typed
