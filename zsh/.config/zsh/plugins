@@ -311,10 +311,10 @@ for skywind3000/z.lua
 # Must turbo-load in slot 0, declared AFTER zsh-vim-mode, so that zsh-vim-mode
 # initializes the vi keymaps first and atuin binds into the already-set-up keymaps.
 # nocompile'!' is weirdness that delays compilation until after at{clone,pull}.  Unlike `compile`, canNOT take a pattern
-zinit ice wait id-as"atuinsh/atuin" has'atuin' \
-  atclone"atuin init zsh > init.zsh && atuin gen-completions --shell zsh > _atuin" \
-  atpull"%atclone" run-atpull nocompile!
-zinit light zdharma-continuum/null
+zi id-as"atuinsh/atuin" has'atuin' \
+  atclone"atuin gen-completions --shell zsh >| _atuin" \
+  atpull"%atclone" run-atpull nocompile! eval"atuin init zsh" \
+for zdharma-continuum/null
 
 
 # Carapace
