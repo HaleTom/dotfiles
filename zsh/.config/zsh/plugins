@@ -451,7 +451,15 @@ zinit-lint-ices() {
     done
 }
 
-return
+
+# inshellisense
+# https://github.com/microsoft/inshellisense
+zinit ice wait id-as"microsoft/inshellisense" has'is' \
+  nocompile! eval'is init zsh' \
+zinit light zdharma-continuum/null
+
+
+return ###########--------  END  -----------##############
 
 
 ##
