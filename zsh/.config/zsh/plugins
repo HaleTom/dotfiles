@@ -313,7 +313,7 @@ for skywind3000/z.lua
 # nocompile'!' is weirdness that delays compilation until after at{clone,pull}.  Unlike `compile`, canNOT take a pattern
 zi id-as"atuinsh/atuin" has'atuin' \
   atclone"atuin gen-completions --shell zsh >| _atuin" \
-  atpull"%atclone" run-atpull nocompile! eval"atuin init zsh" \
+  atpull"%atclone" run-atpull nocompile! eval"atuin init zsh --disable-ctrl-r" \
 for zdharma-continuum/null
 
 
