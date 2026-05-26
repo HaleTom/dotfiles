@@ -103,6 +103,7 @@ zstyle ':completion:*' list-colors ${(s.:.)LS_COLORS}
 setopt append_history  # Don't overwrite
 setopt auto_cd  # If a command can’t be executed but is a directory, cd command to that directory.
 setopt append_create  # Allow files to be created with >> redirection
+setopt BSD_echo  # Make echo behave the same way as bash -- otherwise \n is interpreted without -e being passed
 setopt complete_in_word                                # Enable completion of incomplete path segments: /u/b/l -> /usr/bin/ls
 setopt correct  # Prompt to correct spelling mistakes
 setopt no_clobber  # ‘>!’ or ‘>|’ must be used to truncate a file
