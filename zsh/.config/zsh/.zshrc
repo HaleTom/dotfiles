@@ -100,29 +100,31 @@ zstyle ':completion:*' list-colors ${(s.:.)LS_COLORS}
 # Options
 # --------------------
 # https://zsh.sourceforge.io/Doc/Release/Options.html
+setopt append_history  # Don't overwrite
 setopt auto_cd  # If a command can’t be executed but is a directory, cd command to that directory.
+setopt append_create  # Allow files to be created with >> redirection
 setopt complete_in_word                                # Enable completion of incomplete path segments: /u/b/l -> /usr/bin/ls
-setopt extended_glob  # Treat the ‘#’, ‘~’ and ‘^’ characters as part of patterns for filename generation, etc. (An initial unquoted ‘~’ always produces named directory expansion.)
+setopt correct  # Prompt to correct spelling mistakes
 setopt no_clobber  # ‘>!’ or ‘>|’ must be used to truncate a file
-setopt no_complete_aliases
 # ↑ backwards: when set, aliases are NOT expanded before completion —
 #   they must be explicitly mapped with compdef. Unsetting restores
 #   the intuitive behaviour where `g=git` inherits git completions.
 #   See ~/code/ai-directives/wiki/zsh-alias-completion.md
-unsetopt complete_aliases
-setopt no_match  # Print an error, instead of leaving pattern unchanged. Also applies to file expansion of an initial unquoted '~' or '='.
-setopt prompt_subst  # Parameter expansion, command substitution and arithmetic expansion are performed in prompts.
-setopt append_create  # Allow files to be created with >> redirection
-setopt correct  # Prompt to correct spelling mistakes
-# shellcheck disable=SC2079  # (error): (( )) doesn't support decimals. Use bc or awk.  # But it does in Zsh!
 (( ZSH_VERSION >= 5.9 )) && setopt clobber_empty  # Regular files of zero length may be overwritten (‘clobbered’)
-setopt pipe_fail  # return right-most command's non-zero return value
+setopt no_complete_aliases
+setopt extended_glob  # Treat the ‘#’, ‘~’ and ‘^’ characters as part of patterns for filename generation, etc. (An initial unquoted ‘~’ always produces named directory expansion.)
+setopt extended_history  # : <beginning time>:<elapsed seconds>;<command>
+setopt hist_beep  # Beep in ZLE when a widget attempts to access a history entry which isn’t there.
+setopt hist_ignore_space  # Don't store commands starting with whitespace
+setopt inc_append_history  # Append history immediately, not just on exit
+setopt no_match  # Print an error, instead of leaving pattern unchanged. Also applies to file expansion of an initial unquoted '~' or '='.
+# shellcheck disable=SC2079  # (error): (( )) doesn't support decimals. Use bc or awk.  # But it does in Zsh!
 setopt interactive_comments  # Allow #comment in an interactive shell
-setopt posix_aliases  # Don't expand aliases overloading reserved words
 setopt ksh_glob  # Allow for matching one or more with +(x) for bash compatibility
 setopt list_beep  # Beep on an ambiguous completion iff BEEP is also set (which it is by default)
-setopt pipe_fail  # Return the exit status of the pipeline first command that fails
+setopt pipe_fail  # Return the exit status of the pipeline's first command that fails
 setopt posix_aliases  # Don't expand aliases overloading reserved words
+setopt prompt_subst  # Parameter expansion, command substitution and arithmetic expansion are performed in prompts.
 
 # History
 HISTFILE="$XDG_STATE_HOME"/zsh/history
@@ -130,11 +132,6 @@ HISTFILE="$XDG_STATE_HOME"/zsh/history
 [[ ! -d ${HISTFILE%/*} ]] && mkdir -p "${HISTFILE%/*}"
 export HISTSIZE=10000
 export SAVEHIST=10000
-setopt append_history  # Don't overwrite
-setopt extended_history  # : <beginning time>:<elapsed seconds>;<command>
-setopt hist_ignore_space  # Don't store commands starting with whitespace
-setopt hist_beep  # Beep in ZLE when a widget attempts to access a history entry which isn’t there.
-setopt inc_append_history  # Append history immediately, not just on exit
 
 
 # Set the prompt
