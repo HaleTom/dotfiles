@@ -1210,10 +1210,13 @@ _cached_eval() {
     else
         local out
         out=$("$@") || return $?
-        mkdir -p "$cache_dir"
-        printf '%s\n' "$out" > "${cache}.tmp.$$"
-        mv "${cache}.tmp.$$" "$cache"
-        source "$cache"
+        if mkdir -p "$cache_dir" 2>/dev/null; then
+            printf '%s\n' "$out" > "${cache}.tmp.$$"
+            mv "${cache}.tmp.$$" "$cache"
+            source "$cache"
+        else
+            eval "$out"
+        fi
     fi
 }
 export_function _cached_eval
