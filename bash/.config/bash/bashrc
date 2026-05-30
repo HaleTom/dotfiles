@@ -298,9 +298,9 @@ export GEM_PATH RUBYLIB
 # Print a fortune message if login shell or in TMUX (deferred to background)
 # && and || have equal precedence outside [[ test ]], so put && last
 if [[ ${_disable_welcome_message:=0} -eq 0 ]] ||
-    { sh_is_bash && shopt -q login_shell; } || { sh_is_zsh && [[ -o login ]]; } ||
-    [[ -n ${TMUX=} && _disable_welcome_message -lt $SHLVL ]] &&
-    [[ -z $DISABLE_WELCOME ]] && [[ -z "$CLAUDE_CODE" ]]; then
+  { sh_is_bash && shopt -q login_shell; } || { sh_is_zsh && [[ -o login ]]; } ||
+  [[ -n ${TMUX=} && _disable_welcome_message -lt $SHLVL ]] &&
+  ! [[ "${DISABLE_WELCOME}" || "${AI_AGENT}" || "${BWRAPPED}" ]]; then
     if is_cmd ~/bin/welcome-message; then
         silent_background ~/bin/welcome-message
     elif is_cmd fortune; then
