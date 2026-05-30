@@ -316,7 +316,7 @@ _profile_mark "welcome-message"
 _profile_mark "personal"
 
 # Setup ssh-agent
-if is_bin_in_path keychain; then
+if is_bin_in_path keychain && [ ! "$AI_AGENT" ]; then
   keychain_load
 elif is_bin_in_path ssh-agent ssh-add; then
   ssh_agent_setup
@@ -413,9 +413,19 @@ printf '%s\0' "${precmd_functions[@]}" | grep -Fzq --line-regexp '_prompt_bash_s
 [[ ${BLE_VERSION:-} ]] && ble-attach
 _profile_mark "ble-attach"
 
-# lean-ctx shell hook
-[ "$BWRAPPED" ] && [ -f "$HOME/.lean-ctx/shell-hook.bash" ] && . "$HOME/.lean-ctx/shell-hook.bash"
-_profile_mark "lean-ctx hook"
+##
+## AI agents
+##
+if [ "$AI_AGENT" ]; then
+  # lean-ctx shell hook
+  _src_file="$HOME/.lean-ctx/shell-hook.bash"
+  if [ -f "$_src_file" ]; then
+    source "$_src_file"
+  else
+    echo "$_src_file doesn't exist" >&2
+  fi
+  _profile_mark "lean-ctx hook"
+fi
 
 _profile_mark "bashrc done"
 
