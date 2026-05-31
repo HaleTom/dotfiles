@@ -1,8 +1,48 @@
-# Blame
-# https://www.perplexity.ai/search/05c24947-5a83-44d2-b3d6-0901ad751e10
+# LazyGit Config
+# https://github.com/jesseduffield/lazygit/blob/master/docs/Config.md#default
+
+# yaml-language-server: $schema=https://raw.githubusercontent.com/jesseduffield/lazygit/master/schema/config.json
+
+
 customCommands:
+  # Blame -- https://www.perplexity.ai/search/05c24947-5a83-44d2-b3d6-0901ad751e10
   - key: "B"
     context: "files"
     command: "tig blame -- {{.SelectedFile.Name}}"
     description: "Blame file via tig"
     output: terminal
+
+  # Force push with lease
+  - key: 'P'
+    command: 'git push --force-with-lease origin {{.SelectedLocalBranch.Name}}'
+    context: 'localBranches'
+    description: 'Force push with lease.  Remote==origin'
+    loadingText: 'Force pushing...'
+
+git:
+  # Custom Pagers
+  # https://github.com/jesseduffield/lazygit/blob/master/docs/Custom_Pagers.md
+  pagers:
+    - pager: ~/bin/diff-hi  # delta, dsf, /usr/share/git/diff-highlight (perl), colordiff, cat
+    - pager: difft --color=always  # difftastic
+    - pager: icdiff
+    - pager: ydiff -p cat -s --wrap --width={{columnWidth}}
+    - pager: delta --dark --paging=never
+      # colorArg key is for whether you want the --color=always arg in your git diff command.
+      # Some pagers want it set to always, others want it set to never.
+      # The default is always, since that's what most pagers need.
+      colorArg: never
+    - externalDiffCommand: difft --color=always
+    - {} # default, no pager used
+
+# Keybindings
+# Config defaults at top of file
+# Each binding can be a single key or a list of keys; see:
+# https://lazygit.dev/keybindings/
+# https://github.com/jesseduffield/lazygit/blob/master/docs/keybindings/Custom_Keybindings.md
+# Defaults: https://github.com/jesseduffield/lazygit/blob/master/docs/keybindings/Keybindings_en.md
+keybinding:
+  universal:
+    # quit: [q, <ctrl+c>]
+    amendLastCommit: A
+    commitChangesWithEditor: C
