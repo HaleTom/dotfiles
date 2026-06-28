@@ -111,7 +111,7 @@ setopt no_clobber  # ‘>!’ or ‘>|’ must be used to truncate a file
 #   they must be explicitly mapped with compdef. Unsetting restores
 #   the intuitive behaviour where `g=git` inherits git completions.
 #   See ~/code/ai-directives/wiki/zsh-alias-completion.md
-(( ZSH_VERSION >= 5.9 )) && setopt clobber_empty  # Regular files of zero length may be overwritten (‘clobbered’)
+is-at-least 5.9 && setopt clobber_empty  # Regular files of zero length may be overwritten (‘clobbered’)
 setopt no_complete_aliases
 setopt extended_glob  # Treat the ‘#’, ‘~’ and ‘^’ characters as part of patterns for filename generation, etc. (An initial unquoted ‘~’ always produces named directory expansion.)
 setopt extended_history  # : <beginning time>:<elapsed seconds>;<command>
