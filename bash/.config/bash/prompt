@@ -289,9 +289,11 @@ _prompt_pwd_generate() {
     # fi
   fi
 
-  # Replace a single slash with 4!?! slashes
-  # https://unix.stackexchange.com/q/543473/143394
-  dir=${dir//\\/\\\\\\\\}
+  # Bash PS1 interprets \X sequences (e.g. \@ as time, \u as user).
+  # Single quotes in the string are literal chars, not shell quoting, so
+  # backslashes must be doubled to render literally.  zsh prompt_subst
+  # does NOT do this, so only apply to bash.
+  [[ -n $BASH_VERSION ]] && dir=${dir//\\/\\\\}
 
   # Prevent command and variable substitution:
   dir=${dir//\`/\\\`}  # escape ` as \`
