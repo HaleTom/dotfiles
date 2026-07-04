@@ -271,7 +271,7 @@ _prompt_pwd_generate() {
     eval 'quoted=${dir@Q}' 2> /dev/null || printf -v dir '%q' "$dir"  # Quote directory minus $HOME
     # Prevent unnecessary quotes eg /tmp becoming '/tmp' or $'/tmp'
     # shellcheck disable=SC2154  # SC2154: quoted is referenced but not assigned.
-    [[ ! "$quoted" =~ ^\$?"'$dir'"$ || $dir =~ ' ' ]] && dir=$quoted
+    [[ $dir =~ [^A-Za-z0-9/._-] ]] && dir=$quoted
 
     # if [[ -z $dir_Q ]]; then  # Pick shorter of the two output strings
     #   dir=$dir_printf
@@ -290,14 +290,27 @@ _prompt_pwd_generate() {
   fi
 
   # Bash PS1 interprets \X sequences (e.g. \@ as time, \u as user).
-  # Single quotes in the string are literal chars, not shell quoting, so
-  # backslashes must be doubled to render literally.  zsh prompt_subst
-  # does NOT do this, so only apply to bash.
-  [[ -n $BASH_VERSION ]] && dir=${dir//\\/\\\\}
-
-  # Prevent command and variable substitution:
-  dir=${dir//\`/\\\`}  # escape ` as \`
-  dir=${dir//\$/\\\$}  # escape $ as \$
+  # Single quotes in the PS1 string are literal chars, not shell quoting, so
+  # they do not suppress \X expansion.  Backslashes from ${dir@Q} must be
+  # doubled to survive PS1 expansion and render literally.  zsh prompt_subst
+  # does NOT interpret \X, so only apply to bash.
+  # https://unix.stackexchange.com/q/543473/143394
+  #
+  # The second substitution restores the \' idiom that ${dir@Q} emits for a
+  # literal single-quote in the path.  ${dir@Q} wraps the path in single
+  # quotes and uses the close-quote, \', open-quote idiom to embed a literal
+  # quote:  fix'quote  ->  'fix\''quote'.  The first substitution above
+  # doubles every backslash, turning the \' idiom into \\'.  Inside the
+  # single-quoted region \\' is 2 literal backslashes + quote, not the
+  # one-backslash idiom, so cd of the rendered prompt would look for a dir
+  # containing \\ rather than ' and fail the round-trip.
+  #
+  # The restore matches \\ (2 backslashes, the doubled idiom) followed by '
+  # and replaces with \ (1 backslash) followed by ', undoing the doubling
+  # only for the ${dir@Q} quote idiom.  Other doubled backslashes (e.g. the
+  # \\@ for a literal backslash-at dir) are left doubled so PS1 still
+  # renders them as a single literal backslash.
+  [[ -n $BASH_VERSION ]] && { dir=${dir//\\/\\\\}; dir=${dir//\\\\\'/\\\'}; }
 
   echo "${prefix}${dir}"
 }
