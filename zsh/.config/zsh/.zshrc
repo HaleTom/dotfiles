@@ -265,9 +265,6 @@ source "$ZDOTDIR"/functions-zsh
 # Diagnose:  is it zsh-defer or zinit not checking then resetting the current state of option aliases?
 [[ ! $_NO_SHELL_PLUGINS ]] && builtin source "$ZDOTDIR/plugins"
 
-# Initialise completions -- compinit is called by zinit via zicompinit in
-# zsh-patina's atinit (see plugins file), so compdef works after plugins load.
-
 _source_files <<DOTFILES
     # $ZDOTDIR/plugins  # See above re noalias
     # $XDG_CONFIG_HOME/bash/aliases  # Sourced in plugins: __zsh_deferred
@@ -338,6 +335,8 @@ add-zsh-hook precmd        precmd_zsh_hook     # Stop prompt timer, update promp
 # zinit will re-invoke compinit when it processes turbo completions — that's fine,
 # it detects the existing compdump and is fast.
 autoload -Uz compinit && compinit -d "$ZSH_COMPDUMP"
+# Replay deferred compdef registrations from turbo-loaded plugins (atuin, etc.)
+zinit cdreplay -q
 
 # Used in __zplg_async_run
 # Clear the namespace of bootstrap functions

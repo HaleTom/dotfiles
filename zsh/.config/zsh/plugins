@@ -302,6 +302,7 @@ HSMW_HIGHLIGHT_STYLES[commandseparator]="fg=white,bg=27"
 # so _zlua is defined before the config file (with z/zi/aliases) is sourced
 zi has'lua' eval"lua ./z.lua --init zsh enhanced once fzf" \
   eval'f="$XDG_CONFIG_HOME/bash/z.lua.config"; [[ -r "$f" ]] && cat "$f"' \
+  atload'zicdreplay' \
 for skywind3000/z.lua
 
 
@@ -321,6 +322,7 @@ for zdharma-continuum/null
 # https://carapace-sh.github.io/carapace-bin/setup.html#zsh
 zi id-as"carapace-sh/carapace-bin" has'carapace' \
   nocompile! eval'carapace _carapace' \
+  atload'zicdreplay; zstyle ":completion:*:git:*" group-order "main commands" "alias commands" "external commands"' \
 for zdharma-continuum/null
 
 
