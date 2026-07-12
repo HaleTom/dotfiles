@@ -167,26 +167,6 @@ config.colors = {
   visual_bell = '#604040',
 }
 
---
--- Fonts
---
--- https://wezfurlong.org/wezterm/config/lua/wezterm/font.html
--- https://wezfurlong.org/wezterm/config/lua/config/font_rules.html
--- wezterm ls-fonts
--- wezterm ls-fonts --list-system
---
--- config.font = wezterm.font 'JetBrains Mono'
--- config.font = wezterm.font 'Iosevka Term SS06'
--- config.font = wezterm.font({ family = 'Iosevka Term SS06', stretch = 'UltraCondensed'})
--- config.font = wezterm.font({ family = 'Iosevka SS06', stretch = 'UltraCondensed'})
-config.font_size = 13.8
-config.warn_about_missing_glyphs = true
--- config.freetype_load_flags = "DEFAULT"  -- Set DEFAULT even with DPI > 100. xdpyinfo | grep resolution  svelte was 96 x 96
-config.freetype_load_target = 'Light' -- https://wezfurlong.org/wezterm/config/lua/config/freetype_load_target.html
-config.freetype_render_target = 'HorizontalLcd' -- https://wezterm.org/config/lua/config/freetype_render_target.html
--- NB: Cannot set alpha channel for the text foreground color when using using subpixel-rendering.
--- See https://wezterm.org/config/lua/config/freetype_load_target.html
-
 --Unicode version (width of emojis)
 -- https://wezfurlong.org/wezterm/config/lua/config/unicode_version.html
 -- Version 14 allows emojis take up more than one cell
@@ -197,13 +177,54 @@ config.custom_block_glyphs = true -- https://wezterm.org/config/lua/config/custo
 
 config.underline_thickness = '2px'
 
+config.warn_about_missing_glyphs = true
+-- config.freetype_load_flags = "DEFAULT"  -- Set DEFAULT even with DPI > 100. xdpyinfo | grep resolution  svelte was 96 x 96
+config.freetype_load_target = 'Light' -- https://wezfurlong.org/wezterm/config/lua/config/freetype_load_target.html
+config.freetype_render_target = 'HorizontalLcd' -- https://wezterm.org/config/lua/config/freetype_render_target.html
+-- NB: Cannot set alpha channel for the text foreground color when using using subpixel-rendering.
+-- See https://wezterm.org/config/lua/config/freetype_load_target.html
+
+--
+-- Fonts
+--
+-- https://wezfurlong.org/wezterm/config/lua/wezterm/font.html
+-- https://wezfurlong.org/wezterm/config/lua/config/font_rules.html
+-- wezterm ls-fonts
+-- wezterm ls-fonts --list-system
+
+-- List all font families:
+-- fc-list --format="%{family[0]}\n" | sort -u | less
+
+config.font_size = 15
+
+-- List all font families:
+-- fc-list --format="%{family[0]}\n" | sort -u | less
+
+-- config.font = wezterm.font 'JetBrains Mono'
+-- config.font = wezterm.font 'Iosevka Term SS06'
+-- config.font = wezterm.font({ family = 'Iosevka Term SS06', stretch = 'UltraCondensed'})
+-- config.font = wezterm.font({ family = 'Iosevka SS06', stretch = 'UltraCondensed'})
+--
+-- weights:  "Thin" "ExtraLight" "Light" "DemiLight" "Book" "Regular" (this is the default) "Medium" "DemiBold" "Bold" "ExtraBold" "Black" "ExtraBlack".
+-- stretch:  "UltraCondensed" "ExtraCondensed" "Condensed" "SemiCondensed" "Normal" (this is the default) "SemiExpanded" "Expanded" "ExtraExpanded" "UltraExpanded".
+-- style:    "Normal" (this is the default) "Italic" "Oblique"
+
 -- Monaspace:  https://monaspace.githubnext.com/
 -- Based upon, contributed to:  https://gist.github.com/ErebusBat/9744f25f3735c1e0491f6ef7f3a9ddc3
 config.font = wezterm.font(
   { -- Normal text
-  family='Monaspace Neon',
-  harfbuzz_features={ 'calt', 'liga', 'dlig', 'ss01', 'ss02', 'ss03', 'ss04', 'ss05', 'ss06', 'ss07', 'ss08' },
-  stretch='UltraCondensed', -- This doesn't seem to do anything
+  family='CommitMono Nerd Font',
+  weight='Medium',
+  -- weight='DemiBold',
+  -- weight='Black',
+  -- weight='Light',
+  -- family='Intel One Mono',
+  -- family='Monaspace Argon NF',
+  stretch='UltraCondensed',
+  -- stretch='UltraExpanded',
+  -- weight='Medium',
+  -- Turn off Monaspace F# lang ss05 |> triangles:
+  harfbuzz_features={ 'calt', 'liga', 'dlig', 'ss01', 'ss02', 'ss03', 'ss04', 'ss06', 'ss07', 'ss08' },
 })
 
 config.font_rules = {
@@ -212,7 +233,7 @@ config.font_rules = {
     italic = true,
     font = wezterm.font({
       -- family="Monaspace Radon",  -- script style
-      family='Monaspace Xenon', -- courier-like
+      family='Monaspace Xenon NF', -- courier-like
       style = 'Italic',
     })
   },
@@ -222,7 +243,7 @@ config.font_rules = {
     -- https://github.com/Wilfred/difftastic/issues/497
     italic = false,
     font = wezterm.font( {
-      family='Monaspace Krypton',
+      family='Monaspace Krypton NF',
       -- Weights: https://wezterm.org/config/lua/wezterm/font.html
       -- weight='ExtraBold',
       weight='ExtraBlack',
@@ -233,7 +254,7 @@ config.font_rules = {
     intensity = 'Bold',
     italic = true,
     font = wezterm.font( {
-      family='Monaspace Xenon',
+      family='Monaspace Xenon NF',
       style='Italic',
       weight='DemiBold',
       }
