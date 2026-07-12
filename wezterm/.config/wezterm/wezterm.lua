@@ -195,7 +195,6 @@ config.allow_square_glyphs_to_overflow_width = 'WhenFollowedBySpace' -- https://
 -- Wezterm overwrites certain font block characters by default
 config.custom_block_glyphs = true -- https://wezterm.org/config/lua/config/custom_block_glyphs.html#custom_block_glyphs-true
 
-config.underline_position = '200%'
 config.underline_thickness = '2px'
 
 -- Monaspace:  https://monaspace.githubnext.com/
