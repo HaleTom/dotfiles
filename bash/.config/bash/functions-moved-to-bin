@@ -1,0 +1,19 @@
+# Prompt for a keypress to continue. Customise prompt with $*
+function pause {
+  >/dev/tty printf '%s' "${*:-Press any key to continue... }"
+  if [[ ${BASH_VERSION:-} ]]; then
+    </dev/tty read -rsn1
+  else  # zsh
+    read -krs  # Use -u0 to read from STDIN
+  fi
+  printf '\n'
+}
+
+
+# Define pbcopy / pbpaste for non-Mac
+if ! is_mac; then
+  function pbcopy { sed -Ez 's/^\n+//; s/\n+$//' | xclip -selection clipboard -in; }
+  function pbcopy_clean { xclip -selection clipboard -in; }
+  function pbpaste { xclip -selection clipboard -out; }
+  export_function pbcopy pbcopy_clean pbpaste
+fi

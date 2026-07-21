@@ -28,11 +28,11 @@ desc = "Toggle media preview metadata"
 # Absolute pathname
 [[mgr.prepend_keymap]]
 on = [ "c", "a" ]
-run = 'shell --block -- printf %s "$(realpath -L -- "$0")" | pbcopy'
-desc = "[symlink b0rken] Copy hovered absolute (logical) path"
+run = 'shell --block -- printf %s %h | pbcopy'
+desc = "Copy hovered Absolute (logical) path"
 
 # Canonical path
 [[mgr.prepend_keymap]]
 on = [ "c", "c" ]
-run = 'shell --block -- printf %s "$(realpath -- "$0")" | pbcopy'
-desc = "[symlink b0rken] Copy hovered canonical path"
+run = 'shell --block -- realpath -- %h | pbcopy'
+desc = "Copy hovered Canonical path"

@@ -61,14 +61,6 @@ function function_names {
 }
 export_function function_names
 
-# Define pbcopy / pbpaste for non-Mac
-if ! is_mac; then
-  function pbcopy { sed -Ez 's/^\n+//; s/\n+$//' | xclip -selection clipboard -in; }
-  function pbcopy_clean { xclip -selection clipboard -in; }
-  function pbpaste { xclip -selection clipboard -out; }
-  export_function pbcopy pbcopy_clean pbpaste
-fi
-
 # List all exported function names (bash) or all functions (zsh)
 function exported_function_names {
   function_names x  # Pass 'x' to bash's declare for exported only
@@ -634,19 +626,6 @@ function get_keypress {
   printf '%s' "$REPLY"
 }
 export_function get_keypress
-
-
-# Prompt for a keypress to continue. Customise prompt with $*
-function pause {
-  >/dev/tty printf '%s' "${*:-Press any key to continue... }"
-  if [[ ${BASH_VERSION:-} ]]; then
-    </dev/tty read -rsn1
-  else  # zsh
-    read -krs  # Use -u0 to read from STDIN
-  fi
-  printf '\n'
-}
-export_function pause
 
 
 # Make a directory and move the working directory
