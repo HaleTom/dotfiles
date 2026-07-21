@@ -1,0 +1,38 @@
+# https://yazi-rs.github.io/docs/configuration/keymap/
+#
+# In each layer, there are two attributes: prepend_keymap and append_keymap. Prepend inserts before the default keybindings, while append inserts after them.
+#
+# [mgr] - File list.
+# [tasks] - Task manager.
+# [spot] - File information spotter.
+# [pick] - Pick component. e.g. "open with" for files.
+# [input] - Input component. e.g. create, rename, etc.
+# [confirm] - Confirmation dialog. e.g. remove, overwrite, etc.
+# [cmp] - Completion component. e.g. "cd" URL completion.
+# [help] - Help menu.
+
+###### Single keys
+
+[[mgr.prepend_keymap]]
+on = "<F5>"
+run = "cd ."
+desc = "Reload current directory"
+
+[[mgr.prepend_keymap]]
+on = "<F9>"
+run = "plugin mediainfo -- toggle-metadata"
+desc = "Toggle media preview metadata"
+
+###### Chords
+
+# Absolute pathname
+[[mgr.prepend_keymap]]
+on = [ "c", "a" ]
+run = 'shell --block -- printf %s "$(realpath -L -- "$0")" | pbcopy'
+desc = "[symlink b0rken] Copy hovered absolute (logical) path"
+
+# Canonical path
+[[mgr.prepend_keymap]]
+on = [ "c", "c" ]
+run = 'shell --block -- printf %s "$(realpath -- "$0")" | pbcopy'
+desc = "[symlink b0rken] Copy hovered canonical path"

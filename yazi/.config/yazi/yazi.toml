@@ -1,45 +1,38 @@
-# Use any key you want, but make sure there is no conflicts with default Keybindings.
-# https://github.com/sxyazi/yazi/blob/main/yazi-config/preset/keymap-default.toml
-#
-# Since Yazi prioritizes the first matching key, prepend_keymap takes precedence over defaults. Or you can use keymap to replace all other keys
-
 # TOML: duplicate keys are an error.
 
 [mgr]
-  prepend_keymap = [
-    { on = "<F9>", run = "plugin mediainfo -- toggle-metadata", desc = "Toggle media preview metadata" },
-    { on = "<F5>", run = "cd .", desc = "Reload current directory" }
-  ]
+  linemode = "stat"  # See init.lua fn for showing more file metadata
 
 # Enable open with mpv both tty and window
 # https://www.perplexity.ai/search/find-tools-to-display-a-video-LvVTrVDWRceYKkfE1b3Uug
 [opener]
-# Block opener: suspends Yazi TUI, mpv renders via kitty protocol full-screen
-mpv-kitty = [
-  {
-    run   = "mpv --vo=kitty --vo-kitty-use-shm=yes --hwdec=auto-safe --really-quiet -- %s",
-    desc  = "Play (mpv kitty, block)",
-    block = true,
-    for   = "unix",
-  },
-]
-# Non-block fallback: mpv in background (no kitty, normal GPU window)
-mpv-gui = [
-  {
-    run    = "mpv -- %s",
-    desc   = "Play (mpv GUI, orphan)",
-    orphan = true,
-    for    = "unix",
-  },
-]
+  # Block opener: suspends Yazi TUI, mpv renders via kitty protocol full-screen
+  mpv-kitty = [
+    {
+      run   = "mpv --vo=kitty --vo-kitty-use-shm=yes --hwdec=auto-safe --really-quiet -- %s",
+      desc  = "Play (mpv kitty, block)",
+      block = true,
+      for   = "unix",
+    },
+  ]
+
+  # Non-block fallback: mpv in background (no kitty, normal GPU window)
+  mpv-gui = [
+    {
+      run    = "mpv -- %s",
+      desc   = "Play (mpv GUI, orphan)",
+      orphan = true,
+      for    = "unix",
+    },
+  ]
 
 [open]
-prepend_rules = [
-  # <Enter> on any video → mpv-kitty (block) as first/default opener
-  { mime = "video/*", use = ["mpv-kitty", "mpv-gui"] },
-  # Audio: same block opener works fine
-  { mime = "audio/*", use = ["mpv-kitty", "mpv-gui"] },
-]
+  prepend_rules = [
+    # <Enter> on any video → mpv-kitty (block) as first/default opener
+    { mime = "video/*", use = ["mpv-kitty", "mpv-gui"] },
+    # Audio: same block opener works fine
+    { mime = "audio/*", use = ["mpv-kitty", "mpv-gui"] },
+  ]
 
 # https://github.com/boydaihungst/mediainfo.yazi
 [plugin]
