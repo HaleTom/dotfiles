@@ -1,5 +1,10 @@
 # https://yazi-rs.github.io/docs/configuration/keymap/
-#
+
+# % placeholders:
+# https://yazi-rs.github.io/docs/configuration/keymap/#manager.shell:~:text=You%20can%20use%20the%20following%20formatting%20parameters%20in%20%5Btemplate%5D%3A
+# Non-documented:
+# https://github.com/sxyazi/yazi/blob/main/yazi-fs/src/splatter.rs#L76
+
 # In each layer, there are two attributes: prepend_keymap and append_keymap. Prepend inserts before the default keybindings, while append inserts after them.
 #
 # [mgr] - File list.
@@ -21,7 +26,7 @@ desc = "Enter directory or open file"
 [[mgr.prepend_keymap]]
 on = "<F5>"
 run = "cd ."
-desc = "Reload current directory"
+desc = "Refresh directory listing"
 
 [[mgr.prepend_keymap]]
 on = "<Up>"
@@ -53,11 +58,11 @@ desc = "Toggle media preview metadata"
 # Absolute pathname
 [[mgr.prepend_keymap]]
 on = [ "c", "a" ]
-run = 'shell --block -- printf %s %h | pbcopy'
+run = '''shell --block -- printf '%%s' %h | pbcopy'''
 desc = "Copy hovered Absolute (logical) path"
 
 # Canonical path
 [[mgr.prepend_keymap]]
 on = [ "c", "c" ]
-run = 'shell --block -- realpath -- %h | pbcopy'
+run = '''shell --block -- realpath -- %h | pbcopy'''
 desc = "Copy hovered Canonical path"
