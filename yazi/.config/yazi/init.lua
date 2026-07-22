@@ -4,8 +4,8 @@
 function Linemode:stat()
     local cha = self._file.cha
 
-    -- permissions (Yazi exposes a formatted rwx string via cha:permissions() in recent builds)
-    local perm = cha.permissions or "?"
+    -- cha:perm() returns the formatted permission string (e.g. "rwxr-xr-x") since v0.4.0
+    local perm = cha:perm() or "?"
 
     -- size
     local size = self._file:size()
