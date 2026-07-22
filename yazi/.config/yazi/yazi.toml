@@ -1,11 +1,27 @@
+# Default config: https://github.com/sxyazi/yazi/blob/shipped/yazi-config/preset/
+#
 # TOML: duplicate keys are an error.
 
 [mgr]
-  linemode = "stat"  # See init.lua fn for showing more file metadata
+  linemode = "stat"  # See init.lua fn for showing more file metadata.  Max string length == 20 characters.
+  sort_by = 'natural'  # 1.md < 2.md < 10.md
+  sort_sensitive = false  # Case sensitivity
+  sort_dir_first = true
+  sort_translit = true  # replace Â with A, Æ with AE, etc.), only available if sort_by = "natural".
+  show_symlink = true  # Show symlink target after filename
+  image_delay = 0  # Milliseconds, default =30.  If cursor stutters, on a slow image rendering terminal
 
 # Enable open with mpv both tty and window
 # https://www.perplexity.ai/search/find-tools-to-display-a-video-LvVTrVDWRceYKkfE1b3Uug
 [opener]
+  edit = [
+    { run = '${EDITOR:-nvim} -- %s', block = true, for = "unix" },
+  ]
+
+  xdg-open = [
+    { run = 'xdg-open -- %s', orphan = true, for = "linux" },
+  ]
+
   # Block opener: suspends Yazi TUI, mpv renders via kitty protocol full-screen
   mpv-kitty = [
     {
@@ -28,14 +44,28 @@
 
 [open]
   prepend_rules = [
+    ### Pathname based (most specific first)
+    { url = "{Makefile,makefile,PKGBUILD}", use = "edit" },
+    { url = "*.{md,txt,nix,toml,yaml,yml,json,sh,bash,zsh,py,rs,c,h,go}", use = "edit" },
+
+    ### MIME based (evaluated before the catch-all)
+    # <Enter> on any text → edit
+    { mime = "text/*", use = "edit" },
     # <Enter> on any video → mpv-kitty (block) as first/default opener
     { mime = "video/*", use = ["mpv-kitty", "mpv-gui"] },
     # Audio: same block opener works fine
     { mime = "audio/*", use = ["mpv-kitty", "mpv-gui"] },
+
+    # Last matching fallback for anything else — must be last.
+    { url = "*", use = "xdg-open" },
   ]
 
 # https://github.com/boydaihungst/mediainfo.yazi
 [plugin]
+  prepend_fetchers = [
+    { id = "mime", url = "*", run = "mime-determiner", prio = "high", group = "mime" },
+  ]
+
   prepend_preloaders = [
     # Replace magick, image, video with mediainfo
     { mime = "{audio,video,image}/*", run = "mediainfo" },
@@ -77,8 +107,15 @@
   # https://mediaarea.net/en/MediaInfo/Support/Formats
   # If it's not working, file an issue at https://github.com/boydaihungst/mediainfo.yazi/issues
 
-# For a large file like Adobe Illustrator, Adobe Photoshop, etc
-# you may need to increase the memory limit if no image is rendered.
-# https://yazi-rs.github.io/docs/configuration/yazi#tasks
 [tasks]
-  image_alloc      = 1073741824        # = 1024*1024*1024 = 1024MB
+# https://yazi-rs.github.io/docs/configuration/yazi#tasks
+  file_workers     = 8
+  plugin_workers   = 8
+  fetch_workers    = 8
+  preload_workers  = 8
+  process_workers  = 8
+  bizarre_retry    = 3
+  # For a large file like Adobe Illustrator, Adobe Photoshop, etc
+  # you may need to increase the memory limit if no image is rendered.
+  image_alloc      = 536870912  # 512MB == default
+  image_bound      = [ 10000, 10000 ]
