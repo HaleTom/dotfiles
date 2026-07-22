@@ -90,6 +90,7 @@ class Case:
     zstyle_overrides: list[str] = field(default_factory=list)
     setup_check: dict = field(default_factory=dict)
     post_input_delay_s: float = 8.0
+    cwd: Optional[str] = None
     source_path: Optional[Path] = None
 
 
@@ -112,6 +113,7 @@ def load_case(path: Path) -> Case:
         zstyle_overrides=data.get("zstyle_overrides", []),
         setup_check=data.get("setup_check", {}),
         post_input_delay_s=data.get("post_input_delay_s", 8.0),
+        cwd=data.get("cwd"),
         source_path=path,
     )
 

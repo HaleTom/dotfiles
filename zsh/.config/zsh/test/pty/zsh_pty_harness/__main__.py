@@ -60,7 +60,10 @@ def run_one_case(case: Case, zdotdir: str, timeout_s: int, keep_tmp: bool) -> di
     try:
         with shim as shim_zdotdir:
             env_overrides["ZDOTDIR"] = shim_zdotdir
+            _case_orig_cwd = os.getcwd()
             try:
+                if case.cwd:
+                    os.chdir(os.path.expanduser(case.cwd))
                 with ZshSession(
                     env_overrides=env_overrides,
                     zsh_env_path="/dev/null",
@@ -140,6 +143,9 @@ def run_one_case(case: Case, zdotdir: str, timeout_s: int, keep_tmp: bool) -> di
                     }
             except ZshSessionError as e:
                 return {"status": "ERROR", "detail": str(e)}
+            finally:
+                if case.cwd:
+                    os.chdir(_case_orig_cwd)
     finally:
         if not keep_tmp:
             pass  # ZshShimDir.close() already ran via __exit__

@@ -44,6 +44,23 @@ zsh/.config/zsh/test/pty/run --zdotdir /path/to/zsh/config
 Output is TAP 14. Exit code is non-zero on any FAIL or ERROR, zero on
 PASS/SKIP.
 
+## Harness Selection
+
+Use the simplest PTY harness that exercises the behaviour under test.
+
+Use a zsh `zpty` command-mode harness when the test only needs to run
+newline-terminated commands and inspect command output, exit behaviour, TTY
+state, or prompt-return readiness. Prefer a sentinel prompt such as
+`__AGENT_READY__% `, explicit timeouts, cleanup traps, and conservative
+terminal settings.
+
+Use this Python `zsh_pty_harness` when the test needs real interactive ZLE
+behaviour: pressing Tab, loading the user's zsh config, waiting for zinit turbo
+plugins, exercising fzf-tab/autosuggestions/widgets, or asserting on `$BUFFER`.
+
+Do not replace ZLE completion tests with command-mode `zpty` tests unless the
+case no longer depends on completion widgets or `$BUFFER` capture.
+
 ## How it works
 
 1. **ZDOTDIR shim** (temp dir, never edits .zshrc): creates a `.zshenv` and
