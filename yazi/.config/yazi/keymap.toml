@@ -24,6 +24,26 @@ run = "cd ."
 desc = "Reload current directory"
 
 [[mgr.prepend_keymap]]
+on = "<Up>"
+run = "plugin --sync smart-arrow-wrap -- up"
+desc = "Move up, wrapping only on tap at top"
+
+[[mgr.prepend_keymap]]
+on = "k"
+run = "plugin --sync smart-arrow-wrap -- up"
+desc = "Move up, wrapping only on tap at top"
+
+[[mgr.prepend_keymap]]
+on = "<Down>"
+run = "plugin --sync smart-arrow-wrap -- down"
+desc = "Move down, wrapping only on tap at bottom"
+
+[[mgr.prepend_keymap]]
+on = "j"
+run = "plugin --sync smart-arrow-wrap -- down"
+desc = "Move down, wrapping only on tap at bottom"
+
+[[mgr.prepend_keymap]]
 on = "<F9>"
 run = "plugin mediainfo -- toggle-metadata"
 desc = "Toggle media preview metadata"
