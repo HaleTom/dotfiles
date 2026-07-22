@@ -66,3 +66,9 @@ desc = "Copy hovered Absolute (logical) path"
 on = [ "c", "c" ]
 run = '''shell --block -- realpath -- %h | pbcopy'''
 desc = "Copy hovered Canonical path"
+
+# Shell with selected
+[[mgr.prepend_keymap]]
+on = [ "c", "s" ]
+run = '''shell --block -- shell-quote -- '%s'; pause'''
+desc = "WIP⚠️--Shell command with selected files"
