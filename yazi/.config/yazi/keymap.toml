@@ -14,6 +14,11 @@
 ###### Single keys
 
 [[mgr.prepend_keymap]]
+on = "<Enter>"
+run = "plugin --sync smart-enter"
+desc = "Enter directory or open file"
+
+[[mgr.prepend_keymap]]
 on = "<F5>"
 run = "cd ."
 desc = "Reload current directory"

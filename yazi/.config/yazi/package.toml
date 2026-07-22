@@ -3,5 +3,10 @@ use = "boydaihungst/mediainfo"
 rev = "6fbed8d"
 hash = "57ae6b43c477e117802f176683b78e74"
 
+[[plugin.deps]]
+use = "yazi-rs/plugins:smart-enter"
+rev = "bb758e2"
+hash = "187cc58ba7ac3befd49c342129e6f1b6"
+
 [flavor]
 deps = []
