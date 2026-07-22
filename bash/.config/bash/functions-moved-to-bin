@@ -18,6 +18,23 @@ if ! is_mac; then
   export_function pbcopy pbcopy_clean pbpaste
 fi
 
+
+ # Safely remove the given entry from $PATH
+ # https://unix.stackexchange.com/a/253760/143394
+ function remove_from_PATH {
+   while case $PATH in
+           "$1") unset PATH; false;;
+           "$1:"*) PATH=${PATH#"$1:"};;
+           *":$1") PATH=${PATH%":$1"};;
+           *":$1:"*) PATH=${PATH%%":$1:"*}:${PATH#*":$1:"};;
+           *) false;;
+         esac
+   do
+     :
+   done
+ }
+
+
 # rm_from_path_var — remove all occurrences of a directory from PATH
 #
 # Usage: rm_from_path_var <dir>
