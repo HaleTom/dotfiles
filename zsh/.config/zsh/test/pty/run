@@ -1,0 +1,11 @@
+#!/usr/bin/env bash
+# zsh/.config/zsh/test/pty/run — wrapper to invoke the PTY completion harness.
+# Usage:
+#   zsh/.config/zsh/test/pty/run                  # run all cases
+#   zsh/.config/zsh/test/pty/run --case NAME      # run one case
+#   zsh/.config/zsh/test/pty/run --keep-tmp       # preserve temp files for debugging
+# Emits TAP 14 to stdout. Exit non-zero on any FAIL/ERROR.
+set -euo pipefail
+script_dir="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd)"
+cd "${script_dir}" || exit 1
+exec python3 -m zsh_pty_harness --cases-dir "${script_dir}/zsh_pty_harness/cases" "$@"

@@ -1,0 +1,6 @@
+name = "_selftest_negative"
+description = "Harness negative control: intentionally wrong regex must FAIL (not pass silently)"
+# No requires; always runs.
+input_keys = "echo hello\\r"
+post_input_delay_s = 0.0
+expect_buffer_regex = "^echo GOODBYE$"

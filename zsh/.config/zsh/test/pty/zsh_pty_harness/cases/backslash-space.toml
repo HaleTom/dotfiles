@@ -1,0 +1,18 @@
+name = "backslash-space"
+description = "Tab-completing an escaped space must not double the backslash"
+requires = ["fzf_tab"]
+# Force plain fzf (not ftb-tmux-popup), no FZF_DEFAULT_OPTS interference.
+# --select-1 in fzf-flags auto-accepts when there's exactly one match.
+# The user config sets `use-fzf-default-opts yes`, so FZF_DEFAULT_OPTS WOULD
+# be passed to fzf; clearing it avoids double --height / --no-tmux flags.
+env_overrides = { FZF_DEFAULT_OPTS = "" }
+zstyle_overrides = [
+  "':fzf-tab:*' fzf-command fzf",
+  "':fzf-tab:*' fzf-flags --select-1",
+  "':fzf-tab:*' fzf-bindings 'space:accept' 'enter:accept'",
+]
+# Type: ls ./has\ <TAB> — single match auto-accepts via --select-1
+# In the DSL: \\ = literal backslash, \t = Tab
+input_keys = "ls ./has\\\\ \t"
+post_input_delay_s = 2.0
+expect_buffer_regex = "^ls \\./has\\\\ space\\s*$"

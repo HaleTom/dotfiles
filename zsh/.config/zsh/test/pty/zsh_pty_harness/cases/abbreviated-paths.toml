@@ -1,0 +1,11 @@
+name = "abbreviated-paths"
+description = "Abbreviated path expansion /u/b/l -> /usr/bin/ls via expand prefix suffix"
+requires = ["fzf_tab"]
+env_overrides = { FZF_DEFAULT_OPTS = "--select-1 --bind enter:accept --no-tmux" }
+zstyle_overrides = [
+  "':fzf-tab:*' fzf-command fzf",
+  "':fzf-tab:*' fzf-flags --select-1 --bind enter:accept --color=fg:1,fg+:2",
+]
+input_keys = "ls /u/b/l\t"
+post_input_delay_s = 1.0
+expect_buffer_regex = "^ls /usr/bin/.*$"

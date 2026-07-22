@@ -1,0 +1,6 @@
+name = "_selftest"
+description = "Harness sanity: BUFFER capture and regex match (no completion involved)"
+# No requires; always runs.
+input_keys = "echo hello\\r"
+post_input_delay_s = 0.0
+expect_buffer_regex = "^echo hello$"
